@@ -52,7 +52,7 @@ export default function CouncilDashboard() {
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold">Find Your Council</h2>
               <p className="text-muted-foreground text-lg">
-                See how your council spends money and what your council tax pays for
+                See where your council tax goes
               </p>
             </div>
             <CouncilSelector variant="homepage" />
