@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Home, Calculator, CreditCard, Calendar, CheckCircle, AlertTriangle, Lightbulb, Info, TrendingUp, TrendingDown } from "lucide-react";
+import { Home, Calculator, CreditCard, Calendar, CheckCircle, AlertTriangle, Lightbulb, Info, TrendingUp, TrendingDown, ExternalLink, Building2, Shield, Flame } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { calculateBands, councils, getAverageBandDByType } from '@/data/councils';
 
@@ -206,6 +206,99 @@ const CouncilTaxSection = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Full Bill Breakdown - Only show if detailed data available */}
+      {selectedCouncil.detailed?.precepts && selectedCouncil.detailed.precepts.length > 0 && (
+        <Card className="border border-border/40 border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20 shadow-sm">
+          <CardHeader className="p-4 sm:p-6 pb-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                <CreditCard className="h-5 w-5 text-green-600 dark:text-green-500" />
+                <div>
+                  <CardTitle className="text-lg sm:text-xl font-semibold">Your Full Council Tax Bill</CardTitle>
+                  <CardDescription className="text-sm sm:text-base leading-relaxed">
+                    Band D breakdown by authority (from {selectedCouncil.name}&apos;s website)
+                  </CardDescription>
+                </div>
+              </div>
+              <Badge variant="secondary" className="text-[10px] sm:text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
+                Verified Data
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
+            <div className="space-y-3">
+              {selectedCouncil.detailed.precepts.map((precept, index) => {
+                const totalBandD = selectedCouncil.detailed?.total_band_d || 0;
+                const percentage = totalBandD > 0 ? (precept.band_d / totalBandD) * 100 : 0;
+                const isDistrict = precept.authority.toLowerCase().includes(selectedCouncil.name.toLowerCase());
+
+                // Calculate band amount based on selected band ratio
+                const bandRatio = councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].rate;
+                const bandAmount = precept.band_d * bandRatio;
+
+                return (
+                  <div key={index} className={`p-3 sm:p-4 rounded-xl ${isDistrict ? 'bg-primary/10' : 'bg-background/60'}`}>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {precept.authority.toLowerCase().includes('county') && <Building2 className="h-4 w-4 shrink-0 text-muted-foreground" />}
+                        {precept.authority.toLowerCase().includes('police') && <Shield className="h-4 w-4 shrink-0 text-muted-foreground" />}
+                        {precept.authority.toLowerCase().includes('fire') && <Flame className="h-4 w-4 shrink-0 text-muted-foreground" />}
+                        {isDistrict && <Home className="h-4 w-4 shrink-0 text-primary" />}
+                        <span className={`font-medium text-xs sm:text-sm truncate ${isDistrict ? 'text-primary' : ''}`}>
+                          {precept.authority}
+                        </span>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className={`font-bold text-sm sm:text-base ${isDistrict ? 'text-primary' : ''}`}>
+                          £{bandAmount.toFixed(2)}
+                        </div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground">
+                          {percentage.toFixed(1)}% of bill
+                        </div>
+                      </div>
+                    </div>
+                    <Progress value={percentage} className="h-1.5 sm:h-2" />
+                    {precept.description && (
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 leading-relaxed">{precept.description}</p>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Total */}
+              <div className="p-3 sm:p-4 bg-green-100/80 dark:bg-green-900/30 rounded-xl mt-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm sm:text-base text-green-700 dark:text-green-300">
+                    Total Band {selectedBand} Council Tax
+                  </span>
+                  <span className="font-bold text-lg sm:text-xl text-green-700 dark:text-green-300">
+                    £{((selectedCouncil.detailed?.total_band_d || 0) * councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].rate).toFixed(2)}
+                  </span>
+                </div>
+                <p className="text-[10px] sm:text-xs text-green-600 dark:text-green-400 mt-1">
+                  This is your estimated total annual council tax (excluding any parish precept)
+                </p>
+              </div>
+            </div>
+
+            {/* Source link */}
+            {selectedCouncil.detailed?.council_tax_url && (
+              <div className="mt-4 pt-4 border-t border-green-200 dark:border-green-800">
+                <a
+                  href={selectedCouncil.detailed.council_tax_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs sm:text-sm text-green-600 dark:text-green-400 hover:underline flex items-center gap-1"
+                >
+                  View official figures on {selectedCouncil.name}&apos;s website
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Band Multipliers */}
       <Card className="border border-border/40 bg-card shadow-sm">
