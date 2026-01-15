@@ -79,7 +79,7 @@ const CouncilTaxSection = () => {
   return (
     <div className="space-y-5 sm:space-y-8">
       {/* Band Selector */}
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <Home className="h-5 w-5 text-primary opacity-70" />
@@ -111,7 +111,7 @@ const CouncilTaxSection = () => {
       </Card>
 
       {/* Selected Band Details */}
-      <Card className="border-0 border-l-4 border-l-primary bg-primary/5 shadow-sm">
+      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2.5">
@@ -208,7 +208,7 @@ const CouncilTaxSection = () => {
       </Card>
 
       {/* Band Multipliers */}
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <Calculator className="h-5 w-5 text-primary opacity-70" />
@@ -247,7 +247,7 @@ const CouncilTaxSection = () => {
       </Card>
 
       {/* Understanding Council Tax */}
-      <Card className="border-0 border-l-4 border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20 shadow-sm">
+      <Card className="border border-border/40 border-l-4 border-l-amber-500 bg-amber-50/30 dark:bg-amber-950/20 shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-500" />

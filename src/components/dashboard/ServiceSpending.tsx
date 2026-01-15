@@ -114,7 +114,7 @@ const ServiceSpending = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6 text-center">
           <p className="text-muted-foreground text-sm sm:text-base">Please select a council to view service spending.</p>
         </CardContent>
@@ -124,7 +124,7 @@ const ServiceSpending = () => {
 
   if (services.length === 0) {
     return (
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Info className="h-5 w-5" />
@@ -142,7 +142,7 @@ const ServiceSpending = () => {
   return (
     <div className="space-y-5 sm:space-y-8">
       {/* Service Selector */}
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <Settings className="h-5 w-5 text-primary opacity-70" />
@@ -180,7 +180,7 @@ const ServiceSpending = () => {
       </Card>
 
       {/* Selected Service Details */}
-      <Card className="border-0 border-l-4 border-l-primary bg-primary/5 shadow-sm">
+      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2.5">
@@ -265,7 +265,7 @@ const ServiceSpending = () => {
       </Card>
 
       {/* Service Comparison */}
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <TrendingUp className="h-5 w-5 text-primary opacity-70" />

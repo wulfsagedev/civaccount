@@ -156,7 +156,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
           {/* Results - Fixed height container to prevent layout shift */}
           <div
             ref={listRef}
-            className="h-[200px] overflow-y-auto space-y-1 px-1"
+            className="h-[200px] overflow-y-auto space-y-1 px-1 scrollbar-hide"
           >
             {filteredCouncils.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-4">

@@ -80,7 +80,7 @@ const RevenueBreakdown = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6 text-center">
           <p className="text-muted-foreground text-sm sm:text-base">Please select a council to view revenue information.</p>
         </CardContent>
@@ -90,7 +90,7 @@ const RevenueBreakdown = () => {
 
   if (!revenueData) {
     return (
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Info className="h-5 w-5" />
@@ -106,7 +106,7 @@ const RevenueBreakdown = () => {
   return (
     <div className="space-y-5 sm:space-y-8">
       {/* Revenue Overview */}
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <DollarSign className="h-5 w-5 text-primary opacity-70" />
@@ -148,7 +148,7 @@ const RevenueBreakdown = () => {
 
                 <Progress value={stream.percentage} className="h-2 sm:h-3" />
 
-                <div className="text-xs sm:text-sm text-muted-foreground bg-muted/50 p-2.5 sm:p-3 rounded-xl leading-relaxed">
+                <div className="text-xs sm:text-sm text-muted-foreground bg-muted/30 p-2.5 sm:p-3 rounded-xl leading-relaxed">
                   {stream.description}
                 </div>
               </div>
@@ -158,7 +158,7 @@ const RevenueBreakdown = () => {
       </Card>
 
       {/* Revenue Stability Analysis */}
-      <Card className="border-0 bg-card/50 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <TrendingDown className="h-5 w-5 text-primary opacity-70" />
@@ -213,7 +213,7 @@ const RevenueBreakdown = () => {
       </Card>
 
       {/* What This Means for You */}
-      <Card className="border-0 border-l-4 border-l-primary bg-primary/5 shadow-sm">
+      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-4">
           <div className="flex items-center gap-2.5">
             <Lightbulb className="h-5 w-5 text-primary" />
@@ -283,7 +283,7 @@ const RevenueBreakdown = () => {
       </Card>
 
       {/* Note about estimates */}
-      <Card className="border-0 bg-muted/30 shadow-sm">
+      <Card className="border border-border/40 bg-muted/30 shadow-sm">
         <CardContent className="p-4 sm:p-5">
           <div className="flex items-start gap-3 text-muted-foreground">
             <Info className="h-5 w-5 shrink-0 mt-0.5 opacity-70" />
