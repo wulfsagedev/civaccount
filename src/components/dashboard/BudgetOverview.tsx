@@ -1,9 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { DollarSign, Building2, Calendar, Users, Lightbulb, AlertTriangle, Shield, CheckCircle, Info } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget } from '@/data/councils';
 
@@ -31,7 +29,7 @@ const BudgetOverview = () => {
   const dailyCost = totalBudget ? totalBudget / 365 : null;
 
   // Build budget breakdown from actual data
-  const budgetBreakdown = [];
+  const budgetBreakdown: Array<{category: string; percentage: number; amount: number; description: string}> = [];
 
   if (budget) {
     const total = budget.total_service || 1;
@@ -41,8 +39,6 @@ const BudgetOverview = () => {
         category: "Adult Social Care",
         percentage: (budget.adult_social_care / total) * 100,
         amount: budget.adult_social_care * 1000,
-        priority: "High",
-        icon: Shield,
         description: "Help for older people and people with disabilities"
       });
     }
@@ -52,8 +48,6 @@ const BudgetOverview = () => {
         category: "Children's Services",
         percentage: (budget.childrens_social_care / total) * 100,
         amount: budget.childrens_social_care * 1000,
-        priority: "High",
-        icon: Users,
         description: "Keeping children safe and helping families who need support"
       });
     }
@@ -63,8 +57,6 @@ const BudgetOverview = () => {
         category: "Education & Schools",
         percentage: (budget.education / total) * 100,
         amount: budget.education * 1000,
-        priority: "High",
-        icon: Building2,
         description: "School buses, help for children with extra needs, and school support"
       });
     }
@@ -74,8 +66,6 @@ const BudgetOverview = () => {
         category: "Roads & Transport",
         percentage: (budget.transport / total) * 100,
         amount: budget.transport * 1000,
-        priority: "Medium",
-        icon: Calendar,
         description: "Fixing roads, traffic lights, and helping buses run"
       });
     }
@@ -85,8 +75,6 @@ const BudgetOverview = () => {
         category: "Public Health",
         percentage: (budget.public_health / total) * 100,
         amount: budget.public_health * 1000,
-        priority: "Medium",
-        icon: Shield,
         description: "Stopping illness from spreading and helping people stay healthy"
       });
     }
@@ -96,8 +84,6 @@ const BudgetOverview = () => {
         category: "Housing",
         percentage: (budget.housing / total) * 100,
         amount: budget.housing * 1000,
-        priority: "Medium",
-        icon: Building2,
         description: "Helping people find homes and stopping homelessness"
       });
     }
@@ -107,8 +93,6 @@ const BudgetOverview = () => {
         category: "Libraries & Fun Stuff",
         percentage: (budget.cultural / total) * 100,
         amount: budget.cultural * 1000,
-        priority: "Medium",
-        icon: Building2,
         description: "Libraries, museums, art, and community centres"
       });
     }
@@ -118,8 +102,6 @@ const BudgetOverview = () => {
         category: "Bins & Streets",
         percentage: (budget.environmental / total) * 100,
         amount: budget.environmental * 1000,
-        priority: "Medium",
-        icon: CheckCircle,
         description: "Collecting bins, recycling, and cleaning streets"
       });
     }
@@ -129,8 +111,6 @@ const BudgetOverview = () => {
         category: "Planning",
         percentage: (budget.planning / total) * 100,
         amount: budget.planning * 1000,
-        priority: "Low",
-        icon: Building2,
         description: "Deciding what can be built and where"
       });
     }
@@ -140,8 +120,6 @@ const BudgetOverview = () => {
         category: "Running the Council",
         percentage: (budget.central_services / total) * 100,
         amount: budget.central_services * 1000,
-        priority: "Low",
-        icon: CheckCircle,
         description: "Meetings, staff, and keeping the council running"
       });
     }
@@ -150,188 +128,98 @@ const BudgetOverview = () => {
     budgetBreakdown.sort((a, b) => b.percentage - a.percentage);
   }
 
-  // Key metrics
+  // Key metrics - simplified
   const keyMetrics = [
     {
       title: "Total Budget",
       value: totalBudget ? formatBudget(totalBudget / 1000) : 'N/A',
-      description: `How much ${selectedCouncil.name} spends in one year`,
-      explanation: "This pays for all the things your council does",
-      badge: "Yearly Total",
-      icon: DollarSign,
-      color: "text-primary"
+      subtitle: "per year"
     },
     {
-      title: "What You Pay For",
+      title: "Net Spending",
       value: netCurrent ? formatBudget(netCurrent / 1000) : 'N/A',
-      description: "The part paid by council tax and government",
-      explanation: "This is what your council tax and government money covers",
-      badge: "Your Share",
-      icon: Building2,
-      color: "text-primary"
+      subtitle: "council tax & grants"
     },
     {
       title: "Daily Cost",
       value: dailyCost ? `£${(dailyCost / 1000).toFixed(0)}K` : 'N/A',
-      description: "What it costs to run everything each day",
-      explanation: "Your council works every single day of the year",
-      badge: "Per Day",
-      icon: Calendar,
-      color: "text-primary"
+      subtitle: "to run services"
     },
     {
-      title: "Band D Council Tax",
+      title: "Band D Tax",
       value: councilTax ? `£${councilTax.band_d_2025.toFixed(2)}` : 'N/A',
-      description: `${selectedCouncil.name} portion only`,
-      explanation: "This is only what you pay to this council. Your total bill includes other charges too.",
-      badge: "Council Only",
-      icon: Users,
-      color: "text-primary"
+      subtitle: "council portion only"
     }
   ];
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* Key Metrics Grid - Clean and simple */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {keyMetrics.map((metric, index) => (
-          <Card key={index} className="relative overflow-hidden">
-            <CardHeader className="pb-2 space-y-2">
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="text-xs">{metric.badge}</Badge>
-                <metric.icon className={`h-4 w-4 ${metric.color}`} />
-              </div>
-              <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold">{metric.value}</CardTitle>
-              <CardDescription className="text-xs sm:text-sm">{metric.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-xs bg-muted p-2 rounded-md flex items-start gap-2">
-                <Lightbulb className="h-3 w-3 mt-0.5 shrink-0" />
-                <div>
-                  <span className="font-medium">Note:</span> {metric.explanation}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div key={index} className="text-center p-4 bg-muted/50 rounded-xl">
+            <p className="text-2xl sm:text-3xl font-bold">{metric.value}</p>
+            <p className="text-xs text-muted-foreground mt-1">{metric.subtitle}</p>
+            <p className="text-sm font-medium mt-2">{metric.title}</p>
+          </div>
         ))}
       </div>
 
       {/* Budget Breakdown */}
       {budgetBreakdown.length > 0 ? (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Where Your Money Goes</CardTitle>
-            <CardDescription className="text-sm sm:text-base">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Where Your Money Goes</CardTitle>
+            <CardDescription>
               How {selectedCouncil.name} spends money across different services
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-4">
               {budgetBreakdown.map((item, index) => (
-                <div key={index} className="space-y-2 sm:space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center space-x-2 min-w-0">
-                      <item.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
-                      <span className="font-medium text-sm sm:text-base truncate">{item.category}</span>
-                      {item.percentage > 20 && (
-                        <Badge
-                          variant="destructive"
-                          className="text-xs shrink-0"
-                        >
-                          Major
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="font-bold text-sm sm:text-base">{formatBudget(item.amount / 1000)}</div>
-                      <div className="text-xs sm:text-sm text-muted-foreground">{item.percentage.toFixed(1)}%</div>
+                <div key={index} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm">{item.category}</span>
+                    <div className="text-right">
+                      <span className="font-bold text-sm">{formatBudget(item.amount / 1000)}</span>
+                      <span className="text-xs text-muted-foreground ml-2">{item.percentage.toFixed(0)}%</span>
                     </div>
                   </div>
-                  <Progress value={Math.min(item.percentage, 100)} className="h-2" />
-                  <div className="text-xs sm:text-sm text-muted-foreground">
-                    {item.description}
-                  </div>
+                  <Progress value={Math.min(item.percentage, 100)} className="h-1.5" />
+                  <p className="text-xs text-muted-foreground">{item.description}</p>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3 text-muted-foreground">
-              <Info className="h-5 w-5" />
-              <p>Detailed budget breakdown not available for this council.</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="p-6 bg-muted/50 rounded-xl text-center">
+          <p className="text-muted-foreground text-sm">Detailed budget breakdown not available for this council.</p>
+        </div>
       )}
 
       {/* Context Box */}
-      <Card className="border-l-4 border-l-primary">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-primary" />
-            <CardTitle className="text-base sm:text-lg">What Does This Council Do?</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3 sm:space-y-4">
-            <p className="text-sm sm:text-base">
-              <strong>{selectedCouncil.name} is a {selectedCouncil.type_name}.</strong>
-            </p>
-            {selectedCouncil.type === 'SC' && (
-              <div className="space-y-2">
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  County councils look after the big stuff for the whole area:
-                </p>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div><strong>Social Care:</strong> Looking after older people and children who need help</div>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div><strong>Education:</strong> School buses and helping children with extra needs</div>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div><strong>Roads:</strong> Main roads, fixing potholes, and traffic lights</div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {selectedCouncil.type === 'SD' && (
-              <div className="space-y-2">
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  District councils look after local things in your area:
-                </p>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div><strong>Housing:</strong> Helping people find homes</div>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div><strong>Planning:</strong> Deciding what buildings can be built</div>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div><strong>Bins:</strong> Collecting rubbish and recycling</div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') && (
-              <div className="space-y-2">
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  This council does everything! They look after social care, schools, housing, planning, bins, roads, and more - all in one place.
-                </p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="p-4 sm:p-6 bg-muted/30 rounded-xl border-l-4 border-l-primary">
+        <h3 className="font-semibold mb-2">What Does This Council Do?</h3>
+        <p className="text-sm mb-3">
+          {selectedCouncil.name} is a {selectedCouncil.type_name}.
+        </p>
+        {selectedCouncil.type === 'SC' && (
+          <p className="text-sm text-muted-foreground">
+            County councils handle social care, education support, and main roads across the whole area.
+          </p>
+        )}
+        {selectedCouncil.type === 'SD' && (
+          <p className="text-sm text-muted-foreground">
+            District councils handle housing, planning, and bin collections in your local area.
+          </p>
+        )}
+        {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') && (
+          <p className="text-sm text-muted-foreground">
+            This council handles everything - social care, schools, housing, planning, bins, roads, and more.
+          </p>
+        )}
+      </div>
     </div>
   );
 };

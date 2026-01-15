@@ -5,9 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Home, Calculator, CreditCard, Calendar, CheckCircle, AlertTriangle, Lightbulb, Info, TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { calculateBands, councils, getAverageBandDByType } from '@/data/councils';
+import { calculateBands, getAverageBandDByType } from '@/data/councils';
 
 const CouncilTaxSection = () => {
   const { selectedCouncil } = useCouncil();
@@ -52,24 +52,17 @@ const CouncilTaxSection = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card>
-        <CardContent className="p-6 text-center">
-          <p className="text-muted-foreground">Please select a council to view council tax information.</p>
-        </CardContent>
-      </Card>
+      <div className="p-6 bg-muted/50 rounded-xl text-center">
+        <p className="text-muted-foreground">Please select a council to view council tax information.</p>
+      </div>
     );
   }
 
   if (!councilTaxData) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Info className="h-5 w-5" />
-            <p>Council tax data not available for {selectedCouncil.name}.</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="p-6 bg-muted/50 rounded-xl text-center">
+        <p className="text-muted-foreground">Council tax data not available for {selectedCouncil.name}.</p>
+      </div>
     );
   }
 
@@ -80,30 +73,21 @@ const CouncilTaxSection = () => {
     <div className="space-y-4 sm:space-y-6">
       {/* Band Selector */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Home className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle className="text-lg sm:text-xl">Pick Your Council Tax Band</CardTitle>
-              <CardDescription className="text-sm sm:text-base">
-                Check your council tax bill to find which band your home is in
-              </CardDescription>
-            </div>
-          </div>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">Pick Your Council Tax Band</CardTitle>
+          <CardDescription>Check your council tax bill to find which band your home is in</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
+          <div className="grid grid-cols-4 lg:grid-cols-8 gap-2">
             {Object.entries(councilTaxData.bands).map(([band, data]) => (
               <Button
                 key={band}
                 variant={selectedBand === band ? "default" : "outline"}
                 onClick={() => setSelectedBand(band)}
-                className="h-auto p-2 sm:p-3 flex flex-col items-center"
+                className="h-auto py-2 px-1 flex flex-col items-center"
               >
-                <div className="font-bold text-sm sm:text-lg">Band {band}</div>
-                <div className="text-xs text-center mt-1 leading-tight">
-                  £{data.amount.toFixed(0)}
-                </div>
+                <span className="font-bold text-sm">Band {band}</span>
+                <span className="text-xs">£{data.amount.toFixed(0)}</span>
               </Button>
             ))}
           </div>
@@ -112,95 +96,62 @@ const CouncilTaxSection = () => {
 
       {/* Selected Band Details */}
       <Card className="border-l-4 border-l-primary">
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Calculator className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg sm:text-xl">Band {selectedBand} - Your Council Tax</CardTitle>
-            </div>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="text-lg">Band {selectedBand} - Your Council Tax</CardTitle>
             {yearChange && (
-              <Badge variant={yearChange.change > 0 ? "destructive" : "default"} className="text-xs w-fit flex items-center gap-1">
+              <Badge variant={yearChange.change > 0 ? "destructive" : "default"} className="text-xs flex items-center gap-1">
                 {yearChange.change > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                 {yearChange.change > 0 ? '+' : ''}{yearChange.percentChange.toFixed(1)}% vs last year
               </Badge>
             )}
           </div>
-          <CardDescription className="text-sm sm:text-base">
-            {councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].description}
-          </CardDescription>
+          <CardDescription>{councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].description}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <div className="text-center p-3 sm:p-4 bg-primary/5 rounded-lg border">
-              <CreditCard className="h-6 w-6 mx-auto mb-2 text-primary" />
-              <div className="text-xl sm:text-2xl font-bold text-primary">
+        <CardContent className="space-y-4">
+          {/* Payment breakdown */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center p-3 bg-primary/5 rounded-xl">
+              <div className="text-xl font-bold text-primary">
                 £{councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount.toFixed(2)}
               </div>
-              <div className="text-xs sm:text-sm text-primary">Annual Charge</div>
+              <div className="text-xs text-muted-foreground mt-1">per year</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-secondary/50 rounded-lg border">
-              <Calendar className="h-6 w-6 mx-auto mb-2 text-secondary-foreground" />
-              <div className="text-xl sm:text-2xl font-bold text-secondary-foreground">
+            <div className="text-center p-3 bg-muted/50 rounded-xl">
+              <div className="text-xl font-bold">
                 £{calculateMonthlyPayment(councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount)}
               </div>
-              <div className="text-xs sm:text-sm text-secondary-foreground">Monthly Payment</div>
+              <div className="text-xs text-muted-foreground mt-1">per month</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-muted rounded-lg border">
-              <Calendar className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-              <div className="text-xl sm:text-2xl font-bold text-muted-foreground">
+            <div className="text-center p-3 bg-muted/50 rounded-xl">
+              <div className="text-xl font-bold">
                 £{calculateWeeklyPayment(councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount)}
               </div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Weekly Cost</div>
+              <div className="text-xs text-muted-foreground mt-1">per week</div>
             </div>
           </div>
 
           {/* Comparison with type average */}
           {typeAverage && (
-            <div className="p-3 sm:p-4 bg-muted rounded-lg mb-4">
-              <h4 className="font-semibold mb-2 text-sm sm:text-base flex items-center gap-2">
-                <Info className="h-4 w-4" />
-                How This Compares:
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
-                <div>
-                  <span className="text-muted-foreground">Average for {selectedCouncil.type_name}s:</span>
-                  <span className="font-medium ml-2">£{typeAverage.toFixed(2)}</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Difference:</span>
-                  <span className={`font-medium ml-2 ${councilTaxData.bandD > typeAverage ? 'text-destructive' : 'text-green-600'}`}>
-                    {councilTaxData.bandD > typeAverage ? '+' : ''}£{(councilTaxData.bandD - typeAverage).toFixed(2)}
-                    ({councilTaxData.bandD > typeAverage ? '+' : ''}{((councilTaxData.bandD - typeAverage) / typeAverage * 100).toFixed(1)}%)
-                  </span>
-                </div>
-              </div>
+            <div className="p-4 bg-muted/30 rounded-xl">
+              <p className="text-sm">
+                <span className="text-muted-foreground">Average for {selectedCouncil.type_name}s: </span>
+                <span className="font-medium">£{typeAverage.toFixed(2)}</span>
+                <span className={`font-medium ml-2 ${councilTaxData.bandD > typeAverage ? 'text-destructive' : 'text-green-600'}`}>
+                  ({councilTaxData.bandD > typeAverage ? '+' : ''}{((councilTaxData.bandD - typeAverage) / typeAverage * 100).toFixed(1)}%)
+                </span>
+              </p>
             </div>
           )}
 
           {/* Historical trend */}
           {(councilTaxData.bandD_2024 || councilTaxData.bandD_2023) && (
-            <div className="p-3 sm:p-4 bg-muted rounded-lg">
-              <h4 className="font-semibold mb-3 text-sm sm:text-base flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Historical Band D Rates:
-              </h4>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span>2025-26</span>
-                  <span className="font-bold">£{councilTaxData.bandD.toFixed(2)}</span>
-                </div>
-                {councilTaxData.bandD_2024 && (
-                  <div className="flex justify-between items-center text-sm text-muted-foreground">
-                    <span>2024-25</span>
-                    <span>£{councilTaxData.bandD_2024.toFixed(2)}</span>
-                  </div>
-                )}
-                {councilTaxData.bandD_2023 && (
-                  <div className="flex justify-between items-center text-sm text-muted-foreground">
-                    <span>2023-24</span>
-                    <span>£{councilTaxData.bandD_2023.toFixed(2)}</span>
-                  </div>
-                )}
+            <div className="p-4 bg-muted/30 rounded-xl">
+              <h4 className="font-medium mb-2 text-sm">Band D History</h4>
+              <div className="flex gap-4 text-sm">
+                <span><strong>2025-26:</strong> £{councilTaxData.bandD.toFixed(2)}</span>
+                {councilTaxData.bandD_2024 && <span className="text-muted-foreground">2024-25: £{councilTaxData.bandD_2024.toFixed(2)}</span>}
+                {councilTaxData.bandD_2023 && <span className="text-muted-foreground">2023-24: £{councilTaxData.bandD_2023.toFixed(2)}</span>}
               </div>
             </div>
           )}
@@ -209,36 +160,24 @@ const CouncilTaxSection = () => {
 
       {/* Band Multipliers */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle className="text-lg sm:text-xl">Council Tax by Band</CardTitle>
-              <CardDescription className="text-sm sm:text-base">
-                How {selectedCouncil.name}&apos;s council tax varies by band
-              </CardDescription>
-            </div>
-          </div>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">All Council Tax Bands</CardTitle>
+          <CardDescription>How {selectedCouncil.name}&apos;s council tax varies by band</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-3">
             {Object.entries(councilTaxData.bands).map(([band, data]) => {
               const isSelected = band === selectedBand;
-              const percentOfD = (data.rate * 100).toFixed(0);
               return (
-                <div key={band} className={`space-y-2 p-2 rounded-lg ${isSelected ? 'bg-primary/10 border border-primary/20' : ''}`}>
-                  <div className="flex justify-between items-center gap-2">
-                    <div className="flex items-center space-x-2 min-w-0">
-                      <span className={`font-medium text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>Band {band}</span>
-                      <Badge variant="outline" className="text-xs shrink-0">{percentOfD}% of Band D</Badge>
+                <div key={band} className={`space-y-1.5 p-2 rounded-lg ${isSelected ? 'bg-primary/10' : ''}`}>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <span className={`font-medium text-sm ${isSelected ? 'text-primary' : ''}`}>Band {band}</span>
+                      <span className="text-xs text-muted-foreground">{(data.rate * 100).toFixed(0)}% of D</span>
                     </div>
-                    <div className="text-right shrink-0">
-                      <div className={`font-medium text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>£{data.amount.toFixed(2)}</div>
-                      <div className="text-xs text-muted-foreground">per year</div>
-                    </div>
+                    <span className={`font-medium text-sm ${isSelected ? 'text-primary' : ''}`}>£{data.amount.toFixed(2)}</span>
                   </div>
-                  <Progress value={data.rate * 50} className="h-2" />
-                  <div className="text-xs sm:text-sm text-muted-foreground">{data.description}</div>
+                  <Progress value={data.rate * 50} className="h-1.5" />
                 </div>
               );
             })}
@@ -246,72 +185,20 @@ const CouncilTaxSection = () => {
         </CardContent>
       </Card>
 
-      {/* Understanding Council Tax */}
-      <Card className="border-l-4 border-l-destructive">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-destructive" />
-            <CardTitle className="text-lg sm:text-xl">How Council Tax Bands Work</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div>
-              <h4 className="font-semibold mb-3 text-sm sm:text-base">What is a band?</h4>
-              <div className="space-y-2">
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>Your band depends on what your home was worth in 1991</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>The government decides which band your home is in</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>Band D is the middle band that everyone uses to compare</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>Bigger houses pay more, smaller homes pay less</span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3 text-sm sm:text-base">How to pay</h4>
-              <div className="space-y-2">
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>You pay in 10 chunks from April to January</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>You can set up automatic payments</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>Some councils give a discount if you pay it all at once</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                  <span>You might pay less if you live alone (25% off!)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-4 p-3 bg-destructive/10 rounded text-xs sm:text-sm flex items-start gap-2">
-            <Lightbulb className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
-            <div>
-              <span className="font-medium">Important:</span> {selectedCouncil.type === 'SD' || selectedCouncil.type === 'SC'
-                ? `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill will also include charges from your county council, police, and fire service.`
-                : selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB'
-                ? `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill will also include the Greater London Authority (GLA) charge.`
-                : `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill may also include police and fire charges.`
-              }
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Important Note */}
+      <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800">
+        <p className="text-sm">
+          <strong>Important:</strong> {selectedCouncil.type === 'SD' || selectedCouncil.type === 'SC'
+            ? `These figures show only the ${selectedCouncil.name} portion. Your total bill also includes county council, police, and fire charges.`
+            : selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB'
+            ? `These figures show only the ${selectedCouncil.name} portion. Your total bill also includes the Greater London Authority (GLA) charge.`
+            : `These figures show only the ${selectedCouncil.name} portion. Your total bill may also include police and fire charges.`
+          }
+        </p>
+        <p className="text-xs text-muted-foreground mt-2">
+          Bands are based on 1991 property values. You pay in 10 monthly instalments from April to January. Single occupants get 25% off.
+        </p>
+      </div>
     </div>
   );
 };
