@@ -141,12 +141,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
           {/* Search Input - Primary focus */}
           <div className="relative shadow-lg rounded-2xl">
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground" />
-            {/* Autocomplete ghost text */}
-            {autocompleteSuggestion && (
-              <div className="absolute left-[3.5rem] top-1/2 transform -translate-y-1/2 text-muted-foreground/30 pointer-events-none text-xl leading-none">
-                {autocompleteSuggestion}
-              </div>
-            )}
             <input
               ref={inputRef}
               type="text"
@@ -159,10 +153,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
             />
           </div>
 
-          {/* Results - Secondary, more subtle */}
+          {/* Results - Fixed height container to prevent layout shift */}
           <div
             ref={listRef}
-            className="max-h-[200px] overflow-y-auto space-y-1 px-1"
+            className="h-[200px] overflow-y-auto space-y-1 px-1"
           >
             {filteredCouncils.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-4">
