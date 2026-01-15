@@ -102,44 +102,46 @@ export default function CouncilDashboard() {
           </Alert>
 
           <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-4 sm:mb-6 h-auto p-1">
-              <TabsTrigger
-                value="overview"
-                className="text-xs sm:text-sm px-1 py-2 sm:px-3 sm:py-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                Overview
-              </TabsTrigger>
-              <TabsTrigger
-                value="council-tax"
-                className="text-xs sm:text-sm px-1 py-2 sm:px-3 sm:py-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                Council Tax
-              </TabsTrigger>
-              <TabsTrigger
-                value="services"
-                className="text-xs sm:text-sm px-1 py-2 sm:px-3 sm:py-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                Services
-              </TabsTrigger>
-              <TabsTrigger
-                value="revenue"
-                className="text-xs sm:text-sm px-1 py-2 sm:px-3 sm:py-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                Revenue
-              </TabsTrigger>
-              <TabsTrigger
-                value="performance"
-                className="text-xs sm:text-sm px-1 py-2 sm:px-3 sm:py-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                Performance
-              </TabsTrigger>
-              <TabsTrigger
-                value="comparison"
-                className="text-xs sm:text-sm px-1 py-2 sm:px-3 sm:py-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                Compare
-              </TabsTrigger>
-            </TabsList>
+            <div className="mb-5 sm:mb-6 -mx-3 px-3 sm:mx-0 sm:px-0">
+              <TabsList className="inline-flex w-full sm:w-auto h-auto p-1 sm:p-1.5 gap-0.5 sm:gap-1 bg-muted/50 rounded-xl overflow-x-auto scrollbar-hide">
+                <TabsTrigger
+                  value="overview"
+                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger
+                  value="council-tax"
+                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  Council Tax
+                </TabsTrigger>
+                <TabsTrigger
+                  value="services"
+                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  Services
+                </TabsTrigger>
+                <TabsTrigger
+                  value="revenue"
+                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  Revenue
+                </TabsTrigger>
+                <TabsTrigger
+                  value="performance"
+                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  Performance
+                </TabsTrigger>
+                <TabsTrigger
+                  value="comparison"
+                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  Compare
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             <div className="space-y-4 sm:space-y-6">
               <TabsContent value="overview" className="mt-0 space-y-4 sm:space-y-6">
