@@ -61,9 +61,9 @@ export default function DataSourcesFooter() {
       sources: [
         {
           title: "Council Tax Levels 2025-26",
-          description: `Official Band D rate for ${councilName}: £${selectedCouncil.council_tax?.band_d_2025.toFixed(2) || 'N/A'}`,
+          description: `Band D for ${councilName}: £${selectedCouncil.council_tax?.band_d_2025.toFixed(2) || 'N/A'} (council portion only)`,
           url: "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
-          lastUpdated: "March 2025",
+          lastUpdated: "April 2025",
           dataType: "ODS Spreadsheet"
         },
         {

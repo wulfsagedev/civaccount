@@ -182,11 +182,9 @@ const BudgetOverview = () => {
     {
       title: "Band D Council Tax",
       value: councilTax ? `£${councilTax.band_d_2025.toFixed(2)}` : 'N/A',
-      description: "Yearly bill for a medium-sized home",
-      explanation: councilTax?.band_d_2024
-        ? `Was £${councilTax.band_d_2024.toFixed(2)} last year`
-        : "Band D is used as the standard for comparing councils",
-      badge: "Council Tax",
+      description: `${selectedCouncil.name} portion only`,
+      explanation: "This is only what you pay to this council. Your total bill includes other charges too.",
+      badge: "Council Only",
       icon: Users,
       color: "text-primary"
     }
