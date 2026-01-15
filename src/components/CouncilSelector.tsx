@@ -143,7 +143,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground" />
             {/* Autocomplete ghost text */}
             {autocompleteSuggestion && (
-              <div className="absolute left-14 top-1/2 transform -translate-y-1/2 text-muted-foreground/30 pointer-events-none text-xl">
+              <div className="absolute left-[3.5rem] top-1/2 transform -translate-y-1/2 text-muted-foreground/30 pointer-events-none text-xl leading-none">
                 {autocompleteSuggestion}
               </div>
             )}
@@ -154,7 +154,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full pl-14 pr-6 py-5 text-xl bg-background border-2 border-muted rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
+              className="w-full pl-14 pr-6 py-5 text-xl bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
               autoFocus
             />
           </div>
@@ -179,20 +179,20 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
                     onClick={() => handleSelect(council)}
                     className={`w-full p-3 text-left rounded-xl transition-all ${
                       isHighlighted
-                        ? 'bg-primary text-primary-foreground shadow-md'
+                        ? 'bg-muted-foreground/15 shadow-sm'
                         : 'hover:bg-muted/70'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
-                        <p className={`font-medium text-sm truncate ${isHighlighted ? '' : 'text-foreground'}`}>
+                        <p className="font-medium text-sm truncate text-foreground">
                           {displayName}
                         </p>
-                        <p className={`text-xs mt-0.5 ${isHighlighted ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+                        <p className="text-xs mt-0.5 text-muted-foreground">
                           {council.type_name}
                         </p>
                       </div>
-                      <div className={`text-right shrink-0 text-xs ${isHighlighted ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+                      <div className="text-right shrink-0 text-xs text-muted-foreground">
                         {council.council_tax && (
                           <p>£{council.council_tax.band_d_2025.toFixed(0)}/yr</p>
                         )}
