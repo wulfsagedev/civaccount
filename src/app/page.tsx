@@ -92,9 +92,11 @@ export default function CouncilDashboard() {
           <Alert className="mb-4 sm:mb-6 p-3 sm:p-4">
             <AlertDescription className="text-sm leading-relaxed">
               {selectedCouncil.type === 'SC' || selectedCouncil.type === 'SD' ? (
-                <>These figures show only what {selectedCouncil.name} spends. Your total council tax bill may include money for other councils too.</>
+                <>The council tax shown is only the {selectedCouncil.name} portion. Your total bill also includes charges from your county council, police, and fire service.</>
+              ) : selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB' ? (
+                <>The council tax shown is only the {selectedCouncil.name} portion. Your total bill also includes the Greater London Authority (GLA) charge.</>
               ) : (
-                <>These figures show what {selectedCouncil.name} spends. Data comes from official UK government sources.</>
+                <>The council tax shown is only the {selectedCouncil.name} portion. Your total bill may also include police and fire charges.</>
               )}
             </AlertDescription>
           </Alert>
