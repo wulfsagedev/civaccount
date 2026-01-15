@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, FileText, Building, BarChart3, Shield, Info } from 'lucide-react';
+import { ExternalLink, FileText, Building, BarChart3, Shield, Info, CheckCircle2, Globe } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
 
@@ -51,13 +51,59 @@ export default function DataSourcesFooter() {
   }
 
   const councilName = getCouncilDisplayName(selectedCouncil);
+  const hasDetailedData = selectedCouncil.detailed && selectedCouncil.detailed.sources && selectedCouncil.detailed.sources.length > 0;
 
-  // Council-specific data sources
-  const councilDataSources = [
+  // Council-specific data sources - prioritize council's own website if detailed data available
+  const councilDataSources = hasDetailedData ? [
+    {
+      category: "Official Council Sources",
+      icon: <Globe className="h-4 w-4" />,
+      description: `Data directly from ${councilName}'s website`,
+      isVerified: true,
+      sources: selectedCouncil.detailed!.sources!.map(source => ({
+        title: source.title,
+        description: source.description || '',
+        url: source.url,
+        lastUpdated: selectedCouncil.detailed?.last_verified || '2025',
+        dataType: "Council Website"
+      }))
+    },
+    {
+      category: "Government Data",
+      icon: <FileText className="h-4 w-4" />,
+      description: "Supplementary data from GOV.UK",
+      isVerified: false,
+      sources: [
+        {
+          title: "Council Tax Levels 2025-26",
+          description: "National council tax statistics",
+          url: "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
+          lastUpdated: "April 2025",
+          dataType: "ODS Spreadsheet"
+        }
+      ]
+    },
+    {
+      category: "Council Information",
+      icon: <Building className="h-4 w-4" />,
+      description: `Official records for ${councilName}`,
+      isVerified: false,
+      sources: [
+        {
+          title: "ONS Council Code",
+          description: `${councilName} is registered as ${selectedCouncil.ons_code}`,
+          url: "https://geoportal.statistics.gov.uk/",
+          lastUpdated: "2024",
+          dataType: "Geographic Data"
+        }
+      ]
+    }
+  ] : [
     {
       category: "Council Tax Data",
       icon: <FileText className="h-4 w-4" />,
       description: `Where we got ${councilName}'s council tax figures`,
+      isVerified: false,
       sources: [
         {
           title: "Council Tax Levels 2025-26",
@@ -79,6 +125,7 @@ export default function DataSourcesFooter() {
       category: "Budget & Spending Data",
       icon: <BarChart3 className="h-4 w-4" />,
       description: `Where we got ${councilName}'s budget breakdown`,
+      isVerified: false,
       sources: selectedCouncil.budget ? [
         {
           title: "Revenue Expenditure & Financing 2024-25",
@@ -108,6 +155,7 @@ export default function DataSourcesFooter() {
       category: "Council Information",
       icon: <Building className="h-4 w-4" />,
       description: `Official records for ${councilName}`,
+      isVerified: false,
       sources: [
         {
           title: "ONS Council Code",
@@ -152,12 +200,22 @@ export default function DataSourcesFooter() {
 
           {/* Header - Council Specific */}
           <div className="text-center space-y-2">
-            <h2 className="text-lg sm:text-2xl font-semibold">
-              Where {councilName}&apos;s Data Comes From
-            </h2>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-lg sm:text-2xl font-semibold">
+                Where {councilName}&apos;s Data Comes From
+              </h2>
+              {hasDetailedData && (
+                <Badge variant="secondary" className="text-[10px] sm:text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
+                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                  Verified
+                </Badge>
+              )}
+            </div>
             <p className="text-xs sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              All the numbers you see come from official government websites.
-              You can click the links below to see the original documents yourself.
+              {hasDetailedData
+                ? `Data sourced directly from ${councilName}'s official website and verified for accuracy.`
+                : "All the numbers you see come from official government websites. You can click the links below to see the original documents yourself."
+              }
             </p>
           </div>
 
@@ -188,12 +246,19 @@ export default function DataSourcesFooter() {
           {/* Data Sources Grid */}
           <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
             {councilDataSources.map((category, index) => (
-              <Card key={index} className="h-full border border-border/40 bg-card shadow-sm">
+              <Card key={index} className={`h-full border shadow-sm ${category.isVerified ? 'border-green-300 dark:border-green-700 bg-green-50/30 dark:bg-green-950/20' : 'border-border/40 bg-card'}`}>
                 <CardHeader className="p-4 sm:p-5 pb-3">
-                  <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-semibold">
-                    <span className="opacity-70">{category.icon}</span>
-                    {category.category}
-                  </CardTitle>
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                      <span className={category.isVerified ? 'text-green-600 dark:text-green-400' : 'opacity-70'}>{category.icon}</span>
+                      {category.category}
+                    </CardTitle>
+                    {category.isVerified && (
+                      <Badge variant="secondary" className="text-[9px] sm:text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shrink-0">
+                        Direct Source
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">{category.description}</p>
                 </CardHeader>
                 <CardContent className="px-4 pb-4 sm:px-5 sm:pb-5">
