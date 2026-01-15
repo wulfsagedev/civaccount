@@ -3,9 +3,8 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Users, Shield, GraduationCap, Car, Heart, Building, Settings, TrendingUp, AlertCircle, CheckCircle, Info, Home, Trash2, MapPin } from "lucide-react";
+import { Users, Shield, GraduationCap, Car, Heart, Building, Settings, Home, Trash2, MapPin } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget } from '@/data/councils';
 
@@ -114,24 +113,17 @@ const ServiceSpending = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card>
-        <CardContent className="p-6 text-center">
-          <p className="text-muted-foreground">Please select a council to view service spending.</p>
-        </CardContent>
-      </Card>
+      <div className="p-6 bg-muted/50 rounded-xl text-center">
+        <p className="text-muted-foreground">Please select a council to view service spending.</p>
+      </div>
     );
   }
 
   if (services.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Info className="h-5 w-5" />
-            <p>Service spending data not available for {selectedCouncil.name}.</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="p-6 bg-muted/50 rounded-xl text-center">
+        <p className="text-muted-foreground">Service spending data not available for {selectedCouncil.name}.</p>
+      </div>
     );
   }
 
@@ -143,19 +135,12 @@ const ServiceSpending = () => {
     <div className="space-y-4 sm:space-y-6">
       {/* Service Selector */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Settings className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle className="text-lg sm:text-xl">Explore {selectedCouncil.name} Services</CardTitle>
-              <CardDescription className="text-sm sm:text-base">
-                Click on any service to see detailed spending information
-              </CardDescription>
-            </div>
-          </div>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">Explore {selectedCouncil.name} Services</CardTitle>
+          <CardDescription>Click on any service to see details</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
             {services.map((service) => {
               const ServiceIcon = service.icon;
               return (
@@ -163,15 +148,15 @@ const ServiceSpending = () => {
                   key={service.key}
                   variant={selectedService === service.key ? "default" : "outline"}
                   onClick={() => setSelectedService(service.key)}
-                  className="h-auto p-3 sm:p-4 flex flex-col items-start text-left gap-2"
+                  className="h-auto p-3 flex flex-col items-start text-left gap-1"
                 >
                   <div className="flex items-center gap-2 w-full">
                     <ServiceIcon className="h-4 w-4 shrink-0" />
-                    <div className="font-semibold text-sm sm:text-base truncate">{service.name}</div>
+                    <span className="font-medium text-sm truncate">{service.name}</span>
                   </div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">
-                    {formatBudget(service.amount / 1000)} ({service.percentage.toFixed(1)}%)
-                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {formatBudget(service.amount / 1000)} ({service.percentage.toFixed(0)}%)
+                  </span>
                 </Button>
               );
             })}
@@ -181,138 +166,95 @@ const ServiceSpending = () => {
 
       {/* Selected Service Details */}
       <Card className="border-l-4 border-l-primary">
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <currentService.icon className="h-6 w-6 text-primary" />
-              <CardTitle className="text-xl sm:text-2xl">{currentService.name}</CardTitle>
+              <currentService.icon className="h-5 w-5 text-primary" />
+              <CardTitle className="text-lg">{currentService.name}</CardTitle>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="default" className="text-xs">{currentService.percentage.toFixed(1)}% of budget</Badge>
-            </div>
+            <Badge variant="default" className="text-xs">{currentService.percentage.toFixed(0)}%</Badge>
           </div>
-          <CardDescription className="text-sm sm:text-base">{currentService.description}</CardDescription>
+          <CardDescription>{currentService.description}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           {/* Key Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <div className="text-center p-3 sm:p-4 bg-primary/5 rounded-lg border">
-              <div className="text-xl sm:text-2xl font-bold text-primary">
-                {formatBudget(currentService.amount / 1000)}
-              </div>
-              <div className="text-xs sm:text-sm text-primary">Annual Budget</div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center p-3 bg-primary/5 rounded-xl">
+              <div className="text-xl font-bold text-primary">{formatBudget(currentService.amount / 1000)}</div>
+              <div className="text-xs text-muted-foreground mt-1">per year</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-secondary/50 rounded-lg border">
-              <div className="text-xl sm:text-2xl font-bold text-secondary-foreground">
-                £{Math.round(dailyCost).toLocaleString()}
-              </div>
-              <div className="text-xs sm:text-sm text-secondary-foreground">Daily Cost</div>
+            <div className="text-center p-3 bg-muted/50 rounded-xl">
+              <div className="text-xl font-bold">£{Math.round(dailyCost).toLocaleString()}</div>
+              <div className="text-xs text-muted-foreground mt-1">per day</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-muted rounded-lg border">
-              <div className="text-xl sm:text-2xl font-bold text-muted-foreground">
-                {currentService.percentage.toFixed(1)}%
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground">Share of Total</div>
+            <div className="text-center p-3 bg-muted/50 rounded-xl">
+              <div className="text-xl font-bold">{currentService.percentage.toFixed(0)}%</div>
+              <div className="text-xs text-muted-foreground mt-1">of budget</div>
             </div>
           </div>
 
-          {/* Service explanation based on council type */}
-          <div className="p-4 bg-muted rounded-lg mb-4">
-            <h4 className="font-semibold mb-2 flex items-center gap-2">
-              <Info className="h-4 w-4" />
-              What does this service do?
-            </h4>
+          {/* Service explanation */}
+          <div className="p-4 bg-muted/30 rounded-xl">
+            <h4 className="font-medium mb-2 text-sm">What does this pay for?</h4>
             <p className="text-sm text-muted-foreground">
               {currentService.key === 'adult_social_care' &&
-                'This pays for care homes, people who visit your home to help, and support for people with disabilities or mental health needs.'}
+                'Care homes, home visits, and support for people with disabilities or mental health needs.'}
               {currentService.key === 'childrens_social_care' &&
-                "This helps keep children safe. It pays for foster families, adoption, and workers who help families in trouble."}
+                "Foster families, adoption, and workers who help families in trouble."}
               {currentService.key === 'education' &&
-                'This pays for school buses, help for children who need extra support to learn, and some adult classes.'}
+                'School buses, help for children with extra needs, and adult classes.'}
               {currentService.key === 'transport' &&
-                'This fixes roads, fills potholes, clears snow in winter, keeps street lights working, and helps run buses.'}
+                'Road repairs, potholes, snow clearing, street lights, and buses.'}
               {currentService.key === 'public_health' &&
-                'This helps stop people getting ill. It pays for health check-ups, help to stop smoking, and drug and alcohol support.'}
+                'Health check-ups, help to stop smoking, and drug and alcohol support.'}
               {currentService.key === 'housing' &&
-                'This helps people who have nowhere to live, and makes plans for building new homes.'}
+                'Help for homeless people and plans for building new homes.'}
               {currentService.key === 'cultural' &&
-                'This keeps libraries and museums open, runs sports centres, and puts on events in your area.'}
+                'Libraries, museums, sports centres, and community events.'}
               {currentService.key === 'environmental' &&
-                'This collects your bins, runs recycling, cleans the streets, and checks food places are clean.'}
+                'Bin collection, recycling, street cleaning, and food hygiene checks.'}
               {currentService.key === 'planning' &&
-                'This decides if people can build new houses or shops, and helps bring new businesses to the area.'}
+                'Building permits and bringing new businesses to the area.'}
               {currentService.key === 'central_services' &&
-                'This pays for council meetings, staff who answer your questions, and collecting council tax.'}
-            </p>
-          </div>
-
-          {/* Context based on council type */}
-          <div className="p-3 sm:p-4 bg-primary/10 rounded-lg border border-primary/20">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="h-4 w-4 text-primary" />
-              <h4 className="font-semibold text-primary text-sm sm:text-base">What kind of council is this?</h4>
-            </div>
-            <p className="text-xs sm:text-sm text-primary/80">
-              {selectedCouncil.type === 'SC' &&
-                'County councils look after the big stuff - like social care, schools, and main roads - for the whole county.'}
-              {selectedCouncil.type === 'SD' &&
-                'District councils look after local things - like housing, planning, bins, and keeping streets clean.'}
-              {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') &&
-                'This council does everything! From social care to bins - all in one place.'}
+                'Council meetings, customer service, and collecting council tax.'}
             </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Service Comparison */}
+      {/* Service Comparison - Simplified */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle className="text-lg sm:text-xl">Service Spending Comparison</CardTitle>
-              <CardDescription className="text-sm sm:text-base">
-                How {selectedCouncil.name}&apos;s budget is distributed across services
-              </CardDescription>
-            </div>
-          </div>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">All Services</CardTitle>
+          <CardDescription>How {selectedCouncil.name}&apos;s budget is distributed</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {services.map((service, index) => {
               const ServiceIcon = service.icon;
               const isSelected = service.key === selectedService;
               return (
                 <div
                   key={service.key}
-                  className={`flex items-center justify-between p-3 border rounded-lg gap-3 cursor-pointer transition-colors ${isSelected ? 'bg-primary/10 border-primary/30' : 'hover:bg-muted'}`}
+                  className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-muted/50'}`}
                   onClick={() => setSelectedService(service.key)}
                 >
-                  <div className="flex items-center space-x-3 min-w-0">
-                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-                      {index + 1}
-                    </div>
-                    <ServiceIcon className={`h-4 w-4 shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <div className="min-w-0">
-                      <div className={`font-medium text-sm sm:text-base truncate ${isSelected ? 'text-primary' : ''}`}>{service.name}</div>
-                      <div className="text-xs sm:text-sm text-muted-foreground truncate">
-                        {service.description}
-                      </div>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground w-4">{index + 1}</span>
+                    <ServiceIcon className={`h-4 w-4 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <span className={`text-sm ${isSelected ? 'font-medium text-primary' : ''}`}>{service.name}</span>
                   </div>
-                  <div className="text-right shrink-0">
-                    <div className={`font-bold text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">{service.percentage.toFixed(1)}%</div>
+                  <div className="text-right">
+                    <span className={`font-medium text-sm ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</span>
+                    <span className="text-xs text-muted-foreground ml-2">{service.percentage.toFixed(0)}%</span>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* Total */}
           <div className="mt-4 pt-4 border-t flex justify-between items-center">
-            <span className="font-semibold">Total Service Expenditure</span>
-            <span className="font-bold text-lg">{formatBudget(totalBudget / 1000)}</span>
+            <span className="font-medium text-sm">Total</span>
+            <span className="font-bold">{formatBudget(totalBudget / 1000)}</span>
           </div>
         </CardContent>
       </Card>
