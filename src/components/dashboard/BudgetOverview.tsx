@@ -195,7 +195,7 @@ const BudgetOverview = () => {
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {keyMetrics.map((metric, index) => (
-          <Card key={index} className="relative overflow-hidden border-0 bg-card/50 shadow-sm">
+          <Card key={index} className="relative overflow-hidden border border-border/40 bg-card shadow-sm">
             <CardHeader className="pb-2 space-y-2 p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">{metric.badge}</Badge>
@@ -205,7 +205,7 @@ const BudgetOverview = () => {
               <CardDescription className="text-xs sm:text-sm leading-relaxed">{metric.description}</CardDescription>
             </CardHeader>
             <CardContent className="pt-0 px-4 pb-4 sm:px-6 sm:pb-6">
-              <div className="text-xs bg-muted/50 p-2.5 sm:p-3 rounded-lg flex items-start gap-2">
+              <div className="text-xs bg-muted/30 p-2.5 sm:p-3 rounded-lg flex items-start gap-2">
                 <Lightbulb className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground" />
                 <div className="leading-relaxed">
                   <span className="font-medium">Note:</span> {metric.explanation}
@@ -218,7 +218,7 @@ const BudgetOverview = () => {
 
       {/* Budget Breakdown */}
       {budgetBreakdown.length > 0 ? (
-        <Card className="border-0 bg-card/50 shadow-sm">
+        <Card className="border border-border/40 bg-card shadow-sm">
           <CardHeader className="p-4 sm:p-6 pb-4">
             <CardTitle className="text-lg sm:text-xl font-semibold">Where Your Money Goes</CardTitle>
             <CardDescription className="text-sm sm:text-base leading-relaxed">
@@ -257,7 +257,7 @@ const BudgetOverview = () => {
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-0 bg-card/50 shadow-sm">
+        <Card className="border border-border/40 bg-card shadow-sm">
           <CardContent className="p-5 sm:p-6">
             <div className="flex items-center gap-3 text-muted-foreground">
               <Info className="h-5 w-5" />
@@ -268,7 +268,7 @@ const BudgetOverview = () => {
       )}
 
       {/* Context Box */}
-      <Card className="border-0 border-l-4 border-l-primary bg-primary/5 shadow-sm">
+      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
         <CardHeader className="p-4 sm:p-6 pb-3">
           <div className="flex items-center gap-2.5">
             <AlertTriangle className="h-5 w-5 text-primary" />

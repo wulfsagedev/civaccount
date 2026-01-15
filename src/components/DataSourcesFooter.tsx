@@ -188,7 +188,7 @@ export default function DataSourcesFooter() {
           {/* Data Sources Grid */}
           <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
             {councilDataSources.map((category, index) => (
-              <Card key={index} className="h-full border-0 bg-card/50 shadow-sm">
+              <Card key={index} className="h-full border border-border/40 bg-card shadow-sm">
                 <CardHeader className="p-4 sm:p-5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-semibold">
                     <span className="opacity-70">{category.icon}</span>
@@ -234,7 +234,7 @@ export default function DataSourcesFooter() {
           </div>
 
           {/* How We Used The Data */}
-          <Card className="border-0 bg-card/50 shadow-sm">
+          <Card className="border border-border/40 bg-card shadow-sm">
             <CardHeader className="p-4 sm:p-6 pb-4">
               <CardTitle className="flex items-center gap-2.5 text-base sm:text-lg font-semibold">
                 <Shield className="h-5 w-5 opacity-70" />
@@ -256,7 +256,7 @@ export default function DataSourcesFooter() {
           </Card>
 
           {/* Helpful tip */}
-          <Card className="border-0 bg-primary/5 shadow-sm">
+          <Card className="border border-border/40 bg-muted/30 shadow-sm">
             <CardContent className="p-4 sm:p-5">
               <div className="flex items-start gap-3">
                 <Info className="h-5 w-5 shrink-0 mt-0.5 text-primary opacity-70" />
