@@ -86,7 +86,7 @@ const CouncilTaxSection = () => {
             <div>
               <CardTitle className="text-lg sm:text-xl">Pick Your Council Tax Band</CardTitle>
               <CardDescription className="text-sm sm:text-base">
-                Check your council tax letter to find which band your home is in
+                Check your council tax bill to find which band your home is in
               </CardDescription>
             </div>
           </div>
@@ -302,9 +302,11 @@ const CouncilTaxSection = () => {
           <div className="mt-4 p-3 bg-destructive/10 rounded text-xs sm:text-sm flex items-start gap-2">
             <Lightbulb className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
             <div>
-              <span className="font-medium">Good to know:</span> {selectedCouncil.type === 'SD' || selectedCouncil.type === 'SC'
-                ? `This is just what you pay to ${selectedCouncil.name}. Your total bill might include money for other councils too.`
-                : `This is the full council tax you pay to ${selectedCouncil.name}.`
+              <span className="font-medium">Important:</span> {selectedCouncil.type === 'SD' || selectedCouncil.type === 'SC'
+                ? `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill will also include charges from your county council, police, and fire service.`
+                : selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB'
+                ? `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill will also include the Greater London Authority (GLA) charge.`
+                : `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill may also include police and fire charges.`
               }
             </div>
           </div>

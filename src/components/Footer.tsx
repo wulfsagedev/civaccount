@@ -33,7 +33,7 @@ export default function Footer() {
           {/* Disclaimer - Simple black/white */}
           <div className="text-center text-xs text-muted-foreground border-t pt-4">
             <p className="mb-1">
-              This is not an official government website. CivAccount uses publicly available UK government data.
+              This is not an official government website. Council tax figures shown are for each council only - your total bill includes other charges.
             </p>
           </div>
 

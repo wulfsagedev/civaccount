@@ -153,14 +153,21 @@ export default function AboutPage() {
             </CardContent>
           </Card>
 
-          {/* Important Note */}
+          {/* Important Notes */}
           <Card className="border-dashed">
-            <CardContent className="p-6">
-              <p className="text-sm text-muted-foreground text-center">
-                CivAccount is an independent project and is not affiliated with any government body.
-                We simply present publicly available data in a more accessible format.
-                For official information, always refer to your council&apos;s website or gov.uk.
-              </p>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <p className="text-sm font-medium mb-1">About the council tax figures</p>
+                <p className="text-sm text-muted-foreground">
+                  The council tax amounts shown are for each council only. Your total bill will also include charges from police, fire services, and other bodies. This helps you see exactly what each council charges.
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium mb-1">About this website</p>
+                <p className="text-sm text-muted-foreground">
+                  CivAccount is not part of any council or government body. We take public data and make it easier to read. For official information, check your council&apos;s website or gov.uk.
+                </p>
+              </div>
             </CardContent>
           </Card>
 

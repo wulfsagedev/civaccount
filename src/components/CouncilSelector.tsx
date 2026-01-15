@@ -109,7 +109,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
                   <div className="flex items-center gap-2 mt-1">
                     {selectedCouncil.council_tax && (
                       <span className="text-sm text-primary/80">
-                        Council tax (Band D): £{selectedCouncil.council_tax.band_d_2025.toFixed(2)}/year
+                        Band D: £{selectedCouncil.council_tax.band_d_2025.toFixed(2)}/year (council portion only)
                       </span>
                     )}
                   </div>
