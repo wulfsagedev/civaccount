@@ -72,7 +72,7 @@ const BandComparison = () => {
   const historicalData = useMemo(() => {
     if (!selectedCouncil?.council_tax) return [];
 
-    const data = [];
+    const data: { year: string; bandD: number }[] = [];
     const ct = selectedCouncil.council_tax;
 
     if (ct.band_d_2023) {

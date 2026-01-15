@@ -82,7 +82,7 @@ export default function DataSourcesFooter() {
       sources: selectedCouncil.budget ? [
         {
           title: "Revenue Expenditure & Financing 2024-25",
-          description: `Total service budget for ${councilName}: £${(selectedCouncil.budget.total_service / 1000).toFixed(1)}m`,
+          description: `Total service budget for ${councilName}: £${((selectedCouncil.budget.total_service ?? 0) / 1000).toFixed(1)}m`,
           url: "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
           lastUpdated: "2024-25",
           dataType: "ODS Spreadsheet"
@@ -136,7 +136,7 @@ export default function DataSourcesFooter() {
     {
       title: "Budget Estimates",
       description: selectedCouncil.budget
-        ? `Budget figures are from official government data for 2024-25. ${councilName}'s total service budget is £${(selectedCouncil.budget.total_service / 1000).toFixed(1)} million.`
+        ? `Budget figures are from official government data for 2024-25. ${councilName}'s total service budget is £${((selectedCouncil.budget.total_service ?? 0) / 1000).toFixed(1)} million.`
         : `Budget breakdown not available for ${selectedCouncil.type_name}s in the source data.`
     },
     {
