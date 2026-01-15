@@ -24,6 +24,49 @@ export interface CouncilTax {
   band_d_2023: number | null;
 }
 
+// Enhanced detailed data from individual council sources
+export interface PreceptBreakdown {
+  authority: string;
+  band_d: number;
+  description?: string;
+}
+
+export interface ServiceDetail {
+  name: string;
+  description: string;
+}
+
+export interface DataSource {
+  title: string;
+  url: string;
+  description?: string;
+}
+
+export interface DetailedCouncilData {
+  // Council tax breakdown by precepting authority
+  precepts?: PreceptBreakdown[];
+  total_band_d?: number; // Total Band D including all precepts
+
+  // Budget details from council website
+  operating_budget?: number; // In pounds
+  capital_programme?: number; // In pounds
+  council_tax_increase_percent?: number;
+
+  // Services this council provides
+  services?: ServiceDetail[];
+
+  // Official data sources
+  sources?: DataSource[];
+
+  // Council website
+  website?: string;
+  council_tax_url?: string;
+  budget_url?: string;
+
+  // When this detailed data was last verified
+  last_verified?: string;
+}
+
 export interface Council {
   ons_code: string;
   name: string;
@@ -33,6 +76,8 @@ export interface Council {
   population?: number;
   council_tax?: CouncilTax;
   budget?: CouncilBudget;
+  // Optional detailed data from council's own website
+  detailed?: DetailedCouncilData;
 }
 
 export type CouncilType = 'SC' | 'SD' | 'UA' | 'MD' | 'LB' | 'OLB' | 'ILB';
@@ -2602,9 +2647,9 @@ export const councils: Council[] = [
     type: "SD",
     type_name: "District Council",
     council_tax: {
-      band_d_2025: 381.0,
-      band_d_2024: 370.0,
-      band_d_2023: 357.0,
+      band_d_2025: 288.45, // Updated from council website - district portion only
+      band_d_2024: 280.07,
+      band_d_2023: 271.92,
     },
     budget: {
       education: 0.0,
@@ -2620,6 +2665,58 @@ export const councils: Council[] = [
       other: 508.0,
       total_service: 21269.0,
       net_current: 46095.0,
+    },
+    detailed: {
+      // Council tax breakdown by precepting authority (Band D)
+      precepts: [
+        { authority: "Folkestone & Hythe District Council", band_d: 288.45, description: "Local services including waste, parks, planning" },
+        { authority: "Kent County Council", band_d: 1691.19, description: "Schools, social care, roads, libraries" },
+        { authority: "Kent Police and Crime Commissioner", band_d: 270.15, description: "Policing across Kent" },
+        { authority: "Kent and Medway Fire and Rescue", band_d: 94.86, description: "Fire and rescue services" },
+      ],
+      total_band_d: 2344.65, // Base total before parish precept
+
+      // Budget from council website
+      operating_budget: 19500000, // £19.5m
+      capital_programme: 122272000, // £122.272m (5-year)
+      council_tax_increase_percent: 2.99,
+
+      // Services provided by this district council
+      services: [
+        { name: "Waste & Recycling", description: "Household waste and recycling collection" },
+        { name: "Parks & Open Spaces", description: "Maintaining parks, play areas, and green spaces" },
+        { name: "Street Cleansing", description: "Keeping streets and public areas clean" },
+        { name: "Environmental Health", description: "Food safety, pollution control, pest control" },
+        { name: "Housing Benefits", description: "Administering housing benefit claims" },
+        { name: "Planning", description: "Development control and local planning" },
+        { name: "Coast Protection", description: "Beach management and coastal defences" },
+      ],
+
+      // Official data sources
+      sources: [
+        {
+          title: "Council Tax Financial Information 2025-26",
+          url: "https://www.folkestone-hythe.gov.uk/council-tax/council-tax-financial-information-2025-2026/2",
+          description: "Official Band D breakdown by precepting authority"
+        },
+        {
+          title: "Budget 2025-26 News",
+          url: "https://www.folkestone-hythe.gov.uk/news/article/317/on-the-right-track-with-2025-26-budget",
+          description: "Council budget announcement and service spending"
+        },
+        {
+          title: "Financial Strategy",
+          url: "https://www.folkestone-hythe.gov.uk/finances-audit/financial-strategy",
+          description: "Medium term financial strategy documents"
+        },
+      ],
+
+      // Council website links
+      website: "https://www.folkestone-hythe.gov.uk",
+      council_tax_url: "https://www.folkestone-hythe.gov.uk/council-tax",
+      budget_url: "https://www.folkestone-hythe.gov.uk/finances-audit/financial-strategy",
+
+      last_verified: "2025-01-15",
     },
   },
   {
