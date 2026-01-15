@@ -72,7 +72,7 @@ const ServiceSpending = () => {
     if (!selectedCouncil?.budget?.total_service) return [];
 
     const budget = selectedCouncil.budget;
-    const total = budget.total_service;
+    const total = budget.total_service ?? 0;
     const result: Array<{
       key: string;
       name: string;
