@@ -1,48 +1,29 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, FileText, Building, BarChart3, Shield, Info } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
 
 export default function DataSourcesFooter() {
   const { selectedCouncil } = useCouncil();
 
-  // If no council selected, show generic footer
+  // If no council selected, show simple footer
   if (!selectedCouncil) {
     return (
       <footer className="bg-muted/30 border-t mt-12">
-        <div className="container mx-auto px-3 py-8 sm:px-6 sm:py-12 max-w-7xl">
-          <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-xl sm:text-2xl font-bold">Data Sources</h2>
-              <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto">
-                Select a council to see where their data comes from.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-              <div className="text-center p-3 bg-muted rounded-lg">
-                <div className="text-2xl font-bold text-primary">{councilStats.totalCouncils}</div>
-                <div className="text-xs text-muted-foreground">Councils Available</div>
-              </div>
-              <div className="text-center p-3 bg-muted rounded-lg">
-                <div className="text-2xl font-bold text-primary">{councilStats.withCouncilTax}</div>
-                <div className="text-xs text-muted-foreground">With Tax Data</div>
-              </div>
-              <div className="text-center p-3 bg-muted rounded-lg">
-                <div className="text-2xl font-bold text-primary">{councilStats.withBudget}</div>
-                <div className="text-xs text-muted-foreground">With Budget Data</div>
-              </div>
-              <div className="text-center p-3 bg-muted rounded-lg">
-                <div className="text-2xl font-bold text-primary">2025-26</div>
-                <div className="text-xs text-muted-foreground">Data Year</div>
-              </div>
-            </div>
-
-            <div className="text-center text-xs text-muted-foreground border-t pt-4">
-              <p>All data comes from official UK government sources</p>
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <div className="text-center space-y-4">
+            <h2 className="text-lg font-semibold">Data Sources</h2>
+            <p className="text-sm text-muted-foreground">
+              Data for {councilStats.totalCouncils} councils from official UK government sources (2025-26).
+            </p>
+            <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+              <a href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026" target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-1">
+                Council Tax Data <ExternalLink className="h-3 w-3" />
+              </a>
+              <a href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing" target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-1">
+                Budget Data <ExternalLink className="h-3 w-3" />
+              </a>
             </div>
           </div>
         </div>
@@ -52,252 +33,55 @@ export default function DataSourcesFooter() {
 
   const councilName = getCouncilDisplayName(selectedCouncil);
 
-  // Council-specific data sources
-  const councilDataSources = [
-    {
-      category: "Council Tax Data",
-      icon: <FileText className="h-4 w-4" />,
-      description: `Where we got ${councilName}'s council tax figures`,
-      sources: [
-        {
-          title: "Council Tax Levels 2025-26",
-          description: `Band D for ${councilName}: £${selectedCouncil.council_tax?.band_d_2025.toFixed(2) || 'N/A'} (council portion only)`,
-          url: "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
-          lastUpdated: "April 2025",
-          dataType: "ODS Spreadsheet"
-        },
-        {
-          title: "Council Tax Levels 2024-25",
-          description: "Previous year comparison data",
-          url: "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2024-to-2025",
-          lastUpdated: "March 2024",
-          dataType: "ODS Spreadsheet"
-        }
-      ]
-    },
-    {
-      category: "Budget & Spending Data",
-      icon: <BarChart3 className="h-4 w-4" />,
-      description: `Where we got ${councilName}'s budget breakdown`,
-      sources: selectedCouncil.budget ? [
-        {
-          title: "Revenue Expenditure & Financing 2024-25",
-          description: `Total service budget for ${councilName}: £${((selectedCouncil.budget.total_service ?? 0) / 1000).toFixed(1)}m`,
-          url: "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
-          lastUpdated: "2024-25",
-          dataType: "ODS Spreadsheet"
-        },
-        {
-          title: "Revenue Outturn Summary (RO)",
-          description: "Detailed breakdown by service area",
-          url: "https://www.gov.uk/government/statistical-data-sets/live-tables-on-local-government-finance",
-          lastUpdated: "Quarterly",
-          dataType: "Excel Tables"
-        }
-      ] : [
-        {
-          title: "Revenue Expenditure & Financing",
-          description: "Budget data not available for this council type",
-          url: "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
-          lastUpdated: "2024-25",
-          dataType: "ODS Spreadsheet"
-        }
-      ]
-    },
-    {
-      category: "Council Information",
-      icon: <Building className="h-4 w-4" />,
-      description: `Official records for ${councilName}`,
-      sources: [
-        {
-          title: "ONS Council Code",
-          description: `${councilName} is registered as ${selectedCouncil.ons_code}`,
-          url: "https://geoportal.statistics.gov.uk/",
-          lastUpdated: "2024",
-          dataType: "Geographic Data"
-        },
-        {
-          title: "Council Type Classification",
-          description: `${selectedCouncil.type_name} (${selectedCouncil.type})`,
-          url: "https://www.data.gov.uk/dataset/cbaf0333-3548-4e42-8a8f-6dc5376bc360/local-authority-districts-december-2024-names-and-codes-in-the-uk",
-          lastUpdated: "December 2024",
-          dataType: "CSV Dataset"
-        }
-      ]
-    }
-  ];
-
-  // Data methodology specific to this council
-  const methodology = [
-    {
-      title: "Council Tax Bands",
-      description: `Band D is shown as the baseline. Other bands are calculated using the official ratios (Band A = 6/9 of Band D, Band H = 18/9 of Band D, etc.).`
-    },
-    {
-      title: "Budget Estimates",
-      description: selectedCouncil.budget
-        ? `Budget figures are from official government data for 2024-25. ${councilName}'s total service budget is £${((selectedCouncil.budget.total_service ?? 0) / 1000).toFixed(1)} million.`
-        : `Budget breakdown not available for ${selectedCouncil.type_name}s in the source data.`
-    },
-    {
-      title: "Revenue Estimates",
-      description: `Revenue sources are estimated based on typical patterns for ${selectedCouncil.type_name}s. For exact figures, see ${councilName}'s published accounts.`
-    }
-  ];
-
   return (
     <footer className="bg-muted/30 border-t mt-12">
-      <div className="container mx-auto px-3 py-8 sm:px-6 sm:py-12 max-w-7xl">
-        <div className="space-y-8">
-
-          {/* Header - Council Specific */}
-          <div className="text-center space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold">
-              Where {councilName}&apos;s Data Comes From
-            </h2>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto">
-              All the numbers you see come from official government websites.
-              You can click the links below to see the original documents yourself.
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="text-center">
+            <h2 className="text-lg font-semibold mb-2">Where {councilName}&apos;s Data Comes From</h2>
+            <p className="text-sm text-muted-foreground">
+              All figures from official UK government sources. Click to verify.
             </p>
           </div>
 
-          {/* Council-specific quick stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            <div className="text-center p-3 bg-muted rounded-lg">
-              <div className="text-lg font-bold text-primary">{selectedCouncil.ons_code}</div>
-              <div className="text-xs text-muted-foreground">ONS Code</div>
-            </div>
-            <div className="text-center p-3 bg-muted rounded-lg">
-              <div className="text-lg font-bold text-primary">{selectedCouncil.type}</div>
-              <div className="text-xs text-muted-foreground">Council Type</div>
-            </div>
-            <div className="text-center p-3 bg-muted rounded-lg">
-              <div className="text-lg font-bold text-primary">
-                {selectedCouncil.council_tax ? '✓' : '—'}
-              </div>
-              <div className="text-xs text-muted-foreground">Tax Data</div>
-            </div>
-            <div className="text-center p-3 bg-muted rounded-lg">
-              <div className="text-lg font-bold text-primary">
-                {selectedCouncil.budget ? '✓' : '—'}
-              </div>
-              <div className="text-xs text-muted-foreground">Budget Data</div>
-            </div>
+          {/* Quick stats row */}
+          <div className="flex justify-center gap-6 text-sm">
+            <span><strong>ONS Code:</strong> {selectedCouncil.ons_code}</span>
+            <span><strong>Type:</strong> {selectedCouncil.type_name}</span>
+            <span><strong>Data Year:</strong> 2025-26</span>
           </div>
 
-          {/* Data Sources Grid */}
-          <div className="grid gap-6 md:grid-cols-3">
-            {councilDataSources.map((category, index) => (
-              <Card key={index} className="h-full">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    {category.icon}
-                    {category.category}
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground">{category.description}</p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {category.sources.map((source, sourceIndex) => (
-                      <div key={sourceIndex} className="space-y-2">
-                        <div>
-                          <a
-                            href={source.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm font-medium text-primary hover:underline flex items-start gap-1"
-                          >
-                            {source.title}
-                            <ExternalLink className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                          </a>
-                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                            {source.description}
-                          </p>
-                          <div className="flex gap-2 mt-2">
-                            <Badge variant="outline" className="text-xs">
-                              {source.lastUpdated}
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs">
-                              {source.dataType}
-                            </Badge>
-                          </div>
-                        </div>
-                        {sourceIndex < category.sources.length - 1 && (
-                          <hr className="border-border opacity-50" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Source links */}
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <a
+              href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-primary hover:underline"
+            >
+              Council Tax Data (April 2025) <ExternalLink className="h-3 w-3" />
+            </a>
+            <a
+              href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-primary hover:underline"
+            >
+              Budget Data (2024-25) <ExternalLink className="h-3 w-3" />
+            </a>
           </div>
 
-          {/* How We Used The Data */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                How We Used the Data for {councilName}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
-                {methodology.map((item, index) => (
-                  <div key={index} className="space-y-2">
-                    <h4 className="text-sm font-medium">{item.title}</h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Helpful tip */}
-          <Card className="border-dashed bg-primary/5">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 shrink-0 mt-0.5 text-primary" />
-                <div className="text-sm">
-                  <p className="font-medium mb-1">Want to check our numbers?</p>
-                  <p className="text-muted-foreground">
-                    Click any link above to see the exact spreadsheet we used.
-                    Look for &quot;{selectedCouncil.name}&quot; or code &quot;{selectedCouncil.ons_code}&quot; in the data.
-                    If you spot any mistakes, please let us know!
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Footer */}
-          <div className="border-t pt-6 space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 text-xs text-muted-foreground">
-              <div className="space-y-2">
-                <h4 className="font-medium text-foreground">About This Dashboard</h4>
-                <p className="leading-relaxed">
-                  This is an independent tool to help you understand council finances.
-                  We are not connected to any council. We just make government data easier to read.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-medium text-foreground">Using This Data</h4>
-                <p className="leading-relaxed">
-                  All data is from UK government websites and is free to use.
-                  If you need the data for something official, please check the original source links above.
-                </p>
-              </div>
-            </div>
-
-            <div className="text-center text-xs text-muted-foreground border-t pt-4">
-              <p>
-                Data last updated: January 2025 • Made for UK residents
-              </p>
-            </div>
+          {/* Notes */}
+          <div className="text-center text-xs text-muted-foreground border-t pt-4 space-y-2">
+            <p>
+              Band D is the baseline. Other bands use official ratios (A = 6/9, H = 18/9 of D).
+              {selectedCouncil.council_tax && ` ${councilName} Band D: £${selectedCouncil.council_tax.band_d_2025.toFixed(2)} (council portion only).`}
+            </p>
+            <p>
+              This is an independent tool. We are not connected to any council.
+            </p>
           </div>
-
         </div>
       </div>
     </footer>
