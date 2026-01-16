@@ -41,7 +41,7 @@ export default function CouncilDashboard() {
 
         <main className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="w-full max-w-xl space-y-8">
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-3">
               <div className="flex justify-center">
                 <div className="p-4 bg-primary/10 rounded-full">
                   <svg className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -50,8 +50,8 @@ export default function CouncilDashboard() {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold">Find Your Council</h2>
-              <p className="text-muted-foreground text-lg">
+              <h1 className="text-3xl sm:text-4xl font-bold leading-tight">Find Your Council</h1>
+              <p className="text-muted-foreground text-base sm:text-lg">
                 See where your council tax goes
               </p>
             </div>
@@ -98,7 +98,7 @@ export default function CouncilDashboard() {
                 <select
                   value={selectedTab}
                   onChange={(e) => setSelectedTab(e.target.value)}
-                  className="w-full appearance-none bg-background border border-border rounded-lg px-4 py-3 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  className="w-full appearance-none bg-background border border-border rounded-lg px-4 py-3.5 pr-10 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 >
                   <option value="overview">Overview</option>
                   <option value="council-tax">Council Tax</option>
