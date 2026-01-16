@@ -17,12 +17,15 @@ import {
   ArrowUpDown,
   Scale,
   Landmark,
-  BarChart3
+  BarChart3,
+  Target,
+  Calculator,
+  Percent
 } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { councils, COUNCIL_TYPE_NAMES, formatCurrency } from '@/data/councils';
+import { councils, COUNCIL_TYPE_NAMES, formatCurrency, getCouncilPopulation, getNationalEfficiencyStats } from '@/data/councils';
 
 export default function InsightsPage() {
   // Calculate all statistics
@@ -153,6 +156,12 @@ export default function InsightsPage() {
       if (band) band.count++;
     });
 
+    // Efficiency statistics
+    const efficiencyStats = getNationalEfficiencyStats();
+
+    // Total population served (with population data)
+    const totalPopulation = councils.reduce((sum, c) => sum + (getCouncilPopulation(c.name) || 0), 0);
+
     return {
       totalCouncils,
       councilsWithTax: councilsWithTax.length,
@@ -171,7 +180,9 @@ export default function InsightsPage() {
       serviceSpendingArray,
       totalServiceSpending,
       spendingByType,
-      priceBands
+      priceBands,
+      efficiencyStats,
+      totalPopulation
     };
   }, []);
 
@@ -561,6 +572,162 @@ export default function InsightsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Efficiency Metrics */}
+          {stats.efficiencyStats && (
+            <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
+              <CardHeader className="p-5 sm:p-6 pb-4">
+                <div className="flex items-center gap-3">
+                  <Target className="h-5 w-5 text-primary opacity-70" />
+                  <div>
+                    <CardTitle className="text-lg sm:text-xl font-semibold">Efficiency & Value for Money</CardTitle>
+                    <CardDescription>How much councils spend per person and on administration</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
+                {/* Key efficiency metrics */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                  <div className="p-4 bg-primary/5 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Calculator className="h-4 w-4 text-primary" />
+                      <span className="font-medium text-sm">Average per person</span>
+                    </div>
+                    <p className="text-2xl font-bold text-primary">
+                      {formatCurrency(stats.efficiencyStats.averagePerCapitaSpending, { decimals: 0 })}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Spent per resident annually
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted/50 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Percent className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium text-sm">Admin overhead</span>
+                    </div>
+                    <p className="text-2xl font-bold">
+                      {stats.efficiencyStats.averageAdminOverhead.toFixed(1)}%
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Of budget on central services
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted/50 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium text-sm">Population covered</span>
+                    </div>
+                    <p className="text-2xl font-bold">
+                      {(stats.totalPopulation / 1000000).toFixed(1)}m
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Residents with data
+                    </p>
+                  </div>
+                </div>
+
+                {/* Per-capita spending comparison */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <TrendingDown className="h-4 w-4 text-green-600" />
+                      <span className="font-medium text-sm">Lowest Spending Per Person</span>
+                    </div>
+                    <div className="space-y-2">
+                      {stats.efficiencyStats.lowestPerCapita.map((item, i) => (
+                        <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm font-medium">{item.council.name}</span>
+                            <Badge variant="outline" className="text-xs">{item.council.type_name}</Badge>
+                          </div>
+                          <span className="font-bold text-green-600">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <TrendingUp className="h-4 w-4 text-destructive" />
+                      <span className="font-medium text-sm">Highest Spending Per Person</span>
+                    </div>
+                    <div className="space-y-2">
+                      {stats.efficiencyStats.highestPerCapita.map((item, i) => (
+                        <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm font-medium">{item.council.name}</span>
+                            <Badge variant="outline" className="text-xs">{item.council.type_name}</Badge>
+                          </div>
+                          <span className="font-bold text-destructive">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Admin overhead comparison */}
+                <div className="mt-6 pt-6 border-t">
+                  <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                    <Building className="h-4 w-4 text-muted-foreground" />
+                    Administrative Overhead Comparison
+                  </h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="font-medium text-sm">Lowest Admin Overhead</span>
+                      </div>
+                      <div className="space-y-2">
+                        {stats.efficiencyStats.lowestAdminOverhead.map((item, i) => (
+                          <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                              <span className="text-sm font-medium">{item.council.name}</span>
+                            </div>
+                            <Badge variant="default" className="text-xs bg-green-600">{item.adminOverheadPercent.toFixed(1)}%</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <AlertTriangle className="h-4 w-4 text-amber-600" />
+                        <span className="font-medium text-sm">Highest Admin Overhead</span>
+                      </div>
+                      <div className="space-y-2">
+                        {stats.efficiencyStats.highestAdminOverhead.map((item, i) => (
+                          <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-amber-500/5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                              <span className="text-sm font-medium">{item.council.name}</span>
+                            </div>
+                            <Badge variant="secondary" className="text-xs">{item.adminOverheadPercent.toFixed(1)}%</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-muted/50 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-4 w-4 mt-0.5 text-primary" />
+                    <div className="text-sm text-muted-foreground">
+                      <p className="font-medium text-foreground mb-1">What do these numbers mean?</p>
+                      <p>
+                        <strong>Per-capita spending</strong> shows how much each council spends divided by their population.
+                        Higher isn&apos;t necessarily bad - councils with more elderly residents or deprived areas will naturally spend more on social care.
+                        <strong> Admin overhead</strong> shows what percentage of the budget goes to central services like HR, IT, and council tax collection.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Spending by Council Type */}
           <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">

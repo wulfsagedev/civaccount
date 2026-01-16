@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PoundSterling, Receipt, CalendarDays, Home, Shield, CheckCircle, Info, Users, Building, GraduationCap, Car, Heart, BookOpen, Trash2, MapPin, Settings } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatBudget, formatCurrency, formatDailyCost } from '@/data/councils';
+import { formatBudget, formatCurrency, formatDailyCost, getCouncilPopulation, calculateEfficiencyMetrics } from '@/data/councils';
 
 const BudgetOverview = () => {
   const { selectedCouncil } = useCouncil();
@@ -29,6 +29,11 @@ const BudgetOverview = () => {
 
   // Calculate daily cost
   const dailyCost = totalBudget ? totalBudget / 365 : null;
+
+  // Get population and efficiency metrics
+  const population = getCouncilPopulation(selectedCouncil.name);
+  const efficiencyMetrics = calculateEfficiencyMetrics(selectedCouncil);
+  const perCapitaSpending = efficiencyMetrics?.perCapitaSpending || null;
 
   // Build budget breakdown from actual data
   const budgetBreakdown = [];
@@ -160,11 +165,11 @@ const BudgetOverview = () => {
       icon: PoundSterling,
     },
     {
-      title: "Your Share",
-      value: netCurrent ? formatBudget(netCurrent / 1000) : 'N/A',
-      description: "The part paid by council tax and government grants",
-      badge: "Net Budget",
-      icon: Receipt,
+      title: "Per Person",
+      value: perCapitaSpending ? formatCurrency(perCapitaSpending, { decimals: 0 }) : 'N/A',
+      description: population ? `Spending per resident (${(population / 1000).toFixed(0)}k population)` : "Per resident annually",
+      badge: "Per Capita",
+      icon: Users,
     },
     {
       title: "Daily Running Cost",
