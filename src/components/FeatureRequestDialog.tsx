@@ -16,7 +16,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2, CheckCircle } from 'lucide-react';
 
-export default function FeatureRequestDialog() {
+interface FeatureRequestDialogProps {
+  variant?: 'desktop' | 'mobile';
+}
+
+export default function FeatureRequestDialog({ variant = 'desktop' }: FeatureRequestDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -57,9 +61,15 @@ export default function FeatureRequestDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 px-3 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-          <span className="text-sm">Feedback</span>
-        </Button>
+        <button
+          className={
+            variant === 'mobile'
+              ? "h-11 px-3 w-full inline-flex items-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
+              : "h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
+          }
+        >
+          Feedback
+        </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         {isSuccess ? (
