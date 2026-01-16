@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageSquarePlus, Send, Loader2, CheckCircle } from 'lucide-react';
+import { PenLine, Send, Loader2, CheckCircle } from 'lucide-react';
 
 export default function FeatureRequestDialog() {
   const [open, setOpen] = useState(false);
@@ -57,8 +57,8 @@ export default function FeatureRequestDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
-          <MessageSquarePlus className="h-4 w-4" />
+        <Button variant="secondary" size="sm" className="gap-1.5 bg-muted hover:bg-muted/80">
+          <PenLine className="h-4 w-4" />
           <span className="hidden sm:inline text-sm">Feedback</span>
         </Button>
       </DialogTrigger>
