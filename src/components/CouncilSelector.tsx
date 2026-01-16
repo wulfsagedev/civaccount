@@ -98,10 +98,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
 
     return (
       <div className="w-full">
-        <Card className="border border-border/40 bg-card shadow-sm">
-          <CardContent className="p-4 sm:p-5">
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+          <CardContent className="p-5 sm:p-6">
             {/* Header row: badges + change button */}
-            <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="flex items-start justify-between gap-4 mb-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary" className="text-xs font-medium">
                   {selectedCouncil.type_name}
@@ -114,21 +114,21 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                 variant="outline"
                 size="sm"
                 onClick={handleBackToSearch}
-                className="flex items-center gap-1.5 shrink-0"
+                className="flex items-center gap-2 shrink-0"
               >
-                <ArrowLeft className="h-3.5 w-3.5" />
+                <ArrowLeft className="h-4 w-4" />
                 Change
               </Button>
             </div>
 
             {/* Council name - clear hierarchy */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-3">
               {displayName}
             </h1>
 
             {/* Band D info */}
             {bandDAmount && (
-              <p className="text-base text-muted-foreground mb-3">
+              <p className="text-base text-muted-foreground mb-4">
                 Band D: <span className="font-semibold text-foreground">{bandDAmount}</span>/year
               </p>
             )}
@@ -149,7 +149,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
   if (variant === 'homepage') {
     return (
       <div className="w-full">
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Search Input - Primary focus */}
           <div className="relative shadow-lg rounded-2xl">
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
@@ -160,7 +160,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full pl-12 sm:pl-14 pr-4 sm:pr-6 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
+              className="w-full pl-14 pr-6 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
               autoFocus
             />
           </div>
@@ -168,10 +168,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
           {/* Results - Fixed height container to prevent layout shift */}
           <div
             ref={listRef}
-            className="h-[200px] overflow-y-auto space-y-1 px-1 scrollbar-hide"
+            className="h-[224px] overflow-y-auto space-y-2 scrollbar-hide"
           >
             {filteredCouncils.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-4">
+              <p className="text-center text-sm text-muted-foreground py-6">
                 No councils found. Try a different spelling.
               </p>
             ) : (
@@ -183,18 +183,18 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                     key={council.ons_code}
                     data-council-item
                     onClick={() => handleSelect(council)}
-                    className={`w-full p-3 sm:p-4 text-left rounded-xl transition-all ${
+                    className={`w-full p-4 text-left rounded-xl transition-all ${
                       isHighlighted
                         ? 'bg-muted-foreground/15 shadow-sm'
                         : 'hover:bg-muted/70'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center justify-between gap-4">
                       <div className="min-w-0">
                         <p className="font-medium text-base truncate text-foreground">
                           {displayName}
                         </p>
-                        <p className="text-sm mt-0.5 text-muted-foreground">
+                        <p className="text-sm mt-1 text-muted-foreground">
                           {council.type_name}
                         </p>
                       </div>
@@ -224,14 +224,14 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
   // Dashboard variant - with card wrapper (when no council selected on dashboard page)
   return (
     <div className="w-full">
-      <Card>
-        <CardContent className="p-4 sm:p-6">
-          <div className="space-y-4">
+      <Card className="rounded-xl">
+        <CardContent className="p-5 sm:p-6">
+          <div className="space-y-5">
             {/* Search Input with autocomplete */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               {autocompleteSuggestion && (
-                <div className="absolute left-10 top-1/2 transform -translate-y-1/2 text-muted-foreground/50 pointer-events-none text-base">
+                <div className="absolute left-11 top-1/2 transform -translate-y-1/2 text-muted-foreground/50 pointer-events-none text-base">
                   {autocompleteSuggestion}
                 </div>
               )}
@@ -242,7 +242,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full pl-10 pr-4 py-3 border-2 rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-base"
+                className="w-full pl-11 pr-4 py-3 border-2 rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-base"
                 autoFocus
               />
             </div>
@@ -250,10 +250,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
             {/* Results - max 3 visible, scrollable */}
             <div
               ref={listRef}
-              className="max-h-[180px] overflow-y-auto space-y-1 border rounded-lg p-2"
+              className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3"
             >
               {filteredCouncils.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-4">
+                <p className="text-center text-sm text-muted-foreground py-6">
                   No councils found. Try a different spelling.
                 </p>
               ) : (
@@ -265,18 +265,18 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                       key={council.ons_code}
                       data-council-item
                       onClick={() => handleSelect(council)}
-                      className={`w-full p-3 text-left rounded-lg transition-colors ${
+                      className={`w-full p-4 text-left rounded-lg transition-colors ${
                         isHighlighted
                           ? 'bg-primary/10 border-primary/30'
                           : 'hover:bg-muted'
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center justify-between gap-4">
                         <div className="min-w-0">
                           <p className={`font-medium text-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
                             {displayName}
                           </p>
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-2 mt-2">
                             <Badge variant="secondary" className="text-xs">
                               {council.type_name}
                             </Badge>
@@ -284,7 +284,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                         </div>
                         <div className="text-right shrink-0">
                           {council.council_tax && (
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                               £{council.council_tax.band_d_2025.toFixed(2)}/year
                             </p>
                           )}
@@ -296,7 +296,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               )}
             </div>
 
-            <p className="text-xs text-center text-muted-foreground">
+            <p className="text-sm text-center text-muted-foreground">
               {searchQuery
                 ? `${filteredCouncils.length} councils found · Press Enter to select`
                 : `${councils.length} councils in England`
