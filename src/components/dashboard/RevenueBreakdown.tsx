@@ -213,10 +213,10 @@ const RevenueBreakdown = () => {
       </Card>
 
       {/* What This Means for You */}
-      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
-            <Lightbulb className="h-5 w-5 text-primary" />
+            <Lightbulb className="h-5 w-5 text-primary opacity-70" />
             <CardTitle className="text-lg sm:text-xl font-semibold">Factors That Affect Council Tax</CardTitle>
           </div>
         </CardHeader>

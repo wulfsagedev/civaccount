@@ -111,11 +111,11 @@ const CouncilTaxSection = () => {
       </Card>
 
       {/* Selected Band Details */}
-      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-3">
-              <Calculator className="h-5 w-5 text-primary" />
+              <Calculator className="h-5 w-5 text-primary opacity-70" />
               <CardTitle className="text-lg sm:text-xl font-semibold">Band {selectedBand} - Your Council Tax</CardTitle>
             </div>
             {yearChange && (
@@ -209,11 +209,11 @@ const CouncilTaxSection = () => {
 
       {/* Full Bill Breakdown - Only show if detailed data available */}
       {selectedCouncil.detailed?.precepts && selectedCouncil.detailed.precepts.length > 0 && (
-        <Card className="border border-border/40 border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20 shadow-sm">
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
           <CardHeader className="p-5 sm:p-6 pb-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3">
-                <CreditCard className="h-5 w-5 text-green-600 dark:text-green-500" />
+                <CreditCard className="h-5 w-5 text-primary opacity-70" />
                 <div>
                   <CardTitle className="text-lg sm:text-xl font-semibold">Your Full Council Tax Bill</CardTitle>
                   <CardDescription className="text-sm sm:text-base leading-relaxed">
@@ -340,10 +340,10 @@ const CouncilTaxSection = () => {
       </Card>
 
       {/* Understanding Council Tax */}
-      <Card className="border border-border/40 border-l-4 border-l-amber-500 bg-amber-50/30 dark:bg-amber-950/20 shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-500" />
+            <Info className="h-5 w-5 text-primary opacity-70" />
             <CardTitle className="text-lg sm:text-xl font-semibold">How Council Tax Bands Work</CardTitle>
           </div>
         </CardHeader>
@@ -392,8 +392,8 @@ const CouncilTaxSection = () => {
               </div>
             </div>
           </div>
-          <div className="mt-5 p-4 sm:p-4 bg-amber-100/80 dark:bg-amber-900/30 rounded-xl text-xs sm:text-sm flex items-start gap-3">
-            <Lightbulb className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-500" />
+          <div className="mt-5 p-4 sm:p-4 bg-muted/50 rounded-xl text-xs sm:text-sm flex items-start gap-3">
+            <Lightbulb className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
             <div className="leading-relaxed">
               <span className="font-medium">Important:</span> {selectedCouncil.type === 'SD' || selectedCouncil.type === 'SC'
                 ? `These figures show only the ${selectedCouncil.name} portion of your council tax. Your total bill will also include charges from your county council, police, and fire service.`
