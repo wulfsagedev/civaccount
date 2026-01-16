@@ -228,7 +228,7 @@ const BudgetOverview = () => {
                     </div>
                     <div className="text-right shrink-0">
                       <div className="font-bold text-base">{formatBudget(item.amount / 1000)}</div>
-                      <div className="text-sm text-muted-foreground">{item.percentage.toFixed(1)}%</div>
+                      <div className="text-sm text-muted-foreground">{item.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</div>
                     </div>
                   </div>
                   <Progress value={Math.min(item.percentage, 100)} className="h-2" />

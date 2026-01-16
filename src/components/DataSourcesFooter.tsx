@@ -107,7 +107,7 @@ export default function DataSourcesFooter() {
       sources: [
         {
           title: "Council Tax Levels 2025-26",
-          description: `Band D for ${councilName}: £${selectedCouncil.council_tax?.band_d_2025.toFixed(2) || 'N/A'} (council portion only)`,
+          description: `Band D for ${councilName}: £${selectedCouncil.council_tax?.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || 'N/A'} (council portion only)`,
           url: "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
           lastUpdated: "April 2025",
           dataType: "ODS Spreadsheet"
@@ -129,7 +129,7 @@ export default function DataSourcesFooter() {
       sources: selectedCouncil.budget ? [
         {
           title: "Revenue Expenditure & Financing 2024-25",
-          description: `Total service budget for ${councilName}: £${((selectedCouncil.budget.total_service ?? 0) / 1000).toFixed(1)}m`,
+          description: `Total service budget for ${councilName}: £${((selectedCouncil.budget.total_service ?? 0) / 1000).toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}m`,
           url: "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
           lastUpdated: "2024-25",
           dataType: "ODS Spreadsheet"
@@ -184,7 +184,7 @@ export default function DataSourcesFooter() {
     {
       title: "Budget Estimates",
       description: selectedCouncil.budget
-        ? `Budget figures are from official government data for 2024-25. ${councilName}'s total service budget is £${((selectedCouncil.budget.total_service ?? 0) / 1000).toFixed(1)} million.`
+        ? `Budget figures are from official government data for 2024-25. ${councilName}'s total service budget is £${((selectedCouncil.budget.total_service ?? 0) / 1000).toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} million.`
         : `Budget breakdown not available for ${selectedCouncil.type_name}s in the source data.`
     },
     {
@@ -270,7 +270,7 @@ export default function DataSourcesFooter() {
                             href={source.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm font-medium text-primary hover:underline inline-flex items-start gap-1.5"
+                            className="text-sm font-medium text-primary hover:underline inline-flex items-start gap-1.5 cursor-pointer"
                           >
                             {source.title}
                             <ExternalLink className="h-3 w-3 mt-0.5 flex-shrink-0 opacity-70" />

@@ -432,7 +432,7 @@ const BandComparison = () => {
                             variant={item.increase > 5 ? 'destructive' : item.increase > 3 ? 'secondary' : 'default'}
                             className="text-xs"
                           >
-                            {item.increase > 0 ? '+' : ''}{item.increase.toFixed(1)}%
+                            {item.increase > 0 ? '+' : ''}{item.increase.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                           </Badge>
                         )}
                       </div>
@@ -453,7 +453,7 @@ const BandComparison = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">Percentage increase</p>
                         <p className="text-lg font-bold">
-                          +{(((historicalData[historicalData.length - 1].bandD - historicalData[0].bandD) / historicalData[0].bandD) * 100).toFixed(1)}%
+                          +{(((historicalData[historicalData.length - 1].bandD - historicalData[0].bandD) / historicalData[0].bandD) * 100).toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                         </p>
                       </div>
                     </div>
