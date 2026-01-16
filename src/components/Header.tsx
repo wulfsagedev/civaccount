@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
+import FeatureRequestDialog from '@/components/FeatureRequestDialog';
 
 export default function Header() {
   const { setSelectedCouncil } = useCouncil();
@@ -37,6 +38,7 @@ export default function Header() {
                 v1.2
               </Badge>
             </Link>
+            <FeatureRequestDialog />
             <ThemeToggle />
           </div>
         </div>
