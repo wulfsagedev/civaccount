@@ -20,9 +20,10 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { setSelectedCouncil } = useCouncil();
+  const { selectedCouncil, setSelectedCouncil } = useCouncil();
 
-  const isHomepage = pathname === '/';
+  // Only hide on homepage when no council is selected (shows its own search)
+  const isHomepageWithoutCouncil = pathname === '/' && !selectedCouncil;
 
   // Filter councils based on search query
   const filteredCouncils = useMemo(() => {
@@ -112,8 +113,8 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
 
   // If mobileOnly, only render the mobile icon button
   if (mobileOnly) {
-    // Don't show on homepage (has its own search)
-    if (isHomepage) {
+    // Don't show on homepage without council selected (has its own search)
+    if (isHomepageWithoutCouncil) {
       return null;
     }
 
@@ -224,8 +225,8 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
     );
   }
 
-  // Don't show desktop search on homepage
-  if (isHomepage) {
+  // Don't show desktop search on homepage without council selected
+  if (isHomepageWithoutCouncil) {
     return null;
   }
 
