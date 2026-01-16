@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Search, Clock, Database, Users, ExternalLink } from 'lucide-react';
+import { FileText, Lightbulb, Clock, Database, MessageCircle, Scale, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -68,7 +68,7 @@ export default function AboutPage() {
           <Card className="mb-8 rounded-xl">
             <CardHeader className="p-5 sm:p-6">
               <CardTitle className="flex items-center gap-3 text-xl">
-                <Search className="h-5 w-5 text-primary" />
+                <Lightbulb className="h-5 w-5 text-primary" />
                 What CivAccount Does
               </CardTitle>
             </CardHeader>
@@ -93,14 +93,14 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div className="p-5 bg-muted rounded-xl">
-                  <Users className="h-5 w-5 text-primary mb-3" />
+                  <MessageCircle className="h-5 w-5 text-primary mb-3" />
                   <h4 className="font-semibold mb-2">Easy to Understand</h4>
                   <p className="text-sm text-muted-foreground">
                     Plain language explanations of what your council does and where money goes
                   </p>
                 </div>
                 <div className="p-5 bg-muted rounded-xl">
-                  <Search className="h-5 w-5 text-primary mb-3" />
+                  <Scale className="h-5 w-5 text-primary mb-3" />
                   <h4 className="font-semibold mb-2">Compare Councils</h4>
                   <p className="text-sm text-muted-foreground">
                     See how your council tax compares to similar councils across the country
