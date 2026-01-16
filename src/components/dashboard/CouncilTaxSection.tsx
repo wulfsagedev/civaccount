@@ -73,8 +73,8 @@ const CouncilTaxSection = () => {
     );
   }
 
-  const calculateMonthlyPayment = (annualAmount: number) => (annualAmount / 10).toFixed(2);
-  const calculateWeeklyPayment = (annualAmount: number) => (annualAmount / 52).toFixed(2);
+  const calculateMonthlyPayment = (annualAmount: number) => (annualAmount / 10).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const calculateWeeklyPayment = (annualAmount: number) => (annualAmount / 52).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -121,7 +121,7 @@ const CouncilTaxSection = () => {
             {yearChange && (
               <Badge variant={yearChange.change > 0 ? "destructive" : "default"} className="text-xs w-fit flex items-center gap-1">
                 {yearChange.change > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                {yearChange.change > 0 ? '+' : ''}{yearChange.percentChange.toFixed(1)}% vs last year
+                {yearChange.change > 0 ? '+' : ''}{yearChange.percentChange.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% vs last year
               </Badge>
             )}
           </div>
@@ -164,13 +164,13 @@ const CouncilTaxSection = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
                 <div>
                   <span className="text-muted-foreground">Average for {selectedCouncil.type_name}s:</span>
-                  <span className="font-medium ml-2">£{typeAverage.toFixed(2)}</span>
+                  <span className="font-medium ml-2">£{typeAverage.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Difference:</span>
                   <span className={`font-medium ml-2 ${councilTaxData.bandD > typeAverage ? 'text-destructive' : 'text-green-600'}`}>
-                    {councilTaxData.bandD > typeAverage ? '+' : ''}£{(councilTaxData.bandD - typeAverage).toFixed(2)}
-                    ({councilTaxData.bandD > typeAverage ? '+' : ''}{((councilTaxData.bandD - typeAverage) / typeAverage * 100).toFixed(1)}%)
+                    {councilTaxData.bandD > typeAverage ? '+' : ''}£{(councilTaxData.bandD - typeAverage).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    ({councilTaxData.bandD > typeAverage ? '+' : ''}{((councilTaxData.bandD - typeAverage) / typeAverage * 100).toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
                   </span>
                 </div>
               </div>
@@ -187,18 +187,18 @@ const CouncilTaxSection = () => {
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <span>2025-26</span>
-                  <span className="font-bold">£{councilTaxData.bandD.toFixed(2)}</span>
+                  <span className="font-bold">£{councilTaxData.bandD.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 {councilTaxData.bandD_2024 && (
                   <div className="flex justify-between items-center text-sm text-muted-foreground">
                     <span>2024-25</span>
-                    <span>£{councilTaxData.bandD_2024.toFixed(2)}</span>
+                    <span>£{councilTaxData.bandD_2024.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 )}
                 {councilTaxData.bandD_2023 && (
                   <div className="flex justify-between items-center text-sm text-muted-foreground">
                     <span>2023-24</span>
-                    <span>£{councilTaxData.bandD_2023.toFixed(2)}</span>
+                    <span>£{councilTaxData.bandD_2023.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 )}
               </div>
@@ -251,10 +251,10 @@ const CouncilTaxSection = () => {
                       </div>
                       <div className="text-right shrink-0">
                         <div className={`font-bold text-sm sm:text-base ${isDistrict ? 'text-primary' : ''}`}>
-                          £{bandAmount.toFixed(2)}
+                          £{bandAmount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {percentage.toFixed(1)}% of bill
+                          {percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of bill
                         </div>
                       </div>
                     </div>
@@ -273,7 +273,7 @@ const CouncilTaxSection = () => {
                     Total Band {selectedBand} Council Tax
                   </span>
                   <span className="font-bold text-lg sm:text-xl text-green-700 dark:text-green-300">
-                    £{((selectedCouncil.detailed?.total_band_d || 0) * councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].rate).toFixed(2)}
+                    £{((selectedCouncil.detailed?.total_band_d || 0) * councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].rate).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
                 <p className="text-xs text-green-600 dark:text-green-400 mt-1">
@@ -317,7 +317,7 @@ const CouncilTaxSection = () => {
           <div className="space-y-3 sm:space-y-4">
             {Object.entries(councilTaxData.bands).map(([band, data]) => {
               const isSelected = band === selectedBand;
-              const percentOfD = (data.rate * 100).toFixed(0);
+              const percentOfD = Math.round(data.rate * 100);
               return (
                 <div key={band} className={`space-y-3 p-2.5 sm:p-3 rounded-xl transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-muted/50'}`}>
                   <div className="flex justify-between items-center gap-2">
