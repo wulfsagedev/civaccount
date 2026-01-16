@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChevronDown } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName } from '@/data/councils';
 
@@ -92,41 +92,61 @@ export default function CouncilDashboard() {
           </div>
 
           <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-            <div className="mb-5 sm:mb-6 -mx-3 px-3 sm:mx-0 sm:px-0">
-              <TabsList className="inline-flex w-full sm:w-auto h-auto p-1 sm:p-1.5 gap-0.5 sm:gap-1 bg-muted/50 rounded-xl overflow-x-auto scrollbar-hide">
+            {/* Mobile: Dropdown selector */}
+            <div className="mb-5 sm:hidden">
+              <div className="relative">
+                <select
+                  value={selectedTab}
+                  onChange={(e) => setSelectedTab(e.target.value)}
+                  className="w-full appearance-none bg-background border border-border rounded-lg px-4 py-3 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                >
+                  <option value="overview">Overview</option>
+                  <option value="council-tax">Council Tax</option>
+                  <option value="services">Services</option>
+                  <option value="revenue">Revenue</option>
+                  <option value="performance">Performance</option>
+                  <option value="comparison">Compare</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Desktop: Full-width tabs */}
+            <div className="mb-6 hidden sm:block">
+              <TabsList className="w-full h-auto p-1.5 gap-1 bg-muted/50 rounded-xl grid grid-cols-6">
                 <TabsTrigger
                   value="overview"
-                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="text-sm px-4 py-2.5 rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Overview
                 </TabsTrigger>
                 <TabsTrigger
                   value="council-tax"
-                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="text-sm px-4 py-2.5 rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Council Tax
                 </TabsTrigger>
                 <TabsTrigger
                   value="services"
-                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="text-sm px-4 py-2.5 rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Services
                 </TabsTrigger>
                 <TabsTrigger
                   value="revenue"
-                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="text-sm px-4 py-2.5 rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Revenue
                 </TabsTrigger>
                 <TabsTrigger
                   value="performance"
-                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="text-sm px-4 py-2.5 rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Performance
                 </TabsTrigger>
                 <TabsTrigger
                   value="comparison"
-                  className="flex-1 sm:flex-none text-[11px] sm:text-sm px-3 py-2.5 sm:px-4 sm:py-2.5 rounded-lg font-medium whitespace-nowrap transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="text-sm px-4 py-2.5 rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                 >
                   Compare
                 </TabsTrigger>

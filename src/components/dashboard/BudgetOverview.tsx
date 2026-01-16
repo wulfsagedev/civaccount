@@ -156,7 +156,6 @@ const BudgetOverview = () => {
       title: "Yearly Budget",
       value: totalBudget ? formatBudget(totalBudget / 1000) : 'N/A',
       description: `How much ${selectedCouncil.name} spends in one year`,
-      explanation: "This pays for all the services your council provides",
       badge: "Total Spend",
       icon: PoundSterling,
     },
@@ -164,7 +163,6 @@ const BudgetOverview = () => {
       title: "Your Share",
       value: netCurrent ? formatBudget(netCurrent / 1000) : 'N/A',
       description: "The part paid by council tax and government grants",
-      explanation: "This is what your council tax and government funding covers",
       badge: "Net Budget",
       icon: Receipt,
     },
@@ -172,7 +170,6 @@ const BudgetOverview = () => {
       title: "Daily Running Cost",
       value: dailyCost ? formatDailyCost(dailyCost) : 'N/A',
       description: "What it costs to run all services each day",
-      explanation: "Your council operates 365 days a year",
       badge: "Per Day",
       icon: CalendarDays,
     },
@@ -180,7 +177,6 @@ const BudgetOverview = () => {
       title: "Band D Council Tax",
       value: councilTax ? formatCurrency(councilTax.band_d_2025, { decimals: 2 }) : 'N/A',
       description: `${selectedCouncil.name} portion only`,
-      explanation: "This is just this council's share. Your total bill includes county, police and fire charges.",
       badge: "This Council",
       icon: Home,
     }
@@ -189,21 +185,16 @@ const BudgetOverview = () => {
   return (
     <div className="space-y-5 sm:space-y-8">
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {keyMetrics.map((metric, index) => (
-          <Card key={index} className="relative overflow-hidden border border-border/40 bg-card shadow-sm">
-            <CardHeader className="p-4 sm:p-5 pb-3 sm:pb-4">
-              <div className="flex items-center justify-between mb-3">
+          <Card key={index} className="border border-border/40 bg-card shadow-sm">
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-2">
                 <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">{metric.badge}</Badge>
-                <metric.icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                <metric.icon className="h-4 w-4 text-muted-foreground" />
               </div>
-              <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-1.5">{metric.value}</CardTitle>
-              <CardDescription className="text-xs sm:text-sm leading-relaxed">{metric.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0">
-              <div className="text-xs bg-muted/60 dark:bg-muted/40 p-3 rounded-md leading-relaxed text-muted-foreground">
-                {metric.explanation}
-              </div>
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">{metric.value}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{metric.description}</p>
             </CardContent>
           </Card>
         ))}
