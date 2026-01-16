@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { DollarSign, Building, Users, PiggyBank, TrendingDown, Info, AlertTriangle, CheckCircle, Lightbulb } from "lucide-react";
+import { PoundSterling, Landmark, Receipt, Wallet, Store, TrendingDown, Info, AlertTriangle, CheckCircle, Lightbulb } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget } from '@/data/councils';
 
@@ -33,7 +33,7 @@ const RevenueBreakdown = () => {
           source: "Council Tax",
           amount: netCurrent * councilTaxPercent,
           percentage: Math.round(councilTaxPercent * 100),
-          icon: DollarSign,
+          icon: PoundSterling,
           description: "Money that you and your neighbours pay to the council",
           stability: "High",
           volatility: "Steady - goes up a little each year"
@@ -42,7 +42,7 @@ const RevenueBreakdown = () => {
           source: "Government Money (For Specific Things)",
           amount: netCurrent * govGrantsRingfencedPercent,
           percentage: Math.round(govGrantsRingfencedPercent * 100),
-          icon: Building,
+          icon: Landmark,
           description: "Money the government gives that must be spent on certain things",
           stability: "Medium",
           volatility: "Depends on what the government decides"
@@ -51,7 +51,7 @@ const RevenueBreakdown = () => {
           source: "Fees for Services",
           amount: netCurrent * serviceIncomePercent,
           percentage: Math.round(serviceIncomePercent * 100),
-          icon: Users,
+          icon: Receipt,
           description: "Money people pay when they use council services (like parking)",
           stability: "Medium",
           volatility: "Changes based on how many people use services"
@@ -60,7 +60,7 @@ const RevenueBreakdown = () => {
           source: "Government Money (Flexible)",
           amount: netCurrent * govGrantsUnringfencedPercent,
           percentage: Math.round(govGrantsUnringfencedPercent * 100),
-          icon: PiggyBank,
+          icon: Wallet,
           description: "Money the government gives that can be spent on anything",
           stability: "Low",
           volatility: "Can change a lot if the government cuts spending"
@@ -69,7 +69,7 @@ const RevenueBreakdown = () => {
           source: "Business Rates",
           amount: netCurrent * businessRatesPercent,
           percentage: Math.round(businessRatesPercent * 100),
-          icon: TrendingDown,
+          icon: Store,
           description: "Taxes paid by shops and businesses in the area",
           stability: "Low",
           volatility: "Goes down when shops close"
@@ -109,7 +109,7 @@ const RevenueBreakdown = () => {
       <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
-            <DollarSign className="h-5 w-5 text-primary opacity-70" />
+            <PoundSterling className="h-5 w-5 text-primary opacity-70" />
             <div>
               <CardTitle className="text-lg sm:text-xl font-semibold">Where Does the Money Come From?</CardTitle>
               <CardDescription className="text-sm sm:text-base leading-relaxed">

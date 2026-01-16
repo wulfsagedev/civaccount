@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { PoundSterling, Receipt, CalendarDays, Home, AlertTriangle, Shield, CheckCircle, Info, Users, Building2, Calendar } from "lucide-react";
+import { PoundSterling, Receipt, CalendarDays, Home, Shield, CheckCircle, Info, Users, Building, GraduationCap, Car, Heart, BookOpen, Trash2, MapPin, Settings } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget, formatCurrency, formatDailyCost } from '@/data/councils';
 
@@ -64,7 +64,7 @@ const BudgetOverview = () => {
         percentage: (budget.education / total) * 100,
         amount: budget.education * 1000,
         priority: "High",
-        icon: Building2,
+        icon: GraduationCap,
         description: "School buses, help for children with extra needs, and school support"
       });
     }
@@ -75,7 +75,7 @@ const BudgetOverview = () => {
         percentage: (budget.transport / total) * 100,
         amount: budget.transport * 1000,
         priority: "Medium",
-        icon: Calendar,
+        icon: Car,
         description: "Fixing roads, traffic lights, and helping buses run"
       });
     }
@@ -86,7 +86,7 @@ const BudgetOverview = () => {
         percentage: (budget.public_health / total) * 100,
         amount: budget.public_health * 1000,
         priority: "Medium",
-        icon: Shield,
+        icon: Heart,
         description: "Stopping illness from spreading and helping people stay healthy"
       });
     }
@@ -97,7 +97,7 @@ const BudgetOverview = () => {
         percentage: (budget.housing / total) * 100,
         amount: budget.housing * 1000,
         priority: "Medium",
-        icon: Building2,
+        icon: Home,
         description: "Helping people find homes and stopping homelessness"
       });
     }
@@ -108,7 +108,7 @@ const BudgetOverview = () => {
         percentage: (budget.cultural / total) * 100,
         amount: budget.cultural * 1000,
         priority: "Medium",
-        icon: Building2,
+        icon: BookOpen,
         description: "Libraries, museums, art, and community centres"
       });
     }
@@ -119,7 +119,7 @@ const BudgetOverview = () => {
         percentage: (budget.environmental / total) * 100,
         amount: budget.environmental * 1000,
         priority: "Medium",
-        icon: CheckCircle,
+        icon: Trash2,
         description: "Collecting bins, recycling, and cleaning streets"
       });
     }
@@ -130,7 +130,7 @@ const BudgetOverview = () => {
         percentage: (budget.planning / total) * 100,
         amount: budget.planning * 1000,
         priority: "Low",
-        icon: Building2,
+        icon: MapPin,
         description: "Deciding what can be built and where"
       });
     }
@@ -141,7 +141,7 @@ const BudgetOverview = () => {
         percentage: (budget.central_services / total) * 100,
         amount: budget.central_services * 1000,
         priority: "Low",
-        icon: CheckCircle,
+        icon: Building,
         description: "Meetings, staff, and keeping the council running"
       });
     }
