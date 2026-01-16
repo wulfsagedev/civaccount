@@ -80,7 +80,7 @@ const RevenueBreakdown = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card className="border border-border/40 bg-card shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardContent className="p-5 sm:p-6 text-center">
           <p className="text-muted-foreground text-sm sm:text-base">Please select a council to view revenue information.</p>
         </CardContent>
@@ -90,7 +90,7 @@ const RevenueBreakdown = () => {
 
   if (!revenueData) {
     return (
-      <Card className="border border-border/40 bg-card shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardContent className="p-5 sm:p-6">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Info className="h-5 w-5" />
@@ -106,7 +106,7 @@ const RevenueBreakdown = () => {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Revenue Overview */}
-      <Card className="border border-border/40 bg-card shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
             <DollarSign className="h-5 w-5 text-primary opacity-70" />
@@ -158,7 +158,7 @@ const RevenueBreakdown = () => {
       </Card>
 
       {/* Revenue Stability Analysis */}
-      <Card className="border border-border/40 bg-card shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
             <TrendingDown className="h-5 w-5 text-primary opacity-70" />
@@ -283,7 +283,7 @@ const RevenueBreakdown = () => {
       </Card>
 
       {/* Note about estimates */}
-      <Card className="border border-border/40 bg-muted/30 shadow-sm">
+      <Card className="border border-border/40 bg-muted/30 shadow-sm rounded-xl">
         <CardContent className="p-4 sm:p-5">
           <div className="flex items-start gap-3 text-muted-foreground">
             <Info className="h-5 w-5 shrink-0 mt-0.5 opacity-70" />
