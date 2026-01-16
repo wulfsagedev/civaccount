@@ -126,7 +126,7 @@ export default function AboutPage() {
                   href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 border rounded-xl hover:bg-muted transition-colors"
+                  className="flex items-center gap-3 p-4 border rounded-xl hover:bg-muted transition-colors cursor-pointer"
                 >
                   <ExternalLink className="h-4 w-4 text-primary shrink-0" />
                   <div>
@@ -138,7 +138,7 @@ export default function AboutPage() {
                   href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 border rounded-xl hover:bg-muted transition-colors"
+                  className="flex items-center gap-3 p-4 border rounded-xl hover:bg-muted transition-colors cursor-pointer"
                 >
                   <ExternalLink className="h-4 w-4 text-primary shrink-0" />
                   <div>
@@ -175,7 +175,7 @@ export default function AboutPage() {
           <div className="text-center mt-10">
             <Link
               href="/"
-              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
             >
               Find Your Council
             </Link>

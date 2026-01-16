@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-3 mb-4">
+            <Link href="/" className="inline-flex items-center gap-3 mb-4 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Landmark className="h-4 w-4 text-primary-foreground" />
               </div>
@@ -30,7 +30,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
                   Home
                 </Link>
@@ -38,7 +38,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
                   About
                 </Link>
@@ -46,7 +46,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/updates"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2 cursor-pointer"
                 >
                   Updates
                   <span className="relative flex h-1.5 w-1.5">
@@ -67,7 +67,7 @@ export default function Footer() {
                   href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   Council Tax Data
                   <ExternalLink className="h-3 w-3" />
@@ -78,7 +78,7 @@ export default function Footer() {
                   href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   Revenue Data
                   <ExternalLink className="h-3 w-3" />
@@ -116,7 +116,7 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} CivAccount. Data from official UK government sources.
             </p>
-            <Link href="/updates" className="inline-flex items-center gap-2">
+            <Link href="/updates" className="inline-flex items-center gap-2 cursor-pointer">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>

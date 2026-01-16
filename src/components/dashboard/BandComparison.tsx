@@ -214,7 +214,7 @@ const BandComparison = () => {
                   </div>
                   <div className="text-right shrink-0">
                     <div className="text-lg sm:text-2xl font-bold text-primary">
-                      £{selectedCouncil.council_tax.band_d_2025.toFixed(2)}
+                      £{selectedCouncil.council_tax.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                     <div className="text-xs sm:text-sm text-muted-foreground">Band D annual</div>
                   </div>
@@ -226,7 +226,7 @@ const BandComparison = () => {
                 const diff = council.council_tax!.band_d_2025 - selectedCouncil.council_tax!.band_d_2025;
                 const isHigher = diff > 0;
                 return (
-                  <div key={council.ons_code} className="p-3 sm:p-4 border rounded-xl hover:bg-muted/50 transition-colors">
+                  <div key={council.ons_code} className="p-3 sm:p-4 border rounded-xl hover:bg-muted/50 transition-colors cursor-pointer">
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
@@ -236,13 +236,13 @@ const BandComparison = () => {
                         <div className="flex items-center gap-2 ml-6">
                           <Badge variant={isHigher ? "destructive" : "default"} className="text-xs flex items-center gap-1">
                             {isHigher ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                            {isHigher ? '+' : ''}£{diff.toFixed(2)}
+                            {isHigher ? '+' : ''}£{diff.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </Badge>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="text-lg sm:text-xl font-bold">
-                          £{council.council_tax!.band_d_2025.toFixed(2)}
+                          £{council.council_tax!.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <div className="text-xs sm:text-sm text-muted-foreground">Band D</div>
                       </div>
@@ -293,7 +293,7 @@ const BandComparison = () => {
                         </div>
                       </div>
                       <span className={`font-bold ${isSelected ? 'text-primary' : ''}`}>
-                        £{council.council_tax?.band_d_2025.toFixed(2)}
+                        £{council.council_tax?.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
                   );
@@ -331,7 +331,7 @@ const BandComparison = () => {
                         </div>
                       </div>
                       <span className={`font-bold ${isSelected ? 'text-primary' : ''}`}>
-                        £{council.council_tax?.band_d_2025.toFixed(2)}
+                        £{council.council_tax?.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
                   );
@@ -360,21 +360,21 @@ const BandComparison = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <div className="text-center p-4 bg-primary/5 rounded-xl border-2 border-primary">
                 <p className="text-sm text-muted-foreground mb-1">{selectedCouncil.name}</p>
-                <p className="text-2xl font-bold text-primary">£{selectedCouncil.council_tax.band_d_2025.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-primary">£{selectedCouncil.council_tax.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <p className="text-xs text-muted-foreground mt-1">Band D 2025-26</p>
               </div>
               <div className="text-center p-4 bg-muted rounded-xl border">
                 <p className="text-sm text-muted-foreground mb-1">{COUNCIL_TYPE_NAMES[selectedCouncil.type]} Average</p>
-                <p className="text-2xl font-bold">£{averages.typeAverage.toFixed(2)}</p>
+                <p className="text-2xl font-bold">£{averages.typeAverage.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <p className={`text-xs mt-1 ${averages.differenceFromType > 0 ? 'text-destructive' : 'text-green-600'}`}>
-                  {averages.differenceFromType > 0 ? '+' : ''}£{averages.differenceFromType.toFixed(2)} difference
+                  {averages.differenceFromType > 0 ? '+' : ''}£{averages.differenceFromType.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} difference
                 </p>
               </div>
               <div className="text-center p-4 bg-muted rounded-xl border">
                 <p className="text-sm text-muted-foreground mb-1">All Councils Average</p>
-                <p className="text-2xl font-bold">£{averages.nationalAverage.toFixed(2)}</p>
+                <p className="text-2xl font-bold">£{averages.nationalAverage.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <p className={`text-xs mt-1 ${averages.differenceFromNational > 0 ? 'text-destructive' : 'text-green-600'}`}>
-                  {averages.differenceFromNational > 0 ? '+' : ''}£{averages.differenceFromNational.toFixed(2)} difference
+                  {averages.differenceFromNational > 0 ? '+' : ''}£{averages.differenceFromNational.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} difference
                 </p>
               </div>
             </div>
@@ -387,9 +387,9 @@ const BandComparison = () => {
                 </h4>
                 <p className="text-sm text-muted-foreground">
                   {averages.differenceFromType > 0
-                    ? `${selectedCouncil.name}'s council tax is £${averages.differenceFromType.toFixed(2)} higher than the average for ${COUNCIL_TYPE_NAMES[selectedCouncil.type]}s.`
+                    ? `${selectedCouncil.name}'s council tax is £${averages.differenceFromType.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} higher than the average for ${COUNCIL_TYPE_NAMES[selectedCouncil.type]}s.`
                     : averages.differenceFromType < 0
-                      ? `${selectedCouncil.name}'s council tax is £${Math.abs(averages.differenceFromType).toFixed(2)} lower than the average for ${COUNCIL_TYPE_NAMES[selectedCouncil.type]}s.`
+                      ? `${selectedCouncil.name}'s council tax is £${Math.abs(averages.differenceFromType).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} lower than the average for ${COUNCIL_TYPE_NAMES[selectedCouncil.type]}s.`
                       : `${selectedCouncil.name}'s council tax is about the same as the average for ${COUNCIL_TYPE_NAMES[selectedCouncil.type]}s.`
                   }
                 </p>
@@ -426,7 +426,7 @@ const BandComparison = () => {
                         )}
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-bold">£{item.bandD.toFixed(2)}</div>
+                        <div className="text-xl font-bold">£{item.bandD.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         {item.increase !== null && (
                           <Badge
                             variant={item.increase > 5 ? 'destructive' : item.increase > 3 ? 'secondary' : 'default'}
@@ -447,7 +447,7 @@ const BandComparison = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">From {historicalData[0].year}</p>
                         <p className="text-lg font-bold">
-                          +£{(historicalData[historicalData.length - 1].bandD - historicalData[0].bandD).toFixed(2)}
+                          +£{(historicalData[historicalData.length - 1].bandD - historicalData[0].bandD).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                       </div>
                       <div>

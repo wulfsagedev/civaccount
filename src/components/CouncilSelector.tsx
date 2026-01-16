@@ -183,7 +183,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                     key={council.ons_code}
                     data-council-item
                     onClick={() => handleSelect(council)}
-                    className={`w-full p-4 text-left rounded-xl transition-all ${
+                    className={`w-full p-4 text-left rounded-xl transition-all cursor-pointer ${
                       isHighlighted
                         ? 'bg-muted-foreground/15 shadow-sm'
                         : 'hover:bg-muted/70'
@@ -200,7 +200,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                       </div>
                       <div className="text-right shrink-0 text-sm text-muted-foreground">
                         {council.council_tax && (
-                          <p>£{council.council_tax.band_d_2025.toFixed(0)}/yr</p>
+                          <p>£{Math.round(council.council_tax.band_d_2025).toLocaleString('en-GB')}/yr</p>
                         )}
                       </div>
                     </div>
@@ -265,7 +265,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                       key={council.ons_code}
                       data-council-item
                       onClick={() => handleSelect(council)}
-                      className={`w-full p-4 text-left rounded-lg transition-colors ${
+                      className={`w-full p-4 text-left rounded-lg transition-colors cursor-pointer ${
                         isHighlighted
                           ? 'bg-primary/10 border-primary/30'
                           : 'hover:bg-muted'
@@ -285,7 +285,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                         <div className="text-right shrink-0">
                           {council.council_tax && (
                             <p className="text-sm text-muted-foreground">
-                              £{council.council_tax.band_d_2025.toFixed(2)}/year
+                              £{council.council_tax.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/year
                             </p>
                           )}
                         </div>
