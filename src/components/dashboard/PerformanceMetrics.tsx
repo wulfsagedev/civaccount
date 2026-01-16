@@ -29,9 +29,9 @@ const PerformanceMetrics = () => {
 
       {/* Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <Target className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Council Type</p>
               <p className="text-lg font-bold text-primary">{selectedCouncil.type_name}</p>
@@ -39,9 +39,9 @@ const PerformanceMetrics = () => {
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <Users className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Data Year</p>
               <p className="text-lg font-bold text-primary">2025-26</p>
@@ -49,9 +49,9 @@ const PerformanceMetrics = () => {
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-primary" />
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <DollarSign className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Budget Data</p>
               <p className="text-lg font-bold text-primary">{selectedCouncil.budget ? 'Available' : 'Limited'}</p>
@@ -59,9 +59,9 @@ const PerformanceMetrics = () => {
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <Zap className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Tax Data</p>
               <p className="text-lg font-bold text-primary">{selectedCouncil.council_tax ? 'Available' : 'Limited'}</p>
@@ -71,14 +71,14 @@ const PerformanceMetrics = () => {
       </div>
 
       {/* Performance Note */}
-      <Card className="border-l-4 border-l-primary">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Info className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg sm:text-xl">Where to Find More Information</CardTitle>
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
+            <Info className="h-5 w-5 text-primary opacity-70" />
+            <CardTitle className="text-lg sm:text-xl font-semibold">Where to Find More Information</CardTitle>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
               Want to know if your council is doing a good job? Each council publishes reports about how well they are doing.
@@ -119,17 +119,17 @@ const PerformanceMetrics = () => {
       </Card>
 
       {/* General UK Council Performance Context */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <TrendingUp className="h-5 w-5 text-primary" />
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <CardTitle className="flex items-center gap-3 text-lg sm:text-xl font-semibold">
+            <TrendingUp className="h-5 w-5 text-primary opacity-70" />
             What&apos;s Happening Across UK Councils
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm sm:text-base leading-relaxed">
             Challenges that many councils like {selectedCouncil.name} are dealing with
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6 space-y-4">
           {(selectedCouncil.type === 'SC' || selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD') && (
             <>
               <div className="p-4 border rounded-xl">
@@ -211,8 +211,8 @@ const PerformanceMetrics = () => {
       </Card>
 
       {/* Link to council website */}
-      <Card className="border-dashed">
-        <CardContent className="p-4">
+      <Card className="border border-border/40 bg-muted/30 shadow-sm rounded-xl">
+        <CardContent className="p-5 sm:p-6">
           <div className="flex items-start gap-3 text-muted-foreground">
             <Info className="h-5 w-5 shrink-0 mt-0.5" />
             <div className="text-sm">
