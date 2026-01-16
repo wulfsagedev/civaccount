@@ -2,6 +2,7 @@
 
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
 
 export default function Footer() {
   return (
@@ -16,8 +17,14 @@ export default function Footer() {
             <Link href="/about" className="text-muted-foreground hover:text-foreground">
               About
             </Link>
-            <Link href="/updates" className="text-muted-foreground hover:text-foreground">
-              Updates (v1.2)
+            <Link href="/updates" className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
+                v1.2
+              </Badge>
             </Link>
             <a
               href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
