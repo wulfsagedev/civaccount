@@ -158,18 +158,23 @@ const ServiceSpending = () => {
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3">
             {services.map((service) => {
               const ServiceIcon = service.icon;
+              const isSelected = selectedService === service.key;
               return (
                 <Button
                   key={service.key}
-                  variant={selectedService === service.key ? "default" : "outline"}
+                  variant="outline"
                   onClick={() => setSelectedService(service.key)}
-                  className={`h-auto p-3 sm:p-4 flex flex-col items-start text-left gap-1.5 rounded-xl ${selectedService !== service.key ? 'border-muted-foreground/20 hover:border-muted-foreground/40' : ''}`}
+                  className={`h-auto p-3 sm:p-4 flex flex-col items-start text-left gap-1.5 rounded-xl ${
+                    isSelected
+                      ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
+                      : 'border-muted-foreground/20 hover:border-muted-foreground/40'
+                  }`}
                 >
                   <div className="flex items-center gap-2 w-full">
                     <ServiceIcon className="h-4 w-4 shrink-0" />
                     <div className="font-semibold text-xs sm:text-sm truncate">{service.name}</div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className={`text-xs ${isSelected ? 'text-primary/70' : 'text-muted-foreground'}`}>
                     {formatBudget(service.amount / 1000)} ({service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
                   </div>
                 </Button>
