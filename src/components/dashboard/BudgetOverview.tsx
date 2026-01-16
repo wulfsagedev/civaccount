@@ -189,12 +189,12 @@ const BudgetOverview = () => {
         {keyMetrics.map((metric, index) => (
           <Card key={index} className="border border-border/40 bg-card shadow-sm">
             <CardContent className="p-4 sm:p-5">
-              <div className="flex items-center justify-between mb-2">
-                <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">{metric.badge}</Badge>
+              <div className="flex items-center justify-between mb-3">
+                <Badge variant="secondary" className="text-xs font-medium">{metric.badge}</Badge>
                 <metric.icon className="h-4 w-4 text-muted-foreground" />
               </div>
               <p className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">{metric.value}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{metric.description}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{metric.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -220,21 +220,21 @@ const BudgetOverview = () => {
                       {item.percentage > 20 && (
                         <Badge
                           variant="destructive"
-                          className="text-[10px] sm:text-xs shrink-0"
+                          className="text-xs shrink-0"
                         >
                           Major
                         </Badge>
                       )}
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="font-bold text-sm sm:text-base">{formatBudget(item.amount / 1000)}</div>
-                      <div className="text-xs sm:text-sm text-muted-foreground">{item.percentage.toFixed(1)}%</div>
+                      <div className="font-bold text-base">{formatBudget(item.amount / 1000)}</div>
+                      <div className="text-sm text-muted-foreground">{item.percentage.toFixed(1)}%</div>
                     </div>
                   </div>
-                  <Progress value={Math.min(item.percentage, 100)} className="h-1.5 sm:h-2" />
-                  <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  <Progress value={Math.min(item.percentage, 100)} className="h-2" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {item.description}
-                  </div>
+                  </p>
                 </div>
               ))}
             </div>
@@ -266,49 +266,49 @@ const BudgetOverview = () => {
             </p>
             {selectedCouncil.type === 'SC' && (
               <div className="space-y-3">
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   County councils look after the big stuff for the whole area:
                 </p>
                 <div className="space-y-2.5">
-                  <div className="flex items-start gap-2.5 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div className="leading-relaxed"><strong>Social Care:</strong> Looking after older people and children who need help</div>
+                    <span className="leading-relaxed"><strong>Social Care:</strong> Looking after older people and children who need help</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div className="leading-relaxed"><strong>Education:</strong> School buses and helping children with extra needs</div>
+                    <span className="leading-relaxed"><strong>Education:</strong> School buses and helping children with extra needs</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div className="leading-relaxed"><strong>Roads:</strong> Main roads, fixing potholes, and traffic lights</div>
+                    <span className="leading-relaxed"><strong>Roads:</strong> Main roads, fixing potholes, and traffic lights</span>
                   </div>
                 </div>
               </div>
             )}
             {selectedCouncil.type === 'SD' && (
               <div className="space-y-3">
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   District councils look after local things in your area:
                 </p>
                 <div className="space-y-2.5">
-                  <div className="flex items-start gap-2.5 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div className="leading-relaxed"><strong>Housing:</strong> Helping people find homes</div>
+                    <span className="leading-relaxed"><strong>Housing:</strong> Helping people find homes</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div className="leading-relaxed"><strong>Planning:</strong> Deciding what buildings can be built</div>
+                    <span className="leading-relaxed"><strong>Planning:</strong> Deciding what buildings can be built</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-xs sm:text-sm">
+                  <div className="flex items-start gap-2.5 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                    <div className="leading-relaxed"><strong>Bins:</strong> Collecting rubbish and recycling</div>
+                    <span className="leading-relaxed"><strong>Bins:</strong> Collecting rubbish and recycling</span>
                   </div>
                 </div>
               </div>
             )}
             {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') && (
               <div className="space-y-2">
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   This council does everything! They look after social care, schools, housing, planning, bins, roads, and more - all in one place.
                 </p>
               </div>

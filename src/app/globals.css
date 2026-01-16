@@ -116,8 +116,49 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    /* Base font size 16px, scales smoothly */
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
     @apply bg-background text-foreground;
+    /* Optimal line height for body text readability */
+    line-height: 1.6;
+    /* Slight letter spacing for improved readability */
+    letter-spacing: -0.011em;
+  }
+
+  /* Heading styles with proper hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  /* Paragraph spacing */
+  p {
+    margin-bottom: 1em;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Ensure minimum tap targets for accessibility */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline links */
+  p a, span a, li a {
+    min-height: auto;
+    min-width: auto;
   }
 }
 

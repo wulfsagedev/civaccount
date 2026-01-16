@@ -37,20 +37,17 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Disclaimer - Simple black/white */}
-          <div className="text-center text-xs text-muted-foreground border-t pt-4">
-            <p className="mb-1">
-              This is not an official government website. Council tax figures shown are for each council only - your total bill includes other charges.
+          {/* Disclaimer */}
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>
+              This is not an official government website. Council tax figures shown are for each council only.
             </p>
           </div>
 
           {/* Copyright */}
-          <div className="text-center text-xs text-muted-foreground">
+          <div className="text-center text-sm text-muted-foreground">
             <p>
-              <strong>CivAccount</strong> - UK Council Budget Dashboard
-            </p>
-            <p className="mt-1">
-              Data from official UK government sources. Last updated January 2025.
+              <strong>CivAccount</strong> · Data from official UK government sources · Updated January 2025
             </p>
           </div>
         </div>
