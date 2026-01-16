@@ -103,10 +103,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
             {/* Header row: badges + change button */}
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">
+                <Badge variant="secondary" className="text-xs font-medium">
                   {selectedCouncil.type_name}
                 </Badge>
-                <Badge variant="outline" className="text-[10px] sm:text-xs font-medium">
+                <Badge variant="outline" className="text-xs font-medium">
                   2025-26
                 </Badge>
               </div>
@@ -114,28 +114,28 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                 variant="outline"
                 size="sm"
                 onClick={handleBackToSearch}
-                className="flex items-center gap-1.5 shrink-0 text-xs sm:text-sm"
+                className="flex items-center gap-1.5 shrink-0"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Change
               </Button>
             </div>
 
-            {/* Council name */}
-            <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl text-foreground leading-tight mb-1">
+            {/* Council name - clear hierarchy */}
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-2">
               {displayName}
-            </h2>
+            </h1>
 
             {/* Band D info */}
             {bandDAmount && (
-              <p className="text-sm sm:text-base text-muted-foreground mb-3">
+              <p className="text-base text-muted-foreground mb-3">
                 Band D: <span className="font-semibold text-foreground">{bandDAmount}</span>/year
               </p>
             )}
 
-            {/* Explainer text - no background, just subtle text */}
+            {/* Explainer text */}
             {explainerText && (
-              <p className="text-xs sm:text-sm text-muted-foreground/80 leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 {explainerText}
               </p>
             )}
@@ -152,7 +152,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
         <div className="space-y-6">
           {/* Search Input - Primary focus */}
           <div className="relative shadow-lg rounded-2xl">
-            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-muted-foreground" />
+            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
             <input
               ref={inputRef}
               type="text"
@@ -160,7 +160,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full pl-14 pr-6 py-5 text-xl bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
+              className="w-full pl-12 sm:pl-14 pr-4 sm:pr-6 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
               autoFocus
             />
           </div>
@@ -183,22 +183,22 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                     key={council.ons_code}
                     data-council-item
                     onClick={() => handleSelect(council)}
-                    className={`w-full p-3 text-left rounded-xl transition-all ${
+                    className={`w-full p-3 sm:p-4 text-left rounded-xl transition-all ${
                       isHighlighted
                         ? 'bg-muted-foreground/15 shadow-sm'
                         : 'hover:bg-muted/70'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="font-medium text-sm truncate text-foreground">
+                        <p className="font-medium text-base truncate text-foreground">
                           {displayName}
                         </p>
-                        <p className="text-xs mt-0.5 text-muted-foreground">
+                        <p className="text-sm mt-0.5 text-muted-foreground">
                           {council.type_name}
                         </p>
                       </div>
-                      <div className="text-right shrink-0 text-xs text-muted-foreground">
+                      <div className="text-right shrink-0 text-sm text-muted-foreground">
                         {council.council_tax && (
                           <p>£{council.council_tax.band_d_2025.toFixed(0)}/yr</p>
                         )}
@@ -210,10 +210,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
             )}
           </div>
 
-          <p className="text-xs text-center text-muted-foreground/70">
+          <p className="text-sm text-center text-muted-foreground">
             {searchQuery
-              ? `${filteredCouncils.length} councils found · Press Enter to select`
-              : `${councils.length} councils in England · Use ↑↓ to navigate`
+              ? `${filteredCouncils.length} councils found`
+              : `${councils.length} councils in England`
             }
           </p>
         </div>
