@@ -12,7 +12,8 @@ export default function AboutPage() {
       <Header />
 
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-4xl">
+        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-7xl">
+          <div className="max-w-4xl mx-auto">
           {/* Page Header */}
           <div className="text-center mb-10 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold mb-4">Why We Built CivAccount</h1>
@@ -179,6 +180,7 @@ export default function AboutPage() {
             >
               Find Your Council
             </Link>
+          </div>
           </div>
         </div>
       </main>

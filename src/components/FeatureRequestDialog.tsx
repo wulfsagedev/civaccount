@@ -57,7 +57,7 @@ export default function FeatureRequestDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 gap-1.5 hover:bg-accent">
+        <Button variant="ghost" size="sm" className="h-9 px-3 gap-1.5 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
           <PenLine className="h-4 w-4" />
           <span className="hidden sm:inline text-sm">Feedback</span>
         </Button>

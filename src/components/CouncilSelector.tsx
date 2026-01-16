@@ -114,7 +114,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                 variant="outline"
                 size="sm"
                 onClick={handleBackToSearch}
-                className="flex items-center gap-2 shrink-0"
+                className="flex items-center gap-2 shrink-0 cursor-pointer"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Change
