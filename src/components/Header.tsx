@@ -35,8 +35,11 @@ export default function Header() {
             </Link>
           </div>
 
-          <nav className="flex items-center gap-3 sm:gap-4">
-            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <nav className="flex items-center gap-2">
+            <Link
+              href="/about"
+              className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+            >
               About
             </Link>
             <FeatureRequestDialog />
