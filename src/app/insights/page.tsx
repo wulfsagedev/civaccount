@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -28,6 +28,10 @@ import Footer from '@/components/Footer';
 import { councils, COUNCIL_TYPE_NAMES, formatCurrency, getCouncilPopulation, getNationalEfficiencyStats } from '@/data/councils';
 
 export default function InsightsPage() {
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   // Calculate all statistics
   const stats = useMemo(() => {
     const councilsWithTax = councils.filter(c => c.council_tax?.band_d_2025);
