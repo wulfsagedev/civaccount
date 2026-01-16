@@ -114,6 +114,29 @@ export default function InsightsPage() {
 
     const totalServiceSpending = serviceSpendingArray.reduce((sum, s) => sum + s.value, 0);
 
+    // Spending by council type
+    const spendingByType: Record<string, { total: number; count: number; services: Record<string, number> }> = {};
+    councilsWithBudget.forEach(c => {
+      if (!c.budget || !c.type) return;
+      if (!spendingByType[c.type]) {
+        spendingByType[c.type] = { total: 0, count: 0, services: {} };
+      }
+      spendingByType[c.type].count++;
+      spendingByType[c.type].total += (c.budget.total_service || 0) * 1000;
+
+      // Track service spending
+      const budget = c.budget;
+      if (budget) {
+        const services = ['adult_social_care', 'childrens_social_care', 'education', 'environmental', 'housing', 'transport'] as const;
+        services.forEach(service => {
+          const value = budget[service];
+          if (typeof value === 'number') {
+            spendingByType[c.type].services[service] = (spendingByType[c.type].services[service] || 0) + value * 1000;
+          }
+        });
+      }
+    });
+
     // Price bands distribution
     const priceBands = [
       { label: 'Under £200', min: 0, max: 200, count: 0 },
@@ -147,22 +170,67 @@ export default function InsightsPage() {
       totalBudget,
       serviceSpendingArray,
       totalServiceSpending,
+      spendingByType,
       priceBands
     };
   }, []);
 
-  const SERVICE_NAMES: Record<string, string> = {
-    adult_social_care: 'Adult Social Care',
-    childrens_social_care: "Children's Services",
-    education: 'Education',
-    transport: 'Roads & Transport',
-    public_health: 'Public Health',
-    housing: 'Housing',
-    cultural: 'Culture & Leisure',
-    environmental: 'Environment',
-    planning: 'Planning',
-    central_services: 'Central Services'
+  const SERVICE_INFO: Record<string, { name: string; description: string; includes: string[] }> = {
+    adult_social_care: {
+      name: 'Adult Social Care',
+      description: 'Support for elderly and disabled adults',
+      includes: ['Care homes', 'Home care visits', 'Day centres', 'Mental health support', 'Learning disability services', 'Safeguarding adults']
+    },
+    childrens_social_care: {
+      name: "Children's Services",
+      description: 'Protection and support for children and families',
+      includes: ['Child protection', 'Foster care', 'Adoption services', 'Family support', 'Children in care', 'Youth services']
+    },
+    education: {
+      name: 'Education',
+      description: 'Schools and learning support',
+      includes: ['School transport', 'Special educational needs (SEND)', 'Early years funding', 'School improvement', 'Adult education', 'Education welfare']
+    },
+    transport: {
+      name: 'Roads & Transport',
+      description: 'Getting around your area',
+      includes: ['Road maintenance', 'Street lighting', 'Traffic management', 'Bus subsidies', 'Parking services', 'Highway drainage']
+    },
+    public_health: {
+      name: 'Public Health',
+      description: 'Keeping communities healthy',
+      includes: ['Health visitors', 'Sexual health services', 'Drug & alcohol support', 'Smoking cessation', 'Obesity programmes', 'Health checks']
+    },
+    housing: {
+      name: 'Housing',
+      description: 'Homes and homelessness prevention',
+      includes: ['Homelessness prevention', 'Housing advice', 'Council housing management', 'Housing benefit admin', 'Private sector housing standards']
+    },
+    cultural: {
+      name: 'Culture & Leisure',
+      description: 'Recreation and community facilities',
+      includes: ['Libraries', 'Museums', 'Sports centres', 'Parks maintenance', 'Arts funding', 'Community centres']
+    },
+    environmental: {
+      name: 'Environment',
+      description: 'Waste and local environment',
+      includes: ['Bin collections', 'Recycling', 'Street cleaning', 'Environmental health', 'Trading standards', 'Pest control']
+    },
+    planning: {
+      name: 'Planning',
+      description: 'Development and land use',
+      includes: ['Planning applications', 'Building control', 'Local plans', 'Conservation', 'Enforcement', 'Land charges']
+    },
+    central_services: {
+      name: 'Central Services',
+      description: 'Running the council',
+      includes: ['Council tax collection', 'HR & payroll', 'IT systems', 'Legal services', 'Democratic services', 'Finance']
+    }
   };
+
+  const SERVICE_NAMES: Record<string, string> = Object.fromEntries(
+    Object.entries(SERVICE_INFO).map(([key, info]) => [key, info.name])
+  );
 
   const formatBillions = (amount: number) => {
     if (amount >= 1000000000) {
@@ -444,33 +512,126 @@ export default function InsightsPage() {
               </div>
             </CardHeader>
             <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="space-y-4">
-                {stats.serviceSpendingArray.slice(0, 6).map((service) => {
+              <div className="space-y-6">
+                {stats.serviceSpendingArray.map((service) => {
                   const percentage = (service.value / stats.totalServiceSpending) * 100;
+                  const info = SERVICE_INFO[service.key];
                   return (
-                    <div key={service.key} className="space-y-2">
+                    <div key={service.key} className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium">{SERVICE_NAMES[service.key]}</span>
-                        <div className="text-right">
+                        <div>
+                          <span className="font-medium">{SERVICE_NAMES[service.key]}</span>
+                          <p className="text-xs text-muted-foreground mt-0.5">{info?.description}</p>
+                        </div>
+                        <div className="text-right shrink-0 ml-4">
                           <span className="font-bold">{formatBillions(service.value)}</span>
                           <span className="text-muted-foreground ml-2">({percentage.toFixed(0)}%)</span>
                         </div>
                       </div>
                       <Progress value={percentage} className="h-3" />
+                      {info?.includes && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {info.includes.slice(0, 4).map((item) => (
+                            <Badge key={item} variant="secondary" className="text-xs font-normal">
+                              {item}
+                            </Badge>
+                          ))}
+                          {info.includes.length > 4 && (
+                            <Badge variant="outline" className="text-xs font-normal">
+                              +{info.includes.length - 4} more
+                            </Badge>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
               <div className="mt-6 p-4 bg-primary/5 rounded-xl">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-4 w-4 mt-0.5 text-primary" />
+                  <Info className="h-4 w-4 mt-0.5 text-primary" />
                   <div className="text-sm">
-                    <p className="font-medium text-primary mb-1">Social care dominates council budgets</p>
+                    <p className="font-medium text-primary mb-1">Education and social care dominate council budgets</p>
                     <p className="text-primary/80">
-                      Adult and children&apos;s social care together account for over half of most councils&apos; spending.
-                      This is the main reason council tax keeps rising - demand for care services grows every year as the population ages.
+                      Education (including school transport and special needs) is the single largest category, followed by adult and children&apos;s social care.
+                      Together, these three services account for around 80% of total council spending - and demand keeps growing.
                     </p>
                   </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Spending by Council Type */}
+          <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
+            <CardHeader className="p-5 sm:p-6 pb-4">
+              <div className="flex items-center gap-3">
+                <Building className="h-5 w-5 text-primary opacity-70" />
+                <div>
+                  <CardTitle className="text-lg sm:text-xl font-semibold">How Spending Varies by Council Type</CardTitle>
+                  <CardDescription>Different councils have very different spending priorities</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {Object.entries(stats.spendingByType)
+                  .filter(([, data]) => data.total > 0)
+                  .sort((a, b) => b[1].total - a[1].total)
+                  .slice(0, 4)
+                  .map(([type, data]) => {
+                    const topServices = Object.entries(data.services)
+                      .sort((a, b) => b[1] - a[1])
+                      .slice(0, 3);
+                    const hasEducation = data.services.education > 0;
+                    const hasSocialCare = (data.services.adult_social_care || 0) > 0;
+
+                    return (
+                      <div key={type} className="p-4 border rounded-xl">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <span className="font-semibold">{COUNCIL_TYPE_NAMES[type]}</span>
+                            <p className="text-xs text-muted-foreground">{data.count} councils</p>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">{formatBillions(data.total)} total</Badge>
+                        </div>
+
+                        <div className="space-y-2 mb-3">
+                          {topServices.map(([service, amount]) => {
+                            const percentage = (amount / data.total) * 100;
+                            return (
+                              <div key={service} className="space-y-1">
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-muted-foreground">{SERVICE_NAMES[service]}</span>
+                                  <span className="font-medium">{percentage.toFixed(0)}%</span>
+                                </div>
+                                <Progress value={percentage} className="h-1.5" />
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <p className="text-xs text-muted-foreground">
+                          {hasEducation && hasSocialCare
+                            ? 'Provides all services including education and social care'
+                            : hasEducation
+                            ? 'Handles education but not social care'
+                            : hasSocialCare
+                            ? 'Handles social care but education is separate'
+                            : 'Focuses on local services like bins, planning, and housing'}
+                        </p>
+                      </div>
+                    );
+                  })}
+              </div>
+              <div className="mt-6 p-4 bg-muted/50 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <Info className="h-4 w-4 mt-0.5 text-primary" />
+                  <p className="text-sm text-muted-foreground">
+                    <strong className="text-foreground">Why such big differences?</strong> County councils and unitary authorities handle
+                    expensive services like education and social care. District councils focus on local services like bins, planning,
+                    and housing - which is why their budgets are much smaller.
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -509,10 +670,10 @@ export default function InsightsPage() {
                 <div className="p-4 bg-muted/50 rounded-xl">
                   <div className="flex items-center gap-2 mb-2">
                     <Users className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-sm">Social Care Pressure</span>
+                    <span className="font-semibold text-sm">Education & Care Dominate</span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Adult social care is the single biggest cost for most councils. An ageing population means this keeps growing.
+                    Education, adult social care, and children&apos;s services together make up around 80% of council spending.
                   </p>
                 </div>
 
