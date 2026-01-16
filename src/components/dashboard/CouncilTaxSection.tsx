@@ -96,12 +96,16 @@ const CouncilTaxSection = () => {
             {Object.entries(councilTaxData.bands).map(([band, data]) => (
               <Button
                 key={band}
-                variant={selectedBand === band ? "default" : "outline"}
+                variant="outline"
                 onClick={() => setSelectedBand(band)}
-                className={`h-auto p-2.5 sm:p-4 flex flex-col items-center rounded-xl ${selectedBand !== band ? 'border-muted-foreground/20 hover:border-muted-foreground/40' : ''}`}
+                className={`h-auto p-2.5 sm:p-4 flex flex-col items-center rounded-xl ${
+                  selectedBand === band
+                    ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
+                    : 'border-muted-foreground/20 hover:border-muted-foreground/40'
+                }`}
               >
                 <div className="font-bold text-xs sm:text-base">Band {band}</div>
-                <div className="text-xs text-center mt-0.5 leading-tight opacity-80">
+                <div className={`text-xs text-center mt-0.5 leading-tight ${selectedBand === band ? 'opacity-80' : 'opacity-60'}`}>
                   £{Math.round(data.amount).toLocaleString('en-GB')}
                 </div>
               </Button>

@@ -6,6 +6,7 @@ import { Landmark } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
 import FeatureRequestDialog from '@/components/FeatureRequestDialog';
+import SearchCommand from '@/components/SearchCommand';
 
 export default function Header() {
   const { setSelectedCouncil } = useCouncil();
@@ -37,6 +38,7 @@ export default function Header() {
           </div>
 
           <nav className="flex items-center gap-2">
+            <SearchCommand />
             <Link
               href="/insights"
               className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"

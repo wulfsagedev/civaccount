@@ -22,10 +22,14 @@ const updates = [
       "Council tax calculator for all bands (A-H)",
       "Detailed precept breakdown showing district, county, police and fire contributions",
       "Council-specific verified data sources with direct links",
+      "Population data from ONS mid-2024 estimates for all councils",
+      "Per-capita spending and efficiency metrics",
+      "Administrative overhead comparisons across councils",
+      "National Insights page with aggregate statistics",
+      "Keyboard shortcut (F) to search from any page",
       "Feedback button for feature requests and bug reports",
       "Dark mode syncs with system settings automatically",
-      "Modernised UI with consistent card styling",
-      "Improved visual hierarchy and cleaner design"
+      "Modernised UI with consistent card styling"
     ]
   },
   {
