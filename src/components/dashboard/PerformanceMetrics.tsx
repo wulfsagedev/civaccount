@@ -2,8 +2,9 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Calendar, PoundSterling, Building, Receipt, CheckCircle, AlertTriangle, Info, Search, ClipboardList } from 'lucide-react';
+import { TrendingUp, Calendar, PoundSterling, Building, Receipt, CheckCircle, AlertTriangle, Info, Search, ClipboardList, Percent, Users } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
+import { calculateEfficiencyMetrics, getCouncilPopulation, formatCurrency } from '@/data/councils';
 
 const PerformanceMetrics = () => {
   const { selectedCouncil } = useCouncil();
@@ -17,6 +18,10 @@ const PerformanceMetrics = () => {
       </Card>
     );
   }
+
+  // Get efficiency metrics (after null check)
+  const efficiencyMetrics = calculateEfficiencyMetrics(selectedCouncil);
+  const population = getCouncilPopulation(selectedCouncil.name);
 
   return (
     <div className="space-y-6">
@@ -69,6 +74,50 @@ const PerformanceMetrics = () => {
           </div>
         </Card>
       </div>
+
+      {/* Efficiency Metrics */}
+      {(efficiencyMetrics || population) && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {population && (
+            <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-primary opacity-70" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Population Served</p>
+                  <p className="text-lg font-bold text-primary">{population.toLocaleString('en-GB')}</p>
+                  <p className="text-xs text-muted-foreground">ONS mid-2024 estimate</p>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {efficiencyMetrics?.perCapitaSpending && (
+            <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <PoundSterling className="h-5 w-5 text-primary opacity-70" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Spending Per Person</p>
+                  <p className="text-lg font-bold text-primary">{formatCurrency(efficiencyMetrics.perCapitaSpending, { decimals: 0 })}</p>
+                  <p className="text-xs text-muted-foreground">Total budget ÷ population</p>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {efficiencyMetrics?.adminOverheadPercent !== null && efficiencyMetrics?.adminOverheadPercent !== undefined && (
+            <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <Percent className="h-5 w-5 text-primary opacity-70" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Admin Overhead</p>
+                  <p className="text-lg font-bold text-primary">{efficiencyMetrics.adminOverheadPercent.toFixed(1)}%</p>
+                  <p className="text-xs text-muted-foreground">Central services as % of budget</p>
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
+      )}
 
       {/* Performance Note */}
       <Card className="border border-border/40 bg-card shadow-sm rounded-xl">

@@ -1,6 +1,8 @@
 // Auto-generated UK Council Data
-// Sources: GOV.UK Council Tax 2025-26, Revenue Expenditure 2024-25
+// Sources: GOV.UK Council Tax 2025-26, Revenue Expenditure 2024-25, ONS Mid-2024 Population Estimates
 // Last updated: January 2025
+
+import { populationData } from './population';
 
 export interface CouncilBudget {
   education: number | null;
@@ -8617,3 +8619,109 @@ export const councilStats = {
   withCouncilTax: councils.filter(c => c.council_tax).length,
   withBudget: councils.filter(c => c.budget).length,
 };
+
+// Population helper functions
+export function getCouncilPopulation(councilName: string): number | undefined {
+  // Direct match
+  if (populationData[councilName]) {
+    return populationData[councilName];
+  }
+
+  // Try common variations
+  const normalizedName = councilName
+    .replace(' Council', '')
+    .replace(' Borough Council', '')
+    .replace(' District Council', '')
+    .replace(' County Council', '')
+    .replace(' City Council', '')
+    .replace(', City of', '')
+    .replace(' UA', '')
+    .trim();
+
+  return populationData[normalizedName];
+}
+
+// Efficiency metrics calculations
+export interface EfficiencyMetrics {
+  perCapitaSpending: number | null;  // Total spending per person
+  adminOverheadPercent: number | null;  // Central services as % of total
+  serviceSpendingPerCapita: Record<string, number>;  // Per-capita by service
+}
+
+export function calculateEfficiencyMetrics(council: Council): EfficiencyMetrics | null {
+  const population = getCouncilPopulation(council.name);
+
+  if (!population || !council.budget?.total_service) {
+    return null;
+  }
+
+  const totalBudget = council.budget.total_service * 1000; // Convert from thousands
+  const centralServices = council.budget.central_services ? council.budget.central_services * 1000 : 0;
+
+  const serviceSpendingPerCapita: Record<string, number> = {};
+  const services = [
+    'education', 'transport', 'childrens_social_care', 'adult_social_care',
+    'public_health', 'housing', 'cultural', 'environmental', 'planning', 'central_services'
+  ] as const;
+
+  for (const service of services) {
+    const amount = council.budget[service];
+    if (amount !== null && amount > 0) {
+      serviceSpendingPerCapita[service] = (amount * 1000) / population;
+    }
+  }
+
+  return {
+    perCapitaSpending: totalBudget / population,
+    adminOverheadPercent: totalBudget > 0 ? (centralServices / totalBudget) * 100 : null,
+    serviceSpendingPerCapita,
+  };
+}
+
+// Get councils with population data
+export function getCouncilsWithPopulation(): (Council & { population: number })[] {
+  return councils
+    .map(c => ({
+      ...c,
+      population: getCouncilPopulation(c.name) || 0,
+    }))
+    .filter(c => c.population > 0);
+}
+
+// Calculate national efficiency statistics
+export function getNationalEfficiencyStats() {
+  const councilsWithData = councils
+    .filter(c => c.budget?.total_service && getCouncilPopulation(c.name))
+    .map(c => {
+      const population = getCouncilPopulation(c.name)!;
+      const totalBudget = c.budget!.total_service! * 1000;
+      const centralServices = c.budget!.central_services ? c.budget!.central_services * 1000 : 0;
+
+      return {
+        council: c,
+        population,
+        perCapitaSpending: totalBudget / population,
+        adminOverheadPercent: totalBudget > 0 ? (centralServices / totalBudget) * 100 : 0,
+      };
+    });
+
+  if (councilsWithData.length === 0) {
+    return null;
+  }
+
+  const avgPerCapita = councilsWithData.reduce((sum, c) => sum + c.perCapitaSpending, 0) / councilsWithData.length;
+  const avgAdminOverhead = councilsWithData.reduce((sum, c) => sum + c.adminOverheadPercent, 0) / councilsWithData.length;
+
+  const sortedByPerCapita = [...councilsWithData].sort((a, b) => a.perCapitaSpending - b.perCapitaSpending);
+  const sortedByAdmin = [...councilsWithData].sort((a, b) => a.adminOverheadPercent - b.adminOverheadPercent);
+
+  return {
+    totalCouncilsAnalysed: councilsWithData.length,
+    averagePerCapitaSpending: avgPerCapita,
+    averageAdminOverhead: avgAdminOverhead,
+    lowestPerCapita: sortedByPerCapita.slice(0, 5),
+    highestPerCapita: sortedByPerCapita.slice(-5).reverse(),
+    lowestAdminOverhead: sortedByAdmin.slice(0, 5),
+    highestAdminOverhead: sortedByAdmin.slice(-5).reverse(),
+  };
+}
