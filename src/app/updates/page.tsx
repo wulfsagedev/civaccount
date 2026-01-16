@@ -56,10 +56,11 @@ export default function UpdatesPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main className="flex-1 container mx-auto px-4 py-8 sm:px-6 sm:py-10 max-w-4xl">
+      <main className="flex-1 container mx-auto px-4 py-8 sm:px-6 sm:py-10 max-w-7xl">
+        <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <Link href="/">
-            <Button variant="ghost" size="sm" className="gap-2">
+            <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
               <ArrowLeft className="h-4 w-4" />
               Back to Home
             </Button>
@@ -148,6 +149,7 @@ export default function UpdatesPage() {
               </p>
             </CardContent>
           </Card>
+        </div>
         </div>
       </main>
 
