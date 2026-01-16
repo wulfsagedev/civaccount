@@ -98,62 +98,46 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
 
     return (
       <div className="w-full">
-        <Card className="border border-border/40 bg-card shadow-sm overflow-hidden">
-          <CardContent className="p-0">
-            {/* Main content area */}
-            <div className="p-4 sm:p-5">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                {/* Left: Council info */}
-                <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
-                  <div className="p-2.5 sm:p-3 bg-primary/10 rounded-xl shrink-0">
-                    <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    {/* Header row with badges */}
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">
-                        {selectedCouncil.type_name}
-                      </Badge>
-                      <Badge variant="outline" className="text-[10px] sm:text-xs font-medium">
-                        2025-26
-                      </Badge>
-                    </div>
-
-                    {/* Council name */}
-                    <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl text-foreground leading-tight mb-1">
-                      {displayName}
-                    </h2>
-
-                    {/* Band D info */}
-                    {bandDAmount && (
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        Band D: <span className="font-semibold text-foreground">{bandDAmount}</span>/year
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right: Back button */}
-                <Button
-                  variant="outline"
-                  size="default"
-                  onClick={handleBackToSearch}
-                  className="flex items-center gap-2 shrink-0 self-start sm:self-center"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  <span className="hidden sm:inline">Change Council</span>
-                  <span className="sm:hidden">Change</span>
-                </Button>
+        <Card className="border border-border/40 bg-card shadow-sm">
+          <CardContent className="p-4 sm:p-5">
+            {/* Header row: badges + change button */}
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">
+                  {selectedCouncil.type_name}
+                </Badge>
+                <Badge variant="outline" className="text-[10px] sm:text-xs font-medium">
+                  2025-26
+                </Badge>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBackToSearch}
+                className="flex items-center gap-1.5 shrink-0 text-xs sm:text-sm"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Change
+              </Button>
             </div>
 
-            {/* Explainer footer */}
+            {/* Council name */}
+            <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl text-foreground leading-tight mb-1">
+              {displayName}
+            </h2>
+
+            {/* Band D info */}
+            {bandDAmount && (
+              <p className="text-sm sm:text-base text-muted-foreground mb-3">
+                Band D: <span className="font-semibold text-foreground">{bandDAmount}</span>/year
+              </p>
+            )}
+
+            {/* Explainer text - no background, just subtle text */}
             {explainerText && (
-              <div className="px-4 sm:px-5 py-3 bg-muted/50 border-t border-border/40">
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  {explainerText}
-                </p>
-              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground/80 leading-relaxed">
+                {explainerText}
+              </p>
             )}
           </CardContent>
         </Card>
