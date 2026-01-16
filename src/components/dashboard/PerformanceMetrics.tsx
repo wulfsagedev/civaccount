@@ -86,7 +86,7 @@ const PerformanceMetrics = () => {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-muted rounded-xl">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />
                   Where to Look
@@ -100,7 +100,7 @@ const PerformanceMetrics = () => {
                 </ul>
               </div>
 
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-muted rounded-xl">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Target className="h-4 w-4 text-primary" />
                   What They Measure
@@ -132,7 +132,7 @@ const PerformanceMetrics = () => {
         <CardContent className="space-y-4">
           {(selectedCouncil.type === 'SC' || selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD') && (
             <>
-              <div className="p-4 border rounded-lg">
+              <div className="p-4 border rounded-xl">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">Adult Social Care</h4>
                   <Badge variant="secondary">High Demand</Badge>
@@ -146,7 +146,7 @@ const PerformanceMetrics = () => {
                 </div>
               </div>
 
-              <div className="p-4 border rounded-lg">
+              <div className="p-4 border rounded-xl">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">Children&apos;s Services</h4>
                   <Badge variant="secondary">High Demand</Badge>
@@ -162,7 +162,7 @@ const PerformanceMetrics = () => {
             </>
           )}
 
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border rounded-xl">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold">Roads & Environment</h4>
               <Badge variant="default">Core Service</Badge>
@@ -177,7 +177,7 @@ const PerformanceMetrics = () => {
           </div>
 
           {(selectedCouncil.type === 'SD' || selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD') && (
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border rounded-xl">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">Planning</h4>
                 <Badge variant="secondary">Core Service</Badge>
@@ -193,7 +193,7 @@ const PerformanceMetrics = () => {
           )}
 
           {(selectedCouncil.type === 'SD' || selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD') && (
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border rounded-xl">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">Housing</h4>
                 <Badge variant="secondary">Core Service</Badge>

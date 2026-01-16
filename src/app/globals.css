@@ -37,14 +37,28 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.375rem;  /* 6px - small elements like badges */
+  --radius-md: 0.5rem;    /* 8px - buttons, inputs */
+  --radius-lg: 0.75rem;   /* 12px - cards, containers */
+  --radius-xl: 1rem;      /* 16px - large cards, modals */
+  --radius-2xl: 1.25rem;  /* 20px - featured elements */
+  --radius-full: 9999px;  /* pills, avatars */
 }
 
 :root {
-  --radius: 0.625rem;
+  /* 8pt spacing system - modern standard */
+  --spacing-1: 0.25rem;  /* 4px - micro adjustments */
+  --spacing-2: 0.5rem;   /* 8px - tight spacing */
+  --spacing-3: 0.75rem;  /* 12px - compact */
+  --spacing-4: 1rem;     /* 16px - standard */
+  --spacing-5: 1.25rem;  /* 20px - comfortable */
+  --spacing-6: 1.5rem;   /* 24px - generous */
+  --spacing-8: 2rem;     /* 32px - section gaps */
+  --spacing-10: 2.5rem;  /* 40px - large sections */
+  --spacing-12: 3rem;    /* 48px - page sections */
+
+  /* Modern radius system */
+  --radius: 0.75rem;     /* 12px - default for cards */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -155,8 +169,14 @@
     min-width: 44px;
   }
 
-  /* Exception for inline links */
-  p a, span a, li a {
+  /* Exception for inline links and small elements */
+  p a, span a, li a, .badge, [data-slot="badge"] {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Exception for grid/flex item buttons */
+  .grid button, .flex button {
     min-height: auto;
     min-width: auto;
   }

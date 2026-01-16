@@ -183,17 +183,17 @@ const BudgetOverview = () => {
   ];
 
   return (
-    <div className="space-y-5 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {keyMetrics.map((metric, index) => (
-          <Card key={index} className="border border-border/40 bg-card shadow-sm">
-            <CardContent className="p-4 sm:p-5">
-              <div className="flex items-center justify-between mb-3">
+          <Card key={index} className="border border-border/40 bg-card shadow-sm rounded-xl">
+            <CardContent className="p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
                 <Badge variant="secondary" className="text-xs font-medium">{metric.badge}</Badge>
-                <metric.icon className="h-4 w-4 text-muted-foreground" />
+                <metric.icon className="h-5 w-5 text-muted-foreground" />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">{metric.value}</p>
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">{metric.value}</p>
               <p className="text-sm text-muted-foreground leading-relaxed">{metric.description}</p>
             </CardContent>
           </Card>
@@ -202,20 +202,20 @@ const BudgetOverview = () => {
 
       {/* Budget Breakdown */}
       {budgetBreakdown.length > 0 ? (
-        <Card className="border border-border/40 bg-card shadow-sm">
-          <CardHeader className="p-4 sm:p-6 pb-4">
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+          <CardHeader className="p-5 sm:p-6 pb-4">
             <CardTitle className="text-lg sm:text-xl font-semibold">Where Your Money Goes</CardTitle>
-            <CardDescription className="text-sm sm:text-base leading-relaxed">
+            <CardDescription className="text-sm sm:text-base leading-relaxed mt-1">
               How {selectedCouncil.name} spends money across different services
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-            <div className="space-y-5 sm:space-y-6">
+          <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
+            <div className="space-y-6">
               {budgetBreakdown.map((item, index) => (
-                <div key={index} className="space-y-2.5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center space-x-2.5 min-w-0">
-                      <item.icon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-muted-foreground/70" />
+                <div key={index} className="space-y-3">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <item.icon className="h-5 w-5 shrink-0 text-muted-foreground/70" />
                       <span className="font-medium text-sm sm:text-base truncate">{item.category}</span>
                       {item.percentage > 20 && (
                         <Badge
@@ -241,9 +241,9 @@ const BudgetOverview = () => {
           </CardContent>
         </Card>
       ) : (
-        <Card className="border border-border/40 bg-card shadow-sm">
-          <CardContent className="p-5 sm:p-6">
-            <div className="flex items-center gap-3 text-muted-foreground">
+        <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4 text-muted-foreground">
               <Info className="h-5 w-5" />
               <p className="text-sm sm:text-base">Detailed budget breakdown not available for this council.</p>
             </div>
@@ -252,33 +252,33 @@ const BudgetOverview = () => {
       )}
 
       {/* Context Box */}
-      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-3">
-          <div className="flex items-center gap-2.5">
+      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm rounded-xl">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
             <AlertTriangle className="h-5 w-5 text-primary" />
             <CardTitle className="text-base sm:text-lg font-semibold">What Does This Council Do?</CardTitle>
           </div>
         </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-3 sm:space-y-4">
+        <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
+          <div className="space-y-4">
             <p className="text-sm sm:text-base">
               <strong>{selectedCouncil.name} is a {selectedCouncil.type_name}.</strong>
             </p>
             {selectedCouncil.type === 'SC' && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   County councils look after the big stuff for the whole area:
                 </p>
-                <div className="space-y-2.5">
-                  <div className="flex items-start gap-2.5 text-sm">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed"><strong>Social Care:</strong> Looking after older people and children who need help</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-sm">
+                  <div className="flex items-start gap-3 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed"><strong>Education:</strong> School buses and helping children with extra needs</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-sm">
+                  <div className="flex items-start gap-3 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed"><strong>Roads:</strong> Main roads, fixing potholes, and traffic lights</span>
                   </div>
@@ -286,20 +286,20 @@ const BudgetOverview = () => {
               </div>
             )}
             {selectedCouncil.type === 'SD' && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   District councils look after local things in your area:
                 </p>
-                <div className="space-y-2.5">
-                  <div className="flex items-start gap-2.5 text-sm">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed"><strong>Housing:</strong> Helping people find homes</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-sm">
+                  <div className="flex items-start gap-3 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed"><strong>Planning:</strong> Deciding what buildings can be built</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-sm">
+                  <div className="flex items-start gap-3 text-sm">
                     <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed"><strong>Bins:</strong> Collecting rubbish and recycling</span>
                   </div>
@@ -307,7 +307,7 @@ const BudgetOverview = () => {
               </div>
             )}
             {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   This council does everything! They look after social care, schools, housing, planning, bins, roads, and more - all in one place.
                 </p>
