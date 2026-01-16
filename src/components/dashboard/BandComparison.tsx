@@ -135,40 +135,56 @@ const BandComparison = () => {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             <Button
-              variant={selectedComparison === 'councils' ? "default" : "outline"}
+              variant="outline"
               onClick={() => setSelectedComparison('councils')}
-              className="h-auto p-3 flex flex-col gap-1"
+              className={`h-auto p-3 flex flex-col gap-1 ${
+                selectedComparison === 'councils'
+                  ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
+                  : ''
+              }`}
             >
               <MapPin className="h-4 w-4" />
               <span className="font-semibold text-sm">Similar Councils</span>
-              <span className="text-xs text-muted-foreground">Same council type</span>
+              <span className={`text-xs ${selectedComparison === 'councils' ? 'text-primary/70' : 'text-muted-foreground'}`}>Same council type</span>
             </Button>
             <Button
-              variant={selectedComparison === 'ranking' ? "default" : "outline"}
+              variant="outline"
               onClick={() => setSelectedComparison('ranking')}
-              className="h-auto p-3 flex flex-col gap-1"
+              className={`h-auto p-3 flex flex-col gap-1 ${
+                selectedComparison === 'ranking'
+                  ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
+                  : ''
+              }`}
             >
               <BarChart3 className="h-4 w-4" />
               <span className="font-semibold text-sm">Rankings</span>
-              <span className="text-xs text-muted-foreground">Highest & lowest</span>
+              <span className={`text-xs ${selectedComparison === 'ranking' ? 'text-primary/70' : 'text-muted-foreground'}`}>Highest & lowest</span>
             </Button>
             <Button
-              variant={selectedComparison === 'averages' ? "default" : "outline"}
+              variant="outline"
               onClick={() => setSelectedComparison('averages')}
-              className="h-auto p-3 flex flex-col gap-1"
+              className={`h-auto p-3 flex flex-col gap-1 ${
+                selectedComparison === 'averages'
+                  ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
+                  : ''
+              }`}
             >
               <Calculator className="h-4 w-4" />
               <span className="font-semibold text-sm">Averages</span>
-              <span className="text-xs text-muted-foreground">Type & national</span>
+              <span className={`text-xs ${selectedComparison === 'averages' ? 'text-primary/70' : 'text-muted-foreground'}`}>Type & national</span>
             </Button>
             <Button
-              variant={selectedComparison === 'historical' ? "default" : "outline"}
+              variant="outline"
               onClick={() => setSelectedComparison('historical')}
-              className="h-auto p-3 flex flex-col gap-1"
+              className={`h-auto p-3 flex flex-col gap-1 ${
+                selectedComparison === 'historical'
+                  ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
+                  : ''
+              }`}
             >
               <Clock className="h-4 w-4" />
               <span className="font-semibold text-sm">Over Time</span>
-              <span className="text-xs text-muted-foreground">Year-on-year</span>
+              <span className={`text-xs ${selectedComparison === 'historical' ? 'text-primary/70' : 'text-muted-foreground'}`}>Year-on-year</span>
             </Button>
           </div>
         </CardContent>
