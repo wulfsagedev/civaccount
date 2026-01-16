@@ -140,11 +140,11 @@ const ServiceSpending = () => {
   const dailyCost = currentService.amount / 365;
 
   return (
-    <div className="space-y-5 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Service Selector */}
       <Card className="border border-border/40 bg-card shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-4">
-          <div className="flex items-center gap-2.5">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
             <Settings className="h-5 w-5 text-primary opacity-70" />
             <div>
               <CardTitle className="text-lg sm:text-xl font-semibold">Explore {selectedCouncil.name} Services</CardTitle>
@@ -155,7 +155,7 @@ const ServiceSpending = () => {
           </div>
         </CardHeader>
         <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3">
             {services.map((service) => {
               const ServiceIcon = service.icon;
               return (
@@ -169,7 +169,7 @@ const ServiceSpending = () => {
                     <ServiceIcon className="h-4 w-4 shrink-0" />
                     <div className="font-semibold text-xs sm:text-sm truncate">{service.name}</div>
                   </div>
-                  <div className="text-[10px] sm:text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     {formatBudget(service.amount / 1000)} ({service.percentage.toFixed(1)}%)
                   </div>
                 </Button>
@@ -181,43 +181,43 @@ const ServiceSpending = () => {
 
       {/* Selected Service Details */}
       <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-4">
+        <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <currentService.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               <CardTitle className="text-lg sm:text-2xl font-semibold">{currentService.name}</CardTitle>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="default" className="text-[10px] sm:text-xs">{currentService.percentage.toFixed(1)}% of budget</Badge>
+              <Badge variant="default" className="text-xs">{currentService.percentage.toFixed(1)}% of budget</Badge>
             </div>
           </div>
           <CardDescription className="text-sm sm:text-base leading-relaxed">{currentService.description}</CardDescription>
         </CardHeader>
         <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
           {/* Key Stats */}
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-4 mb-5 sm:mb-6">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
             <div className="text-center p-3 sm:p-5 bg-background/80 rounded-xl">
               <div className="text-lg sm:text-2xl font-bold text-primary">
                 {formatBudget(currentService.amount / 1000)}
               </div>
-              <div className="text-[10px] sm:text-sm text-primary/80 mt-1">Annual Budget</div>
+              <div className="text-xs sm:text-sm text-primary/80 mt-1">Annual Budget</div>
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <div className="text-lg sm:text-2xl font-bold">
                 £{Math.round(dailyCost).toLocaleString()}
               </div>
-              <div className="text-[10px] sm:text-sm text-muted-foreground mt-1">Daily Cost</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Daily Cost</div>
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <div className="text-lg sm:text-2xl font-bold">
                 {currentService.percentage.toFixed(1)}%
               </div>
-              <div className="text-[10px] sm:text-sm text-muted-foreground mt-1">Share of Total</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Share of Total</div>
             </div>
           </div>
 
           {/* Service explanation based on council type */}
-          <div className="p-3.5 sm:p-4 bg-background/60 rounded-xl mb-4">
+          <div className="p-4 sm:p-4 bg-background/60 rounded-xl mb-4">
             <h4 className="font-semibold mb-2.5 flex items-center gap-2 text-sm sm:text-base">
               <Info className="h-4 w-4 opacity-70" />
               What does this service do?
@@ -247,8 +247,8 @@ const ServiceSpending = () => {
           </div>
 
           {/* Context based on council type */}
-          <div className="p-3.5 sm:p-4 bg-background/80 rounded-xl">
-            <div className="flex items-center gap-2.5 mb-2">
+          <div className="p-4 sm:p-4 bg-background/80 rounded-xl">
+            <div className="flex items-center gap-3 mb-2">
               <CheckCircle className="h-4 w-4 text-primary" />
               <h4 className="font-semibold text-primary text-sm sm:text-base">What kind of council is this?</h4>
             </div>
@@ -266,8 +266,8 @@ const ServiceSpending = () => {
 
       {/* Service Comparison */}
       <Card className="border border-border/40 bg-card shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-4">
-          <div className="flex items-center gap-2.5">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
             <TrendingUp className="h-5 w-5 text-primary opacity-70" />
             <div>
               <CardTitle className="text-lg sm:text-xl font-semibold">Service Spending Comparison</CardTitle>
@@ -278,31 +278,31 @@ const ServiceSpending = () => {
           </div>
         </CardHeader>
         <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-2.5 sm:space-y-3">
+          <div className="space-y-3 sm:space-y-3">
             {services.map((service, index) => {
               const ServiceIcon = service.icon;
               const isSelected = service.key === selectedService;
               return (
                 <div
                   key={service.key}
-                  className={`flex items-center justify-between p-3 sm:p-3.5 rounded-xl gap-3 cursor-pointer transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-muted/50'}`}
+                  className={`flex items-center justify-between p-3 sm:p-4 rounded-xl gap-3 cursor-pointer transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-muted/50'}`}
                   onClick={() => setSelectedService(service.key)}
                 >
                   <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
                       {index + 1}
                     </div>
                     <ServiceIcon className={`h-4 w-4 shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
                     <div className="min-w-0">
                       <div className={`font-medium text-xs sm:text-base truncate ${isSelected ? 'text-primary' : ''}`}>{service.name}</div>
-                      <div className="text-[10px] sm:text-sm text-muted-foreground truncate">
+                      <div className="text-xs sm:text-sm text-muted-foreground truncate">
                         {service.description}
                       </div>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
                     <div className={`font-bold text-xs sm:text-base ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</div>
-                    <div className="text-[10px] sm:text-sm text-muted-foreground">{service.percentage.toFixed(1)}%</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">{service.percentage.toFixed(1)}%</div>
                   </div>
                 </div>
               );

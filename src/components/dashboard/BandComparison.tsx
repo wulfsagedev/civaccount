@@ -202,7 +202,7 @@ const BandComparison = () => {
           <CardContent>
             <div className="space-y-3 sm:space-y-4">
               {/* Current council highlighted */}
-              <div className="p-3 sm:p-4 border-2 border-primary rounded-lg bg-primary/5">
+              <div className="p-3 sm:p-4 border-2 border-primary rounded-xl bg-primary/5">
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
@@ -226,7 +226,7 @@ const BandComparison = () => {
                 const diff = council.council_tax!.band_d_2025 - selectedCouncil.council_tax!.band_d_2025;
                 const isHigher = diff > 0;
                 return (
-                  <div key={council.ons_code} className="p-3 sm:p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div key={council.ons_code} className="p-3 sm:p-4 border rounded-xl hover:bg-muted/50 transition-colors">
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
@@ -281,7 +281,7 @@ const BandComparison = () => {
                   return (
                     <div
                       key={council.ons_code}
-                      className={`flex items-center justify-between p-3 rounded-lg ${isSelected ? 'bg-primary/10 border border-primary' : 'border'}`}
+                      className={`flex items-center justify-between p-3 rounded-xl ${isSelected ? 'bg-primary/10 border border-primary' : 'border'}`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
@@ -319,7 +319,7 @@ const BandComparison = () => {
                   return (
                     <div
                       key={council.ons_code}
-                      className={`flex items-center justify-between p-3 rounded-lg ${isSelected ? 'bg-primary/10 border border-primary' : 'border'}`}
+                      className={`flex items-center justify-between p-3 rounded-xl ${isSelected ? 'bg-primary/10 border border-primary' : 'border'}`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
@@ -358,19 +358,19 @@ const BandComparison = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="text-center p-4 bg-primary/5 rounded-lg border-2 border-primary">
+              <div className="text-center p-4 bg-primary/5 rounded-xl border-2 border-primary">
                 <p className="text-sm text-muted-foreground mb-1">{selectedCouncil.name}</p>
                 <p className="text-2xl font-bold text-primary">£{selectedCouncil.council_tax.band_d_2025.toFixed(2)}</p>
                 <p className="text-xs text-muted-foreground mt-1">Band D 2025-26</p>
               </div>
-              <div className="text-center p-4 bg-muted rounded-lg border">
+              <div className="text-center p-4 bg-muted rounded-xl border">
                 <p className="text-sm text-muted-foreground mb-1">{COUNCIL_TYPE_NAMES[selectedCouncil.type]} Average</p>
                 <p className="text-2xl font-bold">£{averages.typeAverage.toFixed(2)}</p>
                 <p className={`text-xs mt-1 ${averages.differenceFromType > 0 ? 'text-destructive' : 'text-green-600'}`}>
                   {averages.differenceFromType > 0 ? '+' : ''}£{averages.differenceFromType.toFixed(2)} difference
                 </p>
               </div>
-              <div className="text-center p-4 bg-muted rounded-lg border">
+              <div className="text-center p-4 bg-muted rounded-xl border">
                 <p className="text-sm text-muted-foreground mb-1">All Councils Average</p>
                 <p className="text-2xl font-bold">£{averages.nationalAverage.toFixed(2)}</p>
                 <p className={`text-xs mt-1 ${averages.differenceFromNational > 0 ? 'text-destructive' : 'text-green-600'}`}>
@@ -380,7 +380,7 @@ const BandComparison = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-muted rounded-xl">
                 <h4 className="font-semibold mb-3 flex items-center gap-2">
                   <Info className="h-4 w-4" />
                   What this means
@@ -417,7 +417,7 @@ const BandComparison = () => {
             {historicalData.length > 1 ? (
               <div className="space-y-4">
                 {historicalData.map((item, index) => (
-                  <div key={item.year} className={`p-4 border rounded-lg ${index === historicalData.length - 1 ? 'border-primary bg-primary/5' : ''}`}>
+                  <div key={item.year} className={`p-4 border rounded-xl ${index === historicalData.length - 1 ? 'border-primary bg-primary/5' : ''}`}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="font-semibold">{item.year}</h3>
@@ -441,7 +441,7 @@ const BandComparison = () => {
                 ))}
 
                 {historicalData.length >= 2 && (
-                  <div className="p-4 bg-muted rounded-lg">
+                  <div className="p-4 bg-muted rounded-xl">
                     <h4 className="font-semibold mb-2">Total Change</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>

@@ -104,11 +104,11 @@ const RevenueBreakdown = () => {
   const { totalRevenue, streams } = revenueData;
 
   return (
-    <div className="space-y-5 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Revenue Overview */}
       <Card className="border border-border/40 bg-card shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-4">
-          <div className="flex items-center gap-2.5">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
             <DollarSign className="h-5 w-5 text-primary opacity-70" />
             <div>
               <CardTitle className="text-lg sm:text-xl font-semibold">Where Does the Money Come From?</CardTitle>
@@ -121,7 +121,7 @@ const RevenueBreakdown = () => {
         <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
           <div className="space-y-4 sm:space-y-5">
             {streams.map((stream, index) => (
-              <div key={index} className="space-y-2.5">
+              <div key={index} className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center space-x-2.5 min-w-0">
                     <stream.icon className="h-4 w-4 shrink-0 text-muted-foreground opacity-70" />
@@ -133,7 +133,7 @@ const RevenueBreakdown = () => {
                             stream.stability === 'High' ? 'default' :
                             stream.stability === 'Medium' ? 'secondary' : 'destructive'
                           }
-                          className="text-[10px] sm:text-xs"
+                          className="text-xs"
                         >
                           {stream.stability} Stability
                         </Badge>
@@ -142,7 +142,7 @@ const RevenueBreakdown = () => {
                   </div>
                   <div className="text-right shrink-0">
                     <div className="font-bold text-xs sm:text-base">{formatBudget(stream.amount / 1000)}</div>
-                    <div className="text-[10px] sm:text-sm text-muted-foreground">{stream.percentage}%</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">{stream.percentage}%</div>
                   </div>
                 </div>
 
@@ -159,8 +159,8 @@ const RevenueBreakdown = () => {
 
       {/* Revenue Stability Analysis */}
       <Card className="border border-border/40 bg-card shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-4">
-          <div className="flex items-center gap-2.5">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
             <TrendingDown className="h-5 w-5 text-primary opacity-70" />
             <div>
               <CardTitle className="text-lg sm:text-xl font-semibold">How Safe Is This Money?</CardTitle>
@@ -172,7 +172,7 @@ const RevenueBreakdown = () => {
         </CardHeader>
         <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <div className="p-3.5 sm:p-5 bg-primary/5 rounded-xl">
+            <div className="p-4 sm:p-5 bg-primary/5 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle className="h-4 w-4 text-primary" />
                 <h3 className="font-semibold text-primary text-xs sm:text-base">Steady Income</h3>
@@ -180,11 +180,11 @@ const RevenueBreakdown = () => {
               <div className="text-lg sm:text-2xl font-bold text-primary mb-2">
                 {formatBudget(streams[0].amount / 1000)}
               </div>
-              <div className="text-[10px] sm:text-sm text-primary/80 leading-relaxed">
+              <div className="text-xs sm:text-sm text-primary/80 leading-relaxed">
                 <strong>Council Tax:</strong> Comes in regularly and increases each year
               </div>
             </div>
-            <div className="p-3.5 sm:p-5 bg-muted/50 rounded-xl">
+            <div className="p-4 sm:p-5 bg-muted/50 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                 <h3 className="font-semibold text-xs sm:text-base">Variable Income</h3>
@@ -192,11 +192,11 @@ const RevenueBreakdown = () => {
               <div className="text-lg sm:text-2xl font-bold mb-2">
                 {formatBudget((streams[1].amount + streams[2].amount) / 1000)}
               </div>
-              <div className="text-[10px] sm:text-sm text-muted-foreground leading-relaxed">
+              <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 <strong>Fees & Some Grants:</strong> Amounts can change from year to year
               </div>
             </div>
-            <div className="p-3.5 sm:p-5 bg-destructive/5 rounded-xl">
+            <div className="p-4 sm:p-5 bg-destructive/5 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingDown className="h-4 w-4 text-destructive" />
                 <h3 className="font-semibold text-destructive text-xs sm:text-base">Uncertain Income</h3>
@@ -204,7 +204,7 @@ const RevenueBreakdown = () => {
               <div className="text-lg sm:text-2xl font-bold text-destructive mb-2">
                 {formatBudget((streams[3].amount + streams[4].amount) / 1000)}
               </div>
-              <div className="text-[10px] sm:text-sm text-destructive/80 leading-relaxed">
+              <div className="text-xs sm:text-sm text-destructive/80 leading-relaxed">
                 <strong>Government Money & Business Rates:</strong> These amounts can change significantly
               </div>
             </div>
@@ -214,8 +214,8 @@ const RevenueBreakdown = () => {
 
       {/* What This Means for You */}
       <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm">
-        <CardHeader className="p-4 sm:p-6 pb-4">
-          <div className="flex items-center gap-2.5">
+        <CardHeader className="p-5 sm:p-6 pb-4">
+          <div className="flex items-center gap-3">
             <Lightbulb className="h-5 w-5 text-primary" />
             <CardTitle className="text-lg sm:text-xl font-semibold">Factors That Affect Council Tax</CardTitle>
           </div>
@@ -226,19 +226,19 @@ const RevenueBreakdown = () => {
               <div>
                 <h4 className="font-semibold mb-3 text-sm sm:text-base">Costs Can Go Up When</h4>
                 <div className="space-y-2 text-xs sm:text-sm">
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed">More people need council services</span>
                   </div>
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed">Prices for things like fuel and supplies go up</span>
                   </div>
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed">Staff wages increase</span>
                   </div>
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
                     <span className="leading-relaxed">More elderly residents need social care</span>
                   </div>
@@ -247,19 +247,19 @@ const RevenueBreakdown = () => {
               <div>
                 <h4 className="font-semibold mb-3 text-sm sm:text-base">Income Can Change When</h4>
                 <div className="space-y-2 text-xs sm:text-sm">
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                     <span className="leading-relaxed">Government funding amounts change</span>
                   </div>
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                     <span className="leading-relaxed">Business rates collected go up or down</span>
                   </div>
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                     <span className="leading-relaxed">Fewer or more people use paid services</span>
                   </div>
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-3">
                     <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                     <span className="leading-relaxed">New homes are built (more council tax payers)</span>
                   </div>
@@ -267,7 +267,7 @@ const RevenueBreakdown = () => {
               </div>
             </div>
 
-            <div className="p-3.5 sm:p-4 bg-background/60 rounded-xl">
+            <div className="p-4 sm:p-4 bg-background/60 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <Info className="h-4 w-4 text-primary opacity-70" />
                 <h4 className="font-semibold text-primary text-sm sm:text-base">How Council Tax Rates Are Set</h4>

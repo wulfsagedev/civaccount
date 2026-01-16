@@ -12,9 +12,9 @@ export default function AboutPage() {
       <Header />
 
       <main className="flex-1">
-        <div className="container mx-auto px-3 py-8 sm:px-6 max-w-4xl">
+        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-4xl">
           {/* Page Header */}
-          <div className="text-center mb-8 sm:mb-12">
+          <div className="text-center mb-10 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold mb-4">Why We Built CivAccount</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Making UK council budget data accessible to everyone
@@ -22,14 +22,14 @@ export default function AboutPage() {
           </div>
 
           {/* The Problem */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
+          <Card className="mb-8 rounded-xl">
+            <CardHeader className="p-5 sm:p-6">
+              <CardTitle className="flex items-center gap-3 text-xl">
                 <FileText className="h-5 w-5 text-primary" />
                 The Problem
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6 space-y-4">
               <p className="text-muted-foreground">
                 Every year, UK councils publish their budget information. This data shows how much money they receive,
                 how they spend it, and what your council tax pays for. It is public information that belongs to everyone.
@@ -37,20 +37,20 @@ export default function AboutPage() {
               <p className="text-muted-foreground">
                 However, this data is often:
               </p>
-              <ul className="space-y-2 text-muted-foreground">
-                <li className="flex items-start gap-2">
+              <ul className="space-y-3 text-muted-foreground">
+                <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
                   <span>Scattered across different government websites and council pages</span>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
                   <span>Hidden in PDF documents, spreadsheets, and technical reports</span>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
                   <span>Written in technical language that is hard to understand</span>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
                   <span>Formatted differently by each council, making comparisons difficult</span>
                 </li>
@@ -64,43 +64,43 @@ export default function AboutPage() {
           </Card>
 
           {/* Our Solution */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
+          <Card className="mb-8 rounded-xl">
+            <CardHeader className="p-5 sm:p-6">
+              <CardTitle className="flex items-center gap-3 text-xl">
                 <Search className="h-5 w-5 text-primary" />
                 What CivAccount Does
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6 space-y-4">
               <p className="text-muted-foreground">
                 CivAccount brings together official UK government data into one place. We take the raw data
                 and present it in a way that is easy to understand.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <Clock className="h-5 w-5 text-primary mb-2" />
-                  <h4 className="font-semibold mb-1">Save Time</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                <div className="p-5 bg-muted rounded-xl">
+                  <Clock className="h-5 w-5 text-primary mb-3" />
+                  <h4 className="font-semibold mb-2">Save Time</h4>
                   <p className="text-sm text-muted-foreground">
                     Find your council in seconds instead of searching through government websites
                   </p>
                 </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <Database className="h-5 w-5 text-primary mb-2" />
-                  <h4 className="font-semibold mb-1">All In One Place</h4>
+                <div className="p-5 bg-muted rounded-xl">
+                  <Database className="h-5 w-5 text-primary mb-3" />
+                  <h4 className="font-semibold mb-2">All In One Place</h4>
                   <p className="text-sm text-muted-foreground">
                     Budget data, council tax rates, and service spending for all English councils
                   </p>
                 </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <Users className="h-5 w-5 text-primary mb-2" />
-                  <h4 className="font-semibold mb-1">Easy to Understand</h4>
+                <div className="p-5 bg-muted rounded-xl">
+                  <Users className="h-5 w-5 text-primary mb-3" />
+                  <h4 className="font-semibold mb-2">Easy to Understand</h4>
                   <p className="text-sm text-muted-foreground">
                     Plain language explanations of what your council does and where money goes
                   </p>
                 </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <Search className="h-5 w-5 text-primary mb-2" />
-                  <h4 className="font-semibold mb-1">Compare Councils</h4>
+                <div className="p-5 bg-muted rounded-xl">
+                  <Search className="h-5 w-5 text-primary mb-3" />
+                  <h4 className="font-semibold mb-2">Compare Councils</h4>
                   <p className="text-sm text-muted-foreground">
                     See how your council tax compares to similar councils across the country
                   </p>
@@ -110,60 +110,60 @@ export default function AboutPage() {
           </Card>
 
           {/* Data Sources */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
+          <Card className="mb-8 rounded-xl">
+            <CardHeader className="p-5 sm:p-6">
+              <CardTitle className="flex items-center gap-3 text-xl">
                 <Database className="h-5 w-5 text-primary" />
                 Where Our Data Comes From
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6 space-y-4">
               <p className="text-muted-foreground">
                 All data on CivAccount comes from official UK government sources. We do not create or estimate figures.
               </p>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <a
                   href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-3 border rounded-lg hover:bg-muted transition-colors"
+                  className="flex items-center gap-3 p-4 border rounded-xl hover:bg-muted transition-colors"
                 >
                   <ExternalLink className="h-4 w-4 text-primary shrink-0" />
                   <div>
                     <p className="font-medium text-sm">Council Tax Levels 2025-26</p>
-                    <p className="text-xs text-muted-foreground">Department for Levelling Up, Housing and Communities</p>
+                    <p className="text-xs text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
                   </div>
                 </a>
                 <a
                   href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-3 border rounded-lg hover:bg-muted transition-colors"
+                  className="flex items-center gap-3 p-4 border rounded-xl hover:bg-muted transition-colors"
                 >
                   <ExternalLink className="h-4 w-4 text-primary shrink-0" />
                   <div>
                     <p className="font-medium text-sm">Local Authority Revenue Expenditure</p>
-                    <p className="text-xs text-muted-foreground">Department for Levelling Up, Housing and Communities</p>
+                    <p className="text-xs text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
                   </div>
                 </a>
               </div>
-              <p className="text-sm text-muted-foreground mt-4">
+              <p className="text-sm text-muted-foreground mt-6">
                 Data is updated when new official figures are published. Current data covers the 2025-26 financial year.
               </p>
             </CardContent>
           </Card>
 
           {/* Important Notes */}
-          <Card className="border-dashed">
-            <CardContent className="p-6 space-y-4">
+          <Card className="border-dashed rounded-xl">
+            <CardContent className="p-6 space-y-5">
               <div>
-                <p className="text-sm font-medium mb-1">About the council tax figures</p>
+                <p className="text-sm font-medium mb-2">About the council tax figures</p>
                 <p className="text-sm text-muted-foreground">
                   The council tax amounts shown are for each council only. Your total bill will also include charges from police, fire services, and other bodies. This helps you see exactly what each council charges.
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium mb-1">About this website</p>
+                <p className="text-sm font-medium mb-2">About this website</p>
                 <p className="text-sm text-muted-foreground">
                   CivAccount is not part of any council or government body. We take public data and make it easier to read. For official information, check your council&apos;s website or gov.uk.
                 </p>
@@ -172,10 +172,10 @@ export default function AboutPage() {
           </Card>
 
           {/* CTA */}
-          <div className="text-center mt-8">
+          <div className="text-center mt-10">
             <Link
               href="/"
-              className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors"
             >
               Find Your Council
             </Link>
