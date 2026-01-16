@@ -5,15 +5,16 @@ import { Search, Building2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { councils, Council, formatBudget, getCouncilDisplayName } from '@/data/councils';
+import { councils, Council, formatCurrency, getCouncilDisplayName } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 
 interface CouncilSelectorProps {
   onSelect?: (council: Council) => void;
   variant?: 'homepage' | 'dashboard';
+  explainerText?: string;
 }
 
-export default function CouncilSelector({ onSelect, variant = 'homepage' }: CouncilSelectorProps) {
+export default function CouncilSelector({ onSelect, variant = 'homepage', explainerText }: CouncilSelectorProps) {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -91,42 +92,69 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
   // Show the selected council bar (only on dashboard)
   if (selectedCouncil && variant === 'dashboard') {
     const displayName = getCouncilDisplayName(selectedCouncil);
+    const bandDAmount = selectedCouncil.council_tax
+      ? formatCurrency(selectedCouncil.council_tax.band_d_2025, { decimals: 2 })
+      : null;
+
     return (
       <div className="w-full">
-        <Card className="border-2 border-primary bg-primary/5">
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Council Info */}
-              <div className="flex items-center gap-4 min-w-0">
-                <div className="p-3 bg-primary rounded-xl shrink-0">
-                  <Building2 className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-primary font-medium mb-1">You&apos;re viewing</p>
-                  <h3 className="font-bold text-lg sm:text-xl text-primary truncate">
-                    {displayName}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    {selectedCouncil.council_tax && (
-                      <span className="text-sm text-primary/80">
-                        Band D: £{selectedCouncil.council_tax.band_d_2025.toFixed(2)}/year (council portion only)
-                      </span>
+        <Card className="border border-border/40 bg-card shadow-sm overflow-hidden">
+          <CardContent className="p-0">
+            {/* Main content area */}
+            <div className="p-4 sm:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                {/* Left: Council info */}
+                <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
+                  <div className="p-2.5 sm:p-3 bg-primary/10 rounded-xl shrink-0">
+                    <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    {/* Header row with badges */}
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <Badge variant="secondary" className="text-[10px] sm:text-xs font-medium">
+                        {selectedCouncil.type_name}
+                      </Badge>
+                      <Badge variant="outline" className="text-[10px] sm:text-xs font-medium">
+                        2025-26
+                      </Badge>
+                    </div>
+
+                    {/* Council name */}
+                    <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl text-foreground leading-tight mb-1">
+                      {displayName}
+                    </h2>
+
+                    {/* Band D info */}
+                    {bandDAmount && (
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        Band D: <span className="font-semibold text-foreground">{bandDAmount}</span>/year
+                      </p>
                     )}
                   </div>
                 </div>
-              </div>
 
-              {/* Back Button */}
-              <Button
-                variant="default"
-                size="lg"
-                onClick={handleBackToSearch}
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Find a Different Council
-              </Button>
+                {/* Right: Back button */}
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={handleBackToSearch}
+                  className="flex items-center gap-2 shrink-0 self-start sm:self-center"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Change Council</span>
+                  <span className="sm:hidden">Change</span>
+                </Button>
+              </div>
             </div>
+
+            {/* Explainer footer */}
+            {explainerText && (
+              <div className="px-4 sm:px-5 py-3 bg-muted/50 border-t border-border/40">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  {explainerText}
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
