@@ -16,11 +16,16 @@ const updates = [
     date: "January 2025",
     isCurrent: true,
     changes: [
-      "Added all 284 councils in England",
+      "Added all 324 councils in England",
       "New council search and filter system",
-      "Compare councils side by side",
-      "Council tax calculator for all bands",
-      "Council-specific data sources"
+      "Compare councils by type and national averages",
+      "Council tax calculator for all bands (A-H)",
+      "Detailed precept breakdown showing district, county, police and fire contributions",
+      "Council-specific verified data sources with direct links",
+      "Feedback button for feature requests and bug reports",
+      "Dark mode syncs with system settings automatically",
+      "Modernised UI with consistent card styling",
+      "Improved visual hierarchy and cleaner design"
     ]
   },
   {
@@ -28,7 +33,7 @@ const updates = [
     date: "December 2024",
     isCurrent: false,
     changes: [
-      "Added dark mode",
+      "Added dark mode toggle",
       "Better mobile layout",
       "Better budget charts"
     ]
@@ -83,7 +88,7 @@ export default function UpdatesPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                This is the latest version of CivAccount. It includes data for all councils in England.
+                The latest version includes data for all 324 councils in England with detailed breakdowns.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {updates[0].changes.map((change, index) => (
