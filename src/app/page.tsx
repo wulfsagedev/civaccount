@@ -67,39 +67,29 @@ export default function CouncilDashboard() {
   // Dashboard view - when council is selected
   const councilDisplayName = getCouncilDisplayName(selectedCouncil);
 
+  // Get the appropriate explainer text based on council type
+  const getExplainerText = () => {
+    if (selectedCouncil.type === 'SC' || selectedCouncil.type === 'SD') {
+      return `This is just the ${selectedCouncil.name} share. Your full bill also includes county, police, and fire charges.`;
+    } else if (selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB') {
+      return `This is just the ${selectedCouncil.name} share. Your full bill also includes the Greater London Authority charge.`;
+    }
+    return `This is just the ${selectedCouncil.name} share. Your full bill may include police and fire charges.`;
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
       <main className="flex-1">
         <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-6 max-w-7xl">
-          {/* Page Title */}
-          <div className="mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">
-              {councilDisplayName} Budget 2025-26
-            </h2>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              {selectedCouncil.type_name} • Financial year 2025-26
-            </p>
+          {/* Combined Council Header Card */}
+          <div className="mb-5 sm:mb-6">
+            <CouncilSelector
+              variant="dashboard"
+              explainerText={getExplainerText()}
+            />
           </div>
-
-          {/* Council Info Bar */}
-          <div className="mb-4">
-            <CouncilSelector variant="dashboard" />
-          </div>
-
-          {/* Info Note */}
-          <Alert className="mb-4 sm:mb-6 p-3 sm:p-4">
-            <AlertDescription className="text-sm leading-relaxed">
-              {selectedCouncil.type === 'SC' || selectedCouncil.type === 'SD' ? (
-                <>The council tax shown is only the {selectedCouncil.name} portion. Your total bill also includes charges from your county council, police, and fire service.</>
-              ) : selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB' ? (
-                <>The council tax shown is only the {selectedCouncil.name} portion. Your total bill also includes the Greater London Authority (GLA) charge.</>
-              ) : (
-                <>The council tax shown is only the {selectedCouncil.name} portion. Your total bill may also include police and fire charges.</>
-              )}
-            </AlertDescription>
-          </Alert>
 
           <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
             <div className="mb-5 sm:mb-6 -mx-3 px-3 sm:mx-0 sm:px-0">
