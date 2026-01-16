@@ -287,6 +287,9 @@ const ServiceSpending = () => {
                   key={service.key}
                   className={`flex items-center justify-between p-3 sm:p-4 rounded-xl gap-3 cursor-pointer transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-muted/50'}`}
                   onClick={() => setSelectedService(service.key)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && setSelectedService(service.key)}
                 >
                   <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
                     <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>

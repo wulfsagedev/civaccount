@@ -102,7 +102,7 @@ const CouncilTaxSection = () => {
               >
                 <div className="font-bold text-xs sm:text-base">Band {band}</div>
                 <div className="text-xs text-center mt-0.5 leading-tight opacity-80">
-                  £{data.amount.toFixed(0)}
+                  £{Math.round(data.amount).toLocaleString('en-GB')}
                 </div>
               </Button>
             ))}
@@ -134,7 +134,7 @@ const CouncilTaxSection = () => {
             <div className="text-center p-3 sm:p-5 bg-background/80 rounded-xl">
               <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-2 text-primary opacity-70" />
               <div className="text-lg sm:text-2xl font-bold text-primary">
-                £{councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount.toFixed(2)}
+                £{councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
               <div className="text-xs sm:text-sm text-primary/80 mt-1">Annual Charge</div>
             </div>
@@ -289,7 +289,7 @@ const CouncilTaxSection = () => {
                   href={selectedCouncil.detailed.council_tax_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs sm:text-sm text-green-600 dark:text-green-400 hover:underline flex items-center gap-1"
+                  className="text-xs sm:text-sm text-green-600 dark:text-green-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   View official figures on {selectedCouncil.name}&apos;s website
                   <ExternalLink className="h-3 w-3" />
@@ -326,7 +326,7 @@ const CouncilTaxSection = () => {
                       <Badge variant="outline" className="text-xs shrink-0 border-muted-foreground/30">{percentOfD}% of Band D</Badge>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className={`font-medium text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>£{data.amount.toFixed(2)}</div>
+                      <div className={`font-medium text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>£{data.amount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                       <div className="text-xs text-muted-foreground">per year</div>
                     </div>
                   </div>
