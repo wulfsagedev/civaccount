@@ -115,9 +115,7 @@ export default function Header() {
                   <Badge variant="outline" className="text-xs">v1.2</Badge>
                 </div>
               </Link>
-              <div className="h-11 px-3 inline-flex items-center">
-                <FeatureRequestDialog />
-              </div>
+              <FeatureRequestDialog variant="mobile" />
               <div className="h-11 px-3 inline-flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Theme</span>
                 <ThemeToggle />
