@@ -17,21 +17,12 @@ export default function Header() {
     <header className="border-b bg-background">
       <div className="container mx-auto px-3 py-3 sm:px-6 max-w-7xl">
         <div className="flex items-center justify-between">
-          <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">CA</span>
               </div>
-              <div>
-                <h1 className="text-lg sm:text-xl font-bold leading-tight">CivAccount</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">UK Council Budget Dashboard</p>
-              </div>
-            </div>
-          </Link>
-
-          <nav className="flex items-center gap-4">
-            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              About
+              <h1 className="text-lg sm:text-xl font-bold leading-tight">CivAccount</h1>
             </Link>
             <Link href="/updates" className="flex items-center gap-1.5">
               <span className="relative flex h-2 w-2">
@@ -41,6 +32,12 @@ export default function Header() {
               <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
                 v1.2
               </Badge>
+            </Link>
+          </div>
+
+          <nav className="flex items-center gap-4">
+            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              About
             </Link>
             <FeatureRequestDialog />
             <ThemeToggle />
