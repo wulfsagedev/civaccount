@@ -140,16 +140,58 @@ export function getCouncilDisplayName(council: Council): string {
   }
 }
 
-// Format budget amount (input in thousands)
+// Format budget amount (input in thousands) - UK friendly formatting
 export function formatBudget(amountInThousands: number | null): string {
   if (amountInThousands === null) return 'N/A';
-  if (amountInThousands >= 1000000) {
-    return `£${(amountInThousands / 1000000).toFixed(1)}B`;
+
+  // Convert to actual pounds for clarity
+  const pounds = amountInThousands * 1000;
+
+  // Billions (1,000,000,000+)
+  if (pounds >= 1000000000) {
+    const billions = pounds / 1000000000;
+    return `£${billions.toFixed(1)} billion`;
   }
-  if (amountInThousands >= 1000) {
-    return `£${(amountInThousands / 1000).toFixed(1)}M`;
+
+  // Millions (1,000,000+)
+  if (pounds >= 1000000) {
+    const millions = pounds / 1000000;
+    // Show whole number if it's clean, otherwise one decimal
+    return millions % 1 === 0
+      ? `£${millions.toFixed(0)} million`
+      : `£${millions.toFixed(1)} million`;
   }
-  return `£${amountInThousands.toFixed(0)}K`;
+
+  // Thousands - show with commas for readability
+  return `£${pounds.toLocaleString('en-GB')}`;
+}
+
+// Format currency for display (pounds, with appropriate formatting)
+export function formatCurrency(amount: number | null, options?: { decimals?: number }): string {
+  if (amount === null) return 'N/A';
+
+  const decimals = options?.decimals ?? (amount % 1 === 0 ? 0 : 2);
+
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP',
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(amount);
+}
+
+// Format large numbers for display (daily costs, etc.)
+export function formatDailyCost(amountInPounds: number | null): string {
+  if (amountInPounds === null) return 'N/A';
+
+  // Millions per day
+  if (amountInPounds >= 1000000) {
+    const millions = amountInPounds / 1000000;
+    return `£${millions.toFixed(1)} million`;
+  }
+
+  // Thousands per day - show with commas
+  return `£${Math.round(amountInPounds).toLocaleString('en-GB')}`;
 }
 
 export const councils: Council[] = [
