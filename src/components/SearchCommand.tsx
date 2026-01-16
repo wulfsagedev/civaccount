@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Search, Building2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +19,10 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const { setSelectedCouncil } = useCouncil();
+
+  const isHomepage = pathname === '/';
 
   // Filter councils based on search query
   const filteredCouncils = useMemo(() => {
@@ -109,6 +112,11 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
 
   // If mobileOnly, only render the mobile icon button
   if (mobileOnly) {
+    // Don't show on homepage (has its own search)
+    if (isHomepage) {
+      return null;
+    }
+
     return (
       <>
         <Button
@@ -133,11 +141,11 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
             />
 
             {/* Search dialog */}
-            <div className="fixed left-1/2 top-[20%] -translate-x-1/2 w-full max-w-lg px-4">
+            <div className="fixed left-1/2 top-4 -translate-x-1/2 w-full max-w-lg px-4">
               <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
-                {/* Search input */}
+                {/* Search input - use text-base (16px) to prevent iOS zoom */}
                 <div className="flex items-center border-b px-4">
-                  <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <Search className="h-5 w-5 text-muted-foreground shrink-0" />
                   <input
                     ref={inputRef}
                     type="text"
@@ -145,7 +153,11 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="flex-1 h-12 px-3 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
+                    className="flex-1 h-14 px-3 text-base bg-transparent outline-none placeholder:text-muted-foreground"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
                   />
                   <Button
                     variant="ghost"
@@ -154,14 +166,14 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
                       setIsOpen(false);
                       setSearchQuery('');
                     }}
-                    className="h-8 w-8 shrink-0"
+                    className="h-10 w-10 shrink-0"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
 
                 {/* Results */}
-                <div ref={listRef} className="max-h-[300px] overflow-y-auto p-2">
+                <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
                   {filteredCouncils.length > 0 ? (
                     <div className="space-y-1">
                       {filteredCouncils.map((council, index) => {
@@ -190,7 +202,7 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
                               </div>
                             </div>
                             {bandDAmount && (
-                              <Badge variant="outline" className="text-xs shrink-0 ml-2">
+                              <Badge variant="outline" className="text-xs shrink-0 ml-2 hidden xs:flex">
                                 Band D: {bandDAmount}
                               </Badge>
                             )}
@@ -204,29 +216,17 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
                     </div>
                   )}
                 </div>
-
-                {/* Footer hint */}
-                <div className="border-t px-4 py-2 text-xs text-muted-foreground flex items-center gap-4">
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">↑</kbd>
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">↓</kbd>
-                    to navigate
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">Enter</kbd>
-                    to select
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">Esc</kbd>
-                    to close
-                  </span>
-                </div>
               </div>
             </div>
           </div>
         )}
       </>
     );
+  }
+
+  // Don't show desktop search on homepage
+  if (isHomepage) {
+    return null;
   }
 
   return (
