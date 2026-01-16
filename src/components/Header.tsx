@@ -19,13 +19,13 @@ export default function Header() {
       <div className="container mx-auto px-4 py-4 sm:px-6 max-w-7xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3">
+            <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
                 <Landmark className="h-5 w-5 text-primary-foreground" />
               </div>
               <h1 className="text-lg sm:text-xl font-bold leading-tight">CivAccount</h1>
             </Link>
-            <Link href="/updates" className="flex items-center gap-2">
+            <Link href="/updates" className="flex items-center gap-2 cursor-pointer">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -39,7 +39,7 @@ export default function Header() {
           <nav className="flex items-center gap-2">
             <Link
               href="/about"
-              className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+              className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
             >
               About
             </Link>
