@@ -52,7 +52,7 @@ const CouncilTaxSection = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card>
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardContent className="p-6 text-center">
           <p className="text-muted-foreground">Please select a council to view council tax information.</p>
         </CardContent>
@@ -62,7 +62,7 @@ const CouncilTaxSection = () => {
 
   if (!councilTaxData) {
     return (
-      <Card>
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Info className="h-5 w-5" />
@@ -79,7 +79,7 @@ const CouncilTaxSection = () => {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Band Selector */}
-      <Card className="border border-border/40 bg-card shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
             <Home className="h-5 w-5 text-primary opacity-70" />
@@ -301,7 +301,7 @@ const CouncilTaxSection = () => {
       )}
 
       {/* Band Multipliers */}
-      <Card className="border border-border/40 bg-card shadow-sm">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardHeader className="p-5 sm:p-6 pb-4">
           <div className="flex items-center gap-3">
             <Calculator className="h-5 w-5 text-primary opacity-70" />

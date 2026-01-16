@@ -224,7 +224,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
   // Dashboard variant - with card wrapper (when no council selected on dashboard page)
   return (
     <div className="w-full">
-      <Card className="rounded-xl">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
         <CardContent className="p-5 sm:p-6">
           <div className="space-y-5">
             {/* Search Input with autocomplete */}
