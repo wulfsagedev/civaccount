@@ -98,7 +98,7 @@ export default function CouncilDashboard() {
                 <select
                   value={selectedTab}
                   onChange={(e) => setSelectedTab(e.target.value)}
-                  className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-4 pr-12 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-4 pr-12 text-base font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 >
                   <option value="overview">Overview</option>
                   <option value="council-tax">Council Tax</option>
