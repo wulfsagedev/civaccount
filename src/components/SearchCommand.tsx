@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Search, Building2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,11 +15,7 @@ export default function SearchCommand() {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pathname = usePathname();
   const { setSelectedCouncil } = useCouncil();
-
-  // Only show on non-homepage routes
-  const isHomepage = pathname === '/';
 
   // Filter councils based on search query
   const filteredCouncils = useMemo(() => {
@@ -66,7 +62,7 @@ export default function SearchCommand() {
     const isInputFocused = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 
     // Open search with F key (when not typing)
-    if (e.key === 'f' && !isInputFocused && !isHomepage) {
+    if (e.key === 'f' && !isInputFocused) {
       e.preventDefault();
       setIsOpen(true);
     }
@@ -76,7 +72,7 @@ export default function SearchCommand() {
       setIsOpen(false);
       setSearchQuery('');
     }
-  }, [isOpen, isHomepage]);
+  }, [isOpen]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleGlobalKeyDown);
@@ -107,11 +103,6 @@ export default function SearchCommand() {
     }
   };
 
-  // Don't render on homepage
-  if (isHomepage) {
-    return null;
-  }
-
   return (
     <>
       {/* Search trigger button */}
@@ -119,7 +110,7 @@ export default function SearchCommand() {
         variant="outline"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="hidden sm:flex items-center gap-2 text-muted-foreground hover:text-foreground h-9 px-3"
+        className="hidden sm:flex items-center gap-2 text-muted-foreground hover:text-foreground h-9 px-4 min-w-[160px]"
       >
         <Search className="h-4 w-4" />
         <span className="text-sm">Search</span>
