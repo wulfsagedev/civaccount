@@ -252,17 +252,12 @@ const BudgetOverview = () => {
       )}
 
       {/* Context Box */}
-      <Card className="border border-border/40 border-l-4 border-l-primary bg-muted/30 shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-primary" />
-            <CardTitle className="text-base sm:text-lg font-semibold">What Does This Council Do?</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
+      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+        <CardContent className="p-5 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold mb-4">What Does This Council Do?</h3>
           <div className="space-y-4">
-            <p className="text-sm sm:text-base">
-              <strong>{selectedCouncil.name} is a {selectedCouncil.type_name}.</strong>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              <strong className="text-foreground">{selectedCouncil.name}</strong> is a {selectedCouncil.type_name}.
             </p>
             {selectedCouncil.type === 'SC' && (
               <div className="space-y-4">

@@ -2,6 +2,7 @@
 
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
+import { Landmark } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
 import FeatureRequestDialog from '@/components/FeatureRequestDialog';
@@ -20,7 +21,7 @@ export default function Header() {
           <div className="flex items-center gap-4">
             <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3">
               <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">CA</span>
+                <Landmark className="h-5 w-5 text-primary-foreground" />
               </div>
               <h1 className="text-lg sm:text-xl font-bold leading-tight">CivAccount</h1>
             </Link>
