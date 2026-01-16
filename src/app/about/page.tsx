@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Lightbulb, Clock, Database, MessageCircle, Scale, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
@@ -7,6 +8,11 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default function AboutPage() {
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />

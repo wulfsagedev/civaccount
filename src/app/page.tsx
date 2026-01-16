@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronDown } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
@@ -21,6 +21,16 @@ import Footer from '@/components/Footer';
 export default function CouncilDashboard() {
   const [selectedTab, setSelectedTab] = useState("overview");
   const { selectedCouncil, isLoading } = useCouncil();
+  const prevCouncilRef = useRef(selectedCouncil);
+
+  // Reset tab and scroll to top when council changes
+  useEffect(() => {
+    if (selectedCouncil !== prevCouncilRef.current) {
+      setSelectedTab("overview");
+      window.scrollTo(0, 0);
+      prevCouncilRef.current = selectedCouncil;
+    }
+  }, [selectedCouncil]);
 
   if (isLoading) {
     return (

@@ -161,7 +161,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               className="w-full pl-14 pr-16 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
-              autoFocus
             />
             <kbd className="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none h-6 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-xs font-medium text-muted-foreground hidden sm:flex">
               F
