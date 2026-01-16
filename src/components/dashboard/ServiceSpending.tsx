@@ -170,7 +170,7 @@ const ServiceSpending = () => {
                     <div className="font-semibold text-xs sm:text-sm truncate">{service.name}</div>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {formatBudget(service.amount / 1000)} ({service.percentage.toFixed(1)}%)
+                    {formatBudget(service.amount / 1000)} ({service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
                   </div>
                 </Button>
               );
@@ -188,7 +188,7 @@ const ServiceSpending = () => {
               <CardTitle className="text-lg sm:text-2xl font-semibold">{currentService.name}</CardTitle>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="default" className="text-xs">{currentService.percentage.toFixed(1)}% of budget</Badge>
+              <Badge variant="default" className="text-xs">{currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of budget</Badge>
             </div>
           </div>
           <CardDescription className="text-sm sm:text-base leading-relaxed">{currentService.description}</CardDescription>
@@ -210,7 +210,7 @@ const ServiceSpending = () => {
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <div className="text-lg sm:text-2xl font-bold">
-                {currentService.percentage.toFixed(1)}%
+                {currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
               </div>
               <div className="text-xs sm:text-sm text-muted-foreground mt-1">Share of Total</div>
             </div>
@@ -305,7 +305,7 @@ const ServiceSpending = () => {
                   </div>
                   <div className="text-right shrink-0">
                     <div className={`font-bold text-xs sm:text-base ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">{service.percentage.toFixed(1)}%</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">{service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</div>
                   </div>
                 </div>
               );
