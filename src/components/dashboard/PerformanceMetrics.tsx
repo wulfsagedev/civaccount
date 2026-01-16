@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, Users, DollarSign, Target, Zap, CheckCircle, AlertTriangle, Info } from 'lucide-react';
+import { TrendingUp, Calendar, PoundSterling, Building, Receipt, CheckCircle, AlertTriangle, Info, Search, ClipboardList } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 
 const PerformanceMetrics = () => {
@@ -31,7 +31,7 @@ const PerformanceMetrics = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <Target className="h-5 w-5 text-primary opacity-70" />
+            <Building className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Council Type</p>
               <p className="text-lg font-bold text-primary">{selectedCouncil.type_name}</p>
@@ -41,7 +41,7 @@ const PerformanceMetrics = () => {
 
         <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <Users className="h-5 w-5 text-primary opacity-70" />
+            <Calendar className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Data Year</p>
               <p className="text-lg font-bold text-primary">2025-26</p>
@@ -51,7 +51,7 @@ const PerformanceMetrics = () => {
 
         <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <DollarSign className="h-5 w-5 text-primary opacity-70" />
+            <PoundSterling className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Budget Data</p>
               <p className="text-lg font-bold text-primary">{selectedCouncil.budget ? 'Available' : 'Limited'}</p>
@@ -61,7 +61,7 @@ const PerformanceMetrics = () => {
 
         <Card className="border border-border/40 bg-card shadow-sm rounded-xl p-4">
           <div className="flex items-center gap-3">
-            <Zap className="h-5 w-5 text-primary opacity-70" />
+            <Receipt className="h-5 w-5 text-primary opacity-70" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Tax Data</p>
               <p className="text-lg font-bold text-primary">{selectedCouncil.council_tax ? 'Available' : 'Limited'}</p>
@@ -88,7 +88,7 @@ const PerformanceMetrics = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-muted rounded-xl">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <Search className="h-4 w-4 text-primary" />
                   Where to Look
                 </h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
@@ -102,7 +102,7 @@ const PerformanceMetrics = () => {
 
               <div className="p-4 bg-muted rounded-xl">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <Target className="h-4 w-4 text-primary" />
+                  <ClipboardList className="h-4 w-4 text-primary" />
                   What They Measure
                 </h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
