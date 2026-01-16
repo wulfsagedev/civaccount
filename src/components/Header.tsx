@@ -29,18 +29,22 @@ export default function Header() {
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <nav className="flex items-center gap-4">
             <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               About
             </Link>
-            <Link href="/updates">
+            <Link href="/updates" className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
               <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
                 v1.2
               </Badge>
             </Link>
             <FeatureRequestDialog />
             <ThemeToggle />
-          </div>
+          </nav>
         </div>
       </div>
     </header>
