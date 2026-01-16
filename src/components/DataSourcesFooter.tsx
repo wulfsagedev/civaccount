@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, FileText, Building, BarChart3, Shield, Info, CheckCircle2, Globe } from 'lucide-react';
+import { ExternalLink, FileText, Building2, TrendingUp, Shield, Info, CheckCircle2, Globe } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
 
@@ -17,31 +17,31 @@ export default function DataSourcesFooter() {
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-lg sm:text-2xl font-semibold">Data Sources</h2>
-              <p className="text-xs sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                 Select a council to see where their data comes from.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
-              <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+              <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">{councilStats.totalCouncils}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Councils Available</div>
+                <div className="text-xs text-muted-foreground mt-1">Councils Available</div>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+              <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">{councilStats.withCouncilTax}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">With Tax Data</div>
+                <div className="text-xs text-muted-foreground mt-1">With Tax Data</div>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+              <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">{councilStats.withBudget}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">With Budget Data</div>
+                <div className="text-xs text-muted-foreground mt-1">With Budget Data</div>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+              <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">2025-26</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Data Year</div>
+                <div className="text-xs text-muted-foreground mt-1">Data Year</div>
               </div>
             </div>
 
-            <div className="text-center text-xs text-muted-foreground border-t border-border/50 pt-4">
+            <div className="text-center text-sm text-muted-foreground border-t border-border/50 pt-4">
               <p>All data comes from official UK government sources</p>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function DataSourcesFooter() {
     },
     {
       category: "Council Information",
-      icon: <Building className="h-4 w-4" />,
+      icon: <Building2 className="h-4 w-4" />,
       description: `Official records for ${councilName}`,
       isVerified: false,
       sources: [
@@ -123,7 +123,7 @@ export default function DataSourcesFooter() {
     },
     {
       category: "Budget & Spending Data",
-      icon: <BarChart3 className="h-4 w-4" />,
+      icon: <TrendingUp className="h-4 w-4" />,
       description: `Where we got ${councilName}'s budget breakdown`,
       isVerified: false,
       sources: selectedCouncil.budget ? [
@@ -153,7 +153,7 @@ export default function DataSourcesFooter() {
     },
     {
       category: "Council Information",
-      icon: <Building className="h-4 w-4" />,
+      icon: <Building2 className="h-4 w-4" />,
       description: `Official records for ${councilName}`,
       isVerified: false,
       sources: [
@@ -199,19 +199,19 @@ export default function DataSourcesFooter() {
         <div className="space-y-8">
 
           {/* Header - Council Specific */}
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-2">
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center gap-3">
               <h2 className="text-lg sm:text-2xl font-semibold">
                 Where {councilName}&apos;s Data Comes From
               </h2>
               {hasDetailedData && (
-                <Badge variant="secondary" className="text-[10px] sm:text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
+                <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
                   <CheckCircle2 className="h-3 w-3 mr-1" />
                   Verified
                 </Badge>
               )}
             </div>
-            <p className="text-xs sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {hasDetailedData
                 ? `Data sourced directly from ${councilName}'s official website and verified for accuracy.`
                 : "All the numbers you see come from official government websites. You can click the links below to see the original documents yourself."
@@ -220,48 +220,48 @@ export default function DataSourcesFooter() {
           </div>
 
           {/* Council-specific quick stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
-            <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">{selectedCouncil.ons_code}</div>
-              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">ONS Code</div>
+              <div className="text-xs text-muted-foreground mt-1">ONS Code</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+            <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">{selectedCouncil.type}</div>
-              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Council Type</div>
+              <div className="text-xs text-muted-foreground mt-1">Council Type</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+            <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">
                 {selectedCouncil.council_tax ? '✓' : '—'}
               </div>
-              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Tax Data</div>
+              <div className="text-xs text-muted-foreground mt-1">Tax Data</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-muted/50 rounded-xl">
+            <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">
                 {selectedCouncil.budget ? '✓' : '—'}
               </div>
-              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Budget Data</div>
+              <div className="text-xs text-muted-foreground mt-1">Budget Data</div>
             </div>
           </div>
 
           {/* Data Sources Grid */}
           <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
             {councilDataSources.map((category, index) => (
-              <Card key={index} className={`h-full border shadow-sm ${category.isVerified ? 'border-green-300 dark:border-green-700 bg-green-50/30 dark:bg-green-950/20' : 'border-border/40 bg-card'}`}>
-                <CardHeader className="p-4 sm:p-5 pb-3">
+              <Card key={index} className={`h-full border shadow-sm rounded-xl ${category.isVerified ? 'border-green-300 dark:border-green-700 bg-green-50/30 dark:bg-green-950/20' : 'border-border/40 bg-card'}`}>
+                <CardHeader className="p-5 pb-3">
                   <div className="flex items-center justify-between gap-2">
                     <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-semibold">
-                      <span className={category.isVerified ? 'text-green-600 dark:text-green-400' : 'opacity-70'}>{category.icon}</span>
+                      <span className={category.isVerified ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>{category.icon}</span>
                       {category.category}
                     </CardTitle>
                     {category.isVerified && (
-                      <Badge variant="secondary" className="text-[9px] sm:text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shrink-0">
+                      <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shrink-0">
                         Direct Source
                       </Badge>
                     )}
                   </div>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">{category.description}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{category.description}</p>
                 </CardHeader>
-                <CardContent className="px-4 pb-4 sm:px-5 sm:pb-5">
+                <CardContent className="px-5 pb-5">
                   <div className="space-y-4">
                     {category.sources.map((source, sourceIndex) => (
                       <div key={sourceIndex} className="space-y-2">
@@ -270,19 +270,19 @@ export default function DataSourcesFooter() {
                             href={source.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs sm:text-sm font-medium text-primary hover:underline flex items-start gap-1"
+                            className="text-sm font-medium text-primary hover:underline inline-flex items-start gap-1.5"
                           >
                             {source.title}
                             <ExternalLink className="h-3 w-3 mt-0.5 flex-shrink-0 opacity-70" />
                           </a>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 leading-relaxed">
+                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                             {source.description}
                           </p>
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            <Badge variant="outline" className="text-[9px] sm:text-xs border-muted-foreground/30">
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <Badge variant="outline" className="text-xs border-muted-foreground/30">
                               {source.lastUpdated}
                             </Badge>
-                            <Badge variant="secondary" className="text-[9px] sm:text-xs">
+                            <Badge variant="secondary" className="text-xs">
                               {source.dataType}
                             </Badge>
                           </div>
@@ -299,19 +299,19 @@ export default function DataSourcesFooter() {
           </div>
 
           {/* How We Used The Data */}
-          <Card className="border border-border/40 bg-card shadow-sm">
-            <CardHeader className="p-4 sm:p-6 pb-4">
-              <CardTitle className="flex items-center gap-2.5 text-base sm:text-lg font-semibold">
-                <Shield className="h-5 w-5 opacity-70" />
+          <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
+            <CardHeader className="p-5 sm:p-6 pb-4">
+              <CardTitle className="flex items-center gap-3 text-base sm:text-lg font-semibold">
+                <Shield className="h-5 w-5 text-muted-foreground" />
                 How We Used the Data for {councilName}
               </CardTitle>
             </CardHeader>
-            <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-              <div className="grid gap-4 sm:gap-5 md:grid-cols-3">
+            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
+              <div className="grid gap-6 md:grid-cols-3">
                 {methodology.map((item, index) => (
                   <div key={index} className="space-y-2">
-                    <h4 className="text-xs sm:text-sm font-medium">{item.title}</h4>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                    <h4 className="text-sm font-medium">{item.title}</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -321,11 +321,11 @@ export default function DataSourcesFooter() {
           </Card>
 
           {/* Helpful tip */}
-          <Card className="border border-border/40 bg-muted/30 shadow-sm">
-            <CardContent className="p-4 sm:p-5">
+          <Card className="border border-border/40 bg-muted/30 shadow-sm rounded-xl">
+            <CardContent className="p-5">
               <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 shrink-0 mt-0.5 text-primary opacity-70" />
-                <div className="text-xs sm:text-sm">
+                <Info className="h-5 w-5 shrink-0 mt-0.5 text-primary" />
+                <div className="text-sm">
                   <p className="font-medium mb-1">Want to check our numbers?</p>
                   <p className="text-muted-foreground leading-relaxed">
                     Click any link above to see the exact spreadsheet we used.
@@ -338,17 +338,17 @@ export default function DataSourcesFooter() {
           </Card>
 
           {/* Footer */}
-          <div className="border-t border-border/50 pt-6 space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 text-[10px] sm:text-xs text-muted-foreground">
+          <div className="border-t border-border/50 pt-6 space-y-6">
+            <div className="grid gap-6 md:grid-cols-2 text-sm text-muted-foreground">
               <div className="space-y-2">
-                <h4 className="font-medium text-foreground text-xs sm:text-sm">About This Dashboard</h4>
+                <h4 className="font-medium text-foreground">About This Dashboard</h4>
                 <p className="leading-relaxed">
                   This is an independent tool to help you understand council finances.
                   We are not connected to any council. We just make government data easier to read.
                 </p>
               </div>
               <div className="space-y-2">
-                <h4 className="font-medium text-foreground text-xs sm:text-sm">Using This Data</h4>
+                <h4 className="font-medium text-foreground">Using This Data</h4>
                 <p className="leading-relaxed">
                   All data is from UK government websites and is free to use.
                   If you need the data for something official, please check the original source links above.
@@ -356,9 +356,9 @@ export default function DataSourcesFooter() {
               </div>
             </div>
 
-            <div className="text-center text-[10px] sm:text-xs text-muted-foreground border-t border-border/50 pt-4">
+            <div className="text-center text-sm text-muted-foreground border-t border-border/50 pt-6">
               <p>
-                Data last updated: January 2025 • Made for UK residents
+                Data last updated: January 2025 · Made for UK residents
               </p>
             </div>
           </div>
