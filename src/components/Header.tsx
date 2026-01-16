@@ -38,6 +38,12 @@ export default function Header() {
 
           <nav className="flex items-center gap-2">
             <Link
+              href="/insights"
+              className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
+            >
+              Insights
+            </Link>
+            <Link
               href="/about"
               className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
             >
