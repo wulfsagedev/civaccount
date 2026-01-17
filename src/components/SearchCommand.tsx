@@ -61,10 +61,14 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
   // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      // Small delay to ensure DOM is ready
+      // Longer delay for mobile browsers to ensure overlay is fully rendered
       const timer = setTimeout(() => {
         inputRef.current?.focus();
-      }, 10);
+        // Double-tap focus for stubborn mobile browsers
+        requestAnimationFrame(() => {
+          inputRef.current?.focus();
+        });
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -177,7 +181,7 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  className={`flex-1 ${isMobile ? 'h-14 text-base' : 'h-12 text-sm'} px-3 bg-transparent outline-none placeholder:text-muted-foreground`}
+                  className={`flex-1 ${isMobile ? 'h-14' : 'h-12'} text-base px-3 bg-transparent outline-none placeholder:text-muted-foreground`}
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
