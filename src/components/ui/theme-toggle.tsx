@@ -4,7 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from 'lucide-react';
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  size?: 'default' | 'lg';
+}
+
+export function ThemeToggle({ size = 'default' }: ThemeToggleProps) {
   const [isDark, setIsDark] = useState(false);
   const [isManual, setIsManual] = useState(false);
 
@@ -49,18 +53,20 @@ export function ThemeToggle() {
     localStorage.setItem('theme-manual', 'true');
   };
 
+  const isLarge = size === 'lg';
+
   return (
     <Button
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="h-9 w-9 cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
+      className={`cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors ${isLarge ? 'h-11 w-11' : 'h-9 w-9'}`}
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
     >
       {isDark ? (
-        <Sun className="h-4 w-4 transition-all" />
+        <Sun className={`transition-all ${isLarge ? 'h-6 w-6' : 'h-4 w-4'}`} />
       ) : (
-        <Moon className="h-4 w-4 transition-all" />
+        <Moon className={`transition-all ${isLarge ? 'h-6 w-6' : 'h-4 w-4'}`} />
       )}
     </Button>
   );
