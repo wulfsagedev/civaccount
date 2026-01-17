@@ -119,6 +119,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Prevent horizontal scroll on all pages */
+    overflow-x: hidden;
   }
 
   body {
@@ -127,6 +129,8 @@
     line-height: 1.6;
     /* Slight letter spacing for improved readability - Stripe style */
     letter-spacing: -0.011em;
+    /* Prevent horizontal scroll on all pages */
+    overflow-x: hidden;
   }
 
   /* Heading styles with proper hierarchy - tighter tracking for headings */
