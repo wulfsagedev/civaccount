@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CouncilResultItem } from '@/components/ui/council-result-item';
-import { councils, Council, getCouncilDisplayName } from '@/data/councils';
+import { councils, Council, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 
@@ -94,7 +94,9 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
     setSelectedCouncil(council);
     setSearchQuery('');
     setIsOpen(false);
-    router.push('/');
+    // Navigate to SEO-friendly URL
+    const slug = getCouncilSlug(council);
+    router.push(`/council/${slug}`);
   }, [setSelectedCouncil, router]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {

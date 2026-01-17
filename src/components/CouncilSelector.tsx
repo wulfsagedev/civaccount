@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CouncilResultItem } from '@/components/ui/council-result-item';
-import { councils, Council, formatCurrency, getCouncilDisplayName } from '@/data/councils';
+import { useRouter } from 'next/navigation';
+import { councils, Council, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SELECTOR_RESULT_LIMIT, CARD_STYLES, CARD_PADDING } from '@/lib/utils';
 
@@ -22,6 +23,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const filteredCouncils = useMemo(() => {
     if (!searchQuery) {
@@ -55,7 +57,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     setSelectedCouncil(council);
     setSearchQuery('');
     onSelect?.(council);
-  }, [setSelectedCouncil, onSelect]);
+    // Navigate to SEO-friendly URL
+    const slug = getCouncilSlug(council);
+    router.push(`/council/${slug}`);
+  }, [setSelectedCouncil, onSelect, router]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
