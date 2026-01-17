@@ -1,9 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { PoundSterling, Landmark, Receipt, Wallet, Store, TrendingDown, Info, AlertTriangle, CheckCircle, Lightbulb } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget } from '@/data/councils';
@@ -80,223 +78,269 @@ const RevenueBreakdown = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardContent className="p-5 sm:p-6 text-center">
-          <p className="text-muted-foreground text-sm sm:text-base">Please select a council to view revenue information.</p>
-        </CardContent>
-      </Card>
+      <div className="card-elevated p-8 text-center">
+        <p className="text-muted-foreground">Please select a council to view revenue information.</p>
+      </div>
     );
   }
 
   if (!revenueData) {
     return (
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardContent className="p-5 sm:p-6">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Info className="h-5 w-5" />
-            <p className="text-sm sm:text-base">Revenue data not available for {selectedCouncil.name}.</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="card-elevated p-8">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Info className="h-5 w-5" />
+          <p>Revenue data not available for {selectedCouncil.name}.</p>
+        </div>
+      </div>
     );
   }
 
   const { totalRevenue, streams } = revenueData;
+  const maxPercentage = Math.max(...streams.map(s => s.percentage));
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      {/* Revenue Overview */}
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <PoundSterling className="h-5 w-5 text-primary opacity-70" />
-            <div>
-              <CardTitle className="text-lg sm:text-xl font-semibold">Where Does the Money Come From?</CardTitle>
-              <CardDescription className="text-sm sm:text-base leading-relaxed">
-                {selectedCouncil.name} gets about {formatBudget(totalRevenue / 1000)} each year
-              </CardDescription>
+    <div className="space-y-8">
+      {/* Hero Section - Total Revenue */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Primary Metric */}
+        <div className="lg:col-span-2">
+          <div className="card-elevated p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <p className="text-overline mb-2">Estimated Annual Revenue</p>
+                <p className="text-metric text-foreground">
+                  {formatBudget(totalRevenue / 1000)}
+                </p>
+              </div>
+              <Badge variant="outline" className="text-xs font-medium">
+                Estimate
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
+              This is roughly how much money {selectedCouncil.name} receives each year to fund all its services.
+            </p>
+          </div>
+        </div>
+
+        {/* Revenue Stability Summary */}
+        <div className="card-elevated p-6">
+          <p className="text-overline mb-4">Income Stability</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-foreground" />
+                <span className="text-sm">Stable</span>
+              </div>
+              <span className="font-semibold text-sm tabular-nums">{streams[0].percentage}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-stone-400" />
+                <span className="text-sm">Variable</span>
+              </div>
+              <span className="font-semibold text-sm tabular-nums">{streams[1].percentage + streams[2].percentage}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-stone-300 dark:bg-stone-600" />
+                <span className="text-sm">Uncertain</span>
+              </div>
+              <span className="font-semibold text-sm tabular-nums">{streams[3].percentage + streams[4].percentage}%</span>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-4 sm:space-y-5">
-            {streams.map((stream, index) => (
-              <div key={index} className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center space-x-2.5 min-w-0">
-                    <stream.icon className="h-4 w-4 shrink-0 text-muted-foreground opacity-70" />
-                    <div className="min-w-0">
-                      <span className="font-medium text-sm sm:text-base">{stream.source}</span>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge
-                          variant={
-                            stream.stability === 'High' ? 'default' :
-                            stream.stability === 'Medium' ? 'secondary' : 'destructive'
-                          }
-                          className="text-sm"
-                        >
-                          {stream.stability} Stability
+        </div>
+      </div>
+
+      {/* Revenue Streams Bar Chart */}
+      <div className="card-elevated p-8">
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-1">Where the money comes from</h2>
+            <p className="text-sm text-muted-foreground">
+              Breakdown of {selectedCouncil.name}&apos;s funding sources
+            </p>
+          </div>
+          <Badge variant="outline" className="text-xs">2025-26</Badge>
+        </div>
+
+        <div className="space-y-4">
+          {streams.map((stream) => {
+            const StreamIcon = stream.icon;
+            const barWidth = (stream.percentage / maxPercentage) * 100;
+            const isHighStability = stream.stability === 'High';
+
+            return (
+              <div key={stream.source} className="group">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                      <StreamIcon className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <span className="font-medium text-sm">{stream.source}</span>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <Badge variant="outline" className="text-xs font-normal">
+                          {stream.stability} stability
                         </Badge>
                       </div>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <div className="font-bold text-sm sm:text-base">{formatBudget(stream.amount / 1000)}</div>
-                    <div className="text-sm text-muted-foreground">{stream.percentage}%</div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground tabular-nums">
+                      {stream.percentage}%
+                    </span>
+                    <span className="font-semibold text-sm tabular-nums min-w-[70px] text-right">
+                      {formatBudget(stream.amount / 1000)}
+                    </span>
                   </div>
                 </div>
-
-                <Progress value={stream.percentage} className="h-2 sm:h-3" />
-
-                <div className="text-sm text-muted-foreground bg-muted/30 p-2.5 sm:p-3 rounded-xl leading-relaxed">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ease-out ${isHighStability ? 'bg-foreground' : 'bg-stone-400 dark:bg-stone-500'}`}
+                    style={{ width: `${barWidth}%` }}
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                   {stream.description}
-                </div>
+                </p>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            );
+          })}
+        </div>
 
-      {/* Revenue Stability Analysis */}
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <TrendingDown className="h-5 w-5 text-primary opacity-70" />
+        {/* Total */}
+        <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between">
+          <span className="font-semibold">Total estimated revenue</span>
+          <span className="text-xl font-bold tabular-nums">
+            {formatBudget(totalRevenue / 1000)}
+          </span>
+        </div>
+      </div>
+
+      {/* Revenue Stability Explainer */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="card-elevated p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <CheckCircle className="h-4 w-4 text-stone-400" />
+            <h3 className="font-semibold text-sm">Stable Income</h3>
+          </div>
+          <p className="text-2xl font-bold mb-2 tabular-nums">
+            {formatBudget(streams[0].amount / 1000)}
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <span className="font-medium text-foreground">Council Tax</span> is reliable - it comes in regularly and increases a little each year.
+          </p>
+        </div>
+
+        <div className="card-elevated p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle className="h-4 w-4 text-stone-400" />
+            <h3 className="font-semibold text-sm">Variable Income</h3>
+          </div>
+          <p className="text-2xl font-bold mb-2 tabular-nums">
+            {formatBudget((streams[1].amount + streams[2].amount) / 1000)}
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <span className="font-medium text-foreground">Fees and ringfenced grants</span> can change from year to year based on usage and government decisions.
+          </p>
+        </div>
+
+        <div className="card-elevated p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <TrendingDown className="h-4 w-4 text-stone-400" />
+            <h3 className="font-semibold text-sm">Uncertain Income</h3>
+          </div>
+          <p className="text-2xl font-bold mb-2 tabular-nums">
+            {formatBudget((streams[3].amount + streams[4].amount) / 1000)}
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <span className="font-medium text-foreground">Flexible grants and business rates</span> can change significantly if the government cuts spending or shops close.
+          </p>
+        </div>
+      </div>
+
+      {/* Factors That Affect Council Tax */}
+      <div className="card-elevated p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <Lightbulb className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-xl font-semibold">Why council tax changes</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-4">
+              Costs can go up when
+            </h3>
+            <ul className="space-y-3">
+              {[
+                'More people need council services',
+                'Prices for fuel and supplies increase',
+                'Staff wages rise',
+                'More elderly residents need social care',
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm">
+                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-stone-400" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-4">
+              Income can change when
+            </h3>
+            <ul className="space-y-3">
+              {[
+                'Government funding amounts change',
+                'Business rates collected go up or down',
+                'Fewer or more people use paid services',
+                'New homes are built (more council tax payers)',
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <span className="w-4 h-4 shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* How rates are set */}
+        <div className="mt-8 p-6 rounded-xl bg-muted/50 border border-border/50">
+          <div className="flex gap-4">
+            <div className="shrink-0">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <Info className="h-5 w-5 text-muted-foreground" />
+              </div>
+            </div>
             <div>
-              <CardTitle className="text-lg sm:text-xl font-semibold">How Safe Is This Money?</CardTitle>
-              <CardDescription className="text-sm sm:text-base leading-relaxed">
-                Some money is more reliable than other money
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <div className="p-4 sm:p-5 bg-primary/5 rounded-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="h-4 w-4 text-primary" />
-                <h3 className="font-semibold text-primary text-sm sm:text-base">Steady Income</h3>
-              </div>
-              <div className="text-lg sm:text-2xl font-bold text-primary mb-2">
-                {formatBudget(streams[0].amount / 1000)}
-              </div>
-              <div className="text-sm text-primary/80 leading-relaxed">
-                <strong>Council Tax:</strong> Comes in regularly and increases each year
-              </div>
-            </div>
-            <div className="p-4 sm:p-5 bg-muted/50 rounded-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                <h3 className="font-semibold text-sm sm:text-base">Variable Income</h3>
-              </div>
-              <div className="text-lg sm:text-2xl font-bold mb-2">
-                {formatBudget((streams[1].amount + streams[2].amount) / 1000)}
-              </div>
-              <div className="text-sm text-muted-foreground leading-relaxed">
-                <strong>Fees & Some Grants:</strong> Amounts can change from year to year
-              </div>
-            </div>
-            <div className="p-4 sm:p-5 bg-destructive/5 rounded-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingDown className="h-4 w-4 text-destructive" />
-                <h3 className="font-semibold text-destructive text-sm sm:text-base">Uncertain Income</h3>
-              </div>
-              <div className="text-lg sm:text-2xl font-bold text-destructive mb-2">
-                {formatBudget((streams[3].amount + streams[4].amount) / 1000)}
-              </div>
-              <div className="text-sm text-destructive/80 leading-relaxed">
-                <strong>Government Money & Business Rates:</strong> These amounts can change significantly
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* What This Means for You */}
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <Lightbulb className="h-5 w-5 text-primary opacity-70" />
-            <CardTitle className="text-lg sm:text-xl font-semibold">Factors That Affect Council Tax</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <h4 className="font-semibold mb-3 text-sm sm:text-base">Costs Can Go Up When</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
-                    <span className="leading-relaxed">More people need council services</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
-                    <span className="leading-relaxed">Prices for things like fuel and supplies go up</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
-                    <span className="leading-relaxed">Staff wages increase</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
-                    <span className="leading-relaxed">More elderly residents need social care</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-3 text-sm sm:text-base">Income Can Change When</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
-                    <span className="leading-relaxed">Government funding amounts change</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
-                    <span className="leading-relaxed">Business rates collected go up or down</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
-                    <span className="leading-relaxed">Fewer or more people use paid services</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
-                    <span className="leading-relaxed">New homes are built (more council tax payers)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 sm:p-4 bg-background/60 rounded-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <Info className="h-4 w-4 text-primary opacity-70" />
-                <h4 className="font-semibold text-primary text-sm sm:text-base">How Council Tax Rates Are Set</h4>
-              </div>
-              <p className="text-sm text-primary/80 leading-relaxed">
+              <h4 className="font-semibold text-foreground mb-2">
+                How council tax rates are set
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 Each year, councils work out how much money they need to run services.
                 They look at what they expect to get from government and other sources.
                 Council tax makes up the difference between what they need and what they get from other sources.
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Note about estimates */}
-      <Card className="border border-border/40 bg-muted/30 shadow-sm rounded-xl">
-        <CardContent className="p-4 sm:p-5">
-          <div className="flex items-start gap-3 text-muted-foreground">
-            <Info className="h-5 w-5 shrink-0 mt-0.5 opacity-70" />
-            <div className="text-sm">
-              <p className="font-medium mb-1">About these numbers</p>
-              <p className="leading-relaxed">
-                These are estimates based on what most {selectedCouncil.type_name}s look like.
-                The real numbers might be a bit different. For exact figures, check {selectedCouncil.name}&apos;s website.
-              </p>
-            </div>
+      <div className="card-elevated p-6 bg-muted/30">
+        <div className="flex items-start gap-3 text-muted-foreground">
+          <Info className="h-5 w-5 shrink-0 mt-0.5" />
+          <div className="text-sm">
+            <p className="font-medium text-foreground mb-1">About these numbers</p>
+            <p className="leading-relaxed">
+              These are estimates based on typical funding patterns for {selectedCouncil.type_name}s.
+              The actual numbers may differ. For exact figures, check {selectedCouncil.name}&apos;s published accounts.
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,9 +1,7 @@
 'use client';
 
 import { useMemo, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   TrendingUp,
   TrendingDown,
@@ -32,6 +30,7 @@ export default function InsightsPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   // Calculate all statistics
   const stats = useMemo(() => {
     const councilsWithTax = councils.filter(c => c.council_tax?.band_d_2025);
@@ -47,7 +46,34 @@ export default function InsightsPage() {
     const maxBandD = Math.max(...bandDValues);
     const medianBandD = [...bandDValues].sort((a, b) => a - b)[Math.floor(bandDValues.length / 2)];
 
-    // Find highest and lowest councils
+    // Find highest and lowest councils - NOW GROUPED BY COMPARABLE TYPES
+    // Group 1: "All-in-one" councils (UA, MD, LB) - these are directly comparable
+    // Group 2: District councils (SD) - only comparable to other districts
+    // Group 3: County councils (SC) - only comparable to other counties
+
+    const allInOneCouncils = councilsWithTax.filter(c => ['UA', 'MD', 'LB'].includes(c.type));
+    const districtCouncils = councilsWithTax.filter(c => c.type === 'SD');
+    const countyCouncils = councilsWithTax.filter(c => c.type === 'SC');
+
+    const sortedAllInOne = [...allInOneCouncils].sort((a, b) =>
+      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
+    );
+    const sortedDistricts = [...districtCouncils].sort((a, b) =>
+      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
+    );
+    const sortedCounties = [...countyCouncils].sort((a, b) =>
+      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
+    );
+
+    // Top/bottom 5 for each comparable group
+    const highestAllInOne = sortedAllInOne.slice(0, 5);
+    const lowestAllInOne = sortedAllInOne.slice(-5).reverse();
+    const highestDistricts = sortedDistricts.slice(0, 5);
+    const lowestDistricts = sortedDistricts.slice(-5).reverse();
+    const highestCounties = sortedCounties.slice(0, 5);
+    const lowestCounties = sortedCounties.slice(-5).reverse();
+
+    // Keep overall for reference
     const sortedByTax = [...councilsWithTax].sort((a, b) =>
       (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
     );
@@ -176,6 +202,16 @@ export default function InsightsPage() {
       medianBandD,
       highest5,
       lowest5,
+      // Grouped by comparable types
+      highestAllInOne,
+      lowestAllInOne,
+      highestDistricts,
+      lowestDistricts,
+      highestCounties,
+      lowestCounties,
+      allInOneCount: allInOneCouncils.length,
+      districtCount: districtCouncils.length,
+      countyCount: countyCouncils.length,
       avgYoyChange,
       biggestIncreases,
       smallestIncreases,
@@ -257,395 +293,569 @@ export default function InsightsPage() {
     return `£${amount.toLocaleString('en-GB')}`;
   };
 
+  // Calculate max for bar widths
+  const maxPriceBandCount = Math.max(...stats.priceBands.map(b => b.count));
+  const maxServiceSpending = Math.max(...stats.serviceSpendingArray.map(s => s.value));
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-7xl">
           {/* Page Header */}
           <div className="text-center mb-10 sm:mb-12">
-            <Badge variant="secondary" className="mb-4">2025-26 Data</Badge>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-4">Council Tax in England</h1>
+            <Badge variant="outline" className="mb-4">2025-26 Data</Badge>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-4">Council tax in England</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               A complete picture of how council tax works across {stats.totalCouncils} local authorities
             </p>
           </div>
 
-          {/* Key Statistics */}
+          {/* Key Statistics - Hero Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <PoundSterling className="h-5 w-5 text-primary opacity-70" />
-                  <Badge variant="outline" className="text-sm">Average</Badge>
+            <div className="card-elevated p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                  <PoundSterling className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.avgBandD, { decimals: 0 })}</p>
-                <p className="text-sm text-muted-foreground mt-1">Band D average</p>
-              </CardContent>
-            </Card>
+                <Badge variant="outline" className="text-xs">Average</Badge>
+              </div>
+              <p className="text-2xl sm:text-3xl font-bold tabular-nums">{formatCurrency(stats.avgBandD, { decimals: 0 })}</p>
+              <p className="text-sm text-muted-foreground mt-1">Band D average</p>
+            </div>
 
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <ArrowUpDown className="h-5 w-5 text-primary opacity-70" />
-                  <Badge variant="outline" className="text-sm">Range</Badge>
+            <div className="card-elevated p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                  <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</p>
-                <p className="text-sm text-muted-foreground mt-1">Gap between highest & lowest</p>
-              </CardContent>
-            </Card>
+                <Badge variant="outline" className="text-xs">Range</Badge>
+              </div>
+              <p className="text-2xl sm:text-3xl font-bold tabular-nums">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</p>
+              <p className="text-sm text-muted-foreground mt-1">Gap between highest & lowest</p>
+            </div>
 
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <TrendingUp className="h-5 w-5 text-destructive opacity-70" />
-                  <Badge variant="destructive" className="text-sm">Rising</Badge>
+            <div className="card-elevated p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-2xl sm:text-3xl font-bold">+{stats.avgYoyChange.toFixed(1)}%</p>
-                <p className="text-sm text-muted-foreground mt-1">Average increase this year</p>
-              </CardContent>
-            </Card>
+                <Badge variant="outline" className="text-xs">Rising</Badge>
+              </div>
+              <p className="text-2xl sm:text-3xl font-bold tabular-nums">+{stats.avgYoyChange.toFixed(1)}%</p>
+              <p className="text-sm text-muted-foreground mt-1">Average increase this year</p>
+            </div>
 
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <Landmark className="h-5 w-5 text-primary opacity-70" />
-                  <Badge variant="outline" className="text-sm">Total</Badge>
+            <div className="card-elevated p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                  <Landmark className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-2xl sm:text-3xl font-bold">{formatBillions(stats.totalBudget)}</p>
-                <p className="text-sm text-muted-foreground mt-1">Combined council spending</p>
-              </CardContent>
-            </Card>
+                <Badge variant="outline" className="text-xs">Total</Badge>
+              </div>
+              <p className="text-2xl sm:text-3xl font-bold">{formatBillions(stats.totalBudget)}</p>
+              <p className="text-sm text-muted-foreground mt-1">Combined council spending</p>
+            </div>
           </div>
 
-          {/* Main Insight Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
-            {/* Highest and Lowest */}
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-              <CardHeader className="p-5 sm:p-6 pb-4">
-                <div className="flex items-center gap-3">
-                  <Scale className="h-5 w-5 text-primary opacity-70" />
-                  <div>
-                    <CardTitle className="text-lg sm:text-xl font-semibold">The Extremes</CardTitle>
-                    <CardDescription>Highest and lowest Band D rates</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <TrendingUp className="h-4 w-4 text-destructive" />
-                      <span className="font-medium text-sm">Highest Council Tax</span>
-                    </div>
-                    <div className="space-y-2">
-                      {stats.highest5.map((council, i) => (
-                        <div key={council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
-                            <span className="text-sm font-medium">{council.name}</span>
-                            <Badge variant="outline" className="text-sm">{council.type_name}</Badge>
-                          </div>
-                          <span className="font-bold text-destructive">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+          {/* Rankings by Council Type - Fair Comparisons */}
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <Scale className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">Comparing like with like</h2>
+                <p className="text-sm text-muted-foreground">Rankings grouped by council type for fair comparison</p>
+              </div>
+            </div>
 
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <TrendingDown className="h-4 w-4 text-green-600" />
-                      <span className="font-medium text-sm">Lowest Council Tax</span>
-                    </div>
-                    <div className="space-y-2">
-                      {stats.lowest5.map((council, i) => (
-                        <div key={council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
-                            <span className="text-sm font-medium">{council.name}</span>
-                            <Badge variant="outline" className="text-sm">{council.type_name}</Badge>
-                          </div>
-                          <span className="font-bold text-green-600">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+            {/* All-in-one councils (UA, MD, LB) */}
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <Badge variant="secondary" className="text-xs">Unitary, Metropolitan & London Boroughs</Badge>
+                <span className="text-sm text-muted-foreground">({stats.allInOneCount} councils)</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                These councils provide all services - education, social care, roads, bins, and more. Their tax covers everything.
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Highest</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.highestAllInOne.map((council, i) => (
+                      <div key={council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium truncate">{council.name}</span>
                         </div>
-                      ))}
-                    </div>
+                        <span className="font-bold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingDown className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Lowest</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.lowestAllInOne.map((council, i) => (
+                      <div key={council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium truncate">{council.name}</span>
+                        </div>
+                        <span className="font-bold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            {/* Year-over-Year Changes */}
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-              <CardHeader className="p-5 sm:p-6 pb-4">
-                <div className="flex items-center gap-3">
-                  <TrendingUp className="h-5 w-5 text-primary opacity-70" />
-                  <div>
-                    <CardTitle className="text-lg sm:text-xl font-semibold">This Year&apos;s Changes</CardTitle>
-                    <CardDescription>Biggest increases and smallest rises</CardDescription>
+            {/* District councils */}
+            <div className="mb-8 pt-6 border-t border-border/50">
+              <div className="flex items-center gap-2 mb-4">
+                <Badge variant="secondary" className="text-xs">District Councils</Badge>
+                <span className="text-sm text-muted-foreground">({stats.districtCount} councils)</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                District councils handle bins, planning, housing, and local services. You also pay county council tax on top.
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Highest</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.highestDistricts.map((council, i) => (
+                      <div key={council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium truncate">{council.name}</span>
+                        </div>
+                        <span className="font-bold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <AlertTriangle className="h-4 w-4 text-destructive" />
-                      <span className="font-medium text-sm">Biggest Increases</span>
-                    </div>
-                    <div className="space-y-2">
-                      {stats.biggestIncreases.map((item, i) => (
-                        <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
-                            <span className="text-sm font-medium">{item.council.name}</span>
-                          </div>
-                          <Badge variant="destructive" className="text-sm">+{item.percentChange.toFixed(1)}%</Badge>
-                        </div>
-                      ))}
-                    </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingDown className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Lowest</span>
                   </div>
+                  <div className="space-y-2">
+                    {stats.lowestDistricts.map((council, i) => (
+                      <div key={council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium truncate">{council.name}</span>
+                        </div>
+                        <span className="font-bold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="font-medium text-sm">Smallest Increases</span>
-                    </div>
-                    <div className="space-y-2">
-                      {stats.smallestIncreases.map((item, i) => (
-                        <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
-                            <span className="text-sm font-medium">{item.council.name}</span>
-                          </div>
-                          <Badge variant="default" className="text-sm bg-green-600">+{item.percentChange.toFixed(1)}%</Badge>
+            {/* County councils */}
+            <div className="pt-6 border-t border-border/50">
+              <div className="flex items-center gap-2 mb-4">
+                <Badge variant="secondary" className="text-xs">County Councils</Badge>
+                <span className="text-sm text-muted-foreground">({stats.countyCount} councils)</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                County councils handle education, social care, and roads. Their share is the biggest part of your bill in two-tier areas.
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Highest</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.highestCounties.map((council, i) => (
+                      <div key={council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium truncate">{council.name}</span>
                         </div>
-                      ))}
-                    </div>
+                        <span className="font-bold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingDown className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Lowest</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.lowestCounties.map((council, i) => (
+                      <div key={council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium truncate">{council.name}</span>
+                        </div>
+                        <span className="font-bold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-muted/30 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Why group councils this way?</strong> Comparing a district council to a unitary authority
+                  is like comparing apples to oranges. Districts appear cheaper, but you also pay county council tax.
+                  By grouping similar councils together, you can see who really charges more for equivalent services.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Year-over-Year Changes */}
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">This year&apos;s changes</h2>
+                <p className="text-sm text-muted-foreground">Biggest increases and smallest rises from 2024-25 to 2025-26</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium text-sm">Biggest increases</span>
+                </div>
+                <div className="space-y-2">
+                  {stats.biggestIncreases.map((item, i) => (
+                    <div key={item.council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                        <span className="text-sm font-medium truncate">{item.council.name}</span>
+                        <Badge variant="outline" className="text-xs hidden sm:inline-flex">{item.council.type_name}</Badge>
+                      </div>
+                      <Badge variant="outline" className="text-xs tabular-nums shrink-0">+{item.percentChange.toFixed(1)}%</Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle className="h-4 w-4 text-stone-400" />
+                  <span className="font-medium text-sm">Smallest increases</span>
+                </div>
+                <div className="space-y-2">
+                  {stats.smallestIncreases.map((item, i) => (
+                    <div key={item.council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                        <span className="text-sm font-medium truncate">{item.council.name}</span>
+                        <Badge variant="outline" className="text-xs hidden sm:inline-flex">{item.council.type_name}</Badge>
+                      </div>
+                      <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800 tabular-nums shrink-0">
+                        +{item.percentChange.toFixed(1)}%
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Distribution by Price Band */}
-          <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
-            <CardHeader className="p-5 sm:p-6 pb-4">
-              <div className="flex items-center gap-3">
-                <BarChart3 className="h-5 w-5 text-primary opacity-70" />
-                <div>
-                  <CardTitle className="text-lg sm:text-xl font-semibold">How Council Tax Rates Are Spread</CardTitle>
-                  <CardDescription>Distribution of Band D rates across all councils</CardDescription>
-                </div>
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <BarChart3 className="h-5 w-5 text-muted-foreground" />
               </div>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="space-y-4">
-                {stats.priceBands.map((band) => {
-                  const percentage = (band.count / stats.councilsWithTax) * 100;
-                  return (
-                    <div key={band.label} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium">{band.label}</span>
-                        <span className="text-muted-foreground">{band.count} councils ({percentage.toFixed(0)}%)</span>
-                      </div>
-                      <Progress value={percentage} className="h-3" />
+              <div>
+                <h2 className="text-xl font-semibold">How council tax rates are spread</h2>
+                <p className="text-sm text-muted-foreground">Distribution of Band D rates across all councils</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {stats.priceBands.map((band) => {
+                const percentage = (band.count / stats.councilsWithTax) * 100;
+                const barWidth = (band.count / maxPriceBandCount) * 100;
+                return (
+                  <div key={band.label}>
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="font-medium">{band.label}</span>
+                      <span className="text-muted-foreground tabular-nums">{band.count} councils ({percentage.toFixed(0)}%)</span>
                     </div>
-                  );
-                })}
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-stone-400 dark:bg-stone-500 rounded-full transition-all duration-500"
+                        style={{ width: `${barWidth}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 p-4 bg-muted/30 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  The median Band D rate is <strong className="text-foreground tabular-nums">{formatCurrency(stats.medianBandD, { decimals: 0 })}</strong>,
+                  meaning half of all councils charge more and half charge less. The gap between the cheapest
+                  ({formatCurrency(stats.minBandD, { decimals: 0 })}) and most expensive ({formatCurrency(stats.maxBandD, { decimals: 0 })})
+                  is <strong className="text-foreground tabular-nums">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</strong>.
+                </p>
               </div>
-              <div className="mt-6 p-4 bg-muted/50 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <Info className="h-4 w-4 mt-0.5 text-primary" />
-                  <p className="text-sm text-muted-foreground">
-                    The median Band D rate is <strong className="text-foreground">{formatCurrency(stats.medianBandD, { decimals: 0 })}</strong>,
-                    meaning half of all councils charge more and half charge less. The gap between the cheapest
-                    ({formatCurrency(stats.minBandD, { decimals: 0 })}) and most expensive ({formatCurrency(stats.maxBandD, { decimals: 0 })})
-                    is <strong className="text-foreground">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</strong>.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* By Council Type */}
-          <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
-            <CardHeader className="p-5 sm:p-6 pb-4">
-              <div className="flex items-center gap-3">
-                <Building className="h-5 w-5 text-primary opacity-70" />
-                <div>
-                  <CardTitle className="text-lg sm:text-xl font-semibold">By Council Type</CardTitle>
-                  <CardDescription>How rates vary across different types of local authority</CardDescription>
-                </div>
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <Building className="h-5 w-5 text-muted-foreground" />
               </div>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(stats.typeStats)
-                  .sort((a, b) => b[1].avgBandD - a[1].avgBandD)
-                  .map(([type, data]) => (
-                  <div key={type} className="p-4 border rounded-xl">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-semibold text-sm">{COUNCIL_TYPE_NAMES[type]}</span>
-                      <Badge variant="secondary" className="text-sm">{data.count}</Badge>
+              <div>
+                <h2 className="text-xl font-semibold">By council type</h2>
+                <p className="text-sm text-muted-foreground">How rates vary across different types of local authority</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.entries(stats.typeStats)
+                .sort((a, b) => b[1].avgBandD - a[1].avgBandD)
+                .map(([type, data]) => (
+                <div key={type} className="p-4 border border-border/50 rounded-xl">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-semibold text-sm">{COUNCIL_TYPE_NAMES[type]}</span>
+                    <Badge variant="outline" className="text-xs">{data.count}</Badge>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Average</span>
+                      <span className="font-bold tabular-nums">{formatCurrency(data.avgBandD, { decimals: 0 })}</span>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Average</span>
-                        <span className="font-bold">{formatCurrency(data.avgBandD, { decimals: 0 })}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Range</span>
-                        <span>{formatCurrency(data.minBandD, { decimals: 0 })} - {formatCurrency(data.maxBandD, { decimals: 0 })}</span>
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Range</span>
+                      <span className="tabular-nums">{formatCurrency(data.minBandD, { decimals: 0 })} - {formatCurrency(data.maxBandD, { decimals: 0 })}</span>
                     </div>
                   </div>
-                ))}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 p-4 bg-muted/30 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Why the difference?</strong> Unitary authorities and metropolitan districts
+                  tend to have higher rates because they provide all services (social care, education, roads, bins, etc.) in one council.
+                  District councils have lower rates because county councils handle the expensive services like social care and education.
+                </p>
               </div>
-              <div className="mt-6 p-4 bg-muted/50 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <Info className="h-4 w-4 mt-0.5 text-primary" />
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">Why the difference?</strong> Unitary authorities and metropolitan districts
-                    tend to have higher rates because they provide all services (social care, education, roads, bins, etc.) in one council.
-                    District councils have lower rates because county councils handle the expensive services like social care and education.
+            </div>
+          </div>
+
+          {/* Where the Money Goes */}
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <PoundSterling className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">Where all the money goes</h2>
+                <p className="text-sm text-muted-foreground">Combined spending across all {stats.councilsWithBudget} councils with budget data</p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {stats.serviceSpendingArray.map((service) => {
+                const percentage = (service.value / stats.totalServiceSpending) * 100;
+                const barWidth = (service.value / maxServiceSpending) * 100;
+                const info = SERVICE_INFO[service.key];
+                return (
+                  <div key={service.key}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <span className="font-medium text-sm">{SERVICE_NAMES[service.key]}</span>
+                        <p className="text-sm text-muted-foreground">{info?.description}</p>
+                      </div>
+                      <div className="text-right shrink-0 ml-4">
+                        <span className="font-bold">{formatBillions(service.value)}</span>
+                        <span className="text-muted-foreground ml-2 text-sm tabular-nums">({percentage.toFixed(0)}%)</span>
+                      </div>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden mb-3">
+                      <div
+                        className="h-full bg-stone-400 dark:bg-stone-500 rounded-full transition-all duration-500"
+                        style={{ width: `${barWidth}%` }}
+                      />
+                    </div>
+                    {info?.includes && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {info.includes.slice(0, 4).map((item) => (
+                          <Badge key={item} variant="outline" className="text-xs font-normal">
+                            {item}
+                          </Badge>
+                        ))}
+                        {info.includes.length > 4 && (
+                          <Badge variant="outline" className="text-xs font-normal text-muted-foreground">
+                            +{info.includes.length - 4} more
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 p-4 bg-muted/30 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                <div className="text-sm">
+                  <p className="font-medium text-foreground mb-1">Education and social care dominate council budgets</p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Education (including school transport and special needs) is the single largest category, followed by adult and children&apos;s social care.
+                    Together, these three services account for around 80% of total council spending - and demand keeps growing.
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Where the Money Goes */}
-          <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
-            <CardHeader className="p-5 sm:p-6 pb-4">
-              <div className="flex items-center gap-3">
-                <PoundSterling className="h-5 w-5 text-primary opacity-70" />
-                <div>
-                  <CardTitle className="text-lg sm:text-xl font-semibold">Where All the Money Goes</CardTitle>
-                  <CardDescription>Combined spending across all {stats.councilsWithBudget} councils with budget data</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="space-y-6">
-                {stats.serviceSpendingArray.map((service) => {
-                  const percentage = (service.value / stats.totalServiceSpending) * 100;
-                  const info = SERVICE_INFO[service.key];
-                  return (
-                    <div key={service.key} className="space-y-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <div>
-                          <span className="font-medium">{SERVICE_NAMES[service.key]}</span>
-                          <p className="text-sm text-muted-foreground mt-0.5">{info?.description}</p>
-                        </div>
-                        <div className="text-right shrink-0 ml-4">
-                          <span className="font-bold">{formatBillions(service.value)}</span>
-                          <span className="text-muted-foreground ml-2">({percentage.toFixed(0)}%)</span>
-                        </div>
-                      </div>
-                      <Progress value={percentage} className="h-3" />
-                      {info?.includes && (
-                        <div className="flex flex-wrap gap-1.5">
-                          {info.includes.slice(0, 4).map((item) => (
-                            <Badge key={item} variant="secondary" className="text-sm font-normal">
-                              {item}
-                            </Badge>
-                          ))}
-                          {info.includes.length > 4 && (
-                            <Badge variant="outline" className="text-sm font-normal">
-                              +{info.includes.length - 4} more
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mt-6 p-4 bg-primary/5 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <Info className="h-4 w-4 mt-0.5 text-primary" />
-                  <div className="text-sm">
-                    <p className="font-medium text-primary mb-1">Education and social care dominate council budgets</p>
-                    <p className="text-primary/80">
-                      Education (including school transport and special needs) is the single largest category, followed by adult and children&apos;s social care.
-                      Together, these three services account for around 80% of total council spending - and demand keeps growing.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Efficiency Metrics */}
           {stats.efficiencyStats && (
-            <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
-              <CardHeader className="p-5 sm:p-6 pb-4">
-                <div className="flex items-center gap-3">
-                  <Target className="h-5 w-5 text-primary opacity-70" />
-                  <div>
-                    <CardTitle className="text-lg sm:text-xl font-semibold">Efficiency & Value for Money</CardTitle>
-                    <CardDescription>How much councils spend per person and on administration</CardDescription>
-                  </div>
+            <div className="card-elevated p-8 mb-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                  <Target className="h-5 w-5 text-muted-foreground" />
                 </div>
-              </CardHeader>
-              <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-                {/* Key efficiency metrics */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                  <div className="p-4 bg-primary/5 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Calculator className="h-4 w-4 text-primary" />
-                      <span className="font-medium text-sm">Average per person</span>
-                    </div>
-                    <p className="text-2xl font-bold text-primary">
-                      {formatCurrency(stats.efficiencyStats.averagePerCapitaSpending, { decimals: 0 })}
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Spent per resident annually
-                    </p>
+                <div>
+                  <h2 className="text-xl font-semibold">Efficiency & value for money</h2>
+                  <p className="text-sm text-muted-foreground">How much councils spend per person and on administration</p>
+                </div>
+              </div>
+
+              {/* Key efficiency metrics */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div className="p-4 bg-muted/30 rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Calculator className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Average per person</span>
                   </div>
-                  <div className="p-4 bg-muted/50 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Percent className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium text-sm">Admin overhead</span>
-                    </div>
-                    <p className="text-2xl font-bold">
-                      {stats.efficiencyStats.averageAdminOverhead.toFixed(1)}%
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Of budget on central services
-                    </p>
+                  <p className="text-2xl font-bold tabular-nums">
+                    {formatCurrency(stats.efficiencyStats.averagePerCapitaSpending, { decimals: 0 })}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Spent per resident annually
+                  </p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Percent className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Admin overhead</span>
                   </div>
-                  <div className="p-4 bg-muted/50 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium text-sm">Population covered</span>
-                    </div>
-                    <p className="text-2xl font-bold">
-                      {(stats.totalPopulation / 1000000).toFixed(1)}m
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Residents with data
-                    </p>
+                  <p className="text-2xl font-bold tabular-nums">
+                    {stats.efficiencyStats.averageAdminOverhead.toFixed(1)}%
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Of budget on central services
+                  </p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Population covered</span>
+                  </div>
+                  <p className="text-2xl font-bold tabular-nums">
+                    {(stats.totalPopulation / 1000000).toFixed(1)}m
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Residents with data
+                  </p>
+                </div>
+              </div>
+
+              {/* Per-capita spending comparison */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingDown className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Lowest spending per person</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.efficiencyStats.lowestPerCapita.map((item, i) => (
+                      <div key={item.council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium">{item.council.name}</span>
+                          <Badge variant="outline" className="text-xs">{item.council.type_name}</Badge>
+                        </div>
+                        <span className="font-bold tabular-nums">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Per-capita spending comparison */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Highest spending per person</span>
+                  </div>
+                  <div className="space-y-2">
+                    {stats.efficiencyStats.highestPerCapita.map((item, i) => (
+                      <div key={item.council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
+                          <span className="text-sm font-medium">{item.council.name}</span>
+                          <Badge variant="outline" className="text-xs">{item.council.type_name}</Badge>
+                        </div>
+                        <span className="font-bold tabular-nums">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Admin overhead comparison */}
+              <div className="mt-6 pt-6 border-t border-border/50">
+                <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                  <Building className="h-4 w-4 text-muted-foreground" />
+                  Administrative overhead comparison
+                </h4>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
                     <div className="flex items-center gap-2 mb-3">
-                      <TrendingDown className="h-4 w-4 text-green-600" />
-                      <span className="font-medium text-sm">Lowest Spending Per Person</span>
+                      <CheckCircle className="h-4 w-4 text-stone-400" />
+                      <span className="font-medium text-sm">Lowest admin overhead</span>
                     </div>
                     <div className="space-y-2">
-                      {stats.efficiencyStats.lowestPerCapita.map((item, i) => (
-                        <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
+                      {stats.efficiencyStats.lowestAdminOverhead.map((item, i) => (
+                        <div key={item.council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
-                            <Badge variant="outline" className="text-sm">{item.council.type_name}</Badge>
                           </div>
-                          <span className="font-bold text-green-600">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
+                          <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800 tabular-nums">
+                            {item.adminOverheadPercent.toFixed(1)}%
+                          </Badge>
                         </div>
                       ))}
                     </div>
@@ -653,222 +863,182 @@ export default function InsightsPage() {
 
                   <div>
                     <div className="flex items-center gap-2 mb-3">
-                      <TrendingUp className="h-4 w-4 text-destructive" />
-                      <span className="font-medium text-sm">Highest Spending Per Person</span>
+                      <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium text-sm">Highest admin overhead</span>
                     </div>
                     <div className="space-y-2">
-                      {stats.efficiencyStats.highestPerCapita.map((item, i) => (
-                        <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
+                      {stats.efficiencyStats.highestAdminOverhead.map((item, i) => (
+                        <div key={item.council.ons_code} className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
-                            <Badge variant="outline" className="text-sm">{item.council.type_name}</Badge>
                           </div>
-                          <span className="font-bold text-destructive">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
+                          <Badge variant="outline" className="text-xs tabular-nums">{item.adminOverheadPercent.toFixed(1)}%</Badge>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Admin overhead comparison */}
-                <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-semibold text-sm mb-4 flex items-center gap-2">
-                    <Building className="h-4 w-4 text-muted-foreground" />
-                    Administrative Overhead Comparison
-                  </h4>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span className="font-medium text-sm">Lowest Admin Overhead</span>
-                      </div>
-                      <div className="space-y-2">
-                        {stats.efficiencyStats.lowestAdminOverhead.map((item, i) => (
-                          <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
-                              <span className="text-sm font-medium">{item.council.name}</span>
-                            </div>
-                            <Badge variant="default" className="text-sm bg-green-600">{item.adminOverheadPercent.toFixed(1)}%</Badge>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <AlertTriangle className="h-4 w-4 text-amber-600" />
-                        <span className="font-medium text-sm">Highest Admin Overhead</span>
-                      </div>
-                      <div className="space-y-2">
-                        {stats.efficiencyStats.highestAdminOverhead.map((item, i) => (
-                          <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-amber-500/5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
-                              <span className="text-sm font-medium">{item.council.name}</span>
-                            </div>
-                            <Badge variant="secondary" className="text-sm">{item.adminOverheadPercent.toFixed(1)}%</Badge>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+              <div className="mt-6 p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                  <div className="text-sm text-muted-foreground">
+                    <p className="font-medium text-foreground mb-1">What do these numbers mean?</p>
+                    <p className="leading-relaxed">
+                      <strong className="text-foreground">Per-capita spending</strong> shows how much each council spends divided by their population.
+                      Higher isn&apos;t necessarily bad - councils with more elderly residents or deprived areas will naturally spend more on social care.
+                      <strong className="text-foreground"> Admin overhead</strong> shows what percentage of the budget goes to central services like HR, IT, and council tax collection.
+                    </p>
                   </div>
                 </div>
-
-                <div className="mt-6 p-4 bg-muted/50 rounded-xl">
-                  <div className="flex items-start gap-3">
-                    <Info className="h-4 w-4 mt-0.5 text-primary" />
-                    <div className="text-sm text-muted-foreground">
-                      <p className="font-medium text-foreground mb-1">What do these numbers mean?</p>
-                      <p>
-                        <strong>Per-capita spending</strong> shows how much each council spends divided by their population.
-                        Higher isn&apos;t necessarily bad - councils with more elderly residents or deprived areas will naturally spend more on social care.
-                        <strong> Admin overhead</strong> shows what percentage of the budget goes to central services like HR, IT, and council tax collection.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* Spending by Council Type */}
-          <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
-            <CardHeader className="p-5 sm:p-6 pb-4">
-              <div className="flex items-center gap-3">
-                <Building className="h-5 w-5 text-primary opacity-70" />
-                <div>
-                  <CardTitle className="text-lg sm:text-xl font-semibold">How Spending Varies by Council Type</CardTitle>
-                  <CardDescription>Different councils have very different spending priorities</CardDescription>
-                </div>
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <Building className="h-5 w-5 text-muted-foreground" />
               </div>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {Object.entries(stats.spendingByType)
-                  .filter(([, data]) => data.total > 0)
-                  .sort((a, b) => b[1].total - a[1].total)
-                  .slice(0, 4)
-                  .map(([type, data]) => {
-                    const topServices = Object.entries(data.services)
-                      .sort((a, b) => b[1] - a[1])
-                      .slice(0, 3);
-                    const hasEducation = data.services.education > 0;
-                    const hasSocialCare = (data.services.adult_social_care || 0) > 0;
+              <div>
+                <h2 className="text-xl font-semibold">How spending varies by council type</h2>
+                <p className="text-sm text-muted-foreground">Different councils have very different spending priorities</p>
+              </div>
+            </div>
 
-                    return (
-                      <div key={type} className="p-4 border rounded-xl">
-                        <div className="flex items-center justify-between mb-4">
-                          <div>
-                            <span className="font-semibold">{COUNCIL_TYPE_NAMES[type]}</span>
-                            <p className="text-sm text-muted-foreground">{data.count} councils</p>
-                          </div>
-                          <Badge variant="secondary" className="text-sm">{formatBillions(data.total)} total</Badge>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {Object.entries(stats.spendingByType)
+                .filter(([, data]) => data.total > 0)
+                .sort((a, b) => b[1].total - a[1].total)
+                .slice(0, 4)
+                .map(([type, data]) => {
+                  const topServices = Object.entries(data.services)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3);
+                  const hasEducation = data.services.education > 0;
+                  const hasSocialCare = (data.services.adult_social_care || 0) > 0;
+                  const maxService = Math.max(...topServices.map(s => s[1]));
+
+                  return (
+                    <div key={type} className="p-4 border border-border/50 rounded-xl">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <span className="font-semibold">{COUNCIL_TYPE_NAMES[type]}</span>
+                          <p className="text-sm text-muted-foreground">{data.count} councils</p>
                         </div>
-
-                        <div className="space-y-2 mb-3">
-                          {topServices.map(([service, amount]) => {
-                            const percentage = (amount / data.total) * 100;
-                            return (
-                              <div key={service} className="space-y-1">
-                                <div className="flex items-center justify-between text-sm">
-                                  <span className="text-muted-foreground">{SERVICE_NAMES[service]}</span>
-                                  <span className="font-medium">{percentage.toFixed(0)}%</span>
-                                </div>
-                                <Progress value={percentage} className="h-1.5" />
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <p className="text-sm text-muted-foreground">
-                          {hasEducation && hasSocialCare
-                            ? 'Provides all services including education and social care'
-                            : hasEducation
-                            ? 'Handles education but not social care'
-                            : hasSocialCare
-                            ? 'Handles social care but education is separate'
-                            : 'Focuses on local services like bins, planning, and housing'}
-                        </p>
+                        <Badge variant="outline" className="text-xs">{formatBillions(data.total)} total</Badge>
                       </div>
-                    );
-                  })}
+
+                      <div className="space-y-3 mb-3">
+                        {topServices.map(([service, amount]) => {
+                          const percentage = (amount / data.total) * 100;
+                          const barWidth = (amount / maxService) * 100;
+                          return (
+                            <div key={service}>
+                              <div className="flex items-center justify-between text-sm mb-1">
+                                <span className="text-muted-foreground">{SERVICE_NAMES[service]}</span>
+                                <span className="font-medium tabular-nums">{percentage.toFixed(0)}%</span>
+                              </div>
+                              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-stone-400 dark:bg-stone-500 rounded-full"
+                                  style={{ width: `${barWidth}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <p className="text-sm text-muted-foreground">
+                        {hasEducation && hasSocialCare
+                          ? 'Provides all services including education and social care'
+                          : hasEducation
+                          ? 'Handles education but not social care'
+                          : hasSocialCare
+                          ? 'Handles social care but education is separate'
+                          : 'Focuses on local services like bins, planning, and housing'}
+                      </p>
+                    </div>
+                  );
+                })}
+            </div>
+
+            <div className="mt-6 p-4 bg-muted/30 rounded-xl">
+              <div className="flex items-start gap-3">
+                <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Why such big differences?</strong> County councils and unitary authorities handle
+                  expensive services like education and social care. District councils focus on local services like bins, planning,
+                  and housing - which is why their budgets are much smaller.
+                </p>
               </div>
-              <div className="mt-6 p-4 bg-muted/50 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <Info className="h-4 w-4 mt-0.5 text-primary" />
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">Why such big differences?</strong> County councils and unitary authorities handle
-                    expensive services like education and social care. District councils focus on local services like bins, planning,
-                    and housing - which is why their budgets are much smaller.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Key Insights Summary */}
-          <Card className="border border-border/40 bg-card shadow-sm rounded-xl mb-8">
-            <CardHeader className="p-5 sm:p-6 pb-4">
-              <div className="flex items-center gap-3">
-                <Info className="h-5 w-5 text-primary opacity-70" />
-                <CardTitle className="text-lg sm:text-xl font-semibold">Key Takeaways</CardTitle>
+          <div className="card-elevated p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                <Info className="h-5 w-5 text-muted-foreground" />
               </div>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 bg-muted/50 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="h-4 w-4 text-destructive" />
-                    <span className="font-semibold text-sm">Rising Every Year</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Council tax has risen faster than inflation for over a decade. The average increase this year is {stats.avgYoyChange.toFixed(1)}%.
-                  </p>
-                </div>
+              <h2 className="text-xl font-semibold">Key takeaways</h2>
+            </div>
 
-                <div className="p-4 bg-muted/50 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-sm">Location Matters</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Where you live makes a big difference. The gap between the highest and lowest councils is {formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}.
-                  </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold text-sm">Rising every year</span>
                 </div>
-
-                <div className="p-4 bg-muted/50 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Users className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-sm">Education & Care Dominate</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Education, adult social care, and children&apos;s services together make up around 80% of council spending.
-                  </p>
-                </div>
-
-                <div className="p-4 bg-muted/50 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Building className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-sm">Council Type Explains A Lot</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Unitary authorities charge more because they do everything. District councils charge less because counties handle expensive services.
-                  </p>
-                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Council tax has risen faster than inflation for over a decade. The average increase this year is {stats.avgYoyChange.toFixed(1)}%.
+                </p>
               </div>
-            </CardContent>
-          </Card>
+
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold text-sm">Location matters</span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Where you live makes a big difference. The gap between the highest and lowest councils is {formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}.
+                </p>
+              </div>
+
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold text-sm">Education & care dominate</span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Education, adult social care, and children&apos;s services together make up around 80% of council spending.
+                </p>
+              </div>
+
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <Building className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold text-sm">Council type explains a lot</span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Unitary authorities charge more because they do everything. District councils charge less because counties handle expensive services.
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* CTA */}
           <div className="text-center">
             <p className="text-muted-foreground mb-4">Want to see how your council compares?</p>
             <Link
               href="/"
-              className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center px-8 py-4 bg-foreground text-background rounded-xl font-semibold hover:bg-foreground/90 transition-colors cursor-pointer"
             >
-              Find Your Council
+              Find your council
             </Link>
           </div>
         </div>
