@@ -18,9 +18,10 @@ import { Send, Loader2, CheckCircle } from 'lucide-react';
 
 interface FeatureRequestDialogProps {
   variant?: 'desktop' | 'mobile';
+  className?: string;
 }
 
-export default function FeatureRequestDialog({ variant = 'desktop' }: FeatureRequestDialogProps) {
+export default function FeatureRequestDialog({ variant = 'desktop', className }: FeatureRequestDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -58,15 +59,14 @@ export default function FeatureRequestDialog({ variant = 'desktop' }: FeatureReq
     }
   };
 
+  const defaultDesktopClass = "h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
+  const defaultMobileClass = "h-11 px-3 w-full inline-flex items-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
-          className={
-            variant === 'mobile'
-              ? "h-11 px-3 w-full inline-flex items-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
-              : "h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
-          }
+          className={className || (variant === 'mobile' ? defaultMobileClass : defaultDesktopClass)}
         >
           Feedback
         </button>
