@@ -1,15 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useMemo, useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Users, Shield, GraduationCap, Car, Heart, Building, Settings, TrendingUp, CheckCircle, Info, Home, Trash2, MapPin } from "lucide-react";
+import { Users, Shield, GraduationCap, Car, Heart, Building, Settings, TrendingUp, CheckCircle, Info, Home, Trash2, MapPin, BookOpen, AlertTriangle } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatBudget } from '@/data/councils';
+import { formatBudget, formatCurrency } from '@/data/councils';
 
-// Service descriptions based on council type
+// Service descriptions - using muted grey tones
 const SERVICE_INFO: Record<string, { name: string; description: string; icon: React.ElementType }> = {
   adult_social_care: {
     name: 'Adult Social Care',
@@ -42,24 +39,24 @@ const SERVICE_INFO: Record<string, { name: string; description: string; icon: Re
     icon: Home,
   },
   cultural: {
-    name: 'Libraries & Fun Stuff',
+    name: 'Culture & Leisure',
     description: 'Libraries, museums, and community centres',
-    icon: Building,
+    icon: BookOpen,
   },
   environmental: {
-    name: 'Bins & Streets',
+    name: 'Environment & Streets',
     description: 'Collecting bins and keeping streets clean',
     icon: Trash2,
   },
   planning: {
-    name: 'Planning',
+    name: 'Planning & Development',
     description: 'Deciding what can be built',
     icon: MapPin,
   },
   central_services: {
-    name: 'Running the Council',
-    description: 'Meetings and staff who run the council',
-    icon: Settings,
+    name: 'Corporate Services',
+    description: 'Council operations and administration',
+    icon: Building,
   },
 };
 
@@ -106,7 +103,7 @@ const ServiceSpending = () => {
   }, [selectedCouncil]);
 
   // Set default selected service
-  useMemo(() => {
+  useEffect(() => {
     if (services.length > 0 && !selectedService) {
       setSelectedService(services[0].key);
     }
@@ -114,216 +111,266 @@ const ServiceSpending = () => {
 
   if (!selectedCouncil) {
     return (
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardContent className="p-5 sm:p-6 text-center">
-          <p className="text-muted-foreground text-sm sm:text-base">Please select a council to view service spending.</p>
-        </CardContent>
-      </Card>
+      <div className="card-elevated p-8 text-center">
+        <p className="text-muted-foreground">Please select a council to view service spending.</p>
+      </div>
     );
   }
 
   if (services.length === 0) {
     return (
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardContent className="p-5 sm:p-6">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Info className="h-5 w-5" />
-            <p className="text-sm sm:text-base">Service spending data not available for {selectedCouncil.name}.</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="card-elevated p-8">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Info className="h-5 w-5" />
+          <p>Service spending data not available for {selectedCouncil.name}.</p>
+        </div>
+      </div>
     );
   }
 
   const currentService = services.find(s => s.key === selectedService) || services[0];
   const totalBudget = selectedCouncil.budget?.total_service ? selectedCouncil.budget.total_service * 1000 : 0;
   const dailyCost = currentService.amount / 365;
+  const maxPercentage = Math.max(...services.map(s => s.percentage));
+
+  // Check if council has verified services list
+  const hasVerifiedServices = selectedCouncil.detailed?.services && selectedCouncil.detailed.services.length > 0;
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      {/* Service Selector */}
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <Settings className="h-5 w-5 text-primary opacity-70" />
-            <div>
-              <CardTitle className="text-lg sm:text-xl font-semibold">Explore {selectedCouncil.name} Services</CardTitle>
-              <CardDescription className="text-sm sm:text-base leading-relaxed">
-                Click on any service to see detailed spending information
-              </CardDescription>
+    <div className="space-y-8">
+      {/* Hero Section - Selected Service */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Primary Metric - Selected Service */}
+        <div className="lg:col-span-2">
+          <div className="card-elevated p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <p className="text-overline mb-2">{currentService.name}</p>
+                <p className="text-metric text-foreground">
+                  {formatBudget(currentService.amount / 1000)}
+                </p>
+              </div>
+              <Badge variant="outline" className="text-xs font-medium">
+                {currentService.percentage.toFixed(1)}%
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mb-6">
+              {currentService.description}
+            </p>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-6 border-t border-border/50">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Daily cost</p>
+                <p className="text-xl font-semibold tabular-nums">
+                  {formatCurrency(dailyCost, { decimals: 0 })}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Monthly</p>
+                <p className="text-xl font-semibold tabular-nums">
+                  {formatCurrency(currentService.amount / 12, { decimals: 0 })}
+                </p>
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-sm text-muted-foreground mb-1">Service rank</p>
+                <p className="text-xl font-semibold tabular-nums">
+                  #{services.findIndex(s => s.key === currentService.key) + 1} of {services.length}
+                </p>
+              </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3">
-            {services.map((service) => {
+        </div>
+
+        {/* Service Grid Selector */}
+        <div className="card-elevated p-6">
+          <p className="text-overline mb-4">Select Service</p>
+          <div className="grid grid-cols-2 gap-2">
+            {services.slice(0, 6).map((service) => {
               const ServiceIcon = service.icon;
               const isSelected = selectedService === service.key;
               return (
-                <Button
+                <button
                   key={service.key}
-                  variant="outline"
                   onClick={() => setSelectedService(service.key)}
-                  className={`h-auto p-3 sm:p-4 flex flex-col items-start text-left gap-1.5 rounded-xl ${
+                  className={`p-3 rounded-lg text-left transition-all cursor-pointer border ${
                     isSelected
-                      ? 'border-primary bg-primary/10 text-primary dark:bg-primary/20 dark:border-primary/50'
-                      : 'border-muted-foreground/20 hover:border-muted-foreground/40'
+                      ? 'bg-muted border-border shadow-sm text-foreground'
+                      : 'bg-muted/30 border-transparent hover:bg-muted/50 text-foreground'
                   }`}
                 >
-                  <div className="flex items-center gap-2 w-full">
-                    <ServiceIcon className="h-4 w-4 shrink-0" />
-                    <div className="font-semibold text-sm truncate">{service.name}</div>
-                  </div>
-                  <div className={`text-sm ${isSelected ? 'text-primary/70' : 'text-muted-foreground'}`}>
-                    {formatBudget(service.amount / 1000)} ({service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
-                  </div>
-                </Button>
+                  <ServiceIcon className={`h-4 w-4 mb-1 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
+                  <div className="font-medium text-xs truncate">{service.name}</div>
+                </button>
               );
             })}
           </div>
-        </CardContent>
-      </Card>
+          {services.length > 6 && (
+            <p className="text-xs text-muted-foreground mt-3 text-center">
+              +{services.length - 6} more services below
+            </p>
+          )}
+        </div>
+      </div>
 
-      {/* Selected Service Details */}
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div className="flex items-center gap-3">
-              <currentService.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary opacity-70" />
-              <CardTitle className="text-lg sm:text-2xl font-semibold">{currentService.name}</CardTitle>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="default" className="text-sm">{currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of budget</Badge>
-            </div>
+      {/* All Services - Bar Chart */}
+      <div className="card-elevated p-8">
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-1">All service spending</h2>
+            <p className="text-sm text-muted-foreground">
+              How {selectedCouncil.name}&apos;s budget is distributed
+            </p>
           </div>
-          <CardDescription className="text-sm sm:text-base leading-relaxed">{currentService.description}</CardDescription>
-        </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          {/* Key Stats */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
-            <div className="text-center p-3 sm:p-5 bg-background/80 rounded-xl">
-              <div className="text-lg sm:text-2xl font-bold text-primary">
-                {formatBudget(currentService.amount / 1000)}
-              </div>
-              <div className="text-sm text-primary/80 mt-1">Annual Budget</div>
-            </div>
-            <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
-              <div className="text-lg sm:text-2xl font-bold">
-                £{Math.round(dailyCost).toLocaleString()}
-              </div>
-              <div className="text-sm text-muted-foreground mt-1">Daily Cost</div>
-            </div>
-            <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
-              <div className="text-lg sm:text-2xl font-bold">
-                {currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
-              </div>
-              <div className="text-sm text-muted-foreground mt-1">Share of Total</div>
-            </div>
-          </div>
+          <Badge variant="outline" className="text-xs">2025-26</Badge>
+        </div>
 
-          {/* Service explanation based on council type */}
-          <div className="p-4 sm:p-4 bg-background/60 rounded-xl mb-4">
-            <h4 className="font-semibold mb-2.5 flex items-center gap-2 text-sm sm:text-base">
-              <Info className="h-4 w-4 opacity-70" />
-              What does this service do?
-            </h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+        <div className="space-y-4">
+          {services.map((service) => {
+            const ServiceIcon = service.icon;
+            const isSelected = service.key === selectedService;
+            const barWidth = (service.percentage / maxPercentage) * 100;
+
+            return (
+              <div
+                key={service.key}
+                className="group cursor-pointer"
+                onClick={() => setSelectedService(service.key)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && setSelectedService(service.key)}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                      <ServiceIcon className={`h-4 w-4 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
+                    </div>
+                    <span className={`font-medium text-sm ${isSelected ? 'text-foreground' : ''}`}>{service.name}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground tabular-nums">
+                      {service.percentage.toFixed(1)}%
+                    </span>
+                    <span className="font-semibold text-sm tabular-nums min-w-[70px] text-right">
+                      {formatBudget(service.amount / 1000)}
+                    </span>
+                  </div>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ease-out ${isSelected ? 'bg-foreground' : 'bg-stone-400 dark:bg-stone-500'}`}
+                    style={{ width: `${barWidth}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Total */}
+        <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between">
+          <span className="font-semibold">Total service expenditure</span>
+          <span className="text-xl font-bold tabular-nums">
+            {formatBudget(totalBudget / 1000)}
+          </span>
+        </div>
+      </div>
+
+      {/* What this service does */}
+      <div className="card-elevated p-8">
+        <h2 className="text-xl font-semibold mb-6">What {currentService.name.toLowerCase()} covers</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               {currentService.key === 'adult_social_care' &&
                 'This pays for care homes, people who visit your home to help, and support for people with disabilities or mental health needs.'}
               {currentService.key === 'childrens_social_care' &&
                 "This helps keep children safe. It pays for foster families, adoption, and workers who help families in trouble."}
               {currentService.key === 'education' &&
-                'This pays for school buses, help for children who need extra support to learn, and some adult classes.'}
+                'This pays for school buses, help for children who need extra support to learn, and some adult education classes.'}
               {currentService.key === 'transport' &&
                 'This fixes roads, fills potholes, clears snow in winter, keeps street lights working, and helps run buses.'}
               {currentService.key === 'public_health' &&
                 'This helps stop people getting ill. It pays for health check-ups, help to stop smoking, and drug and alcohol support.'}
               {currentService.key === 'housing' &&
-                'This helps people who have nowhere to live, and makes plans for building new homes.'}
+                'This helps people who have nowhere to live, and makes plans for building new homes in the area.'}
               {currentService.key === 'cultural' &&
-                'This keeps libraries and museums open, runs sports centres, and puts on events in your area.'}
+                'This keeps libraries and museums open, runs sports centres, and organises community events in your area.'}
               {currentService.key === 'environmental' &&
-                'This collects your bins, runs recycling, cleans the streets, and checks food places are clean.'}
+                'This collects your bins, runs recycling, cleans the streets, and inspects food establishments for hygiene.'}
               {currentService.key === 'planning' &&
-                'This decides if people can build new houses or shops, and helps bring new businesses to the area.'}
+                'This decides if people can build new houses or shops, and helps bring new businesses and investment to the area.'}
               {currentService.key === 'central_services' &&
-                'This pays for council meetings, staff who answer your questions, and collecting council tax.'}
+                'This pays for council administration, staff who answer your questions, IT systems, and collecting council tax.'}
             </p>
           </div>
 
-          {/* Context based on council type */}
-          <div className="p-4 sm:p-4 bg-background/80 rounded-xl">
-            <div className="flex items-center gap-3 mb-2">
-              <CheckCircle className="h-4 w-4 text-primary" />
-              <h4 className="font-semibold text-primary text-sm sm:text-base">What kind of council is this?</h4>
-            </div>
-            <p className="text-sm text-primary/80 leading-relaxed">
+          <div className="p-4 bg-muted/30 rounded-xl">
+            <h3 className="text-sm font-semibold text-foreground mb-3">
+              Council type context
+            </h3>
+            <p className="text-sm leading-relaxed">
               {selectedCouncil.type === 'SC' &&
-                'County councils look after the big stuff - like social care, schools, and main roads - for the whole county.'}
+                'As a county council, this authority handles the largest services across the whole county area, including schools, social care, and major roads.'}
               {selectedCouncil.type === 'SD' &&
-                'District councils look after local things - like housing, planning, bins, and keeping streets clean.'}
+                'As a district council, this authority focuses on local services like housing, planning, waste collection, and environmental health.'}
               {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') &&
-                'This council does everything! From social care to bins - all in one place.'}
+                'As a unitary authority, this council provides all local government services in one place - from social care to waste collection.'}
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Service Comparison */}
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardHeader className="p-5 sm:p-6 pb-4">
-          <div className="flex items-center gap-3">
-            <TrendingUp className="h-5 w-5 text-primary opacity-70" />
+      {/* Verified Services - Only for councils with detailed data */}
+      {hasVerifiedServices && (
+        <div className="card-elevated p-8">
+          <div className="flex items-start justify-between mb-6">
             <div>
-              <CardTitle className="text-lg sm:text-xl font-semibold">Service Spending Comparison</CardTitle>
-              <CardDescription className="text-sm sm:text-base leading-relaxed">
-                How {selectedCouncil.name}&apos;s budget is distributed across services
-              </CardDescription>
+              <h2 className="text-xl font-semibold mb-1">Verified services</h2>
+              <p className="text-sm text-muted-foreground">
+                What {selectedCouncil.name} actually provides to residents
+              </p>
             </div>
+            <Badge variant="outline" className="text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
+              From council website
+            </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-3 sm:space-y-3">
-            {services.map((service, index) => {
-              const ServiceIcon = service.icon;
-              const isSelected = service.key === selectedService;
-              return (
-                <div
-                  key={service.key}
-                  className={`flex items-center justify-between p-3 sm:p-4 rounded-xl gap-3 cursor-pointer transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-muted/50'}`}
-                  onClick={() => setSelectedService(service.key)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && setSelectedService(service.key)}
-                >
-                  <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-                      {index + 1}
-                    </div>
-                    <ServiceIcon className={`h-4 w-4 shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <div className="min-w-0">
-                      <div className={`font-medium text-sm sm:text-base truncate ${isSelected ? 'text-primary' : ''}`}>{service.name}</div>
-                      <div className="text-sm text-muted-foreground truncate">
-                        {service.description}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div className={`font-bold text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</div>
-                    <div className="text-sm text-muted-foreground">{service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {selectedCouncil.detailed!.services!.map((service, index) => (
+              <div key={index} className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl">
+                <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-stone-400" />
+                <div>
+                  <p className="font-medium text-sm">{service.name}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{service.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* What this council doesn't do */}
+          {selectedCouncil.type === 'SD' && (
+            <div className="mt-6 p-6 rounded-xl bg-muted/50 border border-border/50">
+              <div className="flex gap-4">
+                <div className="shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                    <Info className="h-5 w-5 text-muted-foreground" />
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          {/* Total */}
-          <div className="mt-5 pt-4 border-t border-border/50 flex justify-between items-center">
-            <span className="font-semibold text-sm sm:text-base">Total Service Expenditure</span>
-            <span className="font-bold text-base sm:text-lg">{formatBudget(totalBudget / 1000)}</span>
-          </div>
-        </CardContent>
-      </Card>
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">
+                    Not provided by this council
+                  </h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Schools, adult social care, main roads, libraries, and public transport are provided by Kent County Council. Police and fire services are separate organisations.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

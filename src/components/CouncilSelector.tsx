@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, Building2, ArrowLeft } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { Search, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { CouncilResultItem } from '@/components/ui/council-result-item';
 import { councils, Council, formatCurrency, getCouncilDisplayName } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
+import { SELECTOR_RESULT_LIMIT, CARD_STYLES, CARD_PADDING } from '@/lib/utils';
 
 interface CouncilSelectorProps {
   onSelect?: (council: Council) => void;
@@ -23,7 +25,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
 
   const filteredCouncils = useMemo(() => {
     if (!searchQuery) {
-      return councils.slice(0, 50);
+      return councils.slice(0, SELECTOR_RESULT_LIMIT);
     }
 
     const query = searchQuery.toLowerCase();
@@ -33,15 +35,13 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
         c.type_name.toLowerCase().includes(query) ||
         getCouncilDisplayName(c).toLowerCase().includes(query)
       )
-      .slice(0, 50);
+      .slice(0, SELECTOR_RESULT_LIMIT);
   }, [searchQuery]);
 
-  // Reset highlighted index when results change
   useEffect(() => {
     setHighlightedIndex(0);
   }, [filteredCouncils]);
 
-  // Scroll highlighted item into view
   useEffect(() => {
     if (listRef.current && highlightedIndex >= 0) {
       const items = listRef.current.querySelectorAll('[data-council-item]');
@@ -51,13 +51,13 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     }
   }, [highlightedIndex]);
 
-  const handleSelect = (council: Council) => {
+  const handleSelect = useCallback((council: Council) => {
     setSelectedCouncil(council);
     setSearchQuery('');
     onSelect?.(council);
-  };
+  }, [setSelectedCouncil, onSelect]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setHighlightedIndex(prev =>
@@ -72,14 +72,13 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
         handleSelect(filteredCouncils[highlightedIndex]);
       }
     }
-  };
+  }, [filteredCouncils, highlightedIndex, handleSelect]);
 
-  const handleBackToSearch = () => {
+  const handleBackToSearch = useCallback(() => {
     setSelectedCouncil(null);
     setSearchQuery('');
-  };
+  }, [setSelectedCouncil]);
 
-  // Get the autocomplete suggestion (first matching council)
   const autocompleteSuggestion = useMemo(() => {
     if (!searchQuery || filteredCouncils.length === 0) return '';
     const firstMatch = getCouncilDisplayName(filteredCouncils[0]);
@@ -89,19 +88,39 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     return '';
   }, [searchQuery, filteredCouncils]);
 
-  // Show the selected council bar (only on dashboard)
+  // Selected council header (dashboard only)
   if (selectedCouncil && variant === 'dashboard') {
     const displayName = getCouncilDisplayName(selectedCouncil);
     const bandDAmount = selectedCouncil.council_tax
       ? formatCurrency(selectedCouncil.council_tax.band_d_2025, { decimals: 2 })
       : null;
 
+    // Calculate full bill if precepts available
+    const hasFullBill = selectedCouncil.detailed?.total_band_d;
+    const fullBillAmount = hasFullBill
+      ? formatCurrency(selectedCouncil.detailed!.total_band_d!, { decimals: 2 })
+      : null;
+
+    // Get what this council type is responsible for
+    const getResponsibilities = () => {
+      if (selectedCouncil.type === 'SD') {
+        return "Waste collection, recycling, housing, planning, parks, environmental health";
+      } else if (selectedCouncil.type === 'SC') {
+        return "Schools, social care, roads, libraries, public health";
+      } else if (selectedCouncil.type === 'LB' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'UA') {
+        return "All local services including social care, schools, roads, waste, housing, planning";
+      }
+      return null;
+    };
+
+    const responsibilities = getResponsibilities();
+
     return (
       <div className="w-full">
-        <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-          <CardContent className="p-5 sm:p-6">
-            {/* Header row: badges + change button */}
-            <div className="flex items-start justify-between gap-4 mb-4">
+        <Card className={CARD_STYLES}>
+          <CardContent className={CARD_PADDING}>
+            {/* Top row with badges and prominent change button */}
+            <div className="flex items-start justify-between gap-4 mb-5">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary" className="text-sm font-medium">
                   {selectedCouncil.type_name}
@@ -109,31 +128,52 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                 <Badge variant="outline" className="text-sm font-medium">
                   2025-26
                 </Badge>
+                {hasFullBill && (
+                  <Badge variant="outline" className="text-sm font-medium bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
+                    Verified
+                  </Badge>
+                )}
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleBackToSearch}
-                className="flex items-center gap-2 shrink-0 cursor-pointer"
+                className="flex items-center gap-2 shrink-0 cursor-pointer bg-muted/50 hover:bg-muted border-border/60 transition-colors"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Change
+                <Search className="h-4 w-4" />
+                <span className="hidden sm:inline">Change council</span>
+                <span className="sm:hidden">Change</span>
               </Button>
             </div>
 
-            {/* Council name - clear hierarchy */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-3">
+            {/* Council name as prominent hero element */}
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-4">
               {displayName}
             </h1>
 
-            {/* Band D info */}
-            {bandDAmount && (
-              <p className="text-base text-muted-foreground mb-4">
-                Band D: <span className="font-semibold text-foreground">{bandDAmount}</span>/year
+            {/* Key financial stats in a highlighted row */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-4 pb-4 border-b border-border/50">
+              {bandDAmount && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-0.5">This council&apos;s share</p>
+                  <p className="text-lg font-semibold text-foreground tabular-nums">{bandDAmount}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
+                </div>
+              )}
+              {fullBillAmount && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-0.5">Your full bill</p>
+                  <p className="text-lg font-semibold text-foreground tabular-nums">{fullBillAmount}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
+                </div>
+              )}
+            </div>
+
+            {/* What this council is responsible for */}
+            {responsibilities && (
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                <span className="font-medium text-foreground">Responsible for:</span> {responsibilities}
               </p>
             )}
 
-            {/* Explainer text */}
             {explainerText && (
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {explainerText}
@@ -145,14 +185,13 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     );
   }
 
-  // Homepage variant - prominent search box
+  // Homepage variant
   if (variant === 'homepage') {
     return (
       <div className="w-full">
-        <div className="space-y-4">
-          {/* Search Input - Primary focus */}
-          <div className="relative shadow-lg rounded-2xl">
-            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
+        <div className="space-y-3">
+          <div className="relative shadow-sm rounded-xl">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground z-10" />
             <input
               ref={inputRef}
               type="text"
@@ -160,52 +199,25 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full pl-14 pr-5 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
+              className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-3.5 text-sm sm:text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
             />
           </div>
 
-          {/* Results - Fixed height container to prevent layout shift */}
-          <div
-            ref={listRef}
-            className="h-[186px] overflow-y-auto scrollbar-hide"
-          >
+          <div ref={listRef} className="h-[148px] overflow-y-auto scrollbar-hide">
             {filteredCouncils.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">
+              <p className="text-center text-sm text-muted-foreground py-4">
                 No councils found. Try a different spelling.
               </p>
             ) : (
-              filteredCouncils.map((council, index) => {
-                const displayName = getCouncilDisplayName(council);
-                const isHighlighted = index === highlightedIndex;
-                return (
-                  <button
-                    key={council.ons_code}
-                    data-council-item
-                    onClick={() => handleSelect(council)}
-                    className={`w-full px-3 py-2.5 text-left rounded-xl transition-all cursor-pointer ${
-                      isHighlighted
-                        ? 'bg-muted-foreground/15 shadow-sm'
-                        : 'hover:bg-muted/70'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="font-medium text-base truncate text-foreground">
-                          {displayName}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {council.type_name}
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0 text-sm text-muted-foreground">
-                        {council.council_tax && (
-                          <p>£{Math.round(council.council_tax.band_d_2025).toLocaleString('en-GB')}/yr</p>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })
+              filteredCouncils.map((council, index) => (
+                <CouncilResultItem
+                  key={council.ons_code}
+                  council={council}
+                  isHighlighted={index === highlightedIndex}
+                  onSelect={handleSelect}
+                  variant="homepage"
+                />
+              ))
             )}
           </div>
 
@@ -220,13 +232,12 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     );
   }
 
-  // Dashboard variant - with card wrapper (when no council selected on dashboard page)
+  // Dashboard variant (no council selected)
   return (
     <div className="w-full">
-      <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-        <CardContent className="p-5 sm:p-6">
+      <Card className={CARD_STYLES}>
+        <CardContent className={CARD_PADDING}>
           <div className="space-y-5">
-            {/* Search Input with autocomplete */}
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               {autocompleteSuggestion && (
@@ -241,57 +252,26 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full pl-11 pr-4 py-3 border-2 rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-base"
+                className="w-full pl-11 pr-4 py-3 border-2 rounded-xl bg-background focus:outline-none focus:border-primary transition-colors text-base"
                 autoFocus
               />
             </div>
 
-            {/* Results - max 3 visible, scrollable */}
-            <div
-              ref={listRef}
-              className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3"
-            >
+            <div ref={listRef} className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
               {filteredCouncils.length === 0 ? (
                 <p className="text-center text-sm text-muted-foreground py-6">
                   No councils found. Try a different spelling.
                 </p>
               ) : (
-                filteredCouncils.map((council, index) => {
-                  const displayName = getCouncilDisplayName(council);
-                  const isHighlighted = index === highlightedIndex;
-                  return (
-                    <button
-                      key={council.ons_code}
-                      data-council-item
-                      onClick={() => handleSelect(council)}
-                      className={`w-full p-4 text-left rounded-lg transition-colors cursor-pointer ${
-                        isHighlighted
-                          ? 'bg-primary/10 border-primary/30'
-                          : 'hover:bg-muted'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="min-w-0">
-                          <p className={`font-medium text-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
-                            {displayName}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-sm">
-                              {council.type_name}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="text-right shrink-0">
-                          {council.council_tax && (
-                            <p className="text-sm text-muted-foreground">
-                              £{council.council_tax.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/year
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })
+                filteredCouncils.map((council, index) => (
+                  <CouncilResultItem
+                    key={council.ons_code}
+                    council={council}
+                    isHighlighted={index === highlightedIndex}
+                    onSelect={handleSelect}
+                    variant="dashboard"
+                  />
+                ))
               )}
             </div>
 
