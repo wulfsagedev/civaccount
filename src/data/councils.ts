@@ -8546,6 +8546,32 @@ export function getCouncilByName(name: string): Council | undefined {
          councils.find(c => c.name.toLowerCase().includes(lowerName));
 }
 
+// Generate URL-friendly slug from council name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-+/g, '-');
+}
+
+// Get council by URL slug
+export function getCouncilBySlug(slug: string): Council | undefined {
+  return councils.find(c => generateSlug(c.name) === slug);
+}
+
+// Get all council slugs for static generation
+export function getAllCouncilSlugs(): string[] {
+  return councils.map(c => generateSlug(c.name));
+}
+
+// Get slug for a council
+export function getCouncilSlug(council: Council): string {
+  return generateSlug(council.name);
+}
+
 // Get councils sorted by council tax (highest to lowest)
 export function getCouncilsByTax(ascending = false): Council[] {
   return councils

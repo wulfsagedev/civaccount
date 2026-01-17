@@ -1,36 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronDown } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
-import { getCouncilDisplayName } from '@/data/councils';
-
-// Import components
 import CouncilSelector from '@/components/CouncilSelector';
-import BudgetOverview from '@/components/dashboard/BudgetOverview';
-import CouncilTaxSection from '@/components/dashboard/CouncilTaxSection';
-import ServicesSpending from '@/components/dashboard/ServiceSpending';
-import RevenueBreakdown from '@/components/dashboard/RevenueBreakdown';
-import PerformanceMetrics from '@/components/dashboard/PerformanceMetrics';
-import BandComparison from '@/components/dashboard/BandComparison';
-import DataSourcesFooter from '@/components/DataSourcesFooter';
+import CouncilDashboard from '@/components/CouncilDashboard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default function CouncilDashboard() {
-  const [selectedTab, setSelectedTab] = useState("overview");
+export default function HomePage() {
   const { selectedCouncil, isLoading } = useCouncil();
-  const prevCouncilRef = useRef(selectedCouncil);
-
-  // Reset tab and scroll to top when council changes
-  useEffect(() => {
-    if (selectedCouncil !== prevCouncilRef.current) {
-      setSelectedTab("overview");
-      window.scrollTo(0, 0);
-      prevCouncilRef.current = selectedCouncil;
-    }
-  }, [selectedCouncil]);
 
   if (isLoading) {
     return (
@@ -43,7 +20,7 @@ export default function CouncilDashboard() {
     );
   }
 
-  // Homepage - centered search
+  // Homepage - centered search (no council selected)
   if (!selectedCouncil) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -75,129 +52,5 @@ export default function CouncilDashboard() {
   }
 
   // Dashboard view - when council is selected
-  const councilDisplayName = getCouncilDisplayName(selectedCouncil);
-
-  // Get the appropriate explainer text based on council type
-  const getExplainerText = () => {
-    if (selectedCouncil.type === 'SC' || selectedCouncil.type === 'SD') {
-      return `This is just the ${selectedCouncil.name} share. Your full bill also includes county, police, and fire charges.`;
-    } else if (selectedCouncil.type === 'LB' || selectedCouncil.type === 'OLB' || selectedCouncil.type === 'ILB') {
-      return `This is just the ${selectedCouncil.name} share. Your full bill also includes the Greater London Authority charge.`;
-    }
-    return `This is just the ${selectedCouncil.name} share. Your full bill may include police and fire charges.`;
-  };
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-
-      <main id="main-content" className="flex-1">
-        <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 max-w-7xl">
-          {/* Combined Council Header Card */}
-          <div className="mb-6 sm:mb-8">
-            <CouncilSelector
-              variant="dashboard"
-              explainerText={getExplainerText()}
-            />
-          </div>
-
-          <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-            {/* Mobile: Dropdown selector with clear visual affordance */}
-            <div className="mb-6 sm:hidden">
-              <label className="block text-sm font-medium text-muted-foreground mb-2">
-                View section
-              </label>
-              <div className="relative">
-                <select
-                  value={selectedTab}
-                  onChange={(e) => setSelectedTab(e.target.value)}
-                  className="w-full appearance-none bg-muted/50 border border-border/60 rounded-xl px-4 py-4 pr-12 text-base font-medium cursor-pointer focus:outline-none focus:border-stone-400 transition-colors"
-                >
-                  <option value="overview">Overview</option>
-                  <option value="council-tax">Council Tax</option>
-                  <option value="services">Services</option>
-                  <option value="revenue">Revenue</option>
-                  <option value="performance">Performance</option>
-                  <option value="comparison">Compare</option>
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Desktop: Full-width tabs with clear visual affordance */}
-            <div className="mb-8 hidden sm:block">
-              <TabsList className="w-full h-auto p-1.5 gap-1 bg-muted/60 rounded-2xl grid grid-cols-6 border border-border/50">
-                <TabsTrigger
-                  value="overview"
-                  className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
-                >
-                  Overview
-                </TabsTrigger>
-                <TabsTrigger
-                  value="council-tax"
-                  className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
-                >
-                  Council Tax
-                </TabsTrigger>
-                <TabsTrigger
-                  value="services"
-                  className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
-                >
-                  Services
-                </TabsTrigger>
-                <TabsTrigger
-                  value="revenue"
-                  className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
-                >
-                  Revenue
-                </TabsTrigger>
-                <TabsTrigger
-                  value="performance"
-                  className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
-                >
-                  Performance
-                </TabsTrigger>
-                <TabsTrigger
-                  value="comparison"
-                  className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
-                >
-                  Compare
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <div className="space-y-6 sm:space-y-8">
-              <TabsContent value="overview" className="mt-0">
-                <BudgetOverview />
-              </TabsContent>
-
-              <TabsContent value="council-tax" className="mt-0">
-                <CouncilTaxSection />
-              </TabsContent>
-
-              <TabsContent value="services" className="mt-0">
-                <ServicesSpending />
-              </TabsContent>
-
-              <TabsContent value="revenue" className="mt-0">
-                <RevenueBreakdown />
-              </TabsContent>
-
-              <TabsContent value="performance" className="mt-0">
-                <PerformanceMetrics />
-              </TabsContent>
-
-              <TabsContent value="comparison" className="mt-0">
-                <BandComparison />
-              </TabsContent>
-            </div>
-          </Tabs>
-        </div>
-
-        <DataSourcesFooter />
-      </main>
-
-      <Footer />
-    </div>
-  );
+  return <CouncilDashboard />;
 }
