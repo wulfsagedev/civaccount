@@ -59,8 +59,8 @@ export default function FeatureRequestDialog({ variant = 'desktop', className }:
     }
   };
 
-  const defaultDesktopClass = "h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
-  const defaultMobileClass = "h-11 px-3 w-full inline-flex items-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
+  const defaultDesktopClass = "h-9 px-4 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors cursor-pointer";
+  const defaultMobileClass = "h-11 px-4 w-full inline-flex items-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors cursor-pointer";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

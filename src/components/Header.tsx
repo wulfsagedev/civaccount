@@ -22,8 +22,8 @@ export default function Header() {
     setMobileMenuOpen(false);
   };
 
-  // Consistent nav link styling
-  const navLinkClass = "h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
+  // Consistent nav link styling - use fixed padding for uniform hover background size
+  const navLinkClass = "h-9 px-4 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors cursor-pointer";
 
   return (
     <header className="border-b bg-background">
