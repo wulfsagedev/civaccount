@@ -22,9 +22,12 @@ export default function Header() {
     setMobileMenuOpen(false);
   };
 
+  // Consistent nav link styling
+  const navLinkClass = "h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
+
   return (
     <header className="border-b bg-background">
-      <div className="container mx-auto px-4 py-4 sm:px-6 max-w-7xl">
+      <div className="container mx-auto px-4 py-3 sm:px-6 max-w-7xl">
         <div className="flex items-center justify-between gap-4">
           {/* Left: Logo and version */}
           <div className="flex items-center gap-4 shrink-0">
@@ -51,17 +54,11 @@ export default function Header() {
           </div>
 
           {/* Right: Desktop Navigation */}
-          <nav className="hidden sm:flex items-center gap-2 shrink-0">
-            <Link
-              href="/insights"
-              className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
-            >
+          <nav className="hidden sm:flex items-center gap-1 shrink-0">
+            <Link href="/insights" className={navLinkClass}>
               Insights
             </Link>
-            <Link
-              href="/about"
-              className="h-9 px-3 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
-            >
+            <Link href="/about" className={navLinkClass}>
               About
             </Link>
             <FeatureRequestDialog />
