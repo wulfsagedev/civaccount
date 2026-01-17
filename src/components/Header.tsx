@@ -61,7 +61,7 @@ export default function Header() {
             <Link href="/about" className={navLinkClass}>
               About
             </Link>
-            <FeatureRequestDialog />
+            <FeatureRequestDialog className={navLinkClass} />
             <ThemeToggle />
           </nav>
 
