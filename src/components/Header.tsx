@@ -75,16 +75,17 @@ export default function Header() {
             </nav>
 
             {/* Right: Mobile Navigation */}
-            <div className="flex sm:hidden items-center gap-2">
-              <SearchCommand mobileOnly />
+            <div className="flex sm:hidden items-center gap-1">
+              <SearchCommand mobileOnly size="lg" />
+              <ThemeToggle size="lg" />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="h-9 w-9"
+                className="h-11 w-11"
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </Button>
             </div>
           </div>
@@ -124,10 +125,6 @@ export default function Header() {
                 <button onClick={openFeedback} className={mobileNavLinkClass}>
                   Feedback
                 </button>
-                <div className="h-11 px-3 inline-flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Theme</span>
-                  <ThemeToggle />
-                </div>
               </nav>
             </div>
           )}

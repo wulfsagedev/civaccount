@@ -10,9 +10,10 @@ import { useCouncil } from '@/context/CouncilContext';
 
 interface SearchCommandProps {
   mobileOnly?: boolean;
+  size?: 'default' | 'lg';
 }
 
-export default function SearchCommand({ mobileOnly = false }: SearchCommandProps) {
+export default function SearchCommand({ mobileOnly = false, size = 'default' }: SearchCommandProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -118,15 +119,17 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
       return null;
     }
 
+    const isLarge = size === 'lg';
+
     return (
       <>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsOpen(true)}
-          className="sm:hidden h-9 w-9"
+          className={`sm:hidden ${isLarge ? 'h-11 w-11' : 'h-9 w-9'}`}
         >
-          <Search className="h-4 w-4" />
+          <Search className={isLarge ? 'h-6 w-6' : 'h-4 w-4'} />
         </Button>
 
         {/* Search overlay */}
