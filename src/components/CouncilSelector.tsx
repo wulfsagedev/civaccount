@@ -203,7 +203,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
             />
           </div>
 
-          <div ref={listRef} className="h-[148px] overflow-y-auto scrollbar-hide">
+          <div ref={listRef} className="h-[220px] overflow-y-auto scrollbar-hide">
             {filteredCouncils.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-4">
                 No councils found. Try a different spelling.
