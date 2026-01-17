@@ -149,7 +149,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
   if (variant === 'homepage') {
     return (
       <div className="w-full">
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Search Input - Primary focus */}
           <div className="relative shadow-lg rounded-2xl">
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
@@ -160,17 +160,14 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full pl-14 pr-16 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
+              className="w-full pl-14 pr-5 py-4 sm:py-5 text-base sm:text-lg bg-background border-2 border-muted-foreground/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-xl transition-all placeholder:text-muted-foreground/50"
             />
-            <kbd className="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none h-6 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-xs font-medium text-muted-foreground hidden sm:flex">
-              F
-            </kbd>
           </div>
 
           {/* Results - Fixed height container to prevent layout shift */}
           <div
             ref={listRef}
-            className="h-[210px] overflow-y-auto space-y-1 scrollbar-hide"
+            className="h-[186px] overflow-y-auto scrollbar-hide"
           >
             {filteredCouncils.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-6">
@@ -185,7 +182,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                     key={council.ons_code}
                     data-council-item
                     onClick={() => handleSelect(council)}
-                    className={`w-full p-3 text-left rounded-xl transition-all cursor-pointer ${
+                    className={`w-full px-3 py-2.5 text-left rounded-xl transition-all cursor-pointer ${
                       isHighlighted
                         ? 'bg-muted-foreground/15 shadow-sm'
                         : 'hover:bg-muted/70'
