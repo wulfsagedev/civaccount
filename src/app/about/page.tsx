@@ -138,7 +138,7 @@ export default function AboutPage() {
                   <ExternalLink className="h-4 w-4 text-primary shrink-0" />
                   <div>
                     <p className="font-medium text-sm">Council Tax Levels 2025-26</p>
-                    <p className="text-xs text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
+                    <p className="text-sm text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
                   </div>
                 </a>
                 <a
@@ -150,7 +150,7 @@ export default function AboutPage() {
                   <ExternalLink className="h-4 w-4 text-primary shrink-0" />
                   <div>
                     <p className="font-medium text-sm">Local Authority Revenue Expenditure</p>
-                    <p className="text-xs text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
+                    <p className="text-sm text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
                   </div>
                 </a>
               </div>

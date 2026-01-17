@@ -172,9 +172,9 @@ const ServiceSpending = () => {
                 >
                   <div className="flex items-center gap-2 w-full">
                     <ServiceIcon className="h-4 w-4 shrink-0" />
-                    <div className="font-semibold text-xs sm:text-sm truncate">{service.name}</div>
+                    <div className="font-semibold text-sm truncate">{service.name}</div>
                   </div>
-                  <div className={`text-xs ${isSelected ? 'text-primary/70' : 'text-muted-foreground'}`}>
+                  <div className={`text-sm ${isSelected ? 'text-primary/70' : 'text-muted-foreground'}`}>
                     {formatBudget(service.amount / 1000)} ({service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
                   </div>
                 </Button>
@@ -193,7 +193,7 @@ const ServiceSpending = () => {
               <CardTitle className="text-lg sm:text-2xl font-semibold">{currentService.name}</CardTitle>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="default" className="text-xs">{currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of budget</Badge>
+              <Badge variant="default" className="text-sm">{currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of budget</Badge>
             </div>
           </div>
           <CardDescription className="text-sm sm:text-base leading-relaxed">{currentService.description}</CardDescription>
@@ -205,19 +205,19 @@ const ServiceSpending = () => {
               <div className="text-lg sm:text-2xl font-bold text-primary">
                 {formatBudget(currentService.amount / 1000)}
               </div>
-              <div className="text-xs sm:text-sm text-primary/80 mt-1">Annual Budget</div>
+              <div className="text-sm text-primary/80 mt-1">Annual Budget</div>
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <div className="text-lg sm:text-2xl font-bold">
                 £{Math.round(dailyCost).toLocaleString()}
               </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Daily Cost</div>
+              <div className="text-sm text-muted-foreground mt-1">Daily Cost</div>
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <div className="text-lg sm:text-2xl font-bold">
                 {currentService.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
               </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Share of Total</div>
+              <div className="text-sm text-muted-foreground mt-1">Share of Total</div>
             </div>
           </div>
 
@@ -227,7 +227,7 @@ const ServiceSpending = () => {
               <Info className="h-4 w-4 opacity-70" />
               What does this service do?
             </h4>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {currentService.key === 'adult_social_care' &&
                 'This pays for care homes, people who visit your home to help, and support for people with disabilities or mental health needs.'}
               {currentService.key === 'childrens_social_care' &&
@@ -257,7 +257,7 @@ const ServiceSpending = () => {
               <CheckCircle className="h-4 w-4 text-primary" />
               <h4 className="font-semibold text-primary text-sm sm:text-base">What kind of council is this?</h4>
             </div>
-            <p className="text-xs sm:text-sm text-primary/80 leading-relaxed">
+            <p className="text-sm text-primary/80 leading-relaxed">
               {selectedCouncil.type === 'SC' &&
                 'County councils look after the big stuff - like social care, schools, and main roads - for the whole county.'}
               {selectedCouncil.type === 'SD' &&
@@ -297,20 +297,20 @@ const ServiceSpending = () => {
                   onKeyDown={(e) => e.key === 'Enter' && setSelectedService(service.key)}
                 >
                   <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
                       {index + 1}
                     </div>
                     <ServiceIcon className={`h-4 w-4 shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
                     <div className="min-w-0">
-                      <div className={`font-medium text-xs sm:text-base truncate ${isSelected ? 'text-primary' : ''}`}>{service.name}</div>
-                      <div className="text-xs sm:text-sm text-muted-foreground truncate">
+                      <div className={`font-medium text-sm sm:text-base truncate ${isSelected ? 'text-primary' : ''}`}>{service.name}</div>
+                      <div className="text-sm text-muted-foreground truncate">
                         {service.description}
                       </div>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className={`font-bold text-xs sm:text-base ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">{service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</div>
+                    <div className={`font-bold text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>{formatBudget(service.amount / 1000)}</div>
+                    <div className="text-sm text-muted-foreground">{service.percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</div>
                   </div>
                 </div>
               );

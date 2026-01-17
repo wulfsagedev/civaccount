@@ -145,7 +145,7 @@ const BandComparison = () => {
             >
               <MapPin className="h-4 w-4" />
               <span className="font-semibold text-sm">Similar Councils</span>
-              <span className={`text-xs ${selectedComparison === 'councils' ? 'text-primary/70' : 'text-muted-foreground'}`}>Same council type</span>
+              <span className={`text-sm ${selectedComparison === 'councils' ? 'text-primary/70' : 'text-muted-foreground'}`}>Same council type</span>
             </Button>
             <Button
               variant="outline"
@@ -158,7 +158,7 @@ const BandComparison = () => {
             >
               <BarChart3 className="h-4 w-4" />
               <span className="font-semibold text-sm">Rankings</span>
-              <span className={`text-xs ${selectedComparison === 'ranking' ? 'text-primary/70' : 'text-muted-foreground'}`}>Highest & lowest</span>
+              <span className={`text-sm ${selectedComparison === 'ranking' ? 'text-primary/70' : 'text-muted-foreground'}`}>Highest & lowest</span>
             </Button>
             <Button
               variant="outline"
@@ -171,7 +171,7 @@ const BandComparison = () => {
             >
               <Calculator className="h-4 w-4" />
               <span className="font-semibold text-sm">Averages</span>
-              <span className={`text-xs ${selectedComparison === 'averages' ? 'text-primary/70' : 'text-muted-foreground'}`}>Type & national</span>
+              <span className={`text-sm ${selectedComparison === 'averages' ? 'text-primary/70' : 'text-muted-foreground'}`}>Type & national</span>
             </Button>
             <Button
               variant="outline"
@@ -184,7 +184,7 @@ const BandComparison = () => {
             >
               <Clock className="h-4 w-4" />
               <span className="font-semibold text-sm">Over Time</span>
-              <span className={`text-xs ${selectedComparison === 'historical' ? 'text-primary/70' : 'text-muted-foreground'}`}>Year-on-year</span>
+              <span className={`text-sm ${selectedComparison === 'historical' ? 'text-primary/70' : 'text-muted-foreground'}`}>Year-on-year</span>
             </Button>
           </div>
         </CardContent>
@@ -224,15 +224,15 @@ const BandComparison = () => {
                     <div className="flex items-center gap-2 mb-1">
                       <CheckCircle className="h-4 w-4 shrink-0 text-primary" />
                       <h3 className="font-semibold text-sm sm:text-base">{selectedCouncil.name}</h3>
-                      <Badge variant="default" className="text-xs">Selected</Badge>
+                      <Badge variant="default" className="text-sm">Selected</Badge>
                     </div>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{selectedCouncil.type_name}</p>
+                    <p className="text-sm text-muted-foreground">{selectedCouncil.type_name}</p>
                   </div>
                   <div className="text-right shrink-0">
                     <div className="text-lg sm:text-2xl font-bold text-primary">
                       £{selectedCouncil.council_tax.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">Band D annual</div>
+                    <div className="text-sm text-muted-foreground">Band D annual</div>
                   </div>
                 </div>
               </div>
@@ -246,11 +246,11 @@ const BandComparison = () => {
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs text-muted-foreground w-6">{index + 1}.</span>
+                          <span className="text-sm text-muted-foreground w-6">{index + 1}.</span>
                           <h3 className="font-medium text-sm sm:text-base truncate">{council.name}</h3>
                         </div>
                         <div className="flex items-center gap-2 ml-6">
-                          <Badge variant={isHigher ? "destructive" : "default"} className="text-xs flex items-center gap-1">
+                          <Badge variant={isHigher ? "destructive" : "default"} className="text-sm flex items-center gap-1">
                             {isHigher ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                             {isHigher ? '+' : ''}£{diff.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </Badge>
@@ -260,7 +260,7 @@ const BandComparison = () => {
                         <div className="text-lg sm:text-xl font-bold">
                           £{council.council_tax!.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Band D</div>
+                        <div className="text-sm text-muted-foreground">Band D</div>
                       </div>
                     </div>
                   </div>
@@ -300,12 +300,12 @@ const BandComparison = () => {
                       className={`flex items-center justify-between p-3 rounded-xl ${isSelected ? 'bg-primary/10 border border-primary' : 'border'}`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
                           {index + 1}
                         </div>
                         <div>
                           <p className={`font-medium text-sm ${isSelected ? 'text-primary' : ''}`}>{council.name}</p>
-                          {isSelected && <Badge variant="secondary" className="text-xs mt-1">Your council</Badge>}
+                          {isSelected && <Badge variant="secondary" className="text-sm mt-1">Your council</Badge>}
                         </div>
                       </div>
                       <span className={`font-bold ${isSelected ? 'text-primary' : ''}`}>
@@ -338,12 +338,12 @@ const BandComparison = () => {
                       className={`flex items-center justify-between p-3 rounded-xl ${isSelected ? 'bg-primary/10 border border-primary' : 'border'}`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
                           {index + 1}
                         </div>
                         <div>
                           <p className={`font-medium text-sm ${isSelected ? 'text-primary' : ''}`}>{council.name}</p>
-                          {isSelected && <Badge variant="secondary" className="text-xs mt-1">Your council</Badge>}
+                          {isSelected && <Badge variant="secondary" className="text-sm mt-1">Your council</Badge>}
                         </div>
                       </div>
                       <span className={`font-bold ${isSelected ? 'text-primary' : ''}`}>
@@ -377,19 +377,19 @@ const BandComparison = () => {
               <div className="text-center p-4 bg-primary/5 rounded-xl border-2 border-primary">
                 <p className="text-sm text-muted-foreground mb-1">{selectedCouncil.name}</p>
                 <p className="text-2xl font-bold text-primary">£{selectedCouncil.council_tax.band_d_2025.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground mt-1">Band D 2025-26</p>
+                <p className="text-sm text-muted-foreground mt-1">Band D 2025-26</p>
               </div>
               <div className="text-center p-4 bg-muted rounded-xl border">
                 <p className="text-sm text-muted-foreground mb-1">{COUNCIL_TYPE_NAMES[selectedCouncil.type]} Average</p>
                 <p className="text-2xl font-bold">£{averages.typeAverage.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                <p className={`text-xs mt-1 ${averages.differenceFromType > 0 ? 'text-destructive' : 'text-green-600'}`}>
+                <p className={`text-sm mt-1 ${averages.differenceFromType > 0 ? 'text-destructive' : 'text-green-600'}`}>
                   {averages.differenceFromType > 0 ? '+' : ''}£{averages.differenceFromType.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} difference
                 </p>
               </div>
               <div className="text-center p-4 bg-muted rounded-xl border">
                 <p className="text-sm text-muted-foreground mb-1">All Councils Average</p>
                 <p className="text-2xl font-bold">£{averages.nationalAverage.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                <p className={`text-xs mt-1 ${averages.differenceFromNational > 0 ? 'text-destructive' : 'text-green-600'}`}>
+                <p className={`text-sm mt-1 ${averages.differenceFromNational > 0 ? 'text-destructive' : 'text-green-600'}`}>
                   {averages.differenceFromNational > 0 ? '+' : ''}£{averages.differenceFromNational.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} difference
                 </p>
               </div>
@@ -438,7 +438,7 @@ const BandComparison = () => {
                       <div>
                         <h3 className="font-semibold">{item.year}</h3>
                         {index === historicalData.length - 1 && (
-                          <Badge variant="default" className="text-xs mt-1">Current</Badge>
+                          <Badge variant="default" className="text-sm mt-1">Current</Badge>
                         )}
                       </div>
                       <div className="text-right">
@@ -446,7 +446,7 @@ const BandComparison = () => {
                         {item.increase !== null && (
                           <Badge
                             variant={item.increase > 5 ? 'destructive' : item.increase > 3 ? 'secondary' : 'default'}
-                            className="text-xs"
+                            className="text-sm"
                           >
                             {item.increase > 0 ? '+' : ''}{item.increase.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                           </Badge>

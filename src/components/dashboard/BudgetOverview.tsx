@@ -195,7 +195,7 @@ const BudgetOverview = () => {
           <Card key={index} className="border border-border/40 bg-card shadow-sm rounded-xl">
             <CardContent className="p-5 sm:p-6">
               <div className="flex items-center justify-between mb-4">
-                <Badge variant="secondary" className="text-xs font-medium">{metric.badge}</Badge>
+                <Badge variant="secondary" className="text-sm font-medium">{metric.badge}</Badge>
                 <metric.icon className="h-5 w-5 text-muted-foreground" />
               </div>
               <p className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">{metric.value}</p>
@@ -225,7 +225,7 @@ const BudgetOverview = () => {
                       {item.percentage > 20 && (
                         <Badge
                           variant="destructive"
-                          className="text-xs shrink-0"
+                          className="text-sm shrink-0"
                         >
                           Major
                         </Badge>
