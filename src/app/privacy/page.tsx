@@ -111,7 +111,7 @@ export default function PrivacyPage() {
                     <p className="text-muted-foreground">
                       If you have questions about this privacy policy, please open an issue on our{' '}
                       <a
-                        href="https://github.com/civaccount/civaccount"
+                        href="https://github.com/wulfsagedev/civaccount"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:underline"

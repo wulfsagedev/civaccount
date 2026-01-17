@@ -53,7 +53,7 @@ export default function Footer() {
               <ExternalLink className="h-3 w-3" />
             </a>
             <a
-              href="https://github.com/civaccount/civaccount"
+              href="https://github.com/wulfsagedev/civaccount"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
