@@ -204,7 +204,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-3.5 text-sm sm:text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
+              className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-3.5 text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
             />
           </div>
 
