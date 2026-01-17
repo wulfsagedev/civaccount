@@ -133,7 +133,7 @@ export default function UpdatesPage() {
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <span className="font-semibold">Version {update.version}</span>
-                        <span className="text-xs text-muted-foreground">{update.date}</span>
+                        <span className="text-sm text-muted-foreground">{update.date}</span>
                       </div>
                       <ul className="space-y-2">
                         {update.changes.map((change, changeIndex) => (

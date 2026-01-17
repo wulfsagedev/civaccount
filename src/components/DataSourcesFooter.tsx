@@ -25,19 +25,19 @@ export default function DataSourcesFooter() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
               <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">{councilStats.totalCouncils}</div>
-                <div className="text-xs text-muted-foreground mt-1">Councils Available</div>
+                <div className="text-sm text-muted-foreground mt-1">Councils Available</div>
               </div>
               <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">{councilStats.withCouncilTax}</div>
-                <div className="text-xs text-muted-foreground mt-1">With Tax Data</div>
+                <div className="text-sm text-muted-foreground mt-1">With Tax Data</div>
               </div>
               <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">{councilStats.withBudget}</div>
-                <div className="text-xs text-muted-foreground mt-1">With Budget Data</div>
+                <div className="text-sm text-muted-foreground mt-1">With Budget Data</div>
               </div>
               <div className="text-center p-4 bg-muted/50 rounded-xl">
                 <div className="text-xl sm:text-2xl font-bold text-primary">2025-26</div>
-                <div className="text-xs text-muted-foreground mt-1">Data Year</div>
+                <div className="text-sm text-muted-foreground mt-1">Data Year</div>
               </div>
             </div>
 
@@ -205,7 +205,7 @@ export default function DataSourcesFooter() {
                 Where {councilName}&apos;s Data Comes From
               </h2>
               {hasDetailedData && (
-                <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
+                <Badge variant="secondary" className="text-sm bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
                   <CheckCircle2 className="h-3 w-3 mr-1" />
                   Verified
                 </Badge>
@@ -223,23 +223,23 @@ export default function DataSourcesFooter() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
             <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">{selectedCouncil.ons_code}</div>
-              <div className="text-xs text-muted-foreground mt-1">ONS Code</div>
+              <div className="text-sm text-muted-foreground mt-1">ONS Code</div>
             </div>
             <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">{selectedCouncil.type}</div>
-              <div className="text-xs text-muted-foreground mt-1">Council Type</div>
+              <div className="text-sm text-muted-foreground mt-1">Council Type</div>
             </div>
             <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">
                 {selectedCouncil.council_tax ? '✓' : '—'}
               </div>
-              <div className="text-xs text-muted-foreground mt-1">Tax Data</div>
+              <div className="text-sm text-muted-foreground mt-1">Tax Data</div>
             </div>
             <div className="text-center p-4 bg-muted/50 rounded-xl">
               <div className="text-base sm:text-lg font-bold text-primary">
                 {selectedCouncil.budget ? '✓' : '—'}
               </div>
-              <div className="text-xs text-muted-foreground mt-1">Budget Data</div>
+              <div className="text-sm text-muted-foreground mt-1">Budget Data</div>
             </div>
           </div>
 
@@ -254,12 +254,12 @@ export default function DataSourcesFooter() {
                       {category.category}
                     </CardTitle>
                     {category.isVerified && (
-                      <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shrink-0">
+                      <Badge variant="secondary" className="text-sm bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shrink-0">
                         Direct Source
                       </Badge>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{category.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{category.description}</p>
                 </CardHeader>
                 <CardContent className="px-5 pb-5">
                   <div className="space-y-4">
@@ -275,14 +275,14 @@ export default function DataSourcesFooter() {
                             {source.title}
                             <ExternalLink className="h-3 w-3 mt-0.5 flex-shrink-0 opacity-70" />
                           </a>
-                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                             {source.description}
                           </p>
                           <div className="flex flex-wrap gap-2 mt-2">
-                            <Badge variant="outline" className="text-xs border-muted-foreground/30">
+                            <Badge variant="outline" className="text-sm border-muted-foreground/30">
                               {source.lastUpdated}
                             </Badge>
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="text-sm">
                               {source.dataType}
                             </Badge>
                           </div>
@@ -311,7 +311,7 @@ export default function DataSourcesFooter() {
                 {methodology.map((item, index) => (
                   <div key={index} className="space-y-2">
                     <h4 className="text-sm font-medium">{item.title}</h4>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {item.description}
                     </p>
                   </div>

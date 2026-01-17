@@ -278,7 +278,7 @@ export default function InsightsPage() {
               <CardContent className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-3">
                   <PoundSterling className="h-5 w-5 text-primary opacity-70" />
-                  <Badge variant="outline" className="text-xs">Average</Badge>
+                  <Badge variant="outline" className="text-sm">Average</Badge>
                 </div>
                 <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.avgBandD, { decimals: 0 })}</p>
                 <p className="text-sm text-muted-foreground mt-1">Band D average</p>
@@ -289,7 +289,7 @@ export default function InsightsPage() {
               <CardContent className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-3">
                   <ArrowUpDown className="h-5 w-5 text-primary opacity-70" />
-                  <Badge variant="outline" className="text-xs">Range</Badge>
+                  <Badge variant="outline" className="text-sm">Range</Badge>
                 </div>
                 <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</p>
                 <p className="text-sm text-muted-foreground mt-1">Gap between highest & lowest</p>
@@ -300,7 +300,7 @@ export default function InsightsPage() {
               <CardContent className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-3">
                   <TrendingUp className="h-5 w-5 text-destructive opacity-70" />
-                  <Badge variant="destructive" className="text-xs">Rising</Badge>
+                  <Badge variant="destructive" className="text-sm">Rising</Badge>
                 </div>
                 <p className="text-2xl sm:text-3xl font-bold">+{stats.avgYoyChange.toFixed(1)}%</p>
                 <p className="text-sm text-muted-foreground mt-1">Average increase this year</p>
@@ -311,7 +311,7 @@ export default function InsightsPage() {
               <CardContent className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-3">
                   <Landmark className="h-5 w-5 text-primary opacity-70" />
-                  <Badge variant="outline" className="text-xs">Total</Badge>
+                  <Badge variant="outline" className="text-sm">Total</Badge>
                 </div>
                 <p className="text-2xl sm:text-3xl font-bold">{formatBillions(stats.totalBudget)}</p>
                 <p className="text-sm text-muted-foreground mt-1">Combined council spending</p>
@@ -343,9 +343,9 @@ export default function InsightsPage() {
                       {stats.highest5.map((council, i) => (
                         <div key={council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                             <span className="text-sm font-medium">{council.name}</span>
-                            <Badge variant="outline" className="text-xs">{council.type_name}</Badge>
+                            <Badge variant="outline" className="text-sm">{council.type_name}</Badge>
                           </div>
                           <span className="font-bold text-destructive">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
                         </div>
@@ -362,9 +362,9 @@ export default function InsightsPage() {
                       {stats.lowest5.map((council, i) => (
                         <div key={council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                             <span className="text-sm font-medium">{council.name}</span>
-                            <Badge variant="outline" className="text-xs">{council.type_name}</Badge>
+                            <Badge variant="outline" className="text-sm">{council.type_name}</Badge>
                           </div>
                           <span className="font-bold text-green-600">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
                         </div>
@@ -397,10 +397,10 @@ export default function InsightsPage() {
                       {stats.biggestIncreases.map((item, i) => (
                         <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
                           </div>
-                          <Badge variant="destructive" className="text-xs">+{item.percentChange.toFixed(1)}%</Badge>
+                          <Badge variant="destructive" className="text-sm">+{item.percentChange.toFixed(1)}%</Badge>
                         </div>
                       ))}
                     </div>
@@ -415,10 +415,10 @@ export default function InsightsPage() {
                       {stats.smallestIncreases.map((item, i) => (
                         <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
                           </div>
-                          <Badge variant="default" className="text-xs bg-green-600">+{item.percentChange.toFixed(1)}%</Badge>
+                          <Badge variant="default" className="text-sm bg-green-600">+{item.percentChange.toFixed(1)}%</Badge>
                         </div>
                       ))}
                     </div>
@@ -487,7 +487,7 @@ export default function InsightsPage() {
                   <div key={type} className="p-4 border rounded-xl">
                     <div className="flex items-center justify-between mb-3">
                       <span className="font-semibold text-sm">{COUNCIL_TYPE_NAMES[type]}</span>
-                      <Badge variant="secondary" className="text-xs">{data.count}</Badge>
+                      <Badge variant="secondary" className="text-sm">{data.count}</Badge>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -536,7 +536,7 @@ export default function InsightsPage() {
                       <div className="flex items-center justify-between text-sm">
                         <div>
                           <span className="font-medium">{SERVICE_NAMES[service.key]}</span>
-                          <p className="text-xs text-muted-foreground mt-0.5">{info?.description}</p>
+                          <p className="text-sm text-muted-foreground mt-0.5">{info?.description}</p>
                         </div>
                         <div className="text-right shrink-0 ml-4">
                           <span className="font-bold">{formatBillions(service.value)}</span>
@@ -547,12 +547,12 @@ export default function InsightsPage() {
                       {info?.includes && (
                         <div className="flex flex-wrap gap-1.5">
                           {info.includes.slice(0, 4).map((item) => (
-                            <Badge key={item} variant="secondary" className="text-xs font-normal">
+                            <Badge key={item} variant="secondary" className="text-sm font-normal">
                               {item}
                             </Badge>
                           ))}
                           {info.includes.length > 4 && (
-                            <Badge variant="outline" className="text-xs font-normal">
+                            <Badge variant="outline" className="text-sm font-normal">
                               +{info.includes.length - 4} more
                             </Badge>
                           )}
@@ -600,7 +600,7 @@ export default function InsightsPage() {
                     <p className="text-2xl font-bold text-primary">
                       {formatCurrency(stats.efficiencyStats.averagePerCapitaSpending, { decimals: 0 })}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Spent per resident annually
                     </p>
                   </div>
@@ -612,7 +612,7 @@ export default function InsightsPage() {
                     <p className="text-2xl font-bold">
                       {stats.efficiencyStats.averageAdminOverhead.toFixed(1)}%
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Of budget on central services
                     </p>
                   </div>
@@ -624,7 +624,7 @@ export default function InsightsPage() {
                     <p className="text-2xl font-bold">
                       {(stats.totalPopulation / 1000000).toFixed(1)}m
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Residents with data
                     </p>
                   </div>
@@ -641,9 +641,9 @@ export default function InsightsPage() {
                       {stats.efficiencyStats.lowestPerCapita.map((item, i) => (
                         <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
-                            <Badge variant="outline" className="text-xs">{item.council.type_name}</Badge>
+                            <Badge variant="outline" className="text-sm">{item.council.type_name}</Badge>
                           </div>
                           <span className="font-bold text-green-600">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
                         </div>
@@ -660,9 +660,9 @@ export default function InsightsPage() {
                       {stats.efficiencyStats.highestPerCapita.map((item, i) => (
                         <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-destructive/5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                            <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
-                            <Badge variant="outline" className="text-xs">{item.council.type_name}</Badge>
+                            <Badge variant="outline" className="text-sm">{item.council.type_name}</Badge>
                           </div>
                           <span className="font-bold text-destructive">{formatCurrency(item.perCapitaSpending, { decimals: 0 })}</span>
                         </div>
@@ -687,10 +687,10 @@ export default function InsightsPage() {
                         {stats.efficiencyStats.lowestAdminOverhead.map((item, i) => (
                           <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-green-500/5">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                              <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                               <span className="text-sm font-medium">{item.council.name}</span>
                             </div>
-                            <Badge variant="default" className="text-xs bg-green-600">{item.adminOverheadPercent.toFixed(1)}%</Badge>
+                            <Badge variant="default" className="text-sm bg-green-600">{item.adminOverheadPercent.toFixed(1)}%</Badge>
                           </div>
                         ))}
                       </div>
@@ -705,10 +705,10 @@ export default function InsightsPage() {
                         {stats.efficiencyStats.highestAdminOverhead.map((item, i) => (
                           <div key={item.council.ons_code} className="flex items-center justify-between p-2 rounded-lg bg-amber-500/5">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground w-4">{i + 1}.</span>
+                              <span className="text-sm text-muted-foreground w-4">{i + 1}.</span>
                               <span className="text-sm font-medium">{item.council.name}</span>
                             </div>
-                            <Badge variant="secondary" className="text-xs">{item.adminOverheadPercent.toFixed(1)}%</Badge>
+                            <Badge variant="secondary" className="text-sm">{item.adminOverheadPercent.toFixed(1)}%</Badge>
                           </div>
                         ))}
                       </div>
@@ -762,9 +762,9 @@ export default function InsightsPage() {
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <span className="font-semibold">{COUNCIL_TYPE_NAMES[type]}</span>
-                            <p className="text-xs text-muted-foreground">{data.count} councils</p>
+                            <p className="text-sm text-muted-foreground">{data.count} councils</p>
                           </div>
-                          <Badge variant="secondary" className="text-xs">{formatBillions(data.total)} total</Badge>
+                          <Badge variant="secondary" className="text-sm">{formatBillions(data.total)} total</Badge>
                         </div>
 
                         <div className="space-y-2 mb-3">
@@ -772,7 +772,7 @@ export default function InsightsPage() {
                             const percentage = (amount / data.total) * 100;
                             return (
                               <div key={service} className="space-y-1">
-                                <div className="flex items-center justify-between text-xs">
+                                <div className="flex items-center justify-between text-sm">
                                   <span className="text-muted-foreground">{SERVICE_NAMES[service]}</span>
                                   <span className="font-medium">{percentage.toFixed(0)}%</span>
                                 </div>
@@ -782,7 +782,7 @@ export default function InsightsPage() {
                           })}
                         </div>
 
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           {hasEducation && hasSocialCare
                             ? 'Provides all services including education and social care'
                             : hasEducation

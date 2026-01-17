@@ -104,8 +104,8 @@ const CouncilTaxSection = () => {
                     : 'border-muted-foreground/20 hover:border-muted-foreground/40'
                 }`}
               >
-                <div className="font-bold text-xs sm:text-base">Band {band}</div>
-                <div className={`text-xs text-center mt-0.5 leading-tight ${selectedBand === band ? 'opacity-80' : 'opacity-60'}`}>
+                <div className="font-bold text-sm sm:text-base">Band {band}</div>
+                <div className={`text-sm text-center mt-0.5 leading-tight ${selectedBand === band ? 'opacity-80' : 'opacity-60'}`}>
                   £{Math.round(data.amount).toLocaleString('en-GB')}
                 </div>
               </Button>
@@ -123,7 +123,7 @@ const CouncilTaxSection = () => {
               <CardTitle className="text-lg sm:text-xl font-semibold">Band {selectedBand} - Your Council Tax</CardTitle>
             </div>
             {yearChange && (
-              <Badge variant={yearChange.change > 0 ? "destructive" : "default"} className="text-xs w-fit flex items-center gap-1">
+              <Badge variant={yearChange.change > 0 ? "destructive" : "default"} className="text-sm w-fit flex items-center gap-1">
                 {yearChange.change > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                 {yearChange.change > 0 ? '+' : ''}{yearChange.percentChange.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% vs last year
               </Badge>
@@ -140,21 +140,21 @@ const CouncilTaxSection = () => {
               <div className="text-lg sm:text-2xl font-bold text-primary">
                 £{councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
-              <div className="text-xs sm:text-sm text-primary/80 mt-1">Annual Charge</div>
+              <div className="text-sm text-primary/80 mt-1">Annual Charge</div>
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <Calendar className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-2 text-muted-foreground opacity-70" />
               <div className="text-lg sm:text-2xl font-bold">
                 £{calculateMonthlyPayment(councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount)}
               </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Monthly Payment</div>
+              <div className="text-sm text-muted-foreground mt-1">Monthly Payment</div>
             </div>
             <div className="text-center p-3 sm:p-5 bg-background/60 rounded-xl">
               <Calendar className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-2 text-muted-foreground opacity-70" />
               <div className="text-lg sm:text-2xl font-bold">
                 £{calculateWeeklyPayment(councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount)}
               </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Weekly Cost</div>
+              <div className="text-sm text-muted-foreground mt-1">Weekly Cost</div>
             </div>
           </div>
 
@@ -165,7 +165,7 @@ const CouncilTaxSection = () => {
                 <Info className="h-4 w-4 opacity-70" />
                 How This Compares:
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="text-muted-foreground">Average for {selectedCouncil.type_name}s:</span>
                   <span className="font-medium ml-2">£{typeAverage.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
@@ -225,7 +225,7 @@ const CouncilTaxSection = () => {
                   </CardDescription>
                 </div>
               </div>
-              <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
+              <Badge variant="secondary" className="text-sm bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
                 Verified Data
               </Badge>
             </div>
@@ -249,7 +249,7 @@ const CouncilTaxSection = () => {
                         {precept.authority.toLowerCase().includes('police') && <Shield className="h-4 w-4 shrink-0 text-muted-foreground" />}
                         {precept.authority.toLowerCase().includes('fire') && <Flame className="h-4 w-4 shrink-0 text-muted-foreground" />}
                         {isDistrict && <Home className="h-4 w-4 shrink-0 text-primary" />}
-                        <span className={`font-medium text-xs sm:text-sm truncate ${isDistrict ? 'text-primary' : ''}`}>
+                        <span className={`font-medium text-sm truncate ${isDistrict ? 'text-primary' : ''}`}>
                           {precept.authority}
                         </span>
                       </div>
@@ -257,14 +257,14 @@ const CouncilTaxSection = () => {
                         <div className={`font-bold text-sm sm:text-base ${isDistrict ? 'text-primary' : ''}`}>
                           £{bandAmount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-sm text-muted-foreground">
                           {percentage.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of bill
                         </div>
                       </div>
                     </div>
                     <Progress value={percentage} className="h-1.5 sm:h-2" />
                     {precept.description && (
-                      <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{precept.description}</p>
+                      <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{precept.description}</p>
                     )}
                   </div>
                 );
@@ -280,7 +280,7 @@ const CouncilTaxSection = () => {
                     £{((selectedCouncil.detailed?.total_band_d || 0) * councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].rate).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
-                <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                <p className="text-sm text-green-600 dark:text-green-400 mt-1">
                   This is your estimated total annual council tax (excluding any parish precept)
                 </p>
               </div>
@@ -293,7 +293,7 @@ const CouncilTaxSection = () => {
                   href={selectedCouncil.detailed.council_tax_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs sm:text-sm text-green-600 dark:text-green-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-sm text-green-600 dark:text-green-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   View official figures on {selectedCouncil.name}&apos;s website
                   <ExternalLink className="h-3 w-3" />
@@ -327,15 +327,15 @@ const CouncilTaxSection = () => {
                   <div className="flex justify-between items-center gap-2">
                     <div className="flex items-center space-x-2.5 min-w-0">
                       <span className={`font-medium text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>Band {band}</span>
-                      <Badge variant="outline" className="text-xs shrink-0 border-muted-foreground/30">{percentOfD}% of Band D</Badge>
+                      <Badge variant="outline" className="text-sm shrink-0 border-muted-foreground/30">{percentOfD}% of Band D</Badge>
                     </div>
                     <div className="text-right shrink-0">
                       <div className={`font-medium text-sm sm:text-base ${isSelected ? 'text-primary' : ''}`}>£{data.amount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                      <div className="text-xs text-muted-foreground">per year</div>
+                      <div className="text-sm text-muted-foreground">per year</div>
                     </div>
                   </div>
                   <Progress value={data.rate * 50} className="h-1.5 sm:h-2" />
-                  <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{data.description}</div>
+                  <div className="text-sm text-muted-foreground leading-relaxed">{data.description}</div>
                 </div>
               );
             })}
@@ -356,19 +356,19 @@ const CouncilTaxSection = () => {
             <div>
               <h4 className="font-semibold mb-3 text-sm sm:text-base">What is a band?</h4>
               <div className="space-y-3">
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">Your band depends on what your home was worth in 1991</span>
                 </div>
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">The government decides which band your home is in</span>
                 </div>
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">Band D is the middle band that everyone uses to compare</span>
                 </div>
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">Bigger houses pay more, smaller homes pay less</span>
                 </div>
@@ -377,26 +377,26 @@ const CouncilTaxSection = () => {
             <div>
               <h4 className="font-semibold mb-3 text-sm sm:text-base">How to pay</h4>
               <div className="space-y-3">
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">You pay in 10 chunks from April to January</span>
                 </div>
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">You can set up automatic payments</span>
                 </div>
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">Some councils give a discount if you pay it all at once</span>
                 </div>
-                <div className="flex items-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-start gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                   <span className="leading-relaxed">You might pay less if you live alone (25% off!)</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="mt-5 p-4 sm:p-4 bg-muted/50 rounded-xl text-xs sm:text-sm flex items-start gap-3">
+          <div className="mt-5 p-4 sm:p-4 bg-muted/50 rounded-xl text-sm flex items-start gap-3">
             <Lightbulb className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
             <div className="leading-relaxed">
               <span className="font-medium">Important:</span> {selectedCouncil.type === 'SD' || selectedCouncil.type === 'SC'
