@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Landmark, Menu, X } from 'lucide-react';
+import { PulsingDot } from '@/components/ui/pulsing-dot';
+import { Landmark, Menu, X, BarChart3, Info, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
 import FeedbackModal from '@/components/FeatureRequestDialog';
@@ -45,34 +46,32 @@ export default function Header() {
                 <h1 className="text-lg sm:text-xl font-bold leading-tight">CivAccount</h1>
               </Link>
               <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
+                <PulsingDot size="md" />
                 <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-                  v1.2
+                  v1.4
                 </Badge>
               </Link>
             </div>
 
-            {/* Center: Search (desktop) */}
-            <div className="hidden sm:flex flex-1 justify-center max-w-md">
+            {/* Right: Search + Desktop Navigation */}
+            <div className="hidden sm:flex items-center gap-1 shrink-0">
               <SearchCommand />
+              <nav className="flex items-center gap-1 ml-2">
+                <Link href="/insights" className={navLinkClass}>
+                  <BarChart3 className="h-4 w-4 mr-1.5" />
+                  Insights
+                </Link>
+                <Link href="/about" className={navLinkClass}>
+                  <Info className="h-4 w-4 mr-1.5" />
+                  About
+                </Link>
+                <button type="button" onClick={openFeedback} className={navLinkClass}>
+                  <MessageSquare className="h-4 w-4 mr-1.5" />
+                  Feedback
+                </button>
+                <ThemeToggle />
+              </nav>
             </div>
-
-            {/* Right: Desktop Navigation */}
-            <nav className="hidden sm:flex items-center gap-1 shrink-0">
-              <Link href="/insights" className={navLinkClass}>
-                Insights
-              </Link>
-              <Link href="/about" className={navLinkClass}>
-                About
-              </Link>
-              <button onClick={openFeedback} className={navLinkClass}>
-                Feedback
-              </button>
-              <ThemeToggle />
-            </nav>
 
             {/* Right: Mobile Navigation */}
             <div className="flex sm:hidden items-center gap-1">
@@ -99,6 +98,7 @@ export default function Header() {
                   onClick={closeMobileMenu}
                   className={mobileNavLinkClass}
                 >
+                  <BarChart3 className="h-4 w-4 mr-2" />
                   Insights
                 </Link>
                 <Link
@@ -106,6 +106,7 @@ export default function Header() {
                   onClick={closeMobileMenu}
                   className={mobileNavLinkClass}
                 >
+                  <Info className="h-4 w-4 mr-2" />
                   About
                 </Link>
                 <Link
@@ -115,14 +116,12 @@ export default function Header() {
                 >
                   <span>Updates</span>
                   <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    <Badge variant="outline" className="text-sm">v1.2</Badge>
+                    <PulsingDot size="md" />
+                    <Badge variant="outline" className="text-sm">v1.4</Badge>
                   </div>
                 </Link>
-                <button onClick={openFeedback} className={mobileNavLinkClass}>
+                <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
+                  <MessageSquare className="h-4 w-4 mr-2" />
                   Feedback
                 </button>
               </nav>

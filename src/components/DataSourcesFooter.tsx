@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, FileText, Building2, TrendingUp, Shield, Info, CheckCircle2, Globe } from 'lucide-react';
+import { ExternalLink, FileText, Building2, TrendingUp, Shield, CheckCircle2, Globe } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
 
@@ -175,24 +175,6 @@ export default function DataSourcesFooter() {
     }
   ];
 
-  // Data methodology specific to this council
-  const methodology = [
-    {
-      title: "Council Tax Bands",
-      description: `Band D is shown as the baseline. Other bands are calculated using the official ratios (Band A = 6/9 of Band D, Band H = 18/9 of Band D, etc.).`
-    },
-    {
-      title: "Budget Estimates",
-      description: selectedCouncil.budget
-        ? `Budget figures are from official government data for 2024-25. ${councilName}'s total service budget is £${((selectedCouncil.budget.total_service ?? 0) / 1000).toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} million.`
-        : `Budget breakdown not available for ${selectedCouncil.type_name}s in the source data.`
-    },
-    {
-      title: "Revenue Estimates",
-      description: `Revenue sources are estimated based on typical patterns for ${selectedCouncil.type_name}s. For exact figures, see ${councilName}'s published accounts.`
-    }
-  ];
-
   return (
     <footer className="bg-muted/20 border-t border-border/50 mt-12">
       <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-7xl">
@@ -217,30 +199,6 @@ export default function DataSourcesFooter() {
                 : "All the numbers you see come from official government websites. You can click the links below to see the original documents yourself."
               }
             </p>
-          </div>
-
-          {/* Council-specific quick stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            <div className="text-center p-4 bg-muted/50 rounded-xl">
-              <div className="text-base sm:text-lg font-bold text-primary">{selectedCouncil.ons_code}</div>
-              <div className="text-sm text-muted-foreground mt-1">ONS Code</div>
-            </div>
-            <div className="text-center p-4 bg-muted/50 rounded-xl">
-              <div className="text-base sm:text-lg font-bold text-primary">{selectedCouncil.type}</div>
-              <div className="text-sm text-muted-foreground mt-1">Council Type</div>
-            </div>
-            <div className="text-center p-4 bg-muted/50 rounded-xl">
-              <div className="text-base sm:text-lg font-bold text-primary">
-                {selectedCouncil.council_tax ? '✓' : '—'}
-              </div>
-              <div className="text-sm text-muted-foreground mt-1">Tax Data</div>
-            </div>
-            <div className="text-center p-4 bg-muted/50 rounded-xl">
-              <div className="text-base sm:text-lg font-bold text-primary">
-                {selectedCouncil.budget ? '✓' : '—'}
-              </div>
-              <div className="text-sm text-muted-foreground mt-1">Budget Data</div>
-            </div>
           </div>
 
           {/* Data Sources Grid */}
@@ -298,70 +256,16 @@ export default function DataSourcesFooter() {
             ))}
           </div>
 
-          {/* How We Used The Data */}
-          <Card className="border border-border/40 bg-card shadow-sm rounded-xl">
-            <CardHeader className="p-5 sm:p-6 pb-4">
-              <CardTitle className="flex items-center gap-3 text-base sm:text-lg font-semibold">
-                <Shield className="h-5 w-5 text-muted-foreground" />
-                How We Used the Data for {councilName}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-              <div className="grid gap-6 md:grid-cols-3">
-                {methodology.map((item, index) => (
-                  <div key={index} className="space-y-2">
-                    <h4 className="text-sm font-medium">{item.title}</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Helpful tip */}
-          <Card className="border border-border/40 bg-muted/30 shadow-sm rounded-xl">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 shrink-0 mt-0.5 text-primary" />
-                <div className="text-sm">
-                  <p className="font-medium mb-1">Want to check our numbers?</p>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Click any link above to see the exact spreadsheet we used.
-                    Look for &quot;{selectedCouncil.name}&quot; or code &quot;{selectedCouncil.ons_code}&quot; in the data.
-                    If you spot any mistakes, please let us know!
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Footer */}
-          <div className="border-t border-border/50 pt-6 space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 text-sm text-muted-foreground">
-              <div className="space-y-2">
-                <h4 className="font-medium text-foreground">About This Dashboard</h4>
-                <p className="leading-relaxed">
-                  This is an independent tool to help you understand council finances.
-                  We are not connected to any council. We just make government data easier to read.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-medium text-foreground">Using This Data</h4>
-                <p className="leading-relaxed">
-                  All data is from UK government websites and is free to use.
-                  If you need the data for something official, please check the original source links above.
-                </p>
-              </div>
-            </div>
-
-            <div className="text-center text-sm text-muted-foreground border-t border-border/50 pt-6">
-              <p>
-                Data last updated: January 2025 · Made for UK residents
+          {/* Methodology note */}
+          <div className="p-5 rounded-xl bg-muted/30 border border-border/40">
+            <div className="flex items-start gap-3">
+              <Shield className="h-5 w-5 shrink-0 mt-0.5 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">How we calculate:</span> Band D is the baseline from official data. Other bands use official ratios (A = 6/9, H = 18/9 of Band D). Budget figures are from 2024-25 government returns.
               </p>
             </div>
           </div>
+
 
         </div>
       </div>

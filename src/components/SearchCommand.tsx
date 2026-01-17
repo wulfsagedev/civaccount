@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Search, Building2, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { councils, Council, formatCurrency, getCouncilDisplayName } from '@/data/councils';
+import { CouncilResultItem } from '@/components/ui/council-result-item';
+import { councils, Council, getCouncilDisplayName } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
+import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 
 interface SearchCommandProps {
   mobileOnly?: boolean;
@@ -29,7 +30,7 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
   // Filter councils based on search query
   const filteredCouncils = useMemo(() => {
     if (!searchQuery) {
-      return councils.slice(0, 10);
+      return councils.slice(0, SEARCH_RESULT_LIMIT);
     }
 
     const query = searchQuery.toLowerCase();
@@ -39,7 +40,7 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
         c.type_name.toLowerCase().includes(query) ||
         getCouncilDisplayName(c).toLowerCase().includes(query)
       )
-      .slice(0, 10);
+      .slice(0, SEARCH_RESULT_LIMIT);
   }, [searchQuery]);
 
   // Reset highlighted index when results change
@@ -66,17 +67,14 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
 
   // Handle keyboard shortcuts
   const handleGlobalKeyDown = useCallback((e: KeyboardEvent) => {
-    // Check if user is typing in an input/textarea
     const target = e.target as HTMLElement;
     const isInputFocused = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 
-    // Open search with F key (when not typing)
     if (e.key === 'f' && !isInputFocused) {
       e.preventDefault();
       setIsOpen(true);
     }
 
-    // Close with Escape
     if (e.key === 'Escape' && isOpen) {
       setIsOpen(false);
       setSearchQuery('');
@@ -88,14 +86,14 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, [handleGlobalKeyDown]);
 
-  const handleSelect = (council: Council) => {
+  const handleSelect = useCallback((council: Council) => {
     setSelectedCouncil(council);
     setSearchQuery('');
     setIsOpen(false);
     router.push('/');
-  };
+  }, [setSelectedCouncil, router]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setHighlightedIndex(prev =>
@@ -110,17 +108,93 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
         handleSelect(filteredCouncils[highlightedIndex]);
       }
     }
-  };
+  }, [filteredCouncils, highlightedIndex, handleSelect]);
 
-  // If mobileOnly, only render the mobile icon button
+  const closeSearch = useCallback(() => {
+    setIsOpen(false);
+    setSearchQuery('');
+  }, []);
+
+  // Shared search overlay component
+  const SearchOverlay = ({ isMobile }: { isMobile: boolean }) => (
+    <div className="fixed inset-0 z-50">
+      <div
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+        onClick={closeSearch}
+      />
+      <div className={`fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 ${isMobile ? 'top-4' : 'top-[20%]'}`}>
+        <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
+          <div className="flex items-center border-b px-4">
+            <Search className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'} text-muted-foreground shrink-0`} />
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Search for a council..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className={`flex-1 ${isMobile ? 'h-14 text-base' : 'h-12 text-sm'} px-3 bg-transparent outline-none placeholder:text-muted-foreground`}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={closeSearch}
+              className={isMobile ? 'h-10 w-10 shrink-0' : 'h-8 w-8 shrink-0'}
+            >
+              <X className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
+            </Button>
+          </div>
+
+          <div ref={listRef} className={`${isMobile ? 'max-h-[60vh]' : 'max-h-[300px]'} overflow-y-auto p-2`}>
+            {filteredCouncils.length > 0 ? (
+              <div className="space-y-1">
+                {filteredCouncils.map((council, index) => (
+                  <CouncilResultItem
+                    key={council.ons_code}
+                    council={council}
+                    isHighlighted={index === highlightedIndex}
+                    onSelect={handleSelect}
+                    showBadge={!isMobile}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-muted-foreground text-sm">
+                No councils found for &quot;{searchQuery}&quot;
+              </div>
+            )}
+          </div>
+
+          {!isMobile && (
+            <div className="border-t px-4 py-2 text-sm text-muted-foreground flex items-center gap-4">
+              <span className="flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
+                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
+                to navigate
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
+                to select
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
+                to close
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   if (mobileOnly) {
-    // Don't show on homepage without council selected (has its own search)
-    if (isHomepageWithoutCouncil) {
-      return null;
-    }
+    if (isHomepageWithoutCouncil) return null;
 
     const isLarge = size === 'lg';
-
     return (
       <>
         <Button
@@ -131,111 +205,15 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
         >
           <Search className={isLarge ? 'h-6 w-6' : 'h-4 w-4'} />
         </Button>
-
-        {/* Search overlay */}
-        {isOpen && (
-          <div className="fixed inset-0 z-50">
-            {/* Backdrop */}
-            <div
-              className="fixed inset-0 bg-background/80 backdrop-blur-sm"
-              onClick={() => {
-                setIsOpen(false);
-                setSearchQuery('');
-              }}
-            />
-
-            {/* Search dialog */}
-            <div className="fixed left-1/2 top-4 -translate-x-1/2 w-full max-w-lg px-4">
-              <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
-                {/* Search input - use text-base (16px) to prevent iOS zoom */}
-                <div className="flex items-center border-b px-4">
-                  <Search className="h-5 w-5 text-muted-foreground shrink-0" />
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    placeholder="Search for a council..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="flex-1 h-14 px-3 text-base bg-transparent outline-none placeholder:text-muted-foreground"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setIsOpen(false);
-                      setSearchQuery('');
-                    }}
-                    className="h-10 w-10 shrink-0"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-
-                {/* Results */}
-                <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
-                  {filteredCouncils.length > 0 ? (
-                    <div className="space-y-1">
-                      {filteredCouncils.map((council, index) => {
-                        const displayName = getCouncilDisplayName(council);
-                        const bandDAmount = council.council_tax
-                          ? formatCurrency(council.council_tax.band_d_2025, { decimals: 2 })
-                          : null;
-                        const isHighlighted = index === highlightedIndex;
-
-                        return (
-                          <button
-                            key={council.ons_code}
-                            data-search-item
-                            onClick={() => handleSelect(council)}
-                            className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
-                              isHighlighted
-                                ? 'bg-primary/10 text-primary'
-                                : 'hover:bg-muted'
-                            }`}
-                          >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <Building2 className={`h-4 w-4 shrink-0 ${isHighlighted ? 'text-primary' : 'text-muted-foreground'}`} />
-                              <div className="min-w-0">
-                                <div className="font-medium text-sm truncate">{displayName}</div>
-                                <div className="text-sm text-muted-foreground">{council.type_name}</div>
-                              </div>
-                            </div>
-                            {bandDAmount && (
-                              <Badge variant="outline" className="text-sm shrink-0 ml-2 hidden xs:flex">
-                                Band D: {bandDAmount}
-                              </Badge>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="py-8 text-center text-muted-foreground text-sm">
-                      No councils found for &quot;{searchQuery}&quot;
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {isOpen && <SearchOverlay isMobile={true} />}
       </>
     );
   }
 
-  // Don't show desktop search on homepage without council selected
-  if (isHomepageWithoutCouncil) {
-    return null;
-  }
+  if (isHomepageWithoutCouncil) return null;
 
   return (
     <>
-      {/* Search trigger button (desktop) */}
       <Button
         variant="outline"
         size="sm"
@@ -250,112 +228,7 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
           F
         </kbd>
       </Button>
-
-      {/* Search overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm"
-            onClick={() => {
-              setIsOpen(false);
-              setSearchQuery('');
-            }}
-          />
-
-          {/* Search dialog */}
-          <div className="fixed left-1/2 top-[20%] -translate-x-1/2 w-full max-w-lg px-4">
-            <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
-              {/* Search input */}
-              <div className="flex items-center border-b px-4">
-                <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="Search for a council..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="flex-1 h-12 px-3 text-sm bg-transparent outline-none placeholder:text-muted-foreground"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setSearchQuery('');
-                  }}
-                  className="h-8 w-8 shrink-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Results */}
-              <div ref={listRef} className="max-h-[300px] overflow-y-auto p-2">
-                {filteredCouncils.length > 0 ? (
-                  <div className="space-y-1">
-                    {filteredCouncils.map((council, index) => {
-                      const displayName = getCouncilDisplayName(council);
-                      const bandDAmount = council.council_tax
-                        ? formatCurrency(council.council_tax.band_d_2025, { decimals: 2 })
-                        : null;
-                      const isHighlighted = index === highlightedIndex;
-
-                      return (
-                        <button
-                          key={council.ons_code}
-                          data-search-item
-                          onClick={() => handleSelect(council)}
-                          className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
-                            isHighlighted
-                              ? 'bg-primary/10 text-primary'
-                              : 'hover:bg-muted'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <Building2 className={`h-4 w-4 shrink-0 ${isHighlighted ? 'text-primary' : 'text-muted-foreground'}`} />
-                            <div className="min-w-0">
-                              <div className="font-medium text-sm truncate">{displayName}</div>
-                              <div className="text-sm text-muted-foreground">{council.type_name}</div>
-                            </div>
-                          </div>
-                          {bandDAmount && (
-                            <Badge variant="outline" className="text-sm shrink-0 ml-2">
-                              Band D: {bandDAmount}
-                            </Badge>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="py-8 text-center text-muted-foreground text-sm">
-                    No councils found for &quot;{searchQuery}&quot;
-                  </div>
-                )}
-              </div>
-
-              {/* Footer hint */}
-              <div className="border-t px-4 py-2 text-sm text-muted-foreground flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
-                  to navigate
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
-                  to select
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
-                  to close
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {isOpen && <SearchOverlay isMobile={false} />}
     </>
   );
 }
