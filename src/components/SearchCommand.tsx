@@ -61,7 +61,11 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
   // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 10);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
@@ -115,88 +119,20 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
     setSearchQuery('');
   }, []);
 
-  // Shared search overlay component
-  const SearchOverlay = ({ isMobile }: { isMobile: boolean }) => (
-    <div className="fixed inset-0 z-50">
-      <div
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={closeSearch}
-      />
-      <div className={`fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 ${isMobile ? 'top-4' : 'top-[20%]'}`}>
-        <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
-          <div className="flex items-center border-b px-4">
-            <Search className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'} text-muted-foreground shrink-0`} />
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder="Search for a council..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className={`flex-1 ${isMobile ? 'h-14 text-base' : 'h-12 text-sm'} px-3 bg-transparent outline-none placeholder:text-muted-foreground`}
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={closeSearch}
-              className={isMobile ? 'h-10 w-10 shrink-0' : 'h-8 w-8 shrink-0'}
-            >
-              <X className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
-            </Button>
-          </div>
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
 
-          <div ref={listRef} className={`${isMobile ? 'max-h-[60vh]' : 'max-h-[300px]'} overflow-y-auto p-2`}>
-            {filteredCouncils.length > 0 ? (
-              <div className="space-y-1">
-                {filteredCouncils.map((council, index) => (
-                  <CouncilResultItem
-                    key={council.ons_code}
-                    council={council}
-                    isHighlighted={index === highlightedIndex}
-                    onSelect={handleSelect}
-                    showBadge={!isMobile}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center text-muted-foreground text-sm">
-                No councils found for &quot;{searchQuery}&quot;
-              </div>
-            )}
-          </div>
+  // Don't render anything if on homepage without council
+  if (isHomepageWithoutCouncil && !mobileOnly) return null;
+  if (isHomepageWithoutCouncil && mobileOnly) return null;
 
-          {!isMobile && (
-            <div className="border-t px-4 py-2 text-sm text-muted-foreground flex items-center gap-4">
-              <span className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
-                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
-                to navigate
-              </span>
-              <span className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
-                to select
-              </span>
-              <span className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
-                to close
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  const isMobile = mobileOnly;
+  const isLarge = size === 'lg';
 
-  if (mobileOnly) {
-    if (isHomepageWithoutCouncil) return null;
-
-    const isLarge = size === 'lg';
-    return (
-      <>
+  return (
+    <>
+      {mobileOnly ? (
         <Button
           variant="ghost"
           size="icon"
@@ -205,30 +141,97 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
         >
           <Search className={isLarge ? 'h-6 w-6' : 'h-4 w-4'} />
         </Button>
-        {isOpen && <SearchOverlay isMobile={true} />}
-      </>
-    );
-  }
+      ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsOpen(true)}
+          className="flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[200px]"
+        >
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4" />
+            <span className="text-sm">Search</span>
+          </div>
+          <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground flex">
+            F
+          </kbd>
+        </Button>
+      )}
 
-  if (isHomepageWithoutCouncil) return null;
+      {isOpen && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+            onClick={closeSearch}
+          />
+          <div className={`fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 ${isMobile ? 'top-4' : 'top-[20%]'}`}>
+            <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
+              <div className="flex items-center border-b px-4">
+                <Search className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'} text-muted-foreground shrink-0`} />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Search for a council..."
+                  value={searchQuery}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  className={`flex-1 ${isMobile ? 'h-14 text-base' : 'h-12 text-sm'} px-3 bg-transparent outline-none placeholder:text-muted-foreground`}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={closeSearch}
+                  className={`${isMobile ? 'h-10 w-10' : 'h-8 w-8'} shrink-0 cursor-pointer`}
+                >
+                  <X className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
+                </Button>
+              </div>
 
-  return (
-    <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setIsOpen(true)}
-        className="flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[200px]"
-      >
-        <div className="flex items-center gap-2">
-          <Search className="h-4 w-4" />
-          <span className="text-sm">Search</span>
+              <div ref={listRef} className={`${isMobile ? 'max-h-[60vh]' : 'max-h-[300px]'} overflow-y-auto p-2`}>
+                {filteredCouncils.length > 0 ? (
+                  <div className="space-y-1">
+                    {filteredCouncils.map((council, index) => (
+                      <CouncilResultItem
+                        key={council.ons_code}
+                        council={council}
+                        isHighlighted={index === highlightedIndex}
+                        onSelect={handleSelect}
+                        showBadge={!isMobile}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-8 text-center text-muted-foreground text-sm">
+                    No councils found for &quot;{searchQuery}&quot;
+                  </div>
+                )}
+              </div>
+
+              {!isMobile && (
+                <div className="border-t px-4 py-2 text-sm text-muted-foreground flex items-center gap-4">
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
+                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
+                    to navigate
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
+                    to select
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
+                    to close
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground flex">
-          F
-        </kbd>
-      </Button>
-      {isOpen && <SearchOverlay isMobile={false} />}
+      )}
     </>
   );
 }
