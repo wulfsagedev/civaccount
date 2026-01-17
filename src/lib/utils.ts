@@ -36,3 +36,14 @@ export function formatNumber(value: number, options?: { decimals?: number }): st
 export function formatPercent(value: number, decimals = 1): string {
   return formatNumber(value, { decimals }) + '%';
 }
+
+// Generate URL-friendly slug from council name
+export function generateCouncilSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '') // Remove apostrophes
+    .replace(/&/g, 'and') // Replace & with and
+    .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
+    .replace(/^-+|-+$/g, '') // Trim leading/trailing hyphens
+    .replace(/-+/g, '-'); // Collapse multiple hyphens
+}
