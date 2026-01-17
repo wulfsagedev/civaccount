@@ -199,11 +199,11 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
                               <Building2 className={`h-4 w-4 shrink-0 ${isHighlighted ? 'text-primary' : 'text-muted-foreground'}`} />
                               <div className="min-w-0">
                                 <div className="font-medium text-sm truncate">{displayName}</div>
-                                <div className="text-xs text-muted-foreground">{council.type_name}</div>
+                                <div className="text-sm text-muted-foreground">{council.type_name}</div>
                               </div>
                             </div>
                             {bandDAmount && (
-                              <Badge variant="outline" className="text-xs shrink-0 ml-2 hidden xs:flex">
+                              <Badge variant="outline" className="text-sm shrink-0 ml-2 hidden xs:flex">
                                 Band D: {bandDAmount}
                               </Badge>
                             )}
@@ -243,7 +243,7 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
           <Search className="h-4 w-4" />
           <span className="text-sm">Search</span>
         </div>
-        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground flex">
+        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground flex">
           F
         </kbd>
       </Button>
@@ -314,11 +314,11 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
                             <Building2 className={`h-4 w-4 shrink-0 ${isHighlighted ? 'text-primary' : 'text-muted-foreground'}`} />
                             <div className="min-w-0">
                               <div className="font-medium text-sm truncate">{displayName}</div>
-                              <div className="text-xs text-muted-foreground">{council.type_name}</div>
+                              <div className="text-sm text-muted-foreground">{council.type_name}</div>
                             </div>
                           </div>
                           {bandDAmount && (
-                            <Badge variant="outline" className="text-xs shrink-0 ml-2">
+                            <Badge variant="outline" className="text-sm shrink-0 ml-2">
                               Band D: {bandDAmount}
                             </Badge>
                           )}
@@ -334,18 +334,18 @@ export default function SearchCommand({ mobileOnly = false }: SearchCommandProps
               </div>
 
               {/* Footer hint */}
-              <div className="border-t px-4 py-2 text-xs text-muted-foreground flex items-center gap-4">
+              <div className="border-t px-4 py-2 text-sm text-muted-foreground flex items-center gap-4">
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">↑</kbd>
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">↓</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
                   to navigate
                 </span>
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">Enter</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
                   to select
                 </span>
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-[10px]">Esc</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
                   to close
                 </span>
               </div>

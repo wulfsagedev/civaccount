@@ -85,7 +85,7 @@ const PerformanceMetrics = () => {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">Population Served</p>
                   <p className="text-lg font-bold text-primary">{population.toLocaleString('en-GB')}</p>
-                  <p className="text-xs text-muted-foreground">ONS mid-2024 estimate</p>
+                  <p className="text-sm text-muted-foreground">ONS mid-2024 estimate</p>
                 </div>
               </div>
             </Card>
@@ -98,7 +98,7 @@ const PerformanceMetrics = () => {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">Spending Per Person</p>
                   <p className="text-lg font-bold text-primary">{formatCurrency(efficiencyMetrics.perCapitaSpending, { decimals: 0 })}</p>
-                  <p className="text-xs text-muted-foreground">Total budget ÷ population</p>
+                  <p className="text-sm text-muted-foreground">Total budget ÷ population</p>
                 </div>
               </div>
             </Card>
@@ -111,7 +111,7 @@ const PerformanceMetrics = () => {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">Admin Overhead</p>
                   <p className="text-lg font-bold text-primary">{efficiencyMetrics.adminOverheadPercent.toFixed(1)}%</p>
-                  <p className="text-xs text-muted-foreground">Central services as % of budget</p>
+                  <p className="text-sm text-muted-foreground">Central services as % of budget</p>
                 </div>
               </div>
             </Card>
@@ -189,7 +189,7 @@ const PerformanceMetrics = () => {
                 <p className="text-sm text-muted-foreground mb-2">
                   The number of people needing adult social care is increasing across the UK as the population ages.
                 </p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <AlertTriangle className="h-3 w-3" />
                   <span>This is one of the largest areas of council spending</span>
                 </div>
@@ -203,7 +203,7 @@ const PerformanceMetrics = () => {
                 <p className="text-sm text-muted-foreground mb-2">
                   Children&apos;s services include safeguarding, fostering, and support for families. Demand for these services varies by area.
                 </p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <AlertTriangle className="h-3 w-3" />
                   <span>Staff recruitment is an ongoing area of focus nationally</span>
                 </div>
@@ -219,7 +219,7 @@ const PerformanceMetrics = () => {
             <p className="text-sm text-muted-foreground mb-2">
               Councils maintain roads, street lighting, and public spaces. Many use technology to help plan maintenance work.
             </p>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle className="h-3 w-3" />
               <span>Digital reporting tools are available in many areas</span>
             </div>
@@ -234,7 +234,7 @@ const PerformanceMetrics = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 Planning departments process building applications and develop local plans. Processing times vary by council.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <TrendingUp className="h-3 w-3" />
                 <span>Online application systems are now standard</span>
               </div>
@@ -250,7 +250,7 @@ const PerformanceMetrics = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 Councils manage housing registers, prevent homelessness, and work with housing associations. Housing demand varies by area.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <AlertTriangle className="h-3 w-3" />
                 <span>Housing is a statutory duty for councils</span>
               </div>

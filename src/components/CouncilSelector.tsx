@@ -103,10 +103,10 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
             {/* Header row: badges + change button */}
             <div className="flex items-start justify-between gap-4 mb-4">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary" className="text-xs font-medium">
+                <Badge variant="secondary" className="text-sm font-medium">
                   {selectedCouncil.type_name}
                 </Badge>
-                <Badge variant="outline" className="text-xs font-medium">
+                <Badge variant="outline" className="text-sm font-medium">
                   2025-26
                 </Badge>
               </div>
@@ -276,7 +276,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
                             {displayName}
                           </p>
                           <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="text-sm">
                               {council.type_name}
                             </Badge>
                           </div>

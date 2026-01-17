@@ -7,13 +7,13 @@ import { Badge } from '@/components/ui/badge';
 export default function Footer() {
   return (
     <footer className="border-t bg-muted/20">
-      <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-12 max-w-7xl">
+      <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 max-w-7xl">
         {/* Main footer content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="inline-flex items-center gap-3 mb-4 cursor-pointer hover:opacity-80 transition-opacity">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <Landmark className="h-4 w-4 text-primary-foreground" />
               </div>
               <span className="text-lg font-bold">CivAccount</span>
@@ -111,17 +111,17 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 pt-8 border-t border-border/50">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-6 pt-4 border-t border-border/50">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} CivAccount. Data from official UK government sources.
             </p>
-            <Link href="/updates" className="inline-flex items-center gap-2 cursor-pointer">
-              <span className="relative flex h-2 w-2">
+            <Link href="/updates" className="inline-flex items-center gap-1.5 cursor-pointer">
+              <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
               </span>
-              <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
+              <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
                 v1.2
               </Badge>
             </Link>
