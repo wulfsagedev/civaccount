@@ -44,6 +44,45 @@ export interface DataSource {
   description?: string;
 }
 
+// Leadership team member
+export interface LeadershipMember {
+  name: string;
+  role: string;
+  responsibilities?: string[];
+}
+
+// Cabinet/executive member
+export interface CabinetMember {
+  name: string;
+  role: string;
+  portfolio: string;
+  party?: string;
+}
+
+// Town/parish council precept
+export interface ParishPrecept {
+  name: string;
+  precept_total: number; // Total precept amount
+  band_d?: number; // Band D equivalent if available
+}
+
+// Grant recipient
+export interface GrantRecipient {
+  organisation: string;
+  amount: number;
+  purpose?: string;
+  year?: string;
+}
+
+// Key document/report
+export interface CouncilDocument {
+  title: string;
+  url: string;
+  type: 'budget' | 'accounts' | 'strategy' | 'audit' | 'report' | 'other';
+  year?: string;
+  size_kb?: number;
+}
+
 export interface DetailedCouncilData {
   // Council tax breakdown by precepting authority
   precepts?: PreceptBreakdown[];
@@ -53,17 +92,49 @@ export interface DetailedCouncilData {
   operating_budget?: number; // In pounds
   capital_programme?: number; // In pounds
   council_tax_increase_percent?: number;
+  revenue_budget?: number; // Net revenue budget
+  reserves?: number; // General reserves
+  housing_revenue_account?: number; // HRA if applicable
+
+  // Medium Term Financial Strategy
+  mtfs_deficit?: number; // Forecast deficit
+  savings_target?: number; // Planned savings
+  savings_achieved?: number; // Achieved savings
 
   // Services this council provides
   services?: ServiceDetail[];
 
+  // Leadership and governance
+  chief_executive?: string;
+  leadership_team?: LeadershipMember[];
+  cabinet?: CabinetMember[];
+  council_leader?: string;
+  chair?: string;
+  total_councillors?: number;
+
+  // Staff information
+  staff_count?: number;
+  staff_cost?: number; // Total staff cost
+
+  // Parish/town councils (for district councils)
+  parish_precepts?: ParishPrecept[];
+
+  // Grants awarded
+  grants?: GrantRecipient[];
+  total_grants?: number;
+
+  // Key documents
+  documents?: CouncilDocument[];
+
   // Official data sources
   sources?: DataSource[];
 
-  // Council website
+  // Council website URLs
   website?: string;
   council_tax_url?: string;
   budget_url?: string;
+  transparency_url?: string;
+  accounts_url?: string;
 
   // When this detailed data was last verified
   last_verified?: string;
@@ -2711,7 +2782,7 @@ export const councils: Council[] = [
       net_current: 46095.0,
     },
     detailed: {
-      // Council tax breakdown by precepting authority (Band D)
+      // Council tax breakdown by precepting authority (Band D 2025-26)
       precepts: [
         { authority: "Folkestone & Hythe District Council", band_d: 288.45, description: "Local services including waste, parks, planning" },
         { authority: "Kent County Council", band_d: 1691.19, description: "Schools, social care, roads, libraries" },
@@ -2720,10 +2791,15 @@ export const councils: Council[] = [
       ],
       total_band_d: 2344.65, // Base total before parish precept
 
-      // Budget from council website
-      operating_budget: 19500000, // £19.5m
-      capital_programme: 122272000, // £122.272m (5-year)
+      // Budget from council website (2024-25)
+      operating_budget: 18000000, // £18m+ on services
+      capital_programme: 3160000, // £3.16m capital receipts expected 2024-28
       council_tax_increase_percent: 2.99,
+
+      // Medium Term Financial Strategy
+      mtfs_deficit: 638000, // £638k forecast deficit 2024/25
+      savings_target: 1500000, // £1.5m target savings
+      savings_achieved: 1485000, // £1.485m achieved from restructure
 
       // Services provided by this district council
       services: [
@@ -2731,9 +2807,53 @@ export const councils: Council[] = [
         { name: "Parks & Open Spaces", description: "Maintaining parks, play areas, and green spaces" },
         { name: "Street Cleansing", description: "Keeping streets and public areas clean" },
         { name: "Environmental Health", description: "Food safety, pollution control, pest control" },
-        { name: "Housing Benefits", description: "Administering housing benefit claims" },
+        { name: "Housing", description: "Social housing and homelessness services" },
         { name: "Planning", description: "Development control and local planning" },
         { name: "Coast Protection", description: "Beach management and coastal defences" },
+        { name: "Lifeline Services", description: "Emergency response for vulnerable residents" },
+        { name: "Hythe Pool", description: "Public swimming pool management" },
+      ],
+
+      // Leadership and governance
+      chief_executive: "Dr Susan Priest",
+      leadership_team: [
+        { name: "Dr Susan Priest", role: "Chief Executive", responsibilities: ["Overall service delivery", "Strategic direction", "Returning Officer"] },
+        { name: "Ewan Green", role: "Director of Strategy and Resources", responsibilities: ["Legal services", "Democratic services", "HR", "Communications", "Waste management", "Building control", "Customer services"] },
+        { name: "Andy Blaszkowicz", role: "Director of Housing and Operations", responsibilities: ["Transportation", "Grounds maintenance", "Estates", "Housing", "Environmental enforcement", "Regeneration", "Hythe Pool"] },
+        { name: "Alan Mitchell", role: "Director of Finance (S151 Officer)", responsibilities: ["Finance", "Council tax", "Benefits", "Procurement", "Corporate debt"] },
+      ],
+      cabinet: [
+        { name: "Cllr Jim Martin", role: "Leader", portfolio: "Otterpool Park and Planning Policy" },
+        { name: "Cllr Tim Prater", role: "Deputy Leader", portfolio: "Finance and Governance" },
+        { name: "Cllr Gary Fuller", role: "Cabinet Member", portfolio: "Resident Engagement and Accountability" },
+        { name: "Cllr Mike Blakemore", role: "Cabinet Member", portfolio: "Community and Collaboration" },
+        { name: "Cllr Rebecca Shoob", role: "Cabinet Member", portfolio: "Housing and Homelessness" },
+        { name: "Cllr Stephen Scoffham", role: "Cabinet Member", portfolio: "Climate, Environment and Biodiversity" },
+        { name: "Cllr Polly Blakemore", role: "Cabinet Member", portfolio: "Transport, Regulatory Services and Building Control" },
+        { name: "Cllr Rich Holgate", role: "Cabinet Member", portfolio: "Place Plan, Heritage, Tourism and District Economy" },
+        { name: "Cllr Jeremy Speakman", role: "Cabinet Member", portfolio: "Assets and Operations" },
+      ],
+      council_leader: "Cllr Jim Martin",
+      chair: "Cllr Anita Jones",
+      total_councillors: 30,
+
+      // Parish/town councils (2025-26 precepts)
+      parish_precepts: [
+        { name: "Folkestone Town Council", precept_total: 1082720 },
+        { name: "Hythe Town Council", precept_total: 415522 },
+        { name: "Hawkinge Town Council", precept_total: 327000 },
+        { name: "New Romney Town Council", precept_total: 429562 },
+        { name: "Lydd Town Council", precept_total: 179000 },
+      ],
+
+      // Key documents
+      documents: [
+        { title: "Statement of Accounts 2023-24", url: "https://www.folkestone-hythe.gov.uk/finances-audit/statement-accounts", type: "accounts", year: "2023-24", size_kb: 9870 },
+        { title: "Budget Strategy 2025-26", url: "https://www.folkestone-hythe.gov.uk/finances-audit/budget-strategy", type: "budget", year: "2025-26", size_kb: 247 },
+        { title: "Capital Strategy 2025-26", url: "https://www.folkestone-hythe.gov.uk/finances-audit/capital-investment-strategies", type: "strategy", year: "2025-26", size_kb: 142 },
+        { title: "Investment Strategy 2025-26", url: "https://www.folkestone-hythe.gov.uk/finances-audit/capital-investment-strategies", type: "strategy", year: "2025-26", size_kb: 395 },
+        { title: "Medium Term Financial Strategy", url: "https://www.folkestone-hythe.gov.uk/finances-audit/financial-strategy", type: "strategy", size_kb: 1210 },
+        { title: "Productivity Plan 2024", url: "https://www.folkestone-hythe.gov.uk/policies-plans-documents/productivity-plan-2024", type: "report", year: "2024" },
       ],
 
       // Official data sources
@@ -2744,23 +2864,30 @@ export const councils: Council[] = [
           description: "Official Band D breakdown by precepting authority"
         },
         {
-          title: "Budget 2025-26 News",
-          url: "https://www.folkestone-hythe.gov.uk/news/article/317/on-the-right-track-with-2025-26-budget",
-          description: "Council budget announcement and service spending"
+          title: "Town Council Tax Breakdown 2025-26",
+          url: "https://www.folkestone-hythe.gov.uk/council-tax/council-tax-financial-information-2025-2026/3",
+          description: "Parish and town council precepts"
         },
         {
-          title: "Financial Strategy",
-          url: "https://www.folkestone-hythe.gov.uk/finances-audit/financial-strategy",
-          description: "Medium term financial strategy documents"
+          title: "Finances and Audit",
+          url: "https://www.folkestone-hythe.gov.uk/finances-audit",
+          description: "Budget, accounts, and financial strategy documents"
+        },
+        {
+          title: "Council Transparency",
+          url: "https://www.folkestone-hythe.gov.uk/council-transparency",
+          description: "Spending, salaries, contracts, and organizational data"
         },
       ],
 
       // Council website links
       website: "https://www.folkestone-hythe.gov.uk",
       council_tax_url: "https://www.folkestone-hythe.gov.uk/council-tax",
-      budget_url: "https://www.folkestone-hythe.gov.uk/finances-audit/financial-strategy",
+      budget_url: "https://www.folkestone-hythe.gov.uk/finances-audit",
+      transparency_url: "https://www.folkestone-hythe.gov.uk/council-transparency",
+      accounts_url: "https://www.folkestone-hythe.gov.uk/finances-audit/statement-accounts",
 
-      last_verified: "2025-01-15",
+      last_verified: "2025-01-18",
     },
   },
   {

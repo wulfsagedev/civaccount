@@ -13,6 +13,7 @@ import ServicesSpending from '@/components/dashboard/ServiceSpending';
 import RevenueBreakdown from '@/components/dashboard/RevenueBreakdown';
 import PerformanceMetrics from '@/components/dashboard/PerformanceMetrics';
 import BandComparison from '@/components/dashboard/BandComparison';
+import DetailedCouncilInfo from '@/components/dashboard/DetailedCouncilInfo';
 import DataSourcesFooter from '@/components/DataSourcesFooter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -41,6 +42,15 @@ export default function CouncilDashboard() {
       </div>
     );
   }
+
+  // Check if council has enhanced detailed data
+  const hasDetailedData = selectedCouncil.detailed && (
+    selectedCouncil.detailed.leadership_team ||
+    selectedCouncil.detailed.cabinet ||
+    selectedCouncil.detailed.parish_precepts ||
+    selectedCouncil.detailed.documents ||
+    selectedCouncil.detailed.savings_target
+  );
 
   // Get the appropriate explainer text based on council type
   const getExplainerText = () => {
@@ -84,6 +94,7 @@ export default function CouncilDashboard() {
                   <option value="revenue">Revenue</option>
                   <option value="performance">Performance</option>
                   <option value="comparison">Compare</option>
+                  {hasDetailedData && <option value="details">Details</option>}
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
               </div>
@@ -91,7 +102,7 @@ export default function CouncilDashboard() {
 
             {/* Desktop: Full-width tabs with clear visual affordance */}
             <div className="mb-8 hidden sm:block">
-              <TabsList className="w-full h-auto p-1.5 gap-1 bg-muted/60 rounded-2xl grid grid-cols-6 border border-border/50">
+              <TabsList className={`w-full h-auto p-1.5 gap-1 bg-muted/60 rounded-2xl grid border border-border/50 ${hasDetailedData ? 'grid-cols-7' : 'grid-cols-6'}`}>
                 <TabsTrigger
                   value="overview"
                   className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
@@ -128,6 +139,14 @@ export default function CouncilDashboard() {
                 >
                   Compare
                 </TabsTrigger>
+                {hasDetailedData && (
+                  <TabsTrigger
+                    value="details"
+                    className="text-sm px-4 py-3 rounded-xl font-medium transition-all text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-border/60"
+                  >
+                    Details
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
 
@@ -155,6 +174,12 @@ export default function CouncilDashboard() {
               <TabsContent value="comparison" className="mt-0">
                 <BandComparison />
               </TabsContent>
+
+              {hasDetailedData && (
+                <TabsContent value="details" className="mt-0">
+                  <DetailedCouncilInfo />
+                </TabsContent>
+              )}
             </div>
           </Tabs>
         </div>
