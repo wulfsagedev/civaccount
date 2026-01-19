@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Calendar, PoundSterling, Building, Receipt, CheckCircle, AlertTriangle, Info, Search, ClipboardList, Percent, Users } from 'lucide-react';
+import { TrendingUp, Calendar, PoundSterling, Building, CheckCircle, AlertTriangle, Info, Search, ClipboardList, Percent, Users } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { calculateEfficiencyMetrics, getCouncilPopulation, formatCurrency } from '@/data/councils';
 
@@ -25,16 +25,16 @@ const PerformanceMetrics = () => {
       {/* Hero Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-overline mb-2">Performance Overview</p>
+                <p className="type-overline mb-2">Performance Overview</p>
                 <h2 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
                   How is {selectedCouncil.name} doing?
                 </h2>
               </div>
               <Badge variant="outline" className="text-xs font-medium">
-                2025-26
+                2024-25
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
@@ -45,7 +45,7 @@ const PerformanceMetrics = () => {
 
         {/* Quick Stats */}
         <div className="card-elevated p-6">
-          <p className="text-overline mb-4">Data Status</p>
+          <p className="type-overline mb-4">Data Status</p>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm">Budget data</span>
@@ -90,7 +90,7 @@ const PerformanceMetrics = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Data Year</p>
-              <p className="font-semibold">2025-26</p>
+              <p className="font-semibold">2024-25</p>
             </div>
           </div>
         </div>
@@ -126,10 +126,10 @@ const PerformanceMetrics = () => {
 
       {/* Efficiency Metrics */}
       {efficiencyMetrics && (
-        <div className="card-elevated p-8">
+        <div className="card-elevated p-6 sm:p-8">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold mb-1">Efficiency metrics</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-1">Efficiency metrics</h2>
               <p className="text-sm text-muted-foreground">
                 How {selectedCouncil.name} compares on key efficiency measures
               </p>
@@ -171,10 +171,10 @@ const PerformanceMetrics = () => {
       )}
 
       {/* Where to Find More Information */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-center gap-3 mb-6">
           <Info className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-xl font-semibold">Where to find more information</h2>
+          <h2 className="text-lg sm:text-xl font-semibold">Where to find more information</h2>
         </div>
 
         <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
@@ -244,12 +244,12 @@ const PerformanceMetrics = () => {
       </div>
 
       {/* Service Performance Context */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center gap-3">
             <TrendingUp className="h-5 w-5 text-muted-foreground" />
             <div>
-              <h2 className="text-xl font-semibold">What&apos;s happening across UK councils</h2>
+              <h2 className="text-lg sm:text-xl font-semibold">What&apos;s happening across UK councils</h2>
               <p className="text-sm text-muted-foreground">
                 Challenges that many councils like {selectedCouncil.name} are dealing with
               </p>

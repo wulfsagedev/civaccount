@@ -360,13 +360,13 @@ export default function InsightsPage() {
           </div>
 
           {/* Rankings by Council Type - Fair Comparisons */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <Scale className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Comparing like with like</h2>
+                <h2 className="type-title-2">Comparing like with like</h2>
                 <p className="text-sm text-muted-foreground">Rankings grouped by council type for fair comparison</p>
               </div>
             </div>
@@ -525,13 +525,13 @@ export default function InsightsPage() {
           </div>
 
           {/* Year-over-Year Changes */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <TrendingUp className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">This year&apos;s changes</h2>
+                <h2 className="type-title-2">This year&apos;s changes</h2>
                 <p className="text-sm text-muted-foreground">Biggest increases and smallest rises from 2024-25 to 2025-26</p>
               </div>
             </div>
@@ -569,7 +569,7 @@ export default function InsightsPage() {
                         <span className="text-sm font-medium truncate">{item.council.name}</span>
                         <Badge variant="outline" className="text-xs hidden sm:inline-flex">{item.council.type_name}</Badge>
                       </div>
-                      <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800 tabular-nums shrink-0">
+                      <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800 tabular-nums shrink-0">
                         +{item.percentChange.toFixed(1)}%
                       </Badge>
                     </div>
@@ -580,13 +580,13 @@ export default function InsightsPage() {
           </div>
 
           {/* Distribution by Price Band */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <BarChart3 className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">How council tax rates are spread</h2>
+                <h2 className="type-title-2">How council tax rates are spread</h2>
                 <p className="text-sm text-muted-foreground">Distribution of Band D rates across all councils</p>
               </div>
             </div>
@@ -603,7 +603,7 @@ export default function InsightsPage() {
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-stone-400 dark:bg-stone-500 rounded-full transition-all duration-500"
+                        className="h-full bg-foreground rounded-full transition-all duration-500"
                         style={{ width: `${barWidth}%` }}
                       />
                     </div>
@@ -626,13 +626,13 @@ export default function InsightsPage() {
           </div>
 
           {/* By Council Type */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <Building className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">By council type</h2>
+                <h2 className="type-title-2">By council type</h2>
                 <p className="text-sm text-muted-foreground">How rates vary across different types of local authority</p>
               </div>
             </div>
@@ -673,13 +673,13 @@ export default function InsightsPage() {
           </div>
 
           {/* Where the Money Goes */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <PoundSterling className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Where all the money goes</h2>
+                <h2 className="type-title-2">Where all the money goes</h2>
                 <p className="text-sm text-muted-foreground">Combined spending across all {stats.councilsWithBudget} councils with budget data</p>
               </div>
             </div>
@@ -703,7 +703,7 @@ export default function InsightsPage() {
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden mb-3">
                       <div
-                        className="h-full bg-stone-400 dark:bg-stone-500 rounded-full transition-all duration-500"
+                        className="h-full bg-foreground rounded-full transition-all duration-500"
                         style={{ width: `${barWidth}%` }}
                       />
                     </div>
@@ -742,13 +742,13 @@ export default function InsightsPage() {
 
           {/* Efficiency Metrics */}
           {stats.efficiencyStats && (
-            <div className="card-elevated p-8 mb-8">
+            <div className="card-elevated p-6 sm:p-8 mb-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                   <Target className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold">Efficiency & value for money</h2>
+                  <h2 className="type-title-2">Efficiency & value for money</h2>
                   <p className="text-sm text-muted-foreground">How much councils spend per person and on administration</p>
                 </div>
               </div>
@@ -853,7 +853,7 @@ export default function InsightsPage() {
                             <span className="text-sm text-muted-foreground w-4 tabular-nums">{i + 1}.</span>
                             <span className="text-sm font-medium">{item.council.name}</span>
                           </div>
-                          <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800 tabular-nums">
+                          <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800 tabular-nums">
                             {item.adminOverheadPercent.toFixed(1)}%
                           </Badge>
                         </div>
@@ -898,13 +898,13 @@ export default function InsightsPage() {
           )}
 
           {/* Spending by Council Type */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <Building className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">How spending varies by council type</h2>
+                <h2 className="type-title-2">How spending varies by council type</h2>
                 <p className="text-sm text-muted-foreground">Different councils have very different spending priorities</p>
               </div>
             </div>
@@ -944,7 +944,7 @@ export default function InsightsPage() {
                               </div>
                               <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                                 <div
-                                  className="h-full bg-stone-400 dark:bg-stone-500 rounded-full"
+                                  className="h-full bg-foreground rounded-full"
                                   style={{ width: `${barWidth}%` }}
                                 />
                               </div>
@@ -980,12 +980,12 @@ export default function InsightsPage() {
           </div>
 
           {/* Key Insights Summary */}
-          <div className="card-elevated p-8 mb-8">
+          <div className="card-elevated p-6 sm:p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                 <Info className="h-5 w-5 text-muted-foreground" />
               </div>
-              <h2 className="text-xl font-semibold">Key takeaways</h2>
+              <h2 className="type-title-2">Key takeaways</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

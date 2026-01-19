@@ -1,6 +1,6 @@
 // Auto-generated UK Council Data
 // Sources: GOV.UK Council Tax 2025-26, Revenue Expenditure 2024-25, ONS Mid-2024 Population Estimates
-// Last updated: January 2025
+// Last updated: January 2026
 
 import { populationData } from './population';
 
@@ -24,6 +24,8 @@ export interface CouncilTax {
   band_d_2025: number;
   band_d_2024: number | null;
   band_d_2023: number | null;
+  band_d_2022: number | null;
+  band_d_2021: number | null;
 }
 
 // Enhanced detailed data from individual council sources
@@ -83,6 +85,32 @@ export interface CouncilDocument {
   size_kb?: number;
 }
 
+// Budget category for expenditure/income breakdown
+export interface BudgetCategory {
+  name: string;
+  expenditure: number; // Gross expenditure in pounds
+  income: number; // Income (negative value or absolute)
+  net: number; // Net expenditure
+  description?: string;
+}
+
+// Detailed service spending breakdown (what each budget category covers)
+export interface ServiceSpendingDetail {
+  category: string; // e.g., 'environmental', 'housing', 'planning'
+  services: Array<{
+    name: string;
+    description: string;
+    amount?: number; // Specific spending if known
+  }>;
+}
+
+// Council tax precept share by precepting authority
+export interface CouncilTaxShare {
+  authority: string;
+  band_d: number;
+  percentage: number;
+}
+
 export interface DetailedCouncilData {
   // Council tax breakdown by precepting authority
   precepts?: PreceptBreakdown[];
@@ -96,6 +124,14 @@ export interface DetailedCouncilData {
   reserves?: number; // General reserves
   housing_revenue_account?: number; // HRA if applicable
 
+  // Budget breakdown by category (from official .gov.uk sources)
+  budget_categories?: BudgetCategory[];
+  council_tax_requirement?: number; // Amount to be raised from council tax
+  council_tax_base?: number; // Number of Band D equivalent properties
+
+  // Council tax share breakdown
+  council_tax_shares?: CouncilTaxShare[];
+
   // Medium Term Financial Strategy
   mtfs_deficit?: number; // Forecast deficit
   savings_target?: number; // Planned savings
@@ -103,6 +139,9 @@ export interface DetailedCouncilData {
 
   // Services this council provides
   services?: ServiceDetail[];
+
+  // Detailed breakdown of what each spending category covers
+  service_spending?: ServiceSpendingDetail[];
 
   // Leadership and governance
   chief_executive?: string;
@@ -277,6 +316,8 @@ export const councils: Council[] = [
       band_d_2025: 365.0,
       band_d_2024: 354.0,
       band_d_2023: 344.0,
+      band_d_2022: 317.61,
+      band_d_2021: 311.4,
     },
     budget: {
       education: 0.0,
@@ -303,6 +344,8 @@ export const councils: Council[] = [
       band_d_2025: 282.0,
       band_d_2024: 272.0,
       band_d_2023: 256.0,
+      band_d_2022: 181.53,
+      band_d_2021: 176.53,
     },
     budget: {
       education: 0.0,
@@ -329,6 +372,8 @@ export const councils: Council[] = [
       band_d_2025: 304.0,
       band_d_2024: 294.0,
       band_d_2023: 285.0,
+      band_d_2022: 196.47,
+      band_d_2021: 191.52,
     },
     budget: {
       education: 0.0,
@@ -355,6 +400,8 @@ export const councils: Council[] = [
       band_d_2025: 219.0,
       band_d_2024: 218.0,
       band_d_2023: 211.0,
+      band_d_2022: 195.46,
+      band_d_2021: 190.46,
     },
     budget: {
       education: 0.0,
@@ -381,6 +428,8 @@ export const councils: Council[] = [
       band_d_2025: 255.0,
       band_d_2024: 245.0,
       band_d_2023: 236.0,
+      band_d_2022: 177.5,
+      band_d_2021: 172.5,
     },
     budget: {
       education: 0.0,
@@ -407,6 +456,8 @@ export const councils: Council[] = [
       band_d_2025: 294.0,
       band_d_2024: 286.0,
       band_d_2023: 276.0,
+      band_d_2022: 177.34,
+      band_d_2021: 173.86,
     },
     budget: {
       education: 0.0,
@@ -433,6 +484,8 @@ export const councils: Council[] = [
       band_d_2025: 1608.0,
       band_d_2024: 1531.0,
       band_d_2023: 1459.0,
+      band_d_2022: 1389.24,
+      band_d_2021: 1348.91,
     },
     budget: {
       education: 333618.0,
@@ -459,6 +512,8 @@ export const councils: Council[] = [
       band_d_2025: 1545.0,
       band_d_2024: 1472.0,
       band_d_2023: 1402.0,
+      band_d_2022: 1350.7,
+      band_d_2021: 1337.33,
     },
     budget: {
       education: 289332.0,
@@ -485,6 +540,8 @@ export const councils: Council[] = [
       band_d_2025: 1886.0,
       band_d_2024: 1798.0,
       band_d_2023: 1713.0,
+      band_d_2022: 1641.55,
+      band_d_2021: 1586.04,
     },
     budget: {
       education: 165519.0,
@@ -511,6 +568,8 @@ export const councils: Council[] = [
       band_d_2025: 1886.0,
       band_d_2024: 1798.0,
       band_d_2023: 1713.0,
+      band_d_2022: null,
+      band_d_2021: null,
     },
   },
   {
@@ -522,6 +581,8 @@ export const councils: Council[] = [
       band_d_2025: 317.0,
       band_d_2024: 308.0,
       band_d_2023: 299.0,
+      band_d_2022: 278.91,
+      band_d_2021: 278.91,
     },
     budget: {
       education: 0.0,
@@ -548,6 +609,8 @@ export const councils: Council[] = [
       band_d_2025: 175.0,
       band_d_2024: 168.0,
       band_d_2023: 162.0,
+      band_d_2022: 136.42,
+      band_d_2021: 131.42,
     },
     budget: {
       education: 0.0,
@@ -574,6 +637,8 @@ export const councils: Council[] = [
       band_d_2025: 252.0,
       band_d_2024: 242.0,
       band_d_2023: 235.0,
+      band_d_2022: 188.48,
+      band_d_2021: 183.48,
     },
     budget: {
       education: 0.0,
@@ -600,6 +665,8 @@ export const councils: Council[] = [
       band_d_2025: 1882.0,
       band_d_2024: 1791.0,
       band_d_2023: 1703.0,
+      band_d_2022: 1575.3,
+      band_d_2021: 1529.57,
     },
     budget: {
       education: 82125.0,
@@ -626,6 +693,8 @@ export const councils: Council[] = [
       band_d_2025: 1954.0,
       band_d_2024: 1859.0,
       band_d_2023: 1771.0,
+      band_d_2022: 1688.94,
+      band_d_2021: 1624.14,
     },
     budget: {
       education: 129047.0,
@@ -652,6 +721,8 @@ export const councils: Council[] = [
       band_d_2025: 1768.0,
       band_d_2024: 1684.0,
       band_d_2023: 1604.0,
+      band_d_2022: 1527.4,
+      band_d_2021: 1483.06,
     },
     budget: {
       education: 128654.0,
@@ -678,6 +749,8 @@ export const councils: Council[] = [
       band_d_2025: 1936.0,
       band_d_2024: 1800.0,
       band_d_2023: 1637.0,
+      band_d_2022: 1552.68,
+      band_d_2021: 1507.6,
     },
     budget: {
       education: 958404.0,
@@ -704,6 +777,8 @@ export const councils: Council[] = [
       band_d_2025: 338.0,
       band_d_2024: 323.0,
       band_d_2023: 306.0,
+      band_d_2022: 178.32,
+      band_d_2021: 173.32,
     },
     budget: {
       education: 0.0,
@@ -730,6 +805,8 @@ export const councils: Council[] = [
       band_d_2025: 1970.0,
       band_d_2024: 1877.0,
       band_d_2023: 1787.0,
+      band_d_2022: 1697.85,
+      band_d_2021: 1632.72,
     },
     budget: {
       education: 145026.0,
@@ -756,6 +833,8 @@ export const councils: Council[] = [
       band_d_2025: 2025.0,
       band_d_2024: 1929.0,
       band_d_2023: 1837.0,
+      band_d_2022: 1749.92,
+      band_d_2021: 1699.13,
     },
     budget: {
       education: 80249.0,
@@ -782,6 +861,8 @@ export const councils: Council[] = [
       band_d_2025: 431.0,
       band_d_2024: 401.0,
       band_d_2023: 370.0,
+      band_d_2022: 191.28,
+      band_d_2021: 186.28,
     },
     budget: {
       education: 0.0,
@@ -808,6 +889,8 @@ export const councils: Council[] = [
       band_d_2025: 1867.0,
       band_d_2024: 1778.0,
       band_d_2023: 1693.0,
+      band_d_2022: 1622.89,
+      band_d_2021: 1573.79,
     },
     budget: {
       education: 275682.0,
@@ -834,6 +917,8 @@ export const councils: Council[] = [
       band_d_2025: 293.0,
       band_d_2024: 282.0,
       band_d_2023: 273.0,
+      band_d_2022: 239.41,
+      band_d_2021: 234.41,
     },
     budget: {
       education: 0.0,
@@ -860,6 +945,8 @@ export const councils: Council[] = [
       band_d_2025: 1865.0,
       band_d_2024: 1777.0,
       band_d_2023: 1690.0,
+      band_d_2022: 1603.23,
+      band_d_2021: 1541.57,
     },
     budget: {
       education: 160273.0,
@@ -886,6 +973,8 @@ export const councils: Council[] = [
       band_d_2025: 1786.0,
       band_d_2024: 1701.0,
       band_d_2023: 1622.0,
+      band_d_2022: 1466.19,
+      band_d_2021: 1403.19,
     },
     budget: {
       education: 107701.0,
@@ -912,6 +1001,8 @@ export const councils: Council[] = [
       band_d_2025: 1898.0,
       band_d_2024: 1727.0,
       band_d_2023: 1642.0,
+      band_d_2022: 1543.93,
+      band_d_2021: 1499.11,
     },
     budget: {
       education: 376562.0,
@@ -938,6 +1029,8 @@ export const councils: Council[] = [
       band_d_2025: 267.0,
       band_d_2024: 258.0,
       band_d_2023: 246.0,
+      band_d_2022: 189.63,
+      band_d_2021: 184.68,
     },
     budget: {
       education: 0.0,
@@ -964,6 +1057,8 @@ export const councils: Council[] = [
       band_d_2025: 243.0,
       band_d_2024: 231.0,
       band_d_2023: 219.0,
+      band_d_2022: 105.46,
+      band_d_2021: 100.46,
     },
     budget: {
       education: 0.0,
@@ -990,6 +1085,8 @@ export const councils: Council[] = [
       band_d_2025: 1643.0,
       band_d_2024: 1565.0,
       band_d_2023: 1490.0,
+      band_d_2022: 1419.48,
+      band_d_2021: 1378.26,
     },
     budget: {
       education: 267911.0,
@@ -1016,6 +1113,8 @@ export const councils: Council[] = [
       band_d_2025: 239.0,
       band_d_2024: 232.0,
       band_d_2023: 225.0,
+      band_d_2022: 198.63,
+      band_d_2021: 193.63,
     },
   },
   {
@@ -1027,6 +1126,8 @@ export const councils: Council[] = [
       band_d_2025: 2077.0,
       band_d_2024: 1979.0,
       band_d_2023: 1885.0,
+      band_d_2022: 1794.35,
+      band_d_2021: 1742.19,
     },
     budget: {
       education: 244603.0,
@@ -1053,6 +1154,8 @@ export const councils: Council[] = [
       band_d_2025: 2200.0,
       band_d_2024: 2096.0,
       band_d_2023: 1996.0,
+      band_d_2022: 1901.22,
+      band_d_2021: 1846.02,
     },
     budget: {
       education: 279354.0,
@@ -1079,6 +1182,8 @@ export const councils: Council[] = [
       band_d_2025: 243.0,
       band_d_2024: 237.0,
       band_d_2023: 225.0,
+      band_d_2022: 132.44,
+      band_d_2021: 133.55,
     },
     budget: {
       education: 0.0,
@@ -1105,6 +1210,8 @@ export const councils: Council[] = [
       band_d_2025: 1552.0,
       band_d_2024: 1478.0,
       band_d_2023: 1408.0,
+      band_d_2022: 1341.13,
+      band_d_2021: 1327.86,
     },
     budget: {
       education: 148546.0,
@@ -1131,6 +1238,8 @@ export const councils: Council[] = [
       band_d_2025: 293.0,
       band_d_2024: 282.0,
       band_d_2023: 273.0,
+      band_d_2022: 238,
+      band_d_2021: 233,
     },
   },
   {
@@ -1142,6 +1251,8 @@ export const councils: Council[] = [
       band_d_2025: 163.0,
       band_d_2024: 158.0,
       band_d_2023: 153.0,
+      band_d_2022: 148.24,
+      band_d_2021: 143.24,
     },
     budget: {
       education: 0.0,
@@ -1168,6 +1279,8 @@ export const councils: Council[] = [
       band_d_2025: 228.0,
       band_d_2024: 220.0,
       band_d_2023: 210.0,
+      band_d_2022: 177.57,
+      band_d_2021: 172.58,
     },
     budget: {
       education: 0.0,
@@ -1194,6 +1307,8 @@ export const councils: Council[] = [
       band_d_2025: 2034.0,
       band_d_2024: 1937.0,
       band_d_2023: 1843.0,
+      band_d_2022: 1676.9,
+      band_d_2021: 1612.52,
     },
     budget: {
       education: 421263.0,
@@ -1220,6 +1335,8 @@ export const councils: Council[] = [
       band_d_2025: 353.0,
       band_d_2024: 346.0,
       band_d_2023: 335.0,
+      band_d_2022: 318.49,
+      band_d_2021: 312.28,
     },
     budget: {
       education: 0.0,
@@ -1246,6 +1363,8 @@ export const councils: Council[] = [
       band_d_2025: 2015.0,
       band_d_2024: 1920.0,
       band_d_2023: 1828.0,
+      band_d_2022: 1741.41,
+      band_d_2021: 1691.67,
     },
     budget: {
       education: 150088.0,
@@ -1272,6 +1391,8 @@ export const councils: Council[] = [
       band_d_2025: 1955.0,
       band_d_2024: 1862.0,
       band_d_2023: 1772.0,
+      band_d_2022: 1674.21,
+      band_d_2021: 1625.62,
     },
     budget: {
       education: 139445.0,
@@ -1298,6 +1419,8 @@ export const councils: Council[] = [
       band_d_2025: 232.0,
       band_d_2024: 225.0,
       band_d_2023: 219.0,
+      band_d_2022: 212.5,
+      band_d_2021: 207.5,
     },
     budget: {
       education: 0.0,
@@ -1324,6 +1447,8 @@ export const councils: Council[] = [
       band_d_2025: 1701.0,
       band_d_2024: 1620.0,
       band_d_2023: 1543.0,
+      band_d_2022: 1469.61,
+      band_d_2021: 1399.77,
     },
     budget: {
       education: 395982.0,
@@ -1350,6 +1475,8 @@ export const councils: Council[] = [
       band_d_2025: 1616.0,
       band_d_2024: 1539.0,
       band_d_2023: 1466.0,
+      band_d_2022: 1396.63,
+      band_d_2021: 1356.11,
     },
     budget: {
       education: 241074.0,
@@ -1376,6 +1503,8 @@ export const councils: Council[] = [
       band_d_2025: 281.0,
       band_d_2024: 273.0,
       band_d_2023: 265.0,
+      band_d_2022: 230.04,
+      band_d_2021: 225.64,
     },
     budget: {
       education: 0.0,
@@ -1402,6 +1531,8 @@ export const councils: Council[] = [
       band_d_2025: 266.0,
       band_d_2024: 258.0,
       band_d_2023: 250.0,
+      band_d_2022: 226.17,
+      band_d_2021: 221.22,
     },
     budget: {
       education: 0.0,
@@ -1428,6 +1559,8 @@ export const councils: Council[] = [
       band_d_2025: 300.0,
       band_d_2024: 291.0,
       band_d_2023: 291.0,
+      band_d_2022: 273.69,
+      band_d_2021: 268.38,
     },
     budget: {
       education: 0.0,
@@ -1454,6 +1587,8 @@ export const councils: Council[] = [
       band_d_2025: 1997.0,
       band_d_2024: 1898.0,
       band_d_2023: 1808.0,
+      band_d_2022: 1669.02,
+      band_d_2021: 1637.11,
     },
     budget: {
       education: 200315.0,
@@ -1480,6 +1615,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 250.0,
       band_d_2023: 241.0,
+      band_d_2022: 158.57,
+      band_d_2021: 153.58,
     },
     budget: {
       education: 0.0,
@@ -1506,6 +1643,8 @@ export const councils: Council[] = [
       band_d_2025: 279.0,
       band_d_2024: 271.0,
       band_d_2023: 261.0,
+      band_d_2022: 208.86,
+      band_d_2021: 203.95,
     },
     budget: {
       education: 0.0,
@@ -1532,6 +1671,8 @@ export const councils: Council[] = [
       band_d_2025: 257.0,
       band_d_2024: 249.0,
       band_d_2023: 241.0,
+      band_d_2022: 224.08,
+      band_d_2021: 219.08,
     },
     budget: {
       education: 0.0,
@@ -1558,6 +1699,8 @@ export const councils: Council[] = [
       band_d_2025: 269.0,
       band_d_2024: 261.0,
       band_d_2023: 252.0,
+      band_d_2022: 143.5,
+      band_d_2021: 138.5,
     },
     budget: {
       education: 0.0,
@@ -1584,6 +1727,8 @@ export const councils: Council[] = [
       band_d_2025: 1961.0,
       band_d_2024: 1864.0,
       band_d_2023: 1771.0,
+      band_d_2022: 1626.24,
+      band_d_2021: 1579.03,
     },
     budget: {
       education: 274723.0,
@@ -1610,6 +1755,8 @@ export const councils: Council[] = [
       band_d_2025: 2020.0,
       band_d_2024: 1924.0,
       band_d_2023: 1832.0,
+      band_d_2022: 1709.23,
+      band_d_2021: 1659.61,
     },
     budget: {
       education: 291666.0,
@@ -1636,6 +1783,8 @@ export const councils: Council[] = [
       band_d_2025: 217.0,
       band_d_2024: 210.0,
       band_d_2023: 204.0,
+      band_d_2022: 179.89,
+      band_d_2021: 174.89,
     },
     budget: {
       education: 0.0,
@@ -1662,6 +1811,8 @@ export const councils: Council[] = [
       band_d_2025: 279.0,
       band_d_2024: 270.0,
       band_d_2023: 257.0,
+      band_d_2022: 175.81,
+      band_d_2021: 170.81,
     },
     budget: {
       education: 0.0,
@@ -1688,6 +1839,8 @@ export const councils: Council[] = [
       band_d_2025: 240.0,
       band_d_2024: 232.0,
       band_d_2023: 225.0,
+      band_d_2022: 199.66,
+      band_d_2021: 194.74,
     },
     budget: {
       education: 0.0,
@@ -1714,6 +1867,8 @@ export const councils: Council[] = [
       band_d_2025: 1103.0,
       band_d_2024: 1052.0,
       band_d_2023: 1004.0,
+      band_d_2022: 915.47,
+      band_d_2021: 906.41,
     },
     budget: {
       education: 5121.0,
@@ -1740,6 +1895,8 @@ export const councils: Council[] = [
       band_d_2025: 265.0,
       band_d_2024: 256.0,
       band_d_2023: 248.0,
+      band_d_2022: 205.47,
+      band_d_2021: 200.52,
     },
   },
   {
@@ -1751,6 +1908,8 @@ export const councils: Council[] = [
       band_d_2025: 2172.0,
       band_d_2024: 2068.0,
       band_d_2023: 1960.0,
+      band_d_2022: 1717.11,
+      band_d_2021: 1667.26,
     },
     budget: {
       education: 277621.0,
@@ -1777,6 +1936,8 @@ export const councils: Council[] = [
       band_d_2025: 275.0,
       band_d_2024: 262.0,
       band_d_2023: 245.0,
+      band_d_2022: 143.93,
+      band_d_2021: 138.93,
     },
     budget: {
       education: 0.0,
@@ -1803,6 +1964,8 @@ export const councils: Council[] = [
       band_d_2025: 2104.0,
       band_d_2024: 2005.0,
       band_d_2023: 1910.0,
+      band_d_2022: 1819.88,
+      band_d_2021: 1767.82,
     },
     budget: {
       education: 242779.0,
@@ -1829,6 +1992,8 @@ export const councils: Council[] = [
       band_d_2025: 239.0,
       band_d_2024: 232.0,
       band_d_2023: 225.0,
+      band_d_2022: 218.79,
+      band_d_2021: 213.84,
     },
     budget: {
       education: 0.0,
@@ -1855,6 +2020,8 @@ export const councils: Council[] = [
       band_d_2025: 1990.0,
       band_d_2024: 1896.0,
       band_d_2023: 1805.0,
+      band_d_2022: 1570.07,
+      band_d_2021: 1524.49,
     },
     budget: {
       education: 240928.0,
@@ -1881,6 +2048,8 @@ export const councils: Council[] = [
       band_d_2025: 1972.0,
       band_d_2024: 1881.0,
       band_d_2023: 1787.0,
+      band_d_2022: null,
+      band_d_2021: null,
     },
     budget: {
       education: 198012.0,
@@ -1907,6 +2076,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 251.0,
       band_d_2023: 243.0,
+      band_d_2022: 216.36,
+      band_d_2021: 211.36,
     },
     budget: {
       education: 0.0,
@@ -1933,6 +2104,8 @@ export const councils: Council[] = [
       band_d_2025: 1966.0,
       band_d_2024: 1873.0,
       band_d_2023: 1783.0,
+      band_d_2022: 1692.84,
+      band_d_2021: 1643.69,
     },
     budget: {
       education: 46145.0,
@@ -1959,6 +2132,8 @@ export const councils: Council[] = [
       band_d_2025: 224.0,
       band_d_2024: 218.0,
       band_d_2023: 213.0,
+      band_d_2022: 181.35,
+      band_d_2021: 181.35,
     },
     budget: {
       education: 0.0,
@@ -1985,6 +2160,8 @@ export const councils: Council[] = [
       band_d_2025: 1809.0,
       band_d_2024: 1739.0,
       band_d_2023: 1657.0,
+      band_d_2022: 1577.93,
+      band_d_2021: 1547.14,
     },
     budget: {
       education: 189448.0,
@@ -2011,6 +2188,8 @@ export const councils: Council[] = [
       band_d_2025: 1629.0,
       band_d_2024: 1552.0,
       band_d_2023: 1478.0,
+      band_d_2022: 1424.56,
+      band_d_2021: 1383.07,
     },
     budget: {
       education: 534079.0,
@@ -2037,6 +2216,8 @@ export const councils: Council[] = [
       band_d_2025: 316.0,
       band_d_2024: 304.0,
       band_d_2023: 294.0,
+      band_d_2022: 223.52,
+      band_d_2021: 219.27,
     },
     budget: {
       education: 0.0,
@@ -2063,6 +2244,8 @@ export const councils: Council[] = [
       band_d_2025: 1801.0,
       band_d_2024: 1716.0,
       band_d_2023: 1634.0,
+      band_d_2022: 1556.46,
+      band_d_2021: 1511.28,
     },
     budget: {
       education: 495372.0,
@@ -2089,6 +2272,8 @@ export const councils: Council[] = [
       band_d_2025: 1755.0,
       band_d_2024: 1688.0,
       band_d_2023: 1605.0,
+      band_d_2022: 1511.03,
+      band_d_2021: 1446.1,
     },
     budget: {
       education: 137965.0,
@@ -2115,6 +2300,8 @@ export const councils: Council[] = [
       band_d_2025: 2231.0,
       band_d_2024: 2123.0,
       band_d_2023: 2023.0,
+      band_d_2022: 1832.67,
+      band_d_2021: 1779.39,
     },
     budget: {
       education: 186585.0,
@@ -2141,6 +2328,8 @@ export const councils: Council[] = [
       band_d_2025: 308.0,
       band_d_2024: 297.0,
       band_d_2023: 286.0,
+      band_d_2022: 202.14,
+      band_d_2021: 197.19,
     },
     budget: {
       education: 0.0,
@@ -2167,6 +2356,8 @@ export const councils: Council[] = [
       band_d_2025: 1729.0,
       band_d_2024: 1647.0,
       band_d_2023: 1568.0,
+      band_d_2022: 1493.87,
+      band_d_2021: 1450.51,
     },
     budget: {
       education: 222905.0,
@@ -2193,6 +2384,8 @@ export const councils: Council[] = [
       band_d_2025: 2146.0,
       band_d_2024: 2045.0,
       band_d_2023: 1946.0,
+      band_d_2022: 1754.69,
+      band_d_2021: 1703.58,
     },
     budget: {
       education: 372925.0,
@@ -2219,6 +2412,8 @@ export const councils: Council[] = [
       band_d_2025: 1551.0,
       band_d_2024: 1477.0,
       band_d_2023: 1407.0,
+      band_d_2022: 1339.89,
+      band_d_2021: 1300.99,
     },
     budget: {
       education: 410339.0,
@@ -2245,6 +2440,8 @@ export const councils: Council[] = [
       band_d_2025: 251.0,
       band_d_2024: 241.0,
       band_d_2023: 236.0,
+      band_d_2022: 142.14,
+      band_d_2021: 142.14,
     },
     budget: {
       education: 0.0,
@@ -2271,6 +2468,8 @@ export const councils: Council[] = [
       band_d_2025: 267.0,
       band_d_2024: 258.0,
       band_d_2023: 243.0,
+      band_d_2022: 156.78,
+      band_d_2021: 151.78,
     },
     budget: {
       education: 0.0,
@@ -2297,6 +2496,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 246.0,
       band_d_2023: 236.0,
+      band_d_2022: 139.14,
+      band_d_2021: 136.41,
     },
     budget: {
       education: 0.0,
@@ -2323,6 +2524,8 @@ export const councils: Council[] = [
       band_d_2025: 305.0,
       band_d_2024: 289.0,
       band_d_2023: 273.0,
+      band_d_2022: 184.09,
+      band_d_2021: 179.09,
     },
     budget: {
       education: 0.0,
@@ -2349,6 +2552,8 @@ export const councils: Council[] = [
       band_d_2025: 258.0,
       band_d_2024: 246.0,
       band_d_2023: 236.0,
+      band_d_2022: 156.69,
+      band_d_2021: 151.74,
     },
     budget: {
       education: 0.0,
@@ -2375,6 +2580,8 @@ export const councils: Council[] = [
       band_d_2025: 1945.0,
       band_d_2024: 1851.0,
       band_d_2023: 1761.0,
+      band_d_2022: 1620.78,
+      band_d_2021: 1558.7,
     },
     budget: {
       education: 248983.0,
@@ -2401,6 +2608,8 @@ export const councils: Council[] = [
       band_d_2025: 256.0,
       band_d_2024: 246.0,
       band_d_2023: 238.0,
+      band_d_2022: 198.55,
+      band_d_2021: 193.94,
     },
     budget: {
       education: 0.0,
@@ -2427,6 +2636,8 @@ export const councils: Council[] = [
       band_d_2025: 283.0,
       band_d_2024: 271.0,
       band_d_2023: 260.0,
+      band_d_2022: 176.22,
+      band_d_2021: 171.27,
     },
     budget: {
       education: 0.0,
@@ -2453,6 +2664,8 @@ export const councils: Council[] = [
       band_d_2025: 1867.0,
       band_d_2024: 1778.0,
       band_d_2023: 1694.0,
+      band_d_2022: 1613.34,
+      band_d_2021: 1544.04,
     },
     budget: {
       education: 322872.0,
@@ -2479,6 +2692,8 @@ export const councils: Council[] = [
       band_d_2025: 286.0,
       band_d_2024: 278.0,
       band_d_2023: 270.0,
+      band_d_2022: 261.85,
+      band_d_2021: 256.74,
     },
     budget: {
       education: 0.0,
@@ -2505,6 +2720,8 @@ export const councils: Council[] = [
       band_d_2025: 255.0,
       band_d_2024: 240.0,
       band_d_2023: 229.0,
+      band_d_2022: 131.97,
+      band_d_2021: 129.39,
     },
     budget: {
       education: 0.0,
@@ -2531,6 +2748,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 251.0,
       band_d_2023: 244.0,
+      band_d_2022: 236.3,
+      band_d_2021: 231.3,
     },
     budget: {
       education: 0.0,
@@ -2557,6 +2776,8 @@ export const councils: Council[] = [
       band_d_2025: 1674.0,
       band_d_2024: 1594.0,
       band_d_2023: 1518.0,
+      band_d_2022: 1446.12,
+      band_d_2021: 1431.81,
     },
     budget: {
       education: 322410.0,
@@ -2583,6 +2804,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 249.0,
       band_d_2023: 238.0,
+      band_d_2022: 157.46,
+      band_d_2021: 152.46,
     },
     budget: {
       education: 0.0,
@@ -2609,6 +2832,8 @@ export const councils: Council[] = [
       band_d_2025: 233.0,
       band_d_2024: 226.0,
       band_d_2023: 220.0,
+      band_d_2022: 213.21,
+      band_d_2021: 208.26,
     },
     budget: {
       education: 0.0,
@@ -2635,6 +2860,8 @@ export const councils: Council[] = [
       band_d_2025: 244.0,
       band_d_2024: 235.0,
       band_d_2023: 224.0,
+      band_d_2022: 201.59,
+      band_d_2021: 196.59,
     },
     budget: {
       education: 0.0,
@@ -2661,6 +2888,8 @@ export const councils: Council[] = [
       band_d_2025: 1580.0,
       band_d_2024: 1523.0,
       band_d_2023: 1450.0,
+      band_d_2022: 1401.12,
+      band_d_2021: 1340.91,
     },
     budget: {
       education: 827053.0,
@@ -2687,6 +2916,8 @@ export const councils: Council[] = [
       band_d_2025: 186.0,
       band_d_2024: 180.0,
       band_d_2023: 175.0,
+      band_d_2022: 170.05,
+      band_d_2021: 165.05,
     },
     budget: {
       education: 0.0,
@@ -2713,6 +2944,8 @@ export const councils: Council[] = [
       band_d_2025: 191.0,
       band_d_2024: 186.0,
       band_d_2023: 180.0,
+      band_d_2022: 175.22,
+      band_d_2021: 170.22,
     },
     budget: {
       education: 0.0,
@@ -2739,6 +2972,8 @@ export const councils: Council[] = [
       band_d_2025: 310.0,
       band_d_2024: 308.0,
       band_d_2023: 306.0,
+      band_d_2022: 260.46,
+      band_d_2021: 260.46,
     },
     budget: {
       education: 0.0,
@@ -2765,6 +3000,8 @@ export const councils: Council[] = [
       band_d_2025: 288.45, // Updated from council website - district portion only
       band_d_2024: 280.07,
       band_d_2023: 271.92,
+      band_d_2022: 279.09,
+      band_d_2021: 273.72,
     },
     budget: {
       education: 0.0,
@@ -2791,10 +3028,32 @@ export const councils: Council[] = [
       ],
       total_band_d: 2344.65, // Base total before parish precept
 
-      // Budget from council website (2024-25)
-      operating_budget: 18000000, // £18m+ on services
-      capital_programme: 3160000, // £3.16m capital receipts expected 2024-28
+      // Budget from council website (2025-26)
+      operating_budget: 19699790, // Net General Fund services £19.7m
+      capital_programme: 31701000, // £31.7m capital programme 2025-26
       council_tax_increase_percent: 2.99,
+      revenue_budget: 22300000, // £22.3m net General Fund revenue budget
+      reserves: 12045000, // £12.045m total General Fund reserves
+      housing_revenue_account: 915021, // HRA surplus
+
+      // Budget breakdown by category (2025-26 from folkestone-hythe.gov.uk)
+      budget_categories: [
+        { name: "General Fund Services", expenditure: 56918285, income: 37218495, net: 19699790, description: "Day-to-day council services" },
+        { name: "Housing Revenue Account", expenditure: 20240149, income: 21155170, net: -915021, description: "Council housing services" },
+        { name: "Other Operating", expenditure: 17698301, income: 26781075, net: -9082774, description: "Interest, investments, trading" },
+        { name: "Reserves & Balances", expenditure: 3773860, income: 1530090, net: 2243770, description: "Transfers to/from reserves" },
+        { name: "Parish Precepts", expenditure: 3838934, income: 0, net: 3838934, description: "Town and parish councils" },
+      ],
+      council_tax_requirement: 15784699, // £15.78m to be raised from council tax
+      council_tax_base: 41413.64, // Band D equivalent properties
+
+      // Council tax share breakdown (2025-26)
+      council_tax_shares: [
+        { authority: "Kent County Council", band_d: 1691.19, percentage: 72.1 },
+        { authority: "Folkestone & Hythe District Council", band_d: 288.45, percentage: 12.3 },
+        { authority: "Kent Police & Crime Commissioner", band_d: 270.15, percentage: 11.5 },
+        { authority: "Kent Fire & Rescue", band_d: 94.86, percentage: 4.1 },
+      ],
 
       // Medium Term Financial Strategy
       mtfs_deficit: 638000, // £638k forecast deficit 2024/25
@@ -2812,6 +3071,59 @@ export const councils: Council[] = [
         { name: "Coast Protection", description: "Beach management and coastal defences" },
         { name: "Lifeline Services", description: "Emergency response for vulnerable residents" },
         { name: "Hythe Pool", description: "Public swimming pool management" },
+      ],
+
+      // Detailed breakdown of what each budget category covers
+      service_spending: [
+        {
+          category: 'environmental',
+          services: [
+            { name: "Waste Collection", description: "Weekly refuse collection for 50,000+ households" },
+            { name: "Recycling", description: "Fortnightly recycling collections and bring sites" },
+            { name: "Street Cleansing", description: "Road sweeping, litter picking, graffiti removal" },
+            { name: "Parks & Open Spaces", description: "70+ parks, play areas, and green spaces" },
+            { name: "Coast Protection", description: "Beach management and sea defences" },
+            { name: "Environmental Enforcement", description: "Fly-tipping, noise complaints, abandoned vehicles" },
+          ]
+        },
+        {
+          category: 'housing',
+          services: [
+            { name: "Council Housing", description: "Managing 3,400+ council homes" },
+            { name: "Homelessness Prevention", description: "Support for those at risk of homelessness" },
+            { name: "Housing Advice", description: "Housing options and private sector support" },
+            { name: "Housing Benefit", description: "Processing claims and payments" },
+          ]
+        },
+        {
+          category: 'planning',
+          services: [
+            { name: "Development Control", description: "Processing planning applications" },
+            { name: "Building Control", description: "Building regulations inspections" },
+            { name: "Local Plan", description: "Strategic planning and policy" },
+            { name: "Conservation", description: "Listed buildings and heritage protection" },
+          ]
+        },
+        {
+          category: 'cultural',
+          services: [
+            { name: "Hythe Pool", description: "Public swimming and leisure" },
+            { name: "Community Centres", description: "Supporting local community facilities" },
+            { name: "Tourism", description: "Destination marketing and visitor economy" },
+            { name: "Events", description: "Supporting local festivals and events" },
+          ]
+        },
+        {
+          category: 'central_services',
+          services: [
+            { name: "Council Tax Collection", description: "Billing and collection for all authorities" },
+            { name: "Customer Services", description: "Call centre and face-to-face services" },
+            { name: "Democratic Services", description: "Council meetings and elections" },
+            { name: "Finance", description: "Accounts, audit, and treasury management" },
+            { name: "Legal Services", description: "Legal advice and contracts" },
+            { name: "HR & ICT", description: "Staff support and IT systems" },
+          ]
+        },
       ],
 
       // Leadership and governance
@@ -2856,27 +3168,27 @@ export const councils: Council[] = [
         { title: "Productivity Plan 2024", url: "https://www.folkestone-hythe.gov.uk/policies-plans-documents/productivity-plan-2024", type: "report", year: "2024" },
       ],
 
-      // Official data sources
+      // Official data sources (verified .gov.uk sources only)
       sources: [
         {
-          title: "Council Tax Financial Information 2025-26",
-          url: "https://www.folkestone-hythe.gov.uk/council-tax/council-tax-financial-information-2025-2026/2",
-          description: "Official Band D breakdown by precepting authority"
+          title: "Expenditure and Income 2025-26",
+          url: "https://www.folkestone-hythe.gov.uk/financial-information-charges/council-tax-financial-information-2025-2026/5",
+          description: "Budget breakdown by category"
+        },
+        {
+          title: "Joint Council Tax Breakdown 2025-26",
+          url: "https://www.folkestone-hythe.gov.uk/financial-information-charges/council-tax-financial-information-2025-2026/2",
+          description: "Band D breakdown by precepting authority"
         },
         {
           title: "Town Council Tax Breakdown 2025-26",
-          url: "https://www.folkestone-hythe.gov.uk/council-tax/council-tax-financial-information-2025-2026/3",
+          url: "https://www.folkestone-hythe.gov.uk/financial-information-charges/council-tax-financial-information-2025-2026/3",
           description: "Parish and town council precepts"
         },
         {
-          title: "Finances and Audit",
-          url: "https://www.folkestone-hythe.gov.uk/finances-audit",
-          description: "Budget, accounts, and financial strategy documents"
-        },
-        {
-          title: "Council Transparency",
-          url: "https://www.folkestone-hythe.gov.uk/council-transparency",
-          description: "Spending, salaries, contracts, and organizational data"
+          title: "Council Tax Requirements 2025-26",
+          url: "https://www.folkestone-hythe.gov.uk/financial-information-charges/council-tax-financial-information-2025-2026/6",
+          description: "Council tax base and requirement"
         },
       ],
 
@@ -2899,6 +3211,8 @@ export const councils: Council[] = [
       band_d_2025: 325.0,
       band_d_2024: 313.0,
       band_d_2023: 298.0,
+      band_d_2022: 194.03,
+      band_d_2021: 189.03,
     },
     budget: {
       education: 0.0,
@@ -2925,6 +3239,8 @@ export const councils: Council[] = [
       band_d_2025: 285.0,
       band_d_2024: 269.0,
       band_d_2023: 257.0,
+      band_d_2022: 219.19,
+      band_d_2021: 214.91,
     },
     budget: {
       education: 0.0,
@@ -2951,6 +3267,8 @@ export const councils: Council[] = [
       band_d_2025: 2283.0,
       band_d_2024: 2174.0,
       band_d_2023: 2071.0,
+      band_d_2022: 1972.17,
+      band_d_2021: 1914.92,
     },
     budget: {
       education: 148343.0,
@@ -2977,6 +3295,8 @@ export const councils: Council[] = [
       band_d_2025: 219.0,
       band_d_2024: 212.0,
       band_d_2023: 206.0,
+      band_d_2022: 178.07,
+      band_d_2021: 173.07,
     },
     budget: {
       education: 0.0,
@@ -3003,6 +3323,8 @@ export const councils: Council[] = [
       band_d_2025: 244.0,
       band_d_2024: 237.0,
       band_d_2023: 230.0,
+      band_d_2022: 216.99,
+      band_d_2021: 211.99,
     },
     budget: {
       education: 0.0,
@@ -3029,6 +3351,8 @@ export const councils: Council[] = [
       band_d_2025: 1680.0,
       band_d_2024: 1600.0,
       band_d_2023: 1524.0,
+      band_d_2022: 1451.36,
+      band_d_2021: 1409.22,
     },
     budget: {
       education: 417250.0,
@@ -3055,6 +3379,8 @@ export const councils: Council[] = [
       band_d_2025: 263.0,
       band_d_2024: 255.0,
       band_d_2023: 248.0,
+      band_d_2022: 240.75,
+      band_d_2021: 235.75,
     },
     budget: {
       education: 0.0,
@@ -3081,6 +3407,8 @@ export const councils: Council[] = [
       band_d_2025: 257.0,
       band_d_2024: 248.0,
       band_d_2023: 239.0,
+      band_d_2022: 217.98,
+      band_d_2021: 213.03,
     },
     budget: {
       education: 0.0,
@@ -3107,6 +3435,8 @@ export const councils: Council[] = [
       band_d_2025: 220.0,
       band_d_2024: 213.0,
       band_d_2023: 204.0,
+      band_d_2022: 176.48,
+      band_d_2021: 171.48,
     },
     budget: {
       education: 0.0,
@@ -3133,6 +3463,8 @@ export const councils: Council[] = [
       band_d_2025: 1521.0,
       band_d_2024: 1449.0,
       band_d_2023: 1380.0,
+      band_d_2022: 1314.66,
+      band_d_2021: 1276.48,
     },
     budget: {
       education: 306205.0,
@@ -3159,6 +3491,8 @@ export const councils: Council[] = [
       band_d_2025: 245.0,
       band_d_2024: 237.0,
       band_d_2023: 229.0,
+      band_d_2022: 186.82,
+      band_d_2021: 181.82,
     },
     budget: {
       education: 0.0,
@@ -3185,6 +3519,8 @@ export const councils: Council[] = [
       band_d_2025: 1476.0,
       band_d_2024: 1406.0,
       band_d_2023: 1339.0,
+      band_d_2022: 1275.5,
+      band_d_2021: 1238.47,
     },
     budget: {
       education: 317063.0,
@@ -3211,6 +3547,8 @@ export const councils: Council[] = [
       band_d_2025: 1853.0,
       band_d_2024: 1765.0,
       band_d_2023: 1680.0,
+      band_d_2022: 1595.67,
+      band_d_2021: 1549.34,
     },
     budget: {
       education: 105013.0,
@@ -3237,6 +3575,8 @@ export const councils: Council[] = [
       band_d_2025: 961.0,
       band_d_2024: 915.0,
       band_d_2023: 872.0,
+      band_d_2022: 831.96,
+      band_d_2021: 831.96,
     },
     budget: {
       education: 111259.0,
@@ -3263,6 +3603,8 @@ export const councils: Council[] = [
       band_d_2025: 1610.0,
       band_d_2024: 1533.0,
       band_d_2023: 1460.0,
+      band_d_2022: 1390.86,
+      band_d_2021: 1350.45,
     },
     budget: {
       education: 1244355.0,
@@ -3289,6 +3631,8 @@ export const councils: Council[] = [
       band_d_2025: 257.0,
       band_d_2024: 243.0,
       band_d_2023: 239.0,
+      band_d_2022: 177.97,
+      band_d_2021: 172.97,
     },
     budget: {
       education: 0.0,
@@ -3315,6 +3659,8 @@ export const councils: Council[] = [
       band_d_2025: 1718.0,
       band_d_2024: 1636.0,
       band_d_2023: 1558.0,
+      band_d_2022: 1484.13,
+      band_d_2021: 1441.04,
     },
     budget: {
       education: 348900.0,
@@ -3341,6 +3687,8 @@ export const councils: Council[] = [
       band_d_2025: 289.0,
       band_d_2024: 289.0,
       band_d_2023: 289.0,
+      band_d_2022: 288.9,
+      band_d_2021: 288.9,
     },
     budget: {
       education: 0.0,
@@ -3367,6 +3715,8 @@ export const councils: Council[] = [
       band_d_2025: 1905.0,
       band_d_2024: 1815.0,
       band_d_2023: 1729.0,
+      band_d_2022: 1646.5,
+      band_d_2021: 1598.7,
     },
     budget: {
       education: 180704.0,
@@ -3393,6 +3743,8 @@ export const councils: Council[] = [
       band_d_2025: 312.0,
       band_d_2024: 297.0,
       band_d_2023: 286.0,
+      band_d_2022: 186.84,
+      band_d_2021: 181.84,
     },
     budget: {
       education: 0.0,
@@ -3419,6 +3771,8 @@ export const councils: Council[] = [
       band_d_2025: 2086.0,
       band_d_2024: 1987.0,
       band_d_2023: 1929.0,
+      band_d_2022: 1836.81,
+      band_d_2021: 1751.01,
     },
     budget: {
       education: 59918.0,
@@ -3445,6 +3799,8 @@ export const councils: Council[] = [
       band_d_2025: 308.0,
       band_d_2024: 299.0,
       band_d_2023: 290.0,
+      band_d_2022: 281.67,
+      band_d_2021: 276.17,
     },
     budget: {
       education: 0.0,
@@ -3471,6 +3827,8 @@ export const councils: Council[] = [
       band_d_2025: 240.0,
       band_d_2024: 233.0,
       band_d_2023: 226.0,
+      band_d_2022: 219.48,
+      band_d_2021: 214.48,
     },
     budget: {
       education: 0.0,
@@ -3497,6 +3855,8 @@ export const councils: Council[] = [
       band_d_2025: 1823.0,
       band_d_2024: 1737.0,
       band_d_2023: 1654.0,
+      band_d_2022: 1575.38,
+      band_d_2021: 1529.64,
     },
     budget: {
       education: 200177.0,
@@ -3523,6 +3883,8 @@ export const councils: Council[] = [
       band_d_2025: 2055.0,
       band_d_2024: 1955.0,
       band_d_2023: 1863.0,
+      band_d_2022: 1701.7,
+      band_d_2021: 1652.3,
     },
     budget: {
       education: 132590.0,
@@ -3549,6 +3911,8 @@ export const councils: Council[] = [
       band_d_2025: 1770.0,
       band_d_2024: 1686.0,
       band_d_2023: 1606.0,
+      band_d_2022: 1529.31,
+      band_d_2021: 1470.63,
     },
     budget: {
       education: 909714.0,
@@ -3575,6 +3939,8 @@ export const councils: Council[] = [
       band_d_2025: 254.0,
       band_d_2024: 242.0,
       band_d_2023: 232.0,
+      band_d_2022: 192.33,
+      band_d_2021: 187.33,
     },
     budget: {
       education: 0.0,
@@ -3601,6 +3967,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 249.0,
       band_d_2023: 237.0,
+      band_d_2022: 205.4,
+      band_d_2021: 200.4,
     },
   },
   {
@@ -3612,6 +3980,8 @@ export const councils: Council[] = [
       band_d_2025: 1462.0,
       band_d_2024: 1393.0,
       band_d_2023: 1326.0,
+      band_d_2022: 1263.28,
+      band_d_2021: 1239.72,
     },
     budget: {
       education: 245353.0,
@@ -3638,6 +4008,8 @@ export const councils: Council[] = [
       band_d_2025: 236.0,
       band_d_2024: 225.0,
       band_d_2023: 212.0,
+      band_d_2022: 144.87,
+      band_d_2021: 139.87,
     },
     budget: {
       education: 0.0,
@@ -3664,6 +4036,8 @@ export const councils: Council[] = [
       band_d_2025: 254.0,
       band_d_2024: 245.0,
       band_d_2023: 236.0,
+      band_d_2022: 167.14,
+      band_d_2021: 162.43,
     },
     budget: {
       education: 0.0,
@@ -3690,6 +4064,8 @@ export const councils: Council[] = [
       band_d_2025: 1595.0,
       band_d_2024: 1520.0,
       band_d_2023: 1447.0,
+      band_d_2022: 1378.59,
+      band_d_2021: 1338.57,
     },
     budget: {
       education: 255792.0,
@@ -3716,6 +4092,8 @@ export const councils: Council[] = [
       band_d_2025: 316.0,
       band_d_2024: 298.0,
       band_d_2023: 285.0,
+      band_d_2022: 150.86,
+      band_d_2021: 145.86,
     },
     budget: {
       education: 0.0,
@@ -3742,6 +4120,8 @@ export const councils: Council[] = [
       band_d_2025: 277.0,
       band_d_2024: 269.0,
       band_d_2023: 261.0,
+      band_d_2022: 260.64,
+      band_d_2021: 255.53,
     },
     budget: {
       education: 0.0,
@@ -3768,6 +4148,8 @@ export const councils: Council[] = [
       band_d_2025: 420.0,
       band_d_2024: 407.0,
       band_d_2023: 396.0,
+      band_d_2022: 384.21,
+      band_d_2021: 376.74,
     },
     budget: {
       education: 0.0,
@@ -3794,6 +4176,8 @@ export const councils: Council[] = [
       band_d_2025: 2130.0,
       band_d_2024: 2029.0,
       band_d_2023: 1927.0,
+      band_d_2022: 1731.15,
+      band_d_2021: 1680.82,
     },
     budget: {
       education: 118385.0,
@@ -3820,6 +4204,8 @@ export const councils: Council[] = [
       band_d_2025: 1662.0,
       band_d_2024: 1583.0,
       band_d_2023: 1508.0,
+      band_d_2022: 1436,
+      band_d_2021: 1394.28,
     },
     budget: {
       education: 560.0,
@@ -3846,6 +4232,8 @@ export const councils: Council[] = [
       band_d_2025: 1522.0,
       band_d_2024: 1449.0,
       band_d_2023: 1381.0,
+      band_d_2022: 1314.89,
+      band_d_2021: 1276.72,
     },
     budget: {
       education: 202730.0,
@@ -3872,6 +4260,8 @@ export const councils: Council[] = [
       band_d_2025: 1101.0,
       band_d_2024: 1058.0,
       band_d_2023: 1008.0,
+      band_d_2022: 986.61,
+      band_d_2021: 967.32,
     },
     budget: {
       education: 98934.0,
@@ -3898,6 +4288,8 @@ export const councils: Council[] = [
       band_d_2025: 1691.0,
       band_d_2024: 1611.0,
       band_d_2023: 1534.0,
+      band_d_2022: 1461.24,
+      band_d_2021: 1418.76,
     },
     budget: {
       education: 1151365.0,
@@ -3924,6 +4316,8 @@ export const councils: Council[] = [
       band_d_2025: 233.0,
       band_d_2024: 228.0,
       band_d_2023: 218.0,
+      band_d_2022: 154.16,
+      band_d_2021: 149.32,
     },
     budget: {
       education: 0.0,
@@ -3950,6 +4344,8 @@ export const councils: Council[] = [
       band_d_2025: 1784.0,
       band_d_2024: 1700.0,
       band_d_2023: 1619.0,
+      band_d_2022: 1541.89,
+      band_d_2021: 1497.13,
     },
     budget: {
       education: 110952.0,
@@ -3976,6 +4372,8 @@ export const councils: Council[] = [
       band_d_2025: 1999.0,
       band_d_2024: 1904.0,
       band_d_2023: 1813.0,
+      band_d_2022: 1727.27,
+      band_d_2021: 1693.57,
     },
     budget: {
       education: 117680.0,
@@ -4002,6 +4400,8 @@ export const councils: Council[] = [
       band_d_2025: 1974.0,
       band_d_2024: 1879.0,
       band_d_2023: 1789.0,
+      band_d_2022: 1697.41,
+      band_d_2021: 1648.13,
     },
     budget: {
       education: 322103.0,
@@ -4028,6 +4428,8 @@ export const councils: Council[] = [
       band_d_2025: 1972.0,
       band_d_2024: 1880.0,
       band_d_2023: 1791.0,
+      band_d_2022: 1669.85,
+      band_d_2021: 1621.37,
     },
     budget: {
       education: 144243.0,
@@ -4054,6 +4456,8 @@ export const councils: Council[] = [
       band_d_2025: 1464.0,
       band_d_2024: 1394.0,
       band_d_2023: 1328.0,
+      band_d_2022: 1264.65,
+      band_d_2021: 1227.93,
     },
     budget: {
       education: 310298.0,
@@ -4080,6 +4484,8 @@ export const councils: Council[] = [
       band_d_2025: 1736.0,
       band_d_2024: 1653.0,
       band_d_2023: 1575.0,
+      band_d_2022: 1514.29,
+      band_d_2021: 1456.19,
     },
     budget: {
       education: 1159701.0,
@@ -4106,6 +4512,8 @@ export const councils: Council[] = [
       band_d_2025: 305.0,
       band_d_2024: 296.0,
       band_d_2023: 296.0,
+      band_d_2022: 241.95,
+      band_d_2021: 236.95,
     },
     budget: {
       education: 0.0,
@@ -4132,6 +4540,8 @@ export const councils: Council[] = [
       band_d_2025: 1825.0,
       band_d_2024: 1737.0,
       band_d_2023: 1655.0,
+      band_d_2022: 1566.76,
+      band_d_2021: 1521.29,
     },
     budget: {
       education: 684006.0,
@@ -4158,6 +4568,8 @@ export const councils: Council[] = [
       band_d_2025: 2021.0,
       band_d_2024: 1925.0,
       band_d_2023: 1833.0,
+      band_d_2022: 1745.74,
+      band_d_2021: 1694.92,
     },
     budget: {
       education: 338798.0,
@@ -4184,6 +4596,8 @@ export const councils: Council[] = [
       band_d_2025: 1682.0,
       band_d_2024: 1602.0,
       band_d_2023: 1525.0,
+      band_d_2022: 1452.96,
+      band_d_2021: 1410.78,
     },
     budget: {
       education: 326383.0,
@@ -4210,6 +4624,8 @@ export const councils: Council[] = [
       band_d_2025: 381.0,
       band_d_2024: 365.0,
       band_d_2023: 350.0,
+      band_d_2022: 219.53,
+      band_d_2021: 214.53,
     },
     budget: {
       education: 0.0,
@@ -4236,6 +4652,8 @@ export const councils: Council[] = [
       band_d_2025: 1645.0,
       band_d_2024: 1567.0,
       band_d_2023: 1492.0,
+      band_d_2022: 1421.22,
+      band_d_2021: 1379.96,
     },
     budget: {
       education: 358800.0,
@@ -4262,6 +4680,8 @@ export const councils: Council[] = [
       band_d_2025: 258.0,
       band_d_2024: 250.0,
       band_d_2023: 242.0,
+      band_d_2022: 187.85,
+      band_d_2021: 185.07,
     },
     budget: {
       education: 0.0,
@@ -4288,6 +4708,8 @@ export const councils: Council[] = [
       band_d_2025: 317.0,
       band_d_2024: 308.0,
       band_d_2023: 299.0,
+      band_d_2022: 290.79,
+      band_d_2021: 285.39,
     },
     budget: {
       education: 0.0,
@@ -4314,6 +4736,8 @@ export const councils: Council[] = [
       band_d_2025: 1626.0,
       band_d_2024: 1579.0,
       band_d_2023: 1504.0,
+      band_d_2022: 1432.17,
+      band_d_2021: 1364.16,
     },
     budget: {
       education: 446882.0,
@@ -4340,6 +4764,8 @@ export const councils: Council[] = [
       band_d_2025: 2147.0,
       band_d_2024: 2045.0,
       band_d_2023: 1948.0,
+      band_d_2022: 1855.39,
+      band_d_2021: 1801.52,
     },
     budget: {
       education: 520249.0,
@@ -4387,6 +4813,8 @@ export const councils: Council[] = [
       band_d_2025: 1924.0,
       band_d_2024: 1832.0,
       band_d_2023: 1745.0,
+      band_d_2022: 1662.17,
+      band_d_2021: 1613.91,
     },
     budget: {
       education: 206517.0,
@@ -4413,6 +4841,8 @@ export const councils: Council[] = [
       band_d_2025: 348.0,
       band_d_2024: 336.0,
       band_d_2023: 325.0,
+      band_d_2022: 276.3,
+      band_d_2021: 270.9,
     },
     budget: {
       education: 0.0,
@@ -4439,6 +4869,8 @@ export const councils: Council[] = [
       band_d_2025: 305.0,
       band_d_2024: 293.0,
       band_d_2023: 283.0,
+      band_d_2022: 212.4,
+      band_d_2021: 207.4,
     },
     budget: {
       education: 0.0,
@@ -4465,6 +4897,8 @@ export const councils: Council[] = [
       band_d_2025: 271.0,
       band_d_2024: 267.0,
       band_d_2023: 257.0,
+      band_d_2022: 172.6,
+      band_d_2021: 167.6,
     },
     budget: {
       education: 0.0,
@@ -4491,6 +4925,8 @@ export const councils: Council[] = [
       band_d_2025: 1784.0,
       band_d_2024: 1699.0,
       band_d_2023: 1618.0,
+      band_d_2022: 1541.34,
+      band_d_2021: 1496.59,
     },
     budget: {
       education: 476174.0,
@@ -4517,6 +4953,8 @@ export const councils: Council[] = [
       band_d_2025: 211.0,
       band_d_2024: 204.0,
       band_d_2023: 198.0,
+      band_d_2022: 194.72,
+      band_d_2021: 194.72,
     },
     budget: {
       education: 0.0,
@@ -4543,6 +4981,8 @@ export const councils: Council[] = [
       band_d_2025: 1842.0,
       band_d_2024: 1762.0,
       band_d_2023: 1678.0,
+      band_d_2022: 1591.74,
+      band_d_2021: 1545.47,
     },
     budget: {
       education: 140792.0,
@@ -4569,6 +5009,8 @@ export const councils: Council[] = [
       band_d_2025: 282.0,
       band_d_2024: 272.0,
       band_d_2023: 262.0,
+      band_d_2022: 217.64,
+      band_d_2021: 212.64,
     },
     budget: {
       education: 0.0,
@@ -4595,6 +5037,8 @@ export const councils: Council[] = [
       band_d_2025: 1604.0,
       band_d_2024: 1528.0,
       band_d_2023: 1455.0,
+      band_d_2022: 1385.84,
+      band_d_2021: 1345.48,
     },
     budget: {
       education: 245929.0,
@@ -4642,6 +5086,8 @@ export const councils: Council[] = [
       band_d_2025: 327.0,
       band_d_2024: 314.0,
       band_d_2023: 303.0,
+      band_d_2022: 218.84,
+      band_d_2021: 213.84,
     },
     budget: {
       education: 0.0,
@@ -4668,6 +5114,8 @@ export const councils: Council[] = [
       band_d_2025: 269.0,
       band_d_2024: 265.0,
       band_d_2023: 258.0,
+      band_d_2022: 171.59,
+      band_d_2021: 171.59,
     },
     budget: {
       education: 0.0,
@@ -4694,6 +5142,8 @@ export const councils: Council[] = [
       band_d_2025: 289.0,
       band_d_2024: 278.0,
       band_d_2023: 265.0,
+      band_d_2022: 180.36,
+      band_d_2021: 175.41,
     },
     budget: {
       education: 0.0,
@@ -4720,6 +5170,8 @@ export const councils: Council[] = [
       band_d_2025: 2075.0,
       band_d_2024: 1977.0,
       band_d_2023: 1883.0,
+      band_d_2022: 1809.67,
+      band_d_2021: 1757.11,
     },
     budget: {
       education: 79551.0,
@@ -4746,6 +5198,8 @@ export const councils: Council[] = [
       band_d_2025: 1890.0,
       band_d_2024: 1802.0,
       band_d_2023: 1713.0,
+      band_d_2022: 1520.55,
+      band_d_2021: 1465.59,
     },
     budget: {
       education: 194027.0,
@@ -4772,6 +5226,8 @@ export const councils: Council[] = [
       band_d_2025: 222.0,
       band_d_2024: 215.0,
       band_d_2023: 209.0,
+      band_d_2022: 193.41,
+      band_d_2021: 188.46,
     },
     budget: {
       education: 0.0,
@@ -4798,6 +5254,8 @@ export const councils: Council[] = [
       band_d_2025: 330.0,
       band_d_2024: 316.0,
       band_d_2023: 298.0,
+      band_d_2022: 188.36,
+      band_d_2021: 183.36,
     },
     budget: {
       education: 0.0,
@@ -4824,6 +5282,8 @@ export const councils: Council[] = [
       band_d_2025: 294.0,
       band_d_2024: 286.0,
       band_d_2023: 275.0,
+      band_d_2022: 185.56,
+      band_d_2021: 182.03,
     },
     budget: {
       education: 0.0,
@@ -4850,6 +5310,8 @@ export const councils: Council[] = [
       band_d_2025: 2117.0,
       band_d_2024: 2017.0,
       band_d_2023: 1921.0,
+      band_d_2022: 1845.68,
+      band_d_2021: 1792.81,
     },
     budget: {
       education: 199035.0,
@@ -4876,6 +5338,8 @@ export const councils: Council[] = [
       band_d_2025: 244.0,
       band_d_2024: 239.0,
       band_d_2023: 233.0,
+      band_d_2022: 210.24,
+      band_d_2021: 206.14,
     },
     budget: {
       education: 0.0,
@@ -4902,6 +5366,8 @@ export const councils: Council[] = [
       band_d_2025: 1366.0,
       band_d_2024: 1253.0,
       band_d_2023: 1193.0,
+      band_d_2022: 1136.67,
+      band_d_2021: 1103.67,
     },
     budget: {
       education: 307267.0,
@@ -4928,6 +5394,8 @@ export const councils: Council[] = [
       band_d_2025: 1756.0,
       band_d_2024: 1672.0,
       band_d_2023: 1593.0,
+      band_d_2022: 1516.95,
+      band_d_2021: 1472.94,
     },
     budget: {
       education: 526117.0,
@@ -4954,6 +5422,8 @@ export const councils: Council[] = [
       band_d_2025: 321.0,
       band_d_2024: 305.0,
       band_d_2023: 286.0,
+      band_d_2022: 198.35,
+      band_d_2021: 193.35,
     },
     budget: {
       education: 0.0,
@@ -4980,6 +5450,8 @@ export const councils: Council[] = [
       band_d_2025: 339.0,
       band_d_2024: 326.0,
       band_d_2023: 313.0,
+      band_d_2022: 198.34,
+      band_d_2021: 193.35,
     },
     budget: {
       education: 0.0,
@@ -5006,6 +5478,8 @@ export const councils: Council[] = [
       band_d_2025: 1973.0,
       band_d_2024: 1897.0,
       band_d_2023: 1807.0,
+      band_d_2022: 1719.83,
+      band_d_2021: 1670.09,
     },
     budget: {
       education: 62904.0,
@@ -5032,6 +5506,8 @@ export const councils: Council[] = [
       band_d_2025: 298.0,
       band_d_2024: 289.0,
       band_d_2023: 280.0,
+      band_d_2022: 245.13,
+      band_d_2021: 240.13,
     },
     budget: {
       education: 0.0,
@@ -5058,6 +5534,8 @@ export const councils: Council[] = [
       band_d_2025: 317.0,
       band_d_2024: 304.0,
       band_d_2023: 293.0,
+      band_d_2022: 179.55,
+      band_d_2021: 174.6,
     },
     budget: {
       education: 0.0,
@@ -5084,6 +5562,8 @@ export const councils: Council[] = [
       band_d_2025: 1840.0,
       band_d_2024: 1754.0,
       band_d_2023: 1689.0,
+      band_d_2022: 1626.64,
+      band_d_2021: 1581.13,
     },
     budget: {
       education: 128697.0,
@@ -5110,6 +5590,8 @@ export const councils: Council[] = [
       band_d_2025: 256.0,
       band_d_2024: 244.0,
       band_d_2023: 234.0,
+      band_d_2022: 158.67,
+      band_d_2021: 153.72,
     },
     budget: {
       education: 0.0,
@@ -5136,6 +5618,8 @@ export const councils: Council[] = [
       band_d_2025: 1902.0,
       band_d_2024: 1810.0,
       band_d_2023: 1723.0,
+      band_d_2022: 1578.73,
+      band_d_2021: 1532.9,
     },
     budget: {
       education: 182470.0,
@@ -5162,6 +5646,8 @@ export const councils: Council[] = [
       band_d_2025: 1911.0,
       band_d_2024: 1801.0,
       band_d_2023: 1713.0,
+      band_d_2022: 1550.03,
+      band_d_2021: 1505.04,
     },
     budget: {
       education: 78018.0,
@@ -5188,6 +5674,8 @@ export const councils: Council[] = [
       band_d_2025: 2041.0,
       band_d_2024: 1944.0,
       band_d_2023: 1851.0,
+      band_d_2022: 1763.17,
+      band_d_2021: 1711.98,
     },
     budget: {
       education: 214896.0,
@@ -5214,6 +5702,8 @@ export const councils: Council[] = [
       band_d_2025: 305.0,
       band_d_2024: 294.0,
       band_d_2023: 283.0,
+      band_d_2022: 222.3,
+      band_d_2021: 217.3,
     },
     budget: {
       education: 0.0,
@@ -5240,6 +5730,8 @@ export const councils: Council[] = [
       band_d_2025: 270.0,
       band_d_2024: 261.0,
       band_d_2023: 253.0,
+      band_d_2022: 174.76,
+      band_d_2021: 173.64,
     },
     budget: {
       education: 0.0,
@@ -5266,6 +5758,8 @@ export const councils: Council[] = [
       band_d_2025: 1990.0,
       band_d_2024: 1893.0,
       band_d_2023: 1802.0,
+      band_d_2022: null,
+      band_d_2021: null,
     },
     budget: {
       education: 418464.0,
@@ -5292,6 +5786,8 @@ export const councils: Council[] = [
       band_d_2025: 2269.0,
       band_d_2024: 2173.0,
       band_d_2023: 2079.0,
+      band_d_2022: 1897.42,
+      band_d_2021: 1823.78,
     },
     budget: {
       education: 214876.0,
@@ -5318,6 +5814,8 @@ export const councils: Council[] = [
       band_d_2025: 306.0,
       band_d_2024: 297.0,
       band_d_2023: 289.0,
+      band_d_2022: 280.21,
+      band_d_2021: 274.74,
     },
     budget: {
       education: 0.0,
@@ -5344,6 +5842,8 @@ export const councils: Council[] = [
       band_d_2025: 2263.0,
       band_d_2024: 2155.0,
       band_d_2023: 2053.0,
+      band_d_2022: 1955.32,
+      band_d_2021: 1898.55,
     },
     budget: {
       education: 163271.0,
@@ -5370,6 +5870,8 @@ export const councils: Council[] = [
       band_d_2025: 1895.0,
       band_d_2024: 1807.0,
       band_d_2023: 1724.0,
+      band_d_2022: 1644.09,
+      band_d_2021: 1580.85,
     },
     budget: {
       education: 493422.0,
@@ -5396,6 +5898,8 @@ export const councils: Council[] = [
       band_d_2025: 271.0,
       band_d_2024: 264.0,
       band_d_2023: 256.0,
+      band_d_2022: 248.51,
+      band_d_2021: 243.66,
     },
     budget: {
       education: 0.0,
@@ -5422,6 +5926,8 @@ export const councils: Council[] = [
       band_d_2025: 262.0,
       band_d_2024: 254.0,
       band_d_2023: 247.0,
+      band_d_2022: 239.5,
+      band_d_2021: 234.5,
     },
     budget: {
       education: 0.0,
@@ -5448,6 +5954,8 @@ export const councils: Council[] = [
       band_d_2025: 2060.0,
       band_d_2024: 1962.0,
       band_d_2023: 1869.0,
+      band_d_2022: 1791.68,
+      band_d_2021: 1722.94,
     },
     budget: {
       education: 230373.0,
@@ -5474,6 +5982,8 @@ export const councils: Council[] = [
       band_d_2025: 362.0,
       band_d_2024: 352.0,
       band_d_2023: 342.0,
+      band_d_2022: 326.54,
+      band_d_2021: 320.17,
     },
     budget: {
       education: 0.0,
@@ -5500,6 +6010,8 @@ export const councils: Council[] = [
       band_d_2025: 1911.0,
       band_d_2024: 1821.0,
       band_d_2023: 1734.0,
+      band_d_2022: 1651.61,
+      band_d_2021: 1573.11,
     },
     budget: {
       education: 395090.0,
@@ -5526,6 +6038,8 @@ export const councils: Council[] = [
       band_d_2025: 432.0,
       band_d_2024: 414.0,
       band_d_2023: 393.0,
+      band_d_2022: 281.5,
+      band_d_2021: 276.01,
     },
     budget: {
       education: 0.0,
@@ -5552,6 +6066,8 @@ export const councils: Council[] = [
       band_d_2025: 1763.0,
       band_d_2024: 1679.0,
       band_d_2023: 1599.0,
+      band_d_2022: 1511.65,
+      band_d_2021: 1467.76,
     },
     budget: {
       education: 141497.0,
@@ -5578,6 +6094,8 @@ export const councils: Council[] = [
       band_d_2025: 1933.0,
       band_d_2024: 1841.0,
       band_d_2023: 1753.0,
+      band_d_2022: 1669.88,
+      band_d_2021: 1653.35,
     },
     budget: {
       education: 118915.0,
@@ -5604,6 +6122,8 @@ export const councils: Council[] = [
       band_d_2025: 1818.0,
       band_d_2024: 1731.0,
       band_d_2023: 1649.0,
+      band_d_2022: 1570.46,
+      band_d_2021: 1524.87,
     },
     budget: {
       education: 124062.0,
@@ -5630,6 +6150,8 @@ export const councils: Council[] = [
       band_d_2025: 375.0,
       band_d_2024: 364.0,
       band_d_2023: 354.0,
+      band_d_2022: 333.63,
+      band_d_2021: 327.13,
     },
     budget: {
       education: 0.0,
@@ -5656,6 +6178,8 @@ export const councils: Council[] = [
       band_d_2025: 2118.0,
       band_d_2024: 2017.0,
       band_d_2023: 1921.0,
+      band_d_2022: 1829.72,
+      band_d_2021: 1776.6,
     },
     budget: {
       education: 126897.0,
@@ -5682,6 +6206,8 @@ export const councils: Council[] = [
       band_d_2025: 1699.0,
       band_d_2024: 1618.0,
       band_d_2023: 1542.0,
+      band_d_2022: 1468.35,
+      band_d_2021: 1425.73,
     },
     budget: {
       education: 353668.0,
@@ -5708,6 +6234,8 @@ export const councils: Council[] = [
       band_d_2025: 2012.0,
       band_d_2024: 1916.0,
       band_d_2023: 1824.0,
+      band_d_2022: 1739.97,
+      band_d_2021: 1705.86,
     },
     budget: {
       education: 58711.0,
@@ -5734,6 +6262,8 @@ export const councils: Council[] = [
       band_d_2025: 280.0,
       band_d_2024: 272.0,
       band_d_2023: 263.0,
+      band_d_2022: 254.15,
+      band_d_2021: 249.15,
     },
   },
   {
@@ -5745,6 +6275,8 @@ export const councils: Council[] = [
       band_d_2025: 275.0,
       band_d_2024: 267.0,
       band_d_2023: 259.0,
+      band_d_2022: 242.46,
+      band_d_2021: 237.46,
     },
     budget: {
       education: 0.0,
@@ -5771,6 +6303,8 @@ export const councils: Council[] = [
       band_d_2025: 197.0,
       band_d_2024: 195.0,
       band_d_2023: 189.0,
+      band_d_2022: 160.69,
+      band_d_2021: 155.69,
     },
     budget: {
       education: 0.0,
@@ -5797,6 +6331,8 @@ export const councils: Council[] = [
       band_d_2025: 1882.0,
       band_d_2024: 1792.0,
       band_d_2023: 1707.0,
+      band_d_2022: 1625.94,
+      band_d_2021: 1595,
     },
     budget: {
       education: 152489.0,
@@ -5823,6 +6359,8 @@ export const councils: Council[] = [
       band_d_2025: 2059.0,
       band_d_2024: 1961.0,
       band_d_2023: 1868.0,
+      band_d_2022: 1779.01,
+      band_d_2021: 1727.37,
     },
     budget: {
       education: 228298.0,
@@ -5849,6 +6387,8 @@ export const councils: Council[] = [
       band_d_2025: 340.0,
       band_d_2024: 324.0,
       band_d_2023: 312.0,
+      band_d_2022: 245.16,
+      band_d_2021: 240.21,
     },
     budget: {
       education: 0.0,
@@ -5875,6 +6415,8 @@ export const councils: Council[] = [
       band_d_2025: 321.0,
       band_d_2024: 312.0,
       band_d_2023: 302.0,
+      band_d_2022: 290.8,
+      band_d_2021: 285.13,
     },
     budget: {
       education: 0.0,
@@ -5901,6 +6443,8 @@ export const councils: Council[] = [
       band_d_2025: 315.0,
       band_d_2024: 301.0,
       band_d_2023: 289.0,
+      band_d_2022: 211.74,
+      band_d_2021: 207.1,
     },
     budget: {
       education: 0.0,
@@ -5927,6 +6471,8 @@ export const councils: Council[] = [
       band_d_2025: 1928.0,
       band_d_2024: 1875.0,
       band_d_2023: 1805.0,
+      band_d_2022: 1687.24,
+      band_d_2021: 1614.58,
     },
     budget: {
       education: 138538.0,
@@ -5953,6 +6499,8 @@ export const councils: Council[] = [
       band_d_2025: 251.0,
       band_d_2024: 244.0,
       band_d_2023: 236.0,
+      band_d_2022: 204.72,
+      band_d_2021: 199.72,
     },
     budget: {
       education: 0.0,
@@ -5979,6 +6527,8 @@ export const councils: Council[] = [
       band_d_2025: 196.0,
       band_d_2024: 190.0,
       band_d_2023: 185.0,
+      band_d_2022: 179.55,
+      band_d_2021: 174.59,
     },
     budget: {
       education: 0.0,
@@ -6005,6 +6555,8 @@ export const councils: Council[] = [
       band_d_2025: 244.0,
       band_d_2024: 235.0,
       band_d_2023: 228.0,
+      band_d_2022: 168.92,
+      band_d_2021: 163.92,
     },
     budget: {
       education: 0.0,
@@ -6031,6 +6583,8 @@ export const councils: Council[] = [
       band_d_2025: 240.0,
       band_d_2024: 233.0,
       band_d_2023: 226.0,
+      band_d_2022: 219.42,
+      band_d_2021: 214.42,
     },
     budget: {
       education: 0.0,
@@ -6057,6 +6611,8 @@ export const councils: Council[] = [
       band_d_2025: 2284.0,
       band_d_2024: 2175.0,
       band_d_2023: 2069.0,
+      band_d_2022: 1917.36,
+      band_d_2021: 1826.23,
     },
     budget: {
       education: 20160.0,
@@ -6083,6 +6639,8 @@ export const councils: Council[] = [
       band_d_2025: 2053.0,
       band_d_2024: 1955.0,
       band_d_2023: 1862.0,
+      band_d_2022: 1773.76,
+      band_d_2021: 1705.71,
     },
     budget: {
       education: 259088.0,
@@ -6109,6 +6667,8 @@ export const councils: Council[] = [
       band_d_2025: 1824.0,
       band_d_2024: 1737.0,
       band_d_2023: 1655.0,
+      band_d_2022: 1575.88,
+      band_d_2021: 1500.98,
     },
     budget: {
       education: 325056.0,
@@ -6135,6 +6695,8 @@ export const councils: Council[] = [
       band_d_2025: 2062.0,
       band_d_2024: 1963.0,
       band_d_2023: 1871.0,
+      band_d_2022: 1765.78,
+      band_d_2021: 1714.52,
     },
     budget: {
       education: 232885.0,
@@ -6161,6 +6723,8 @@ export const councils: Council[] = [
       band_d_2025: 363.0,
       band_d_2024: 350.0,
       band_d_2023: 337.0,
+      band_d_2022: 229.86,
+      band_d_2021: 224.91,
     },
     budget: {
       education: 0.0,
@@ -6187,6 +6751,8 @@ export const councils: Council[] = [
       band_d_2025: 2034.0,
       band_d_2024: 1937.0,
       band_d_2023: 1845.0,
+      band_d_2022: 1753.21,
+      band_d_2021: 1702.31,
     },
     budget: {
       education: 361763.0,
@@ -6213,6 +6779,8 @@ export const councils: Council[] = [
       band_d_2025: 2034.0,
       band_d_2024: 1937.0,
       band_d_2023: 1845.0,
+      band_d_2022: null,
+      band_d_2021: null,
     },
   },
   {
@@ -6266,6 +6834,8 @@ export const councils: Council[] = [
       band_d_2025: 1908.0,
       band_d_2024: 1812.0,
       band_d_2023: 1725.0,
+      band_d_2022: 1561.11,
+      band_d_2021: 1501.22,
     },
     budget: {
       education: 149020.0,
@@ -6292,6 +6862,8 @@ export const councils: Council[] = [
       band_d_2025: 1929.0,
       band_d_2024: 1836.0,
       band_d_2023: 1692.0,
+      band_d_2022: 1534.86,
+      band_d_2021: 1490.3,
     },
     budget: {
       education: 98714.0,
@@ -6318,6 +6890,8 @@ export const councils: Council[] = [
       band_d_2025: 1778.0,
       band_d_2024: 1693.0,
       band_d_2023: 1613.0,
+      band_d_2022: 1517.04,
+      band_d_2021: 1460.24,
     },
     budget: {
       education: 150829.0,
@@ -6344,6 +6918,8 @@ export const councils: Council[] = [
       band_d_2025: 2041.0,
       band_d_2024: 1888.0,
       band_d_2023: 1753.0,
+      band_d_2022: null,
+      band_d_2021: null,
     },
     budget: {
       education: 328080.0,
@@ -6370,6 +6946,8 @@ export const councils: Council[] = [
       band_d_2025: 291.0,
       band_d_2024: 280.0,
       band_d_2023: 269.0,
+      band_d_2022: 160.31,
+      band_d_2021: 155.31,
     },
     budget: {
       education: 0.0,
@@ -6396,6 +6974,8 @@ export const councils: Council[] = [
       band_d_2025: 216.0,
       band_d_2024: 209.0,
       band_d_2023: 202.0,
+      band_d_2022: 172.91,
+      band_d_2021: 167.96,
     },
     budget: {
       education: 0.0,
@@ -6422,6 +7002,8 @@ export const councils: Council[] = [
       band_d_2025: 2044.0,
       band_d_2024: 1945.0,
       band_d_2023: 1842.0,
+      band_d_2022: 1668.84,
+      band_d_2021: 1620.39,
     },
     budget: {
       education: 191284.0,
@@ -6448,6 +7030,8 @@ export const councils: Council[] = [
       band_d_2025: 298.0,
       band_d_2024: 282.0,
       band_d_2023: 269.0,
+      band_d_2022: 180.42,
+      band_d_2021: 175.42,
     },
     budget: {
       education: 0.0,
@@ -6474,6 +7058,8 @@ export const councils: Council[] = [
       band_d_2025: 261.0,
       band_d_2024: 252.0,
       band_d_2023: 241.0,
+      band_d_2022: 197.56,
+      band_d_2021: 192.56,
     },
     budget: {
       education: 0.0,
@@ -6500,6 +7086,8 @@ export const councils: Council[] = [
       band_d_2025: 243.0,
       band_d_2024: 232.0,
       band_d_2023: 221.0,
+      band_d_2022: 173.58,
+      band_d_2021: 168.59,
     },
     budget: {
       education: 0.0,
@@ -6526,6 +7114,8 @@ export const councils: Council[] = [
       band_d_2025: 282.0,
       band_d_2024: 270.0,
       band_d_2023: 258.0,
+      band_d_2022: 165.14,
+      band_d_2021: 160.14,
     },
     budget: {
       education: 0.0,
@@ -6552,6 +7142,8 @@ export const councils: Council[] = [
       band_d_2025: 280.0,
       band_d_2024: 267.0,
       band_d_2023: 250.0,
+      band_d_2022: 136.24,
+      band_d_2021: 131.24,
     },
     budget: {
       education: 0.0,
@@ -6578,6 +7170,8 @@ export const councils: Council[] = [
       band_d_2025: 249.0,
       band_d_2024: 241.0,
       band_d_2023: 234.0,
+      band_d_2022: 223.24,
+      band_d_2021: 223.24,
     },
     budget: {
       education: 0.0,
@@ -6604,6 +7198,8 @@ export const councils: Council[] = [
       band_d_2025: 219.0,
       band_d_2024: 210.0,
       band_d_2023: 201.0,
+      band_d_2022: 130.34,
+      band_d_2021: 125.34,
     },
     budget: {
       education: 0.0,
@@ -6630,6 +7226,8 @@ export const councils: Council[] = [
       band_d_2025: 2015.0,
       band_d_2024: 1920.0,
       band_d_2023: 1830.0,
+      band_d_2022: 1743.33,
+      band_d_2021: 1693.38,
     },
     budget: {
       education: 147698.0,
@@ -6656,6 +7254,8 @@ export const councils: Council[] = [
       band_d_2025: 1903.0,
       band_d_2024: 1813.0,
       band_d_2023: 1726.0,
+      band_d_2022: 1644.39,
+      band_d_2021: 1644.39,
     },
     budget: {
       education: 221352.0,
@@ -6682,6 +7282,8 @@ export const councils: Council[] = [
       band_d_2025: 1807.0,
       band_d_2024: 1721.0,
       band_d_2023: 1640.0,
+      band_d_2022: 1554.39,
+      band_d_2021: 1494.72,
     },
     budget: {
       education: 79544.0,
@@ -6708,6 +7310,8 @@ export const councils: Council[] = [
       band_d_2025: 1388.0,
       band_d_2024: 1322.0,
       band_d_2023: 1259.0,
+      band_d_2022: 1198.95,
+      band_d_2021: 1164.14,
     },
     budget: {
       education: 234656.0,
@@ -6734,6 +7338,8 @@ export const councils: Council[] = [
       band_d_2025: 229.0,
       band_d_2024: 222.0,
       band_d_2023: 216.0,
+      band_d_2022: 210.05,
+      band_d_2021: 205.05,
     },
     budget: {
       education: 0.0,
@@ -6760,6 +7366,8 @@ export const councils: Council[] = [
       band_d_2025: 271.0,
       band_d_2024: 262.0,
       band_d_2023: 250.0,
+      band_d_2022: 190.41,
+      band_d_2021: 185.41,
     },
     budget: {
       education: 0.0,
@@ -6786,6 +7394,8 @@ export const councils: Council[] = [
       band_d_2025: 1889.0,
       band_d_2024: 1799.0,
       band_d_2023: 1714.0,
+      band_d_2022: 1625.99,
+      band_d_2021: 1578.78,
     },
     budget: {
       education: 170355.0,
@@ -6812,6 +7422,8 @@ export const councils: Council[] = [
       band_d_2025: 210.0,
       band_d_2024: 203.0,
       band_d_2023: 196.0,
+      band_d_2022: 165.38,
+      band_d_2021: 162.3,
     },
     budget: {
       education: 0.0,
@@ -6838,6 +7450,8 @@ export const councils: Council[] = [
       band_d_2025: 1622.0,
       band_d_2024: 1545.0,
       band_d_2023: 1471.0,
+      band_d_2022: 1401.3,
+      band_d_2021: 1360.62,
     },
     budget: {
       education: 440883.0,
@@ -6864,6 +7478,8 @@ export const councils: Council[] = [
       band_d_2025: 239.0,
       band_d_2024: 230.0,
       band_d_2023: 222.0,
+      band_d_2022: 175.54,
+      band_d_2021: 170.75,
     },
   },
   {
@@ -6875,6 +7491,8 @@ export const councils: Council[] = [
       band_d_2025: 246.0,
       band_d_2024: 239.0,
       band_d_2023: 232.0,
+      band_d_2022: 225.57,
+      band_d_2021: 220.57,
     },
     budget: {
       education: 0.0,
@@ -6901,6 +7519,8 @@ export const councils: Council[] = [
       band_d_2025: 2076.0,
       band_d_2024: 1977.0,
       band_d_2023: 1883.0,
+      band_d_2022: 1811.15,
+      band_d_2021: 1749.9,
     },
     budget: {
       education: 268896.0,
@@ -6927,6 +7547,8 @@ export const councils: Council[] = [
       band_d_2025: 2057.0,
       band_d_2024: 1960.0,
       band_d_2023: 1868.0,
+      band_d_2022: 1764.71,
+      band_d_2021: 1714.98,
     },
     budget: {
       education: 115939.0,
@@ -6953,6 +7575,8 @@ export const councils: Council[] = [
       band_d_2025: 1699.0,
       band_d_2024: 1618.0,
       band_d_2023: 1541.0,
+      band_d_2022: 1468.08,
+      band_d_2021: 1425.46,
     },
     budget: {
       education: 139752.0,
@@ -6979,6 +7603,8 @@ export const councils: Council[] = [
       band_d_2025: 253.0,
       band_d_2024: 238.0,
       band_d_2023: 228.0,
+      band_d_2022: 154.12,
+      band_d_2021: 149.12,
     },
     budget: {
       education: 0.0,
@@ -7005,6 +7631,8 @@ export const councils: Council[] = [
       band_d_2025: 368.0,
       band_d_2024: 352.0,
       band_d_2023: 336.0,
+      band_d_2022: 222.52,
+      band_d_2021: 217.52,
     },
     budget: {
       education: 0.0,
@@ -7031,6 +7659,8 @@ export const councils: Council[] = [
       band_d_2025: 1649.0,
       band_d_2024: 1571.0,
       band_d_2023: 1496.0,
+      band_d_2022: 1438.92,
+      band_d_2021: 1397.16,
     },
     budget: {
       education: 368675.0,
@@ -7057,6 +7687,8 @@ export const councils: Council[] = [
       band_d_2025: 1797.0,
       band_d_2024: 1720.0,
       band_d_2023: 1638.0,
+      band_d_2022: 1589.59,
+      band_d_2021: 1543.44,
     },
     budget: {
       education: 135437.0,
@@ -7083,6 +7715,8 @@ export const councils: Council[] = [
       band_d_2025: 1846.0,
       band_d_2024: 1759.0,
       band_d_2023: 1675.0,
+      band_d_2022: 1626.39,
+      band_d_2021: 1549.08,
     },
     budget: {
       education: 783802.0,
@@ -7109,6 +7743,8 @@ export const councils: Council[] = [
       band_d_2025: 284.0,
       band_d_2024: 274.0,
       band_d_2023: 262.0,
+      band_d_2022: 238.46,
+      band_d_2021: 233.46,
     },
     budget: {
       education: 0.0,
@@ -7135,6 +7771,8 @@ export const councils: Council[] = [
       band_d_2025: 1779.0,
       band_d_2024: 1695.0,
       band_d_2023: 1614.0,
+      band_d_2022: 1537.53,
+      band_d_2021: 1492.9,
     },
     budget: {
       education: 157473.0,
@@ -7161,6 +7799,8 @@ export const councils: Council[] = [
       band_d_2025: 250.0,
       band_d_2024: 240.0,
       band_d_2023: 230.0,
+      band_d_2022: 189.27,
+      band_d_2021: 184.32,
     },
     budget: {
       education: 0.0,
@@ -7187,6 +7827,8 @@ export const councils: Council[] = [
       band_d_2025: 1942.0,
       band_d_2024: 1842.0,
       band_d_2023: 1746.0,
+      band_d_2022: 1536.15,
+      band_d_2021: 1491.55,
     },
     budget: {
       education: 105739.0,
@@ -7213,6 +7855,8 @@ export const councils: Council[] = [
       band_d_2025: 1913.0,
       band_d_2024: 1822.0,
       band_d_2023: 1735.0,
+      band_d_2022: 1652.14,
+      band_d_2021: 1604.17,
     },
     budget: {
       education: 198495.0,
@@ -7239,6 +7883,8 @@ export const councils: Council[] = [
       band_d_2025: 209.0,
       band_d_2024: 203.0,
       band_d_2023: 197.0,
+      band_d_2022: 191.89,
+      band_d_2021: 186.89,
     },
     budget: {
       education: 0.0,
@@ -7265,6 +7911,8 @@ export const councils: Council[] = [
       band_d_2025: 288.0,
       band_d_2024: 276.0,
       band_d_2023: 267.0,
+      band_d_2022: 230.98,
+      band_d_2021: 225.98,
     },
     budget: {
       education: 0.0,
@@ -7291,6 +7939,8 @@ export const councils: Council[] = [
       band_d_2025: 319.0,
       band_d_2024: 305.0,
       band_d_2023: 287.0,
+      band_d_2022: 185.17,
+      band_d_2021: 180.17,
     },
     budget: {
       education: 0.0,
@@ -7317,6 +7967,8 @@ export const councils: Council[] = [
       band_d_2025: 1735.0,
       band_d_2024: 1646.0,
       band_d_2023: 1560.0,
+      band_d_2022: 1435.23,
+      band_d_2021: 1421.02,
     },
     budget: {
       education: 157801.0,
@@ -7343,6 +7995,8 @@ export const councils: Council[] = [
       band_d_2025: 251.0,
       band_d_2024: 243.0,
       band_d_2023: 235.0,
+      band_d_2022: 182.64,
+      band_d_2021: 177.64,
     },
     budget: {
       education: 0.0,
@@ -7369,6 +8023,8 @@ export const councils: Council[] = [
       band_d_2025: 223.0,
       band_d_2024: 212.0,
       band_d_2023: 204.0,
+      band_d_2022: 160.53,
+      band_d_2021: 155.54,
     },
     budget: {
       education: 0.0,
@@ -7395,6 +8051,8 @@ export const councils: Council[] = [
       band_d_2025: 225.0,
       band_d_2024: 218.0,
       band_d_2023: 210.0,
+      band_d_2022: 134.36,
+      band_d_2021: 129.36,
     },
     budget: {
       education: 0.0,
@@ -7421,6 +8079,8 @@ export const councils: Council[] = [
       band_d_2025: 335.0,
       band_d_2024: 320.0,
       band_d_2023: 308.0,
+      band_d_2022: 248.13,
+      band_d_2021: 243.13,
     },
     budget: {
       education: 0.0,
@@ -7447,6 +8107,8 @@ export const councils: Council[] = [
       band_d_2025: 272.0,
       band_d_2024: 263.0,
       band_d_2023: 255.0,
+      band_d_2022: 188.9,
+      band_d_2021: 183.9,
     },
     budget: {
       education: 0.0,
@@ -7473,6 +8135,8 @@ export const councils: Council[] = [
       band_d_2025: 1797.0,
       band_d_2024: 1712.0,
       band_d_2023: 1585.0,
+      band_d_2022: 1441.26,
+      band_d_2021: 1399.32,
     },
     budget: {
       education: 68030.0,
@@ -7499,6 +8163,8 @@ export const councils: Council[] = [
       band_d_2025: 319.0,
       band_d_2024: 309.0,
       band_d_2023: 302.0,
+      band_d_2022: 224.5,
+      band_d_2021: 219.5,
     },
     budget: {
       education: 0.0,
@@ -7525,6 +8191,8 @@ export const councils: Council[] = [
       band_d_2025: 1958.0,
       band_d_2024: 1869.0,
       band_d_2023: 1783.0,
+      band_d_2022: 1690.06,
+      band_d_2021: 1641,
     },
     budget: {
       education: 74230.0,
@@ -7551,6 +8219,8 @@ export const councils: Council[] = [
       band_d_2025: 285.0,
       band_d_2024: 273.0,
       band_d_2023: 263.0,
+      band_d_2022: 178.66,
+      band_d_2021: 173.66,
     },
     budget: {
       education: 0.0,
@@ -7577,6 +8247,8 @@ export const councils: Council[] = [
       band_d_2025: 1264.0,
       band_d_2024: 1204.0,
       band_d_2023: 1147.0,
+      band_d_2022: 1124.39,
+      band_d_2021: 1113.26,
     },
     budget: {
       education: 511720.0,
@@ -7603,6 +8275,8 @@ export const councils: Council[] = [
       band_d_2025: 1723.0,
       band_d_2024: 1603.0,
       band_d_2023: 1527.0,
+      band_d_2022: 1453.01,
+      band_d_2021: 1410.83,
     },
     budget: {
       education: 226252.0,
@@ -7629,6 +8303,8 @@ export const councils: Council[] = [
       band_d_2025: 291.0,
       band_d_2024: 281.0,
       band_d_2023: 270.0,
+      band_d_2022: 193.75,
+      band_d_2021: 188.75,
     },
     budget: {
       education: 0.0,
@@ -7676,6 +8352,8 @@ export const councils: Council[] = [
       band_d_2025: 310.0,
       band_d_2024: 297.0,
       band_d_2023: 281.0,
+      band_d_2022: 166.61,
+      band_d_2021: 161.61,
     },
     budget: {
       education: 0.0,
@@ -7702,6 +8380,8 @@ export const councils: Council[] = [
       band_d_2025: 262.0,
       band_d_2024: 252.0,
       band_d_2023: 240.0,
+      band_d_2022: 146.69,
+      band_d_2021: 141.69,
     },
     budget: {
       education: 0.0,
@@ -7728,6 +8408,8 @@ export const councils: Council[] = [
       band_d_2025: 1838.0,
       band_d_2024: 1751.0,
       band_d_2023: 1667.0,
+      band_d_2022: 1556.84,
+      band_d_2021: 1497.11,
     },
     budget: {
       education: 197306.0,
@@ -7754,6 +8436,8 @@ export const councils: Council[] = [
       band_d_2025: 2189.0,
       band_d_2024: 2085.0,
       band_d_2023: 1985.0,
+      band_d_2022: 1927.84,
+      band_d_2021: 1871.87,
     },
     budget: {
       education: 251826.0,
@@ -7780,6 +8464,8 @@ export const councils: Council[] = [
       band_d_2025: 1787.0,
       band_d_2024: 1702.0,
       band_d_2023: 1621.0,
+      band_d_2022: 1544.35,
+      band_d_2021: 1499.51,
     },
     budget: {
       education: 291482.0,
@@ -7806,6 +8492,8 @@ export const councils: Council[] = [
       band_d_2025: 507.0,
       band_d_2024: 497.0,
       band_d_2023: 487.0,
+      band_d_2022: 476.96,
+      band_d_2021: 481.78,
     },
     budget: {
       education: 207110.0,
@@ -7832,6 +8520,8 @@ export const councils: Council[] = [
       band_d_2025: 1909.0,
       band_d_2024: 1818.0,
       band_d_2023: 1732.0,
+      band_d_2022: 1614.39,
+      band_d_2021: 1567.67,
     },
     budget: {
       education: 143257.0,
@@ -7858,6 +8548,8 @@ export const councils: Council[] = [
       band_d_2025: 230.0,
       band_d_2024: 222.0,
       band_d_2023: 214.0,
+      band_d_2022: 176.86,
+      band_d_2021: 176.86,
     },
   },
   {
@@ -7869,6 +8561,8 @@ export const councils: Council[] = [
       band_d_2025: 1823.0,
       band_d_2024: 1736.0,
       band_d_2023: 1654.0,
+      band_d_2022: 1590.93,
+      band_d_2021: 1533.51,
     },
     budget: {
       education: 378734.0,
@@ -7895,6 +8589,8 @@ export const councils: Council[] = [
       band_d_2025: 309.0,
       band_d_2024: 300.0,
       band_d_2023: 291.0,
+      band_d_2022: 282.41,
+      band_d_2021: 278.24,
     },
     budget: {
       education: 0.0,
@@ -7921,6 +8617,8 @@ export const councils: Council[] = [
       band_d_2025: 300.0,
       band_d_2024: 289.0,
       band_d_2023: 277.0,
+      band_d_2022: 195.79,
+      band_d_2021: 190.79,
     },
     budget: {
       education: 0.0,
@@ -7947,6 +8645,8 @@ export const councils: Council[] = [
       band_d_2025: 362.0,
       band_d_2024: 345.0,
       band_d_2023: 325.0,
+      band_d_2022: 202.44,
+      band_d_2021: 197.44,
     },
     budget: {
       education: 0.0,
@@ -7973,6 +8673,8 @@ export const councils: Council[] = [
       band_d_2025: 299.0,
       band_d_2024: 288.0,
       band_d_2023: 277.0,
+      band_d_2022: 224.1,
+      band_d_2021: 219.15,
     },
     budget: {
       education: 0.0,
@@ -7999,6 +8701,8 @@ export const councils: Council[] = [
       band_d_2025: 2013.0,
       band_d_2024: 1913.0,
       band_d_2023: 1817.0,
+      band_d_2022: 1660.26,
+      band_d_2021: 1596.51,
     },
     budget: {
       education: 146017.0,
@@ -8025,6 +8729,8 @@ export const councils: Council[] = [
       band_d_2025: 380.0,
       band_d_2024: 367.0,
       band_d_2023: 354.0,
+      band_d_2022: 246.63,
+      band_d_2021: 241.63,
     },
     budget: {
       education: 0.0,
@@ -8051,6 +8757,8 @@ export const councils: Council[] = [
       band_d_2025: 259.0,
       band_d_2024: 252.0,
       band_d_2023: 244.0,
+      band_d_2022: 218.39,
+      band_d_2021: 213.39,
     },
     budget: {
       education: 0.0,
@@ -8077,6 +8785,8 @@ export const councils: Council[] = [
       band_d_2025: 336.0,
       band_d_2024: 326.0,
       band_d_2023: 316.0,
+      band_d_2022: 227.74,
+      band_d_2021: 222.74,
     },
     budget: {
       education: 0.0,
@@ -8103,6 +8813,8 @@ export const councils: Council[] = [
       band_d_2025: 1962.0,
       band_d_2024: 1869.0,
       band_d_2023: 1779.0,
+      band_d_2022: 1613.23,
+      band_d_2021: 1566.39,
     },
     budget: {
       education: 233820.0,
@@ -8129,6 +8841,8 @@ export const councils: Council[] = [
       band_d_2025: 249.0,
       band_d_2024: 231.0,
       band_d_2023: 218.0,
+      band_d_2022: 114.38,
+      band_d_2021: 109.38,
     },
     budget: {
       education: 0.0,
@@ -8155,6 +8869,8 @@ export const councils: Council[] = [
       band_d_2025: 304.0,
       band_d_2024: 293.0,
       band_d_2023: 282.0,
+      band_d_2022: 187.11,
+      band_d_2021: 182.11,
     },
     budget: {
       education: 0.0,
@@ -8181,6 +8897,8 @@ export const councils: Council[] = [
       band_d_2025: 1801.0,
       band_d_2024: 1715.0,
       band_d_2023: 1633.0,
+      band_d_2022: 1555.74,
+      band_d_2021: 1510.56,
     },
     budget: {
       education: 658759.0,
@@ -8207,6 +8925,8 @@ export const councils: Council[] = [
       band_d_2025: 529.0,
       band_d_2024: 504.0,
       band_d_2023: 480.0,
+      band_d_2022: 468.96,
+      band_d_2021: 464.37,
     },
     budget: {
       education: 123750.0,
@@ -8233,6 +8953,8 @@ export const councils: Council[] = [
       band_d_2025: 1967.0,
       band_d_2024: 1874.0,
       band_d_2023: 1785.0,
+      band_d_2022: null,
+      band_d_2021: null,
     },
     budget: {
       education: 168705.0,
@@ -8259,6 +8981,8 @@ export const councils: Council[] = [
       band_d_2025: 1632.0,
       band_d_2024: 1554.0,
       band_d_2023: 1480.0,
+      band_d_2022: 1409.24,
+      band_d_2021: 1368.33,
     },
     budget: {
       education: 304434.0,
@@ -8285,6 +9009,8 @@ export const councils: Council[] = [
       band_d_2025: 2068.0,
       band_d_2024: 1974.0,
       band_d_2023: 1876.0,
+      band_d_2022: 1638.16,
+      band_d_2021: 1590.6,
     },
     budget: {
       education: 333257.0,
@@ -8311,6 +9037,8 @@ export const councils: Council[] = [
       band_d_2025: 278.0,
       band_d_2024: 265.0,
       band_d_2023: 255.0,
+      band_d_2022: 172.7,
+      band_d_2021: 168.23,
     },
     budget: {
       education: 0.0,
@@ -8337,6 +9065,8 @@ export const councils: Council[] = [
       band_d_2025: 1454.0,
       band_d_2024: 1333.0,
       band_d_2023: 1269.0,
+      band_d_2022: 1182.93,
+      band_d_2021: 1148.75,
     },
     budget: {
       education: 100762.0,
@@ -8363,6 +9093,8 @@ export const councils: Council[] = [
       band_d_2025: 1982.0,
       band_d_2024: 1888.0,
       band_d_2023: 1798.0,
+      band_d_2022: 1713,
+      band_d_2021: 1663.27,
     },
     budget: {
       education: 260457.0,
@@ -8389,6 +9121,8 @@ export const councils: Council[] = [
       band_d_2025: 298.0,
       band_d_2024: 289.0,
       band_d_2023: 263.0,
+      band_d_2022: 255.46,
+      band_d_2021: 250.46,
     },
     budget: {
       education: 0.0,
@@ -8415,6 +9149,8 @@ export const councils: Council[] = [
       band_d_2025: 2007.0,
       band_d_2024: 1912.0,
       band_d_2023: 1822.0,
+      band_d_2022: 1668.58,
+      band_d_2021: 1620.14,
     },
     budget: {
       education: 126203.0,
@@ -8441,6 +9177,8 @@ export const councils: Council[] = [
       band_d_2025: 2104.0,
       band_d_2024: 2004.0,
       band_d_2023: 1909.0,
+      band_d_2022: 1818.27,
+      band_d_2021: 1765.49,
     },
     budget: {
       education: 191975.0,
@@ -8467,6 +9205,8 @@ export const councils: Council[] = [
       band_d_2025: 225.0,
       band_d_2024: 218.0,
       band_d_2023: 212.0,
+      band_d_2022: 200.88,
+      band_d_2021: 195.88,
     },
     budget: {
       education: 0.0,
@@ -8493,6 +9233,8 @@ export const councils: Council[] = [
       band_d_2025: 1616.0,
       band_d_2024: 1539.0,
       band_d_2023: 1466.0,
+      band_d_2022: 1396.78,
+      band_d_2021: 1343.83,
     },
     budget: {
       education: 336480.0,
@@ -8519,6 +9261,8 @@ export const councils: Council[] = [
       band_d_2025: 276.0,
       band_d_2024: 268.0,
       band_d_2023: 260.0,
+      band_d_2022: 252.36,
+      band_d_2021: 247.41,
     },
     budget: {
       education: 0.0,
@@ -8545,6 +9289,8 @@ export const councils: Council[] = [
       band_d_2025: 192.0,
       band_d_2024: 187.0,
       band_d_2023: 178.0,
+      band_d_2022: 121.45,
+      band_d_2021: 121.4,
     },
     budget: {
       education: 0.0,
@@ -8571,6 +9317,8 @@ export const councils: Council[] = [
       band_d_2025: 263.0,
       band_d_2024: 252.0,
       band_d_2023: 243.0,
+      band_d_2022: 214.74,
+      band_d_2021: 209.74,
     },
     budget: {
       education: 0.0,
@@ -8597,6 +9345,8 @@ export const councils: Council[] = [
       band_d_2025: 318.0,
       band_d_2024: 301.0,
       band_d_2023: 287.0,
+      band_d_2022: 229.34,
+      band_d_2021: 224.34,
     },
     budget: {
       education: 0.0,
@@ -8623,6 +9373,8 @@ export const councils: Council[] = [
       band_d_2025: 1747.0,
       band_d_2024: 1663.0,
       band_d_2023: 1584.0,
+      band_d_2022: 1495.78,
+      band_d_2021: 1452.36,
     },
     budget: {
       education: 101920.0,
@@ -8789,9 +9541,19 @@ export function getCouncilPopulation(councilName: string): number | undefined {
     .replace(' City Council', '')
     .replace(', City of', '')
     .replace(' UA', '')
+    .replace(' & ', ' and ') // Handle ampersand variations
     .trim();
 
-  return populationData[normalizedName];
+  if (populationData[normalizedName]) {
+    return populationData[normalizedName];
+  }
+
+  // Also try replacing 'and' with '&' for reverse matching
+  const ampersandName = councilName
+    .replace(' and ', ' & ')
+    .trim();
+
+  return populationData[ampersandName];
 }
 
 // Efficiency metrics calculations

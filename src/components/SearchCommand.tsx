@@ -10,11 +10,11 @@ import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 
 interface SearchCommandProps {
-  mobileOnly?: boolean;
-  size?: 'default' | 'lg';
+  /** Always show the desktop-style button (for sticky nav) */
+  forceDesktopStyle?: boolean;
 }
 
-export default function SearchCommand({ mobileOnly = false, size = 'default' }: SearchCommandProps) {
+export default function SearchCommand({ forceDesktopStyle = false }: SearchCommandProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -61,10 +61,8 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
   // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      // Longer delay for mobile browsers to ensure overlay is fully rendered
       const timer = setTimeout(() => {
         inputRef.current?.focus();
-        // Double-tap focus for stubborn mobile browsers
         requestAnimationFrame(() => {
           inputRef.current?.focus();
         });
@@ -98,7 +96,6 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
     setSelectedCouncil(council);
     setSearchQuery('');
     setIsOpen(false);
-    // Navigate to SEO-friendly URL
     const slug = getCouncilSlug(council);
     router.push(`/council/${slug}`);
   }, [setSelectedCouncil, router]);
@@ -129,59 +126,77 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
     setSearchQuery(e.target.value);
   }, []);
 
-  // Don't render anything if on homepage without council
-  if (isHomepageWithoutCouncil && !mobileOnly) return null;
-  if (isHomepageWithoutCouncil && mobileOnly) return null;
-
-  const isMobile = mobileOnly;
-  const isLarge = size === 'lg';
+  // Don't render on homepage without council selected (unless forced for sticky nav)
+  if (isHomepageWithoutCouncil && !forceDesktopStyle) return null;
 
   return (
     <>
-      {mobileOnly ? (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsOpen(true)}
-          className={`sm:hidden ${isLarge ? 'h-11 w-11' : 'h-9 w-9'}`}
-        >
-          <Search className={isLarge ? 'h-6 w-6' : 'h-4 w-4'} />
-        </Button>
-      ) : (
+      {forceDesktopStyle ? (
+        /* Always show desktop-style button (for sticky nav) - same width as main nav */
         <Button
           variant="outline"
           size="sm"
           onClick={() => setIsOpen(true)}
-          className="flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[200px]"
+          className="flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[180px]"
         >
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4" />
-            <span className="text-sm">Search</span>
+            <span className="text-sm">Find council</span>
           </div>
-          <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground flex">
+          <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground hidden sm:flex">
             F
           </kbd>
         </Button>
+      ) : (
+        <>
+          {/* Desktop: Text button with keyboard hint */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsOpen(true)}
+            className="hidden sm:flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[180px]"
+          >
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              <span className="text-sm">Find council</span>
+            </div>
+            <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground flex">
+              F
+            </kbd>
+          </Button>
+
+          {/* Mobile: Icon button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(true)}
+            className="sm:hidden h-11 w-11"
+            aria-label="Search councils"
+          >
+            <Search className="h-6 w-6" />
+          </Button>
+        </>
       )}
 
+      {/* Search overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-50">
           <div
             className="fixed inset-0 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
           />
-          <div className={`fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 ${isMobile ? 'top-4' : 'top-[20%]'}`}>
+          <div className="fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 top-4 sm:top-[20%]">
             <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
               <div className="flex items-center border-b px-4">
-                <Search className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'} text-muted-foreground shrink-0`} />
+                <Search className="h-5 w-5 text-muted-foreground shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Search for a council..."
+                  placeholder="Find your council..."
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  className={`flex-1 ${isMobile ? 'h-14' : 'h-12'} text-base px-3 bg-transparent outline-none placeholder:text-muted-foreground`}
+                  className="flex-1 h-14 text-base px-3 bg-transparent outline-none placeholder:text-muted-foreground"
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
@@ -191,13 +206,13 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
                   variant="ghost"
                   size="icon"
                   onClick={closeSearch}
-                  className={`${isMobile ? 'h-10 w-10' : 'h-8 w-8'} shrink-0 cursor-pointer`}
+                  className="h-10 w-10 shrink-0 cursor-pointer"
                 >
-                  <X className={isMobile ? 'h-5 w-5' : 'h-4 w-4'} />
+                  <X className="h-5 w-5" />
                 </Button>
               </div>
 
-              <div ref={listRef} className={`${isMobile ? 'max-h-[60vh]' : 'max-h-[300px]'} overflow-y-auto p-2`}>
+              <div ref={listRef} className="max-h-[60vh] sm:max-h-[300px] overflow-y-auto p-2">
                 {filteredCouncils.length > 0 ? (
                   <div className="space-y-1">
                     {filteredCouncils.map((council, index) => (
@@ -206,7 +221,7 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
                         council={council}
                         isHighlighted={index === highlightedIndex}
                         onSelect={handleSelect}
-                        showBadge={!isMobile}
+                        showBadge
                       />
                     ))}
                   </div>
@@ -217,23 +232,22 @@ export default function SearchCommand({ mobileOnly = false, size = 'default' }: 
                 )}
               </div>
 
-              {!isMobile && (
-                <div className="border-t px-4 py-2 text-sm text-muted-foreground flex items-center gap-4">
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
-                    to navigate
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
-                    to select
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
-                    to close
-                  </span>
-                </div>
-              )}
+              {/* Keyboard hints - hidden on mobile */}
+              <div className="hidden sm:flex border-t px-4 py-2 text-sm text-muted-foreground items-center gap-4">
+                <span className="flex items-center gap-1">
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
+                  to navigate
+                </span>
+                <span className="flex items-center gap-1">
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
+                  to select
+                </span>
+                <span className="flex items-center gap-1">
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
+                  to close
+                </span>
+              </div>
             </div>
           </div>
         </div>

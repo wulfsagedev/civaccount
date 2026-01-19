@@ -60,7 +60,7 @@ export function ThemeToggle({ size = 'default' }: ThemeToggleProps) {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className={`cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors ${isLarge ? 'h-11 w-11' : 'h-9 w-9'}`}
+      className={isLarge ? 'h-11 w-11' : ''}
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
     >
       {isDark ? (
