@@ -88,7 +88,7 @@ export default function FeedbackModal() {
         <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-12 gap-4">
-              <CheckCircle className="h-12 w-12 text-green-500" />
+              <CheckCircle className="h-12 w-12 text-positive" />
               <div className="text-center">
                 <h3 className="font-semibold text-lg">Thank you!</h3>
                 <p className="text-sm text-muted-foreground">Your feedback has been sent.</p>

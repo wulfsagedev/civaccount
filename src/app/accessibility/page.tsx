@@ -128,8 +128,8 @@ export default function AccessibilityPage() {
               </div>
 
               {/* Standards Compliance */}
-              <div className="card-elevated p-8">
-                <h2 className="text-xl font-semibold mb-6">Our standards</h2>
+              <div className="card-elevated p-6 sm:p-8">
+                <h2 className="type-title-2 mb-6">Our standards</h2>
                 <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
                   We believe everyone should be able to understand how their council spends money.
                   That means building a site that works for people with visual, motor, auditory,
@@ -138,7 +138,7 @@ export default function AccessibilityPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {standards.map((standard) => (
                     <div key={standard.name} className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
-                      <CheckCircle className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                      <CheckCircle className="h-4 w-4 shrink-0 text-positive" />
                       <span className="text-sm font-medium">{standard.name}</span>
                     </div>
                   ))}
@@ -147,7 +147,7 @@ export default function AccessibilityPage() {
 
               {/* Features Grid */}
               <div className="space-y-6">
-                <h2 className="text-xl font-semibold">Accessibility features</h2>
+                <h2 className="type-title-2">Accessibility features</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {accessibilityFeatures.map((feature) => {
                     const Icon = feature.icon;
@@ -179,13 +179,13 @@ export default function AccessibilityPage() {
               </div>
 
               {/* Testing */}
-              <div className="card-elevated p-8">
+              <div className="card-elevated p-6 sm:p-8">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
                     <Smartphone className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold mb-2">How we test</h2>
+                    <h2 className="type-title-2 mb-2">How we test</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                       We regularly test CivAccount using:
                     </p>

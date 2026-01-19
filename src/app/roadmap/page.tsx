@@ -40,7 +40,7 @@ const roadmapItems: RoadmapPhase[] = [
     phase: "Phase 1",
     title: "Foundation",
     status: "completed",
-    quarter: "Q4 2024 - Q1 2025",
+    quarter: "Q3-Q4 2025",
     items: [
       { text: "Launch with all 324 English councils", completed: true },
       { text: "Council tax data for 2025-26", completed: true },
@@ -56,7 +56,7 @@ const roadmapItems: RoadmapPhase[] = [
     phase: "Phase 2",
     title: "Data depth",
     status: "in_progress",
-    quarter: "Q1 2025",
+    quarter: "Q1 2026",
     items: [
       { text: "Individual council data sourcing", completed: false, description: "Link each data point to its original council source document" },
       { text: "Historical data (5 year trends)", completed: false, description: "Track council tax and spending changes over time" },
@@ -69,7 +69,7 @@ const roadmapItems: RoadmapPhase[] = [
     phase: "Phase 3",
     title: "Verification",
     status: "planned",
-    quarter: "Q2 2025",
+    quarter: "Q2 2026",
     items: [
       { text: "Direct links to source documents", completed: false, description: "Every figure links back to official council PDFs and spreadsheets" },
       { text: "Council budget document library", completed: false, description: "Archive of council Medium Term Financial Plans and budget reports" },
@@ -82,7 +82,7 @@ const roadmapItems: RoadmapPhase[] = [
     phase: "Phase 4",
     title: "Insights",
     status: "planned",
-    quarter: "Q3 2025",
+    quarter: "Q3 2026",
     items: [
       { text: "Council performance comparisons", completed: false, description: "Compare similar councils on key metrics" },
       { text: "Value for money analysis", completed: false, description: "What you get for your council tax compared to others" },
@@ -95,7 +95,7 @@ const roadmapItems: RoadmapPhase[] = [
     phase: "Phase 5",
     title: "Expansion",
     status: "planned",
-    quarter: "2026",
+    quarter: "Q4 2026",
     items: [
       { text: "Wales councils", completed: false, description: "Expand coverage to all Welsh local authorities" },
       { text: "Scotland councils", completed: false, description: "Include Scottish council data with different tax bands" },
@@ -110,13 +110,13 @@ const getStatusBadge = (status: string) => {
   switch (status) {
     case 'completed':
       return (
-        <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
+        <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
           Completed
         </Badge>
       );
     case 'in_progress':
       return (
-        <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800">
+        <Badge variant="outline" className="text-xs bg-muted text-foreground border-border">
           In progress
         </Badge>
       );
@@ -179,16 +179,16 @@ export default function RoadmapPage() {
               </div>
 
               {/* Current Focus */}
-              <div className="card-elevated p-8">
+              <div className="card-elevated p-6 sm:p-8">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center">
-                    <Sparkles className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                    <Sparkles className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <h2 className="text-xl font-semibold">Current focus</h2>
-                      <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800">
-                        Q1 2025
+                      <h2 className="type-title-2">Current focus</h2>
+                      <Badge variant="outline" className="text-xs">
+                        Q1 2026
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">Data depth and individual council sourcing</p>
@@ -242,22 +242,18 @@ export default function RoadmapPage() {
                   const isInProgress = phase.status === 'in_progress';
 
                   return (
-                    <div key={phase.phase} className="card-elevated p-8">
+                    <div key={phase.phase} className="card-elevated p-6 sm:p-8">
                       <div className="flex items-start justify-between mb-6">
                         <div className="flex items-center gap-4">
                           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                             isCompleted
-                              ? 'bg-emerald-50 dark:bg-emerald-950/30'
-                              : isInProgress
-                                ? 'bg-amber-50 dark:bg-amber-950/30'
-                                : 'bg-muted'
+                              ? 'bg-navy-50 dark:bg-navy-950/30'
+                              : 'bg-muted'
                           }`}>
                             <PhaseIcon className={`h-5 w-5 ${
                               isCompleted
-                                ? 'text-emerald-600 dark:text-emerald-400'
-                                : isInProgress
-                                  ? 'text-amber-600 dark:text-amber-400'
-                                  : 'text-muted-foreground'
+                                ? 'text-navy-600 dark:text-navy-400'
+                                : 'text-muted-foreground'
                             }`} />
                           </div>
                           <div>
@@ -274,7 +270,7 @@ export default function RoadmapPage() {
                         {phase.items.map((item, itemIndex) => (
                           <li key={itemIndex} className="flex items-start gap-3">
                             {item.completed ? (
-                              <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                              <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-positive" />
                             ) : (
                               <Circle className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
                             )}

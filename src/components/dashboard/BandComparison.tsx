@@ -94,7 +94,7 @@ const BandComparison = () => {
 
   if (!selectedCouncil) {
     return (
-      <div className="card-elevated p-8 text-center">
+      <div className="card-elevated p-6 sm:p-8 text-center">
         <p className="text-muted-foreground">Please select a council to view comparisons.</p>
       </div>
     );
@@ -102,7 +102,7 @@ const BandComparison = () => {
 
   if (!selectedCouncil.council_tax) {
     return (
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-center gap-3 text-muted-foreground">
           <Info className="h-5 w-5" />
           <p>Council tax comparison data not available for {selectedCouncil.name}.</p>
@@ -114,11 +114,11 @@ const BandComparison = () => {
   return (
     <div className="space-y-8">
       {/* Comparison Type Selector */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-center gap-3 mb-6">
           <Scale className="h-5 w-5 text-muted-foreground" />
           <div>
-            <h2 className="text-xl font-semibold">Compare {selectedCouncil.name}</h2>
+            <h2 className="text-lg sm:text-xl font-semibold">Compare {selectedCouncil.name}</h2>
             <p className="text-sm text-muted-foreground">
               See how this council compares with others
             </p>
@@ -179,12 +179,12 @@ const BandComparison = () => {
 
       {/* Council Comparison */}
       {selectedComparison === 'councils' && (
-        <div className="card-elevated p-8">
+        <div className="card-elevated p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <MapPin className="h-5 w-5 text-muted-foreground" />
               <div>
-                <h2 className="text-xl font-semibold">Similar {COUNCIL_TYPE_NAMES[selectedCouncil.type]}s</h2>
+                <h2 className="text-lg sm:text-xl font-semibold">Similar {COUNCIL_TYPE_NAMES[selectedCouncil.type]}s</h2>
                 <p className="text-sm text-muted-foreground">
                   Band D council tax rates for councils of the same type
                 </p>
@@ -209,7 +209,7 @@ const BandComparison = () => {
                   <div className="flex items-center gap-2 mb-1">
                     <CheckCircle className="h-4 w-4 shrink-0 text-stone-400" />
                     <h3 className="font-semibold text-sm sm:text-base">{selectedCouncil.name}</h3>
-                    <Badge variant="outline" className="text-xs bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800">Selected</Badge>
+                    <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">Selected</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">{selectedCouncil.type_name}</p>
                 </div>
@@ -264,11 +264,11 @@ const BandComparison = () => {
       {/* Rankings */}
       {selectedComparison === 'ranking' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
               <TrendingUp className="h-5 w-5 text-muted-foreground" />
               <div>
-                <h2 className="text-xl font-semibold">Highest council tax</h2>
+                <h2 className="text-lg sm:text-xl font-semibold">Highest council tax</h2>
                 <p className="text-sm text-muted-foreground">Top 5 {COUNCIL_TYPE_NAMES[selectedCouncil.type]}s</p>
               </div>
             </div>
@@ -287,7 +287,7 @@ const BandComparison = () => {
                       </div>
                       <div>
                         <p className="font-medium text-sm">{council.name}</p>
-                        {isSelected && <Badge variant="outline" className="text-xs mt-1 bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800">Your council</Badge>}
+                        {isSelected && <Badge variant="outline" className="text-xs mt-1 bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">Your council</Badge>}
                       </div>
                     </div>
                     <span className="font-bold tabular-nums">
@@ -299,11 +299,11 @@ const BandComparison = () => {
             </div>
           </div>
 
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
               <TrendingDown className="h-5 w-5 text-muted-foreground" />
               <div>
-                <h2 className="text-xl font-semibold">Lowest council tax</h2>
+                <h2 className="text-lg sm:text-xl font-semibold">Lowest council tax</h2>
                 <p className="text-sm text-muted-foreground">Bottom 5 {COUNCIL_TYPE_NAMES[selectedCouncil.type]}s</p>
               </div>
             </div>
@@ -322,7 +322,7 @@ const BandComparison = () => {
                       </div>
                       <div>
                         <p className="font-medium text-sm">{council.name}</p>
-                        {isSelected && <Badge variant="outline" className="text-xs mt-1 bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800">Your council</Badge>}
+                        {isSelected && <Badge variant="outline" className="text-xs mt-1 bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">Your council</Badge>}
                       </div>
                     </div>
                     <span className="font-bold tabular-nums">
@@ -338,11 +338,11 @@ const BandComparison = () => {
 
       {/* Averages Comparison */}
       {selectedComparison === 'averages' && averages && (
-        <div className="card-elevated p-8">
+        <div className="card-elevated p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
             <Calculator className="h-5 w-5 text-muted-foreground" />
             <div>
-              <h2 className="text-xl font-semibold">How {selectedCouncil.name} compares</h2>
+              <h2 className="text-lg sm:text-xl font-semibold">How {selectedCouncil.name} compares</h2>
               <p className="text-sm text-muted-foreground">
                 Comparison with average rates
               </p>
@@ -390,11 +390,11 @@ const BandComparison = () => {
 
       {/* Historical Comparison */}
       {selectedComparison === 'historical' && (
-        <div className="card-elevated p-8">
+        <div className="card-elevated p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
             <Clock className="h-5 w-5 text-muted-foreground" />
             <div>
-              <h2 className="text-xl font-semibold">Council tax history</h2>
+              <h2 className="text-lg sm:text-xl font-semibold">Council tax history</h2>
               <p className="text-sm text-muted-foreground">
                 How {selectedCouncil.name}&apos;s Band D rate has changed
               </p>
@@ -402,28 +402,100 @@ const BandComparison = () => {
           </div>
 
           {historicalData.length > 1 ? (
-            <div className="space-y-4">
-              {historicalData.map((item, index) => (
-                <div key={item.year} className={`p-5 border rounded-xl ${index === historicalData.length - 1 ? 'border-foreground/20 bg-muted/30' : 'border-border/50'}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">{item.year}</h3>
-                      {index === historicalData.length - 1 && (
-                        <Badge variant="outline" className="text-xs mt-1 bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800">Current</Badge>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold tabular-nums">{formatCurrency(item.bandD, { decimals: 2 })}</div>
-                      {item.increase !== null && (
-                        <Badge variant="outline" className="text-xs">
-                          {item.increase > 0 ? '+' : ''}{item.increase.toFixed(1)}%
-                        </Badge>
-                      )}
+            <div className="space-y-6">
+              {/* Line Graph */}
+              {(() => {
+                const values = historicalData.map(d => d.bandD);
+                const minValue = Math.min(...values);
+                const maxValue = Math.max(...values);
+                const padding = (maxValue - minValue) * 0.15 || 10;
+                const chartMin = minValue - padding;
+                const chartMax = maxValue + padding;
+                const chartHeight = 160;
+                const chartWidth = 100; // percentage
+
+                // Calculate points for the line
+                const points = historicalData.map((item, index) => {
+                  const x = historicalData.length === 1 ? 50 : (index / (historicalData.length - 1)) * 100;
+                  const y = chartHeight - ((item.bandD - chartMin) / (chartMax - chartMin)) * chartHeight;
+                  return { x, y, ...item };
+                });
+
+                // Create SVG path
+                const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+
+                // Create area path (for gradient fill)
+                const areaPath = `${linePath} L ${points[points.length - 1].x} ${chartHeight} L ${points[0].x} ${chartHeight} Z`;
+
+                return (
+                  <div className="relative">
+                    <svg
+                      viewBox={`0 0 100 ${chartHeight}`}
+                      preserveAspectRatio="none"
+                      className="w-full h-40"
+                    >
+                      {/* Gradient definition */}
+                      <defs>
+                        <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" className="[stop-color:hsl(var(--foreground))] [stop-opacity:0.1]" />
+                          <stop offset="100%" className="[stop-color:hsl(var(--foreground))] [stop-opacity:0]" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Area fill */}
+                      <path
+                        d={areaPath}
+                        fill="url(#areaGradient)"
+                      />
+
+                      {/* Line */}
+                      <path
+                        d={linePath}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-foreground"
+                        vectorEffect="non-scaling-stroke"
+                      />
+
+                      {/* Data points */}
+                      {points.map((point, index) => (
+                        <circle
+                          key={point.year}
+                          cx={point.x}
+                          cy={point.y}
+                          r="4"
+                          className={index === points.length - 1 ? 'fill-foreground' : 'fill-background stroke-foreground'}
+                          strokeWidth="2"
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      ))}
+                    </svg>
+
+                    {/* X-axis labels */}
+                    <div className="flex justify-between mt-3">
+                      {historicalData.map((item, index) => (
+                        <div key={item.year} className="text-center">
+                          <p className="text-sm font-medium">{item.year}</p>
+                          <p className="text-lg font-bold tabular-nums">{formatCurrency(item.bandD, { decimals: 2 })}</p>
+                          {item.increase !== null && (
+                            <p className="text-xs text-muted-foreground tabular-nums">
+                              {item.increase > 0 ? '+' : ''}{item.increase.toFixed(1)}%
+                            </p>
+                          )}
+                          {index === historicalData.length - 1 && (
+                            <Badge variant="outline" className="text-xs mt-1 bg-navy-50 text-navy-600 border-navy-200">Current</Badge>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })()}
 
+              {/* Summary */}
               {historicalData.length >= 2 && (
                 <div className="p-5 bg-muted/30 rounded-xl">
                   <h4 className="font-semibold mb-3">Total change</h4>

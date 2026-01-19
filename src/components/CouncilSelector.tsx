@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Search, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CouncilResultItem } from '@/components/ui/council-result-item';
@@ -14,10 +13,9 @@ import { SELECTOR_RESULT_LIMIT, CARD_STYLES, CARD_PADDING } from '@/lib/utils';
 interface CouncilSelectorProps {
   onSelect?: (council: Council) => void;
   variant?: 'homepage' | 'dashboard';
-  explainerText?: string;
 }
 
-export default function CouncilSelector({ onSelect, variant = 'homepage', explainerText }: CouncilSelectorProps) {
+export default function CouncilSelector({ onSelect, variant = 'homepage' }: CouncilSelectorProps) {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -79,11 +77,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     }
   }, [filteredCouncils, highlightedIndex, handleSelect]);
 
-  const handleBackToSearch = useCallback(() => {
-    setSelectedCouncil(null);
-    setSearchQuery('');
-  }, [setSelectedCouncil]);
-
   const autocompleteSuggestion = useMemo(() => {
     if (!searchQuery || filteredCouncils.length === 0) return '';
     const firstMatch = getCouncilDisplayName(filteredCouncils[0]);
@@ -93,99 +86,29 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
     return '';
   }, [searchQuery, filteredCouncils]);
 
-  // Selected council header (dashboard only)
+  // Selected council header (dashboard only) - minimal, just context
   if (selectedCouncil && variant === 'dashboard') {
     const displayName = getCouncilDisplayName(selectedCouncil);
-    const bandDAmount = selectedCouncil.council_tax
-      ? formatCurrency(selectedCouncil.council_tax.band_d_2025, { decimals: 2 })
-      : null;
-
-    // Calculate full bill if precepts available
-    const hasFullBill = selectedCouncil.detailed?.total_band_d;
-    const fullBillAmount = hasFullBill
-      ? formatCurrency(selectedCouncil.detailed!.total_band_d!, { decimals: 2 })
-      : null;
-
-    // Get what this council type is responsible for
-    const getResponsibilities = () => {
-      if (selectedCouncil.type === 'SD') {
-        return "Waste collection, recycling, housing, planning, parks, environmental health";
-      } else if (selectedCouncil.type === 'SC') {
-        return "Schools, social care, roads, libraries, public health";
-      } else if (selectedCouncil.type === 'LB' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'UA') {
-        return "All local services including social care, schools, roads, waste, housing, planning";
-      }
-      return null;
-    };
-
-    const responsibilities = getResponsibilities();
+    const hasVerifiedData = selectedCouncil.detailed?.total_band_d;
 
     return (
       <div className="w-full">
-        <Card className={CARD_STYLES}>
-          <CardContent className={CARD_PADDING}>
-            {/* Top row with badges and prominent change button */}
-            <div className="flex items-start justify-between gap-4 mb-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary" className="text-sm font-medium">
-                  {selectedCouncil.type_name}
-                </Badge>
-                <Badge variant="outline" className="text-sm font-medium">
-                  2025-26
-                </Badge>
-                {hasFullBill && (
-                  <Badge variant="outline" className="text-sm font-medium bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
-                    Verified
-                  </Badge>
-                )}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleBackToSearch}
-                className="flex items-center gap-2 shrink-0 cursor-pointer bg-muted/50 hover:bg-muted border-border/60 transition-colors"
-              >
-                <Search className="h-4 w-4" />
-                <span className="hidden sm:inline">Change council</span>
-                <span className="sm:hidden">Change</span>
-              </Button>
-            </div>
-
-            {/* Council name as prominent hero element */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight mb-4">
-              {displayName}
-            </h1>
-
-            {/* Key financial stats in a highlighted row */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-4 pb-4 border-b border-border/50">
-              {bandDAmount && (
-                <div>
-                  <p className="text-sm text-muted-foreground mb-0.5">This council&apos;s share</p>
-                  <p className="text-lg font-semibold text-foreground tabular-nums">{bandDAmount}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
-                </div>
-              )}
-              {fullBillAmount && (
-                <div>
-                  <p className="text-sm text-muted-foreground mb-0.5">Your full bill</p>
-                  <p className="text-lg font-semibold text-foreground tabular-nums">{fullBillAmount}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
-                </div>
-              )}
-            </div>
-
-            {/* What this council is responsible for */}
-            {responsibilities && (
-              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                <span className="font-medium text-foreground">Responsible for:</span> {responsibilities}
-              </p>
-            )}
-
-            {explainerText && (
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {explainerText}
-              </p>
-            )}
-          </CardContent>
-        </Card>
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+          <Badge variant="secondary" className="text-xs font-medium">
+            {selectedCouncil.type_name}
+          </Badge>
+          <Badge variant="outline" className="text-xs font-medium">
+            2025-26
+          </Badge>
+          {hasVerifiedData && (
+            <Badge variant="outline" className="text-xs font-medium bg-navy-50 text-navy-600 border-navy-200">
+              Verified
+            </Badge>
+          )}
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+          {displayName}
+        </h1>
       </div>
     );
   }
@@ -200,7 +123,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', explai
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search for your council..."
+              placeholder="Find your council..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}

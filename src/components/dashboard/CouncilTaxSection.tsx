@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Badge } from "@/components/ui/badge";
-import { Home, Calculator, CreditCard, Calendar, CheckCircle, AlertTriangle, Lightbulb, Info, TrendingUp, TrendingDown, ExternalLink, Building2, Shield, Flame, ArrowRight } from "lucide-react";
+import { Home, CheckCircle, Lightbulb, Info, TrendingUp, TrendingDown, ExternalLink, Building2, Shield, Flame, ArrowRight } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { calculateBands, getAverageBandDByType, formatCurrency } from '@/data/councils';
 
@@ -75,11 +75,11 @@ const CouncilTaxSection = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Primary Metric - Selected Band Amount */}
         <div className="lg:col-span-2">
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-overline mb-2">Band {selectedBand} Council Tax</p>
-                <p className="text-metric text-foreground">
+                <p className="type-overline mb-2">Band {selectedBand} Council Tax</p>
+                <p className="type-metric text-foreground">
                   {formatCurrency(councilTaxData.bands[selectedBand as keyof typeof councilTaxData.bands].amount, { decimals: 2 })}
                 </p>
               </div>
@@ -122,7 +122,7 @@ const CouncilTaxSection = () => {
 
         {/* Band Selector - Compact */}
         <div className="card-elevated p-6 flex flex-col">
-          <p className="text-overline mb-4">Select Your Band</p>
+          <p className="type-overline mb-4">Select Your Band</p>
           <div className="grid grid-cols-4 gap-2 flex-1">
             {Object.entries(councilTaxData.bands).map(([band, data]) => (
               <button
@@ -156,62 +156,17 @@ const CouncilTaxSection = () => {
         </div>
       </div>
 
-      {/* Historical Trend - Clean Timeline */}
-      {(councilTaxData.bandD_2024 || councilTaxData.bandD_2023) && (
-        <div className="card-elevated p-8">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">Band D rate history</h2>
-              <p className="text-sm text-muted-foreground">How {selectedCouncil.name}&apos;s council tax has changed</p>
-            </div>
-            <Badge variant="outline" className="text-xs">Band D</Badge>
-          </div>
-
-          <div className="space-y-4">
-            {/* Current year - highlighted */}
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-foreground" />
-                <span className="font-medium">2025-26</span>
-                <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800">Current</Badge>
-              </div>
-              <span className="text-xl font-semibold tabular-nums">{formatCurrency(councilTaxData.bandD, { decimals: 2 })}</span>
-            </div>
-
-            {councilTaxData.bandD_2024 && (
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
-                  <span className="text-muted-foreground">2024-25</span>
-                </div>
-                <span className="font-medium tabular-nums text-muted-foreground">{formatCurrency(councilTaxData.bandD_2024, { decimals: 2 })}</span>
-              </div>
-            )}
-
-            {councilTaxData.bandD_2023 && (
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-muted-foreground/20" />
-                  <span className="text-muted-foreground">2023-24</span>
-                </div>
-                <span className="font-medium tabular-nums text-muted-foreground">{formatCurrency(councilTaxData.bandD_2023, { decimals: 2 })}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Full Bill Breakdown - Only show if detailed data available */}
       {selectedCouncil.detailed?.precepts && selectedCouncil.detailed.precepts.length > 0 && (
-        <div className="card-elevated p-8">
-          <div className="flex items-start justify-between mb-8">
+        <div className="card-elevated p-6 sm:p-8">
+          <div className="flex items-start justify-between mb-6 sm:mb-8">
             <div>
-              <h2 className="text-xl font-semibold mb-1">Where your full bill goes</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-1">Where your full bill goes</h2>
               <p className="text-sm text-muted-foreground">
                 Your council tax is split between several organisations
               </p>
             </div>
-            <Badge variant="outline" className="text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
+            <Badge variant="outline" className="text-xs font-medium bg-navy-50 text-navy-600 border-navy-200">
               Verified
             </Badge>
           </div>
@@ -311,10 +266,10 @@ const CouncilTaxSection = () => {
       )}
 
       {/* All Bands Overview - Compact Table */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-xl font-semibold mb-1">All council tax bands</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-1">All council tax bands</h2>
             <p className="text-sm text-muted-foreground">
               {selectedCouncil.name}&apos;s rates for each property band
             </p>
@@ -364,8 +319,8 @@ const CouncilTaxSection = () => {
       </div>
 
       {/* Understanding Council Tax - Streamlined */}
-      <div className="card-elevated p-8">
-        <h2 className="text-xl font-semibold mb-6">How council tax works</h2>
+      <div className="card-elevated p-6 sm:p-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-6">How council tax works</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">

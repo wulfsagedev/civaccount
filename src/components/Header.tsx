@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,12 +8,16 @@ import { PulsingDot } from '@/components/ui/pulsing-dot';
 import { Landmark, Menu, X, BarChart3, Info, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
+import { getCouncilDisplayName } from '@/data/councils';
 import FeedbackModal from '@/components/FeatureRequestDialog';
+// import DonateModal from '@/components/DonateModal';
 import SearchCommand from '@/components/SearchCommand';
+import { cn } from '@/lib/utils';
 
 export default function Header() {
-  const { setSelectedCouncil } = useCouncil();
+  const { selectedCouncil, setSelectedCouncil } = useCouncil();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const handleLogoClick = () => {
     setSelectedCouncil(null);
@@ -28,13 +32,32 @@ export default function Header() {
     closeMobileMenu();
   };
 
-  // Consistent nav link styling - use fixed padding for uniform hover background size
-  const navLinkClass = "h-9 px-4 inline-flex items-center justify-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors cursor-pointer";
-  const mobileNavLinkClass = "h-11 px-3 inline-flex items-center text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer";
+  // const openDonate = () => {
+  //   document.dispatchEvent(new CustomEvent('open-donate'));
+  //   closeMobileMenu();
+  // };
+
+  // Simple threshold-based scroll detection
+  // Per NN/Group: avoid complex animations, use simple state changes
+  const handleScroll = useCallback(() => {
+    const scrolled = window.scrollY > 50;
+    setIsScrolled(scrolled);
+  }, []);
+
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+
+  // Nav item styling
+  const navLinkClass = 'inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-9 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer';
+  const mobileNavLinkClass = 'inline-flex items-center justify-start gap-2 whitespace-nowrap text-sm font-medium h-11 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer w-full';
 
   return (
     <>
-      <header className="border-b bg-background">
+      {/* Main header - always visible at top */}
+      <header className="border-b bg-background relative z-40">
         <div className="container mx-auto px-4 py-3 sm:px-6 max-w-7xl">
           <div className="flex items-center justify-between gap-4">
             {/* Left: Logo and version */}
@@ -48,7 +71,7 @@ export default function Header() {
               <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                 <PulsingDot size="md" />
                 <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-                  v1.4
+                  v1.4.2
                 </Badge>
               </Link>
             </div>
@@ -58,15 +81,15 @@ export default function Header() {
               <SearchCommand />
               <nav className="flex items-center gap-1 ml-2">
                 <Link href="/insights" className={navLinkClass}>
-                  <BarChart3 className="h-4 w-4 mr-1.5" />
+                  <BarChart3 className="h-4 w-4" />
                   Insights
                 </Link>
                 <Link href="/about" className={navLinkClass}>
-                  <Info className="h-4 w-4 mr-1.5" />
+                  <Info className="h-4 w-4" />
                   About
                 </Link>
                 <button type="button" onClick={openFeedback} className={navLinkClass}>
-                  <MessageSquare className="h-4 w-4 mr-1.5" />
+                  <MessageSquare className="h-4 w-4" />
                   Feedback
                 </button>
                 <ThemeToggle />
@@ -75,8 +98,8 @@ export default function Header() {
 
             {/* Right: Mobile Navigation */}
             <div className="flex sm:hidden items-center gap-1">
-              <SearchCommand mobileOnly size="lg" />
-              <ThemeToggle size="lg" />
+              <SearchCommand />
+              <ThemeToggle />
               <Button
                 variant="ghost"
                 size="icon"
@@ -93,35 +116,21 @@ export default function Header() {
           {mobileMenuOpen && (
             <div className="sm:hidden mt-4 pt-4 border-t">
               <nav className="flex flex-col gap-1">
-                <Link
-                  href="/insights"
-                  onClick={closeMobileMenu}
-                  className={mobileNavLinkClass}
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
+                <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                  <BarChart3 className="h-4 w-4" />
                   Insights
                 </Link>
-                <Link
-                  href="/about"
-                  onClick={closeMobileMenu}
-                  className={mobileNavLinkClass}
-                >
-                  <Info className="h-4 w-4 mr-2" />
+                <Link href="/about" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                  <Info className="h-4 w-4" />
                   About
                 </Link>
-                <Link
-                  href="/updates"
-                  onClick={closeMobileMenu}
-                  className="h-11 px-3 inline-flex items-center justify-between text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors cursor-pointer"
-                >
-                  <span>Updates</span>
-                  <div className="flex items-center gap-2">
-                    <PulsingDot size="md" />
-                    <Badge variant="outline" className="text-sm">v1.4</Badge>
-                  </div>
+                <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                  <PulsingDot size="md" />
+                  Updates
+                  <Badge variant="outline" className="text-sm ml-auto">v1.4.2</Badge>
                 </Link>
                 <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
-                  <MessageSquare className="h-4 w-4 mr-2" />
+                  <MessageSquare className="h-4 w-4" />
                   Feedback
                 </button>
               </nav>
@@ -130,8 +139,73 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Feedback Modal - rendered once, controlled via custom event */}
+      {/* Floating compact nav - slides in from top when scrolled */}
+      <div
+        className={cn(
+          'fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 pt-3',
+          'transition-all duration-300 ease-out',
+          isScrolled
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 -translate-y-full pointer-events-none'
+        )}
+      >
+        <div className="mx-auto" style={{ maxWidth: '845px' }}>
+          <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-background/95 backdrop-blur-xl border border-border/40 rounded-full shadow-lg">
+            {/* Left: Logo + Council name or version */}
+            <div className="flex items-center gap-3 shrink-0 min-w-0">
+              <Link
+                href="/"
+                onClick={handleLogoClick}
+                className="flex items-center justify-center w-9 h-9 bg-primary rounded-full cursor-pointer hover:opacity-80 transition-opacity shrink-0"
+                aria-label="CivAccount home"
+              >
+                <Landmark className="h-5 w-5 text-primary-foreground" />
+              </Link>
+
+              {selectedCouncil ? (
+                <p className="text-sm font-semibold truncate leading-tight hidden sm:block">
+                  {getCouncilDisplayName(selectedCouncil)}
+                </p>
+              ) : (
+                <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
+                  <PulsingDot size="md" />
+                  <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
+                    v1.4.2
+                  </Badge>
+                </Link>
+              )}
+            </div>
+
+            {/* Right: Search + Theme toggle */}
+            <div className="flex items-center gap-2 shrink-0">
+              <SearchCommand forceDesktopStyle />
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fade overlay - softly hides content behind floating header */}
+      <div
+        className={cn(
+          'fixed top-0 left-0 right-0 z-40 pointer-events-none',
+          'transition-opacity duration-300 ease-out',
+          isScrolled ? 'opacity-100' : 'opacity-0'
+        )}
+        style={{
+          height: '80px',
+          background: `linear-gradient(to bottom,
+            rgb(var(--background-rgb) / 0.95) 0%,
+            rgb(var(--background-rgb) / 0.8) 50%,
+            transparent 100%
+          )`,
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Modals */}
       <FeedbackModal />
+      {/* <DonateModal /> */}
     </>
   );
 }

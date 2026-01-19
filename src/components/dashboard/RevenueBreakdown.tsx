@@ -78,7 +78,7 @@ const RevenueBreakdown = () => {
 
   if (!selectedCouncil) {
     return (
-      <div className="card-elevated p-8 text-center">
+      <div className="card-elevated p-6 sm:p-8 text-center">
         <p className="text-muted-foreground">Please select a council to view revenue information.</p>
       </div>
     );
@@ -86,7 +86,7 @@ const RevenueBreakdown = () => {
 
   if (!revenueData) {
     return (
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-center gap-3 text-muted-foreground">
           <Info className="h-5 w-5" />
           <p>Revenue data not available for {selectedCouncil.name}.</p>
@@ -104,11 +104,11 @@ const RevenueBreakdown = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Primary Metric */}
         <div className="lg:col-span-2">
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-overline mb-2">Estimated Annual Revenue</p>
-                <p className="text-metric text-foreground">
+                <p className="type-overline mb-2">Estimated Annual Revenue</p>
+                <p className="type-metric text-foreground">
                   {formatBudget(totalRevenue / 1000)}
                 </p>
               </div>
@@ -124,7 +124,7 @@ const RevenueBreakdown = () => {
 
         {/* Revenue Stability Summary */}
         <div className="card-elevated p-6">
-          <p className="text-overline mb-4">Income Stability</p>
+          <p className="type-overline mb-4">Income Stability</p>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -152,57 +152,48 @@ const RevenueBreakdown = () => {
       </div>
 
       {/* Revenue Streams Bar Chart */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h2 className="text-xl font-semibold mb-1">Where the money comes from</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-1">Where the money comes from</h2>
             <p className="text-sm text-muted-foreground">
               Breakdown of {selectedCouncil.name}&apos;s funding sources
             </p>
           </div>
-          <Badge variant="outline" className="text-xs">2025-26</Badge>
+          <Badge variant="outline" className="text-xs">2024-25</Badge>
         </div>
 
-        <div className="space-y-4">
+        {/* Revenue breakdown - Monzo/Apple style */}
+        <div className="space-y-5">
           {streams.map((stream) => {
-            const StreamIcon = stream.icon;
             const barWidth = (stream.percentage / maxPercentage) * 100;
             const isHighStability = stream.stability === 'High';
 
             return (
-              <div key={stream.source} className="group">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                      <StreamIcon className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <span className="font-medium text-sm">{stream.source}</span>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <Badge variant="outline" className="text-xs font-normal">
-                          {stream.stability} stability
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground tabular-nums">
-                      {stream.percentage}%
-                    </span>
-                    <span className="font-semibold text-sm tabular-nums min-w-[70px] text-right">
-                      {formatBudget(stream.amount / 1000)}
-                    </span>
-                  </div>
+              <div key={stream.source}>
+                {/* Header row: source name + amount (Monzo pattern) */}
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className="type-body font-semibold">{stream.source}</span>
+                  <span className="type-body font-semibold tabular-nums">
+                    {formatBudget(stream.amount / 1000)}
+                  </span>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                {/* Description + percentage */}
+                <div className="flex items-baseline justify-between mb-2">
+                  <p className="type-caption text-muted-foreground">
+                    {stream.description}
+                  </p>
+                  <span className="type-caption text-muted-foreground tabular-nums">
+                    {stream.percentage}%
+                  </span>
+                </div>
+                {/* Bar - visual reinforcement */}
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ease-out ${isHighStability ? 'bg-foreground' : 'bg-stone-400 dark:bg-stone-500'}`}
+                    className={`h-full rounded-full transition-all duration-300 ${isHighStability ? 'bg-foreground' : 'bg-muted-foreground/40'}`}
                     style={{ width: `${barWidth}%` }}
                   />
                 </div>
-                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                  {stream.description}
-                </p>
               </div>
             );
           })}
@@ -260,10 +251,10 @@ const RevenueBreakdown = () => {
       </div>
 
       {/* Factors That Affect Council Tax */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-center gap-3 mb-6">
           <Lightbulb className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-xl font-semibold">Why council tax changes</h2>
+          <h2 className="text-lg sm:text-xl font-semibold">Why council tax changes</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

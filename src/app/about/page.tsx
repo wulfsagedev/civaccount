@@ -30,12 +30,12 @@ export default function AboutPage() {
             </div>
 
             {/* The Problem */}
-            <div className="card-elevated p-8 mb-8">
+            <div className="card-elevated p-6 sm:p-8 mb-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                   <FileText className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <h2 className="text-xl font-semibold">The problem</h2>
+                <h2 className="type-title-2">The problem</h2>
               </div>
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -67,12 +67,12 @@ export default function AboutPage() {
             </div>
 
             {/* Our Solution */}
-            <div className="card-elevated p-8 mb-8">
+            <div className="card-elevated p-6 sm:p-8 mb-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                   <Lightbulb className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <h2 className="text-xl font-semibold">What CivAccount does</h2>
+                <h2 className="type-title-2">What CivAccount does</h2>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 CivAccount brings together official UK government data into one place. We take the raw data
@@ -119,12 +119,12 @@ export default function AboutPage() {
             </div>
 
             {/* Data Sources */}
-            <div className="card-elevated p-8 mb-8">
+            <div className="card-elevated p-6 sm:p-8 mb-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
                   <Database className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <h2 className="text-xl font-semibold">Where our data comes from</h2>
+                <h2 className="type-title-2">Where our data comes from</h2>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 All data on CivAccount comes from official UK government sources. We do not create or estimate figures.

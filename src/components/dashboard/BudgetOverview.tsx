@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Info, Users, Building, GraduationCap, Car, Heart, BookOpen, Trash2, MapPin, Settings, TrendingUp, ArrowUpRight, Shield, Home } from "lucide-react";
+import { CheckCircle, Users, Building, GraduationCap, Car, Heart, BookOpen, Trash2, MapPin, TrendingUp, Shield, Home } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget, formatCurrency, getCouncilPopulation, calculateEfficiencyMetrics } from '@/data/councils';
 
@@ -38,10 +38,12 @@ const BudgetOverview = () => {
   // Build budget breakdown from actual data
   const budgetBreakdown: Array<{
     category: string;
+    categoryKey: string;
     percentage: number;
     amount: number;
     icon: typeof Shield;
     color: string;
+    details: Array<{ name: string; description: string; amount?: number }>;
   }> = [];
 
   if (budget) {
@@ -61,15 +63,22 @@ const BudgetOverview = () => {
       { key: 'public_health', name: 'Public Health', icon: Heart, color: 'bg-zinc-400' },
     ];
 
+    // Get detailed service spending if available
+    const getServiceDetails = (categoryKey: string) => {
+      return selectedCouncil.detailed?.service_spending?.find(s => s.category === categoryKey)?.services || [];
+    };
+
     for (const service of serviceMap) {
       const amount = budget[service.key] as number | null;
       if (amount && amount > 0) {
         budgetBreakdown.push({
           category: service.name,
+          categoryKey: service.key,
           percentage: (amount / total) * 100,
           amount: amount * 1000,
           icon: service.icon,
           color: service.color,
+          details: getServiceDetails(service.key),
         });
       }
     }
@@ -86,22 +95,22 @@ const BudgetOverview = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Primary Metric - Annual Budget */}
         <div className="lg:col-span-2">
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-overline mb-2">Annual Budget</p>
-                <p className="text-metric text-foreground">
+                <p className="type-overline mb-2">Annual Budget</p>
+                <p className="type-metric text-foreground">
                   {totalBudget ? formatBudget(totalBudget / 1000) : 'N/A'}
                 </p>
               </div>
               {selectedCouncil.detailed && (
-                <Badge variant="outline" className="text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
+                <Badge variant="outline" className="text-xs font-medium bg-navy-50 text-navy-600 border-navy-200">
                   Verified
                 </Badge>
               )}
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
-              Total service expenditure for {selectedCouncil.name} in the 2025-26 financial year.
+              Total service expenditure for {selectedCouncil.name} in the 2024-25 financial year.
               {selectedCouncil.type === 'SD' && " This covers local services like waste, planning, and parks."}
             </p>
 
@@ -130,10 +139,10 @@ const BudgetOverview = () => {
         </div>
 
         {/* Secondary Metric - Council Tax */}
-        <div className="card-elevated p-8 flex flex-col">
+        <div className="card-elevated p-6 sm:p-8 flex flex-col">
           <div className="flex-1">
-            <p className="text-overline mb-2">Your Council Tax</p>
-            <p className="text-metric text-foreground">
+            <p className="type-overline mb-2">Your Council Tax</p>
+            <p className="type-metric text-foreground">
               {councilTax ? formatCurrency(councilTax.band_d_2025, { decimals: 2 }) : 'N/A'}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
@@ -165,45 +174,43 @@ const BudgetOverview = () => {
 
       {/* Budget Breakdown - Visual Bar Chart */}
       {budgetBreakdown.length > 0 && (
-        <div className="card-elevated p-8">
-          <div className="flex items-start justify-between mb-8">
+        <div className="card-elevated p-6 sm:p-8">
+          <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold mb-1">Where the money goes</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-1">Where the money goes</h2>
               <p className="text-sm text-muted-foreground">
                 Breakdown of {selectedCouncil.name}&apos;s service expenditure
               </p>
             </div>
             <Badge variant="outline" className="text-xs">
-              2025-26
+              2024-25
             </Badge>
           </div>
 
-          <div className="space-y-4">
+          {/* Budget breakdown - Monzo/Apple style */}
+          <div className="space-y-5">
             {budgetBreakdown.map((item, index) => {
-              const Icon = item.icon;
               const barWidth = (item.percentage / maxPercentage) * 100;
 
               return (
-                <div key={index} className="group">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <Icon className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                      <span className="font-medium text-sm">{item.category}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-sm text-muted-foreground tabular-nums">
-                        {item.percentage.toFixed(1)}%
-                      </span>
-                      <span className="font-semibold text-sm tabular-nums min-w-[70px] text-right">
-                        {formatBudget(item.amount / 1000)}
-                      </span>
-                    </div>
+                <div key={index}>
+                  {/* Header row: category name + amount (Monzo pattern) */}
+                  <div className="flex items-baseline justify-between mb-1">
+                    <span className="type-body font-semibold">{item.category}</span>
+                    <span className="type-body font-semibold tabular-nums">
+                      {formatBudget(item.amount / 1000)}
+                    </span>
                   </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  {/* Percentage on second row */}
+                  <div className="flex items-baseline justify-between mb-2">
+                    <span className="type-caption text-muted-foreground">
+                      {item.percentage.toFixed(0)}% of total budget
+                    </span>
+                  </div>
+                  {/* Bar - visual reinforcement */}
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div
-                      className="h-full bg-stone-400 dark:bg-stone-500 rounded-full transition-all duration-500 ease-out"
+                      className="h-full rounded-full bg-foreground transition-all duration-300"
                       style={{ width: `${barWidth}%` }}
                     />
                   </div>
@@ -215,7 +222,7 @@ const BudgetOverview = () => {
           {/* Total */}
           <div className="mt-8 pt-6 border-t border-border/50 flex items-center justify-between">
             <span className="font-semibold">Total service expenditure</span>
-            <span className="text-xl font-bold tabular-nums">
+            <span className="text-lg sm:text-xl font-bold tabular-nums">
               {totalBudget ? formatBudget(totalBudget / 1000) : 'N/A'}
             </span>
           </div>
@@ -223,118 +230,68 @@ const BudgetOverview = () => {
       )}
 
       {/* Context Section - What this council does */}
-      <div className="card-elevated p-8">
-        <h2 className="text-xl font-semibold mb-6">
+      <div className="card-elevated p-6 sm:p-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
           What {selectedCouncil.type === 'SD' ? 'district councils do' : selectedCouncil.type === 'SC' ? 'county councils do' : 'this council does'}
         </h2>
 
         {selectedCouncil.type === 'SD' && (
-          <div className="space-y-6">
-            {/* Two-column layout for responsibilities */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* What they DO */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-foreground">
-                  Responsible for
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    'Waste collection and recycling',
-                    'Planning applications',
-                    'Parks and open spaces',
-                    'Housing and homelessness',
-                    'Environmental health',
-                    'Council tax collection',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm">
-                      <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-stone-400" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* What they DON'T do */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground">
-                  Not included
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    { service: 'Schools', provider: 'County Council' },
-                    { service: 'Adult social care', provider: 'County Council' },
-                    { service: 'Roads & highways', provider: 'County Council' },
-                    { service: 'Police', provider: 'Kent Police' },
-                    { service: 'Fire services', provider: 'Kent Fire' },
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <span className="w-4 h-4 shrink-0" />
-                      <span>{item.service} <span className="text-xs">({item.provider})</span></span>
-                    </li>
-                  ))}
-                </ul>
+          <div className="space-y-4">
+            {/* Compact chip layout for responsibilities */}
+            <div>
+              <p className="text-sm text-muted-foreground mb-3">Responsible for:</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  'Waste & recycling',
+                  'Planning',
+                  'Parks',
+                  'Housing',
+                  'Environmental health',
+                  'Council tax collection',
+                ].map((item, i) => (
+                  <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-sm">
+                    <CheckCircle className="h-3.5 w-3.5 text-stone-400" />
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* Why this matters - subtle callout */}
-            <div className="mt-8 p-6 rounded-xl bg-muted/50 border border-border/50">
-              <div className="flex gap-4">
-                <div className="shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <Info className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">
-                    Why this matters
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {selectedCouncil.name} only receives about 12% of your council tax bill.
-                    When bills rise, most of the increase goes to Kent County Council for schools and social care.
-                    A 5% rise in your total bill means less than £15 extra for this council.
-                  </p>
-                </div>
-              </div>
+            {/* Info callout - more compact */}
+            <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">Note:</span> {selectedCouncil.name} only receives about 12% of your council tax bill. Schools, social care, roads, police and fire services are provided by other authorities.
+              </p>
             </div>
           </div>
         )}
 
         {selectedCouncil.type === 'SC' && (
-          <div className="space-y-6">
-            <p className="text-muted-foreground leading-relaxed">
-              County councils handle the largest and most expensive services across the whole county area.
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground mb-3">
+              County councils handle the largest services across the whole county:
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-2">
               {[
-                { icon: Shield, title: 'Social Care', desc: 'Support for elderly and disabled residents' },
-                { icon: GraduationCap, title: 'Education', desc: 'School support and special needs' },
-                { icon: Car, title: 'Highways', desc: 'Roads, street lights, and transport' },
+                { icon: Shield, label: 'Social Care' },
+                { icon: GraduationCap, label: 'Education' },
+                { icon: Car, label: 'Highways' },
               ].map((item, i) => (
-                <div key={i} className="p-4 rounded-xl bg-muted/50">
-                  <item.icon className="h-5 w-5 text-primary mb-3" />
-                  <h4 className="font-semibold text-sm mb-1">{item.title}</h4>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
-                </div>
+                <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-sm">
+                  <item.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                  {item.label}
+                </span>
               ))}
             </div>
           </div>
         )}
 
         {(selectedCouncil.type === 'UA' || selectedCouncil.type === 'MD' || selectedCouncil.type === 'LB') && (
-          <p className="text-muted-foreground leading-relaxed">
-            As a {selectedCouncil.type_name.toLowerCase()}, this council provides all local government services
-            in one place - from social care and schools to bins and planning.
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            As a {selectedCouncil.type_name.toLowerCase()}, this council provides all local government services in one place - from social care and schools to bins and planning.
           </p>
         )}
       </div>
-
-      {/* Data sources link */}
-      {selectedCouncil.detailed?.sources && selectedCouncil.detailed.sources.length > 0 && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Data verified from official sources</span>
-          <ArrowUpRight className="h-3 w-3" />
-        </div>
-      )}
     </div>
   );
 };

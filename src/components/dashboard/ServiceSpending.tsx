@@ -111,7 +111,7 @@ const ServiceSpending = () => {
 
   if (!selectedCouncil) {
     return (
-      <div className="card-elevated p-8 text-center">
+      <div className="card-elevated p-6 sm:p-8 text-center">
         <p className="text-muted-foreground">Please select a council to view service spending.</p>
       </div>
     );
@@ -119,7 +119,7 @@ const ServiceSpending = () => {
 
   if (services.length === 0) {
     return (
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-center gap-3 text-muted-foreground">
           <Info className="h-5 w-5" />
           <p>Service spending data not available for {selectedCouncil.name}.</p>
@@ -142,11 +142,11 @@ const ServiceSpending = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Primary Metric - Selected Service */}
         <div className="lg:col-span-2">
-          <div className="card-elevated p-8">
+          <div className="card-elevated p-6 sm:p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-overline mb-2">{currentService.name}</p>
-                <p className="text-metric text-foreground">
+                <p className="type-overline mb-2">{currentService.name}</p>
+                <p className="type-metric text-foreground">
                   {formatBudget(currentService.amount / 1000)}
                 </p>
               </div>
@@ -184,7 +184,7 @@ const ServiceSpending = () => {
 
         {/* Service Grid Selector */}
         <div className="card-elevated p-6">
-          <p className="text-overline mb-4">Select Service</p>
+          <p className="type-overline mb-4">Select Service</p>
           <div className="grid grid-cols-2 gap-2">
             {services.slice(0, 6).map((service) => {
               const ServiceIcon = service.icon;
@@ -214,20 +214,20 @@ const ServiceSpending = () => {
       </div>
 
       {/* All Services - Bar Chart */}
-      <div className="card-elevated p-8">
+      <div className="card-elevated p-6 sm:p-8">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h2 className="text-xl font-semibold mb-1">All service spending</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-1">All service spending</h2>
             <p className="text-sm text-muted-foreground">
               How {selectedCouncil.name}&apos;s budget is distributed
             </p>
           </div>
-          <Badge variant="outline" className="text-xs">2025-26</Badge>
+          <Badge variant="outline" className="text-xs">2024-25</Badge>
         </div>
 
-        <div className="space-y-4">
+        {/* Service breakdown - Monzo/Apple style */}
+        <div className="space-y-5">
           {services.map((service) => {
-            const ServiceIcon = service.icon;
             const isSelected = service.key === selectedService;
             const barWidth = (service.percentage / maxPercentage) * 100;
 
@@ -240,25 +240,26 @@ const ServiceSpending = () => {
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && setSelectedService(service.key)}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                      <ServiceIcon className={`h-4 w-4 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}`} />
-                    </div>
-                    <span className={`font-medium text-sm ${isSelected ? 'text-foreground' : ''}`}>{service.name}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground tabular-nums">
-                      {service.percentage.toFixed(1)}%
-                    </span>
-                    <span className="font-semibold text-sm tabular-nums min-w-[70px] text-right">
-                      {formatBudget(service.amount / 1000)}
-                    </span>
-                  </div>
+                {/* Header row: service name + amount (Monzo pattern) */}
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className={`type-body font-semibold ${isSelected ? 'text-foreground' : ''}`}>{service.name}</span>
+                  <span className="type-body font-semibold tabular-nums">
+                    {formatBudget(service.amount / 1000)}
+                  </span>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                {/* Description + percentage */}
+                <div className="flex items-baseline justify-between mb-2">
+                  <p className="type-caption text-muted-foreground">
+                    {service.description}
+                  </p>
+                  <span className="type-caption text-muted-foreground tabular-nums">
+                    {service.percentage.toFixed(0)}%
+                  </span>
+                </div>
+                {/* Bar - visual reinforcement */}
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ease-out ${isSelected ? 'bg-foreground' : 'bg-stone-400 dark:bg-stone-500'}`}
+                    className={`h-full rounded-full transition-all duration-300 ${isSelected ? 'bg-foreground' : 'bg-muted-foreground/40'}`}
                     style={{ width: `${barWidth}%` }}
                   />
                 </div>
@@ -277,8 +278,8 @@ const ServiceSpending = () => {
       </div>
 
       {/* What this service does */}
-      <div className="card-elevated p-8">
-        <h2 className="text-xl font-semibold mb-6">What {currentService.name.toLowerCase()} covers</h2>
+      <div className="card-elevated p-6 sm:p-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-6">What {currentService.name.toLowerCase()} covers</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
@@ -324,15 +325,15 @@ const ServiceSpending = () => {
 
       {/* Verified Services - Only for councils with detailed data */}
       {hasVerifiedServices && (
-        <div className="card-elevated p-8">
+        <div className="card-elevated p-6 sm:p-8">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold mb-1">Verified services</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-1">Verified services</h2>
               <p className="text-sm text-muted-foreground">
                 What {selectedCouncil.name} actually provides to residents
               </p>
             </div>
-            <Badge variant="outline" className="text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
+            <Badge variant="outline" className="text-xs font-medium bg-navy-50 text-navy-600 border-navy-200">
               From council website
             </Badge>
           </div>
