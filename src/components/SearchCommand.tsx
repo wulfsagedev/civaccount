@@ -207,7 +207,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
             className="fixed inset-0 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
           />
-          <div className="fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 top-20 sm:top-[20%]">
+          <div className="fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 top-28 sm:top-[20%]">
             <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
               <div className="flex items-center border-b px-4">
                 <Search className="h-5 w-5 text-muted-foreground shrink-0" />
