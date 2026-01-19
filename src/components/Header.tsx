@@ -175,7 +175,7 @@ export default function Header() {
             'flex items-center justify-between gap-3 px-4 py-2.5 bg-background/95 backdrop-blur-xl border border-border/40 shadow-lg',
             mobileMenuOpen && isScrolled ? 'rounded-t-2xl rounded-b-none border-b-0' : 'rounded-full'
           )}>
-            {/* Left: Logo + Council name or page title */}
+            {/* Left: Logo + Page title */}
             <div className="flex items-center gap-3 shrink-0 min-w-0 flex-1">
               <Link
                 href="/"
@@ -186,28 +186,42 @@ export default function Header() {
                 <Landmark className="h-5 w-5 text-primary-foreground" />
               </Link>
 
-              {selectedCouncil ? (
-                <p className="text-sm font-semibold truncate leading-tight">
-                  {getCouncilDisplayName(selectedCouncil)}
-                </p>
-              ) : pathname === '/insights' ? (
-                <p className="text-sm font-semibold truncate leading-tight">Insights</p>
-              ) : pathname === '/about' ? (
-                <p className="text-sm font-semibold truncate leading-tight">About</p>
-              ) : pathname === '/updates' ? (
-                <p className="text-sm font-semibold truncate leading-tight">Updates</p>
-              ) : pathname === '/roadmap' ? (
-                <p className="text-sm font-semibold truncate leading-tight">Roadmap</p>
-              ) : pathname === '/accessibility' ? (
-                <p className="text-sm font-semibold truncate leading-tight">Accessibility</p>
-              ) : (
-                <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
-                  <PulsingDot size="md" />
-                  <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
-                    v1.4.2
-                  </Badge>
-                </Link>
-              )}
+              {/* Derive title from pathname - council pages show council name, others show page title */}
+              {(() => {
+                // Page title mapping
+                const pageTitles: Record<string, string> = {
+                  '/insights': 'Insights',
+                  '/about': 'About',
+                  '/updates': 'Updates',
+                  '/roadmap': 'Roadmap',
+                  '/accessibility': 'Accessibility',
+                  '/privacy': 'Privacy',
+                  '/terms': 'Terms',
+                  '/license': 'License',
+                };
+
+                const pageTitle = pageTitles[pathname];
+
+                // If on a known page, show page title
+                if (pageTitle) {
+                  return <p className="text-sm font-semibold truncate leading-tight">{pageTitle}</p>;
+                }
+
+                // If on a council page, show council name
+                if (pathname.startsWith('/council/') && selectedCouncil) {
+                  return <p className="text-sm font-semibold truncate leading-tight">{getCouncilDisplayName(selectedCouncil)}</p>;
+                }
+
+                // Homepage or unknown page - show version badge (desktop only)
+                return (
+                  <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
+                    <PulsingDot size="md" />
+                    <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
+                      v1.4.2
+                    </Badge>
+                  </Link>
+                );
+              })()}
             </div>
 
             {/* Right: Search + Theme toggle + Mobile menu */}
