@@ -94,7 +94,11 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
 
   // Listen for custom event to open search (from sticky nav mobile button)
   useEffect(() => {
-    const handleOpenSearch = () => setIsOpen(true);
+    const handleOpenSearch = () => {
+      // Close mobile menu first, then open search
+      document.dispatchEvent(new CustomEvent('close-mobile-menu'));
+      setIsOpen(true);
+    };
     document.addEventListener('open-search', handleOpenSearch);
     return () => document.removeEventListener('open-search', handleOpenSearch);
   }, []);
@@ -185,9 +189,9 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
         </>
       )}
 
-      {/* Search overlay */}
+      {/* Search overlay - z-[60] to appear above sticky nav (z-50) */}
       {isOpen && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-[60]">
           <div
             className="fixed inset-0 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
