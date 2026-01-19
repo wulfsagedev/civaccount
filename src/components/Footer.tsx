@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Landmark, History, Map, Accessibility, FileText, Github } from 'lucide-react';
+import { Landmark, History, Map, Accessibility, Github } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
@@ -42,16 +42,6 @@ export default function Footer() {
               <Accessibility className="h-3.5 w-3.5" />
               Accessibility
             </Link>
-            <a
-              href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              <FileText className="h-3.5 w-3.5" />
-              Data
-              <ExternalLink className="h-3 w-3" />
-            </a>
             <a
               href="https://github.com/wulfsagedev/civaccount"
               target="_blank"
