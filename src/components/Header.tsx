@@ -54,6 +54,13 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
+  // Listen for close-mobile-menu event (dispatched when search opens)
+  useEffect(() => {
+    const handleCloseMobileMenu = () => setMobileMenuOpen(false);
+    document.addEventListener('close-mobile-menu', handleCloseMobileMenu);
+    return () => document.removeEventListener('close-mobile-menu', handleCloseMobileMenu);
+  }, []);
+
   // Nav item styling
   const navLinkClass = 'inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-9 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer';
   const mobileNavLinkClass = 'inline-flex items-center justify-start gap-2 whitespace-nowrap text-sm font-medium h-11 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer w-full';
@@ -194,7 +201,10 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => document.dispatchEvent(new CustomEvent('open-search'))}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  document.dispatchEvent(new CustomEvent('open-search'));
+                }}
                 className="sm:hidden h-9 w-9"
                 aria-label="Search councils"
               >
