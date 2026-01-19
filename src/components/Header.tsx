@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,9 +19,17 @@ export default function Header() {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleLogoClick = () => {
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     setSelectedCouncil(null);
+    setMobileMenuOpen(false);
+    // Only navigate if not already on homepage
+    if (pathname !== '/') {
+      router.push('/');
+    }
   };
 
   const closeMobileMenu = () => {
