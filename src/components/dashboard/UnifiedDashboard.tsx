@@ -573,15 +573,15 @@ const UnifiedDashboard = () => {
                   ))}
                 </div>
 
-                {/* X-axis labels */}
-                <div className="flex justify-between mt-4">
+                {/* X-axis labels - responsive sizing */}
+                <div className="flex justify-between mt-4 gap-1">
                   {data.map((item, index) => (
-                    <div key={item.year} className="text-center">
-                      <p className={`type-body-sm ${index === data.length - 1 ? 'font-semibold' : 'text-muted-foreground'}`}>
+                    <div key={item.year} className="text-center min-w-0 flex-1">
+                      <p className={`text-xs sm:type-body-sm truncate ${index === data.length - 1 ? 'font-semibold' : 'text-muted-foreground'}`}>
                         {item.year}
-                        {index === data.length - 1 && <span className="ml-1.5 type-caption text-muted-foreground font-normal">Current</span>}
+                        {index === data.length - 1 && <span className="hidden sm:inline ml-1.5 type-caption text-muted-foreground font-normal">Current</span>}
                       </p>
-                      <p className={`type-body tabular-nums ${index === data.length - 1 ? 'font-semibold' : 'text-muted-foreground'}`}>
+                      <p className={`text-xs sm:type-body tabular-nums ${index === data.length - 1 ? 'font-semibold' : 'text-muted-foreground'}`}>
                         {formatCurrency(item.amount, { decimals: 2 })}
                       </p>
                     </div>

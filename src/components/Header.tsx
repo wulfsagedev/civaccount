@@ -5,7 +5,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
-import { Landmark, Menu, X, BarChart3, Info, MessageSquare } from 'lucide-react';
+import { Landmark, Menu, X, BarChart3, Info, MessageSquare, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName } from '@/data/councils';
@@ -176,10 +176,33 @@ export default function Header() {
               )}
             </div>
 
-            {/* Right: Search + Theme toggle */}
+            {/* Right: Search + Theme toggle + Mobile menu */}
             <div className="flex items-center gap-2 shrink-0">
-              <SearchCommand forceDesktopStyle />
+              {/* Desktop: Full search button */}
+              <div className="hidden sm:block">
+                <SearchCommand forceDesktopStyle />
+              </div>
+              {/* Mobile: Icon-only search */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => document.dispatchEvent(new CustomEvent('open-search'))}
+                className="sm:hidden h-9 w-9"
+                aria-label="Search councils"
+              >
+                <Search className="h-5 w-5" />
+              </Button>
               <ThemeToggle />
+              {/* Mobile: Hamburger menu */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="sm:hidden h-9 w-9"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
             </div>
           </div>
         </div>

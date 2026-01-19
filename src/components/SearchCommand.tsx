@@ -92,6 +92,13 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, [handleGlobalKeyDown]);
 
+  // Listen for custom event to open search (from sticky nav mobile button)
+  useEffect(() => {
+    const handleOpenSearch = () => setIsOpen(true);
+    document.addEventListener('open-search', handleOpenSearch);
+    return () => document.removeEventListener('open-search', handleOpenSearch);
+  }, []);
+
   const handleSelect = useCallback((council: Council) => {
     setSelectedCouncil(council);
     setSearchQuery('');
