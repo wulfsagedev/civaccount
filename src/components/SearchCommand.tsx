@@ -58,16 +58,27 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
     }
   }, [highlightedIndex]);
 
-  // Focus input when opened
+  // Focus input when opened - aggressive focus for mobile keyboard
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      const timer = setTimeout(() => {
+      // Immediate focus attempt
+      inputRef.current.focus();
+
+      // Multiple delayed attempts for mobile browsers
+      const timer1 = setTimeout(() => {
         inputRef.current?.focus();
-        requestAnimationFrame(() => {
-          inputRef.current?.focus();
-        });
-      }, 50);
-      return () => clearTimeout(timer);
+      }, 10);
+
+      const timer2 = setTimeout(() => {
+        inputRef.current?.focus();
+        // Also try selecting to ensure cursor is ready
+        inputRef.current?.select();
+      }, 100);
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
     }
   }, [isOpen]);
 
@@ -212,6 +223,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck={false}
+                  autoFocus
                 />
                 <Button
                   variant="ghost"
