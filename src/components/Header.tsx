@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName } from '@/data/councils';
 import FeedbackModal from '@/components/FeatureRequestDialog';
-// import DonateModal from '@/components/DonateModal';
 import SearchCommand from '@/components/SearchCommand';
 import { cn } from '@/lib/utils';
 
@@ -40,11 +39,6 @@ export default function Header() {
     document.dispatchEvent(new CustomEvent('open-feedback'));
     closeMobileMenu();
   };
-
-  // const openDonate = () => {
-  //   document.dispatchEvent(new CustomEvent('open-donate'));
-  //   closeMobileMenu();
-  // };
 
   // Simple threshold-based scroll detection
   // Per NN/Group: avoid complex animations, use simple state changes
@@ -304,7 +298,6 @@ export default function Header() {
 
       {/* Modals */}
       <FeedbackModal />
-      {/* <DonateModal /> */}
     </>
   );
 }
