@@ -42,6 +42,10 @@ export default function Header() {
   const handleScroll = useCallback(() => {
     const scrolled = window.scrollY > 50;
     setIsScrolled(scrolled);
+    // Close mobile menu when scrolling back to top
+    if (!scrolled) {
+      setMobileMenuOpen(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -150,7 +154,11 @@ export default function Header() {
         )}
       >
         <div className="mx-auto" style={{ maxWidth: '845px' }}>
-          <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-background/95 backdrop-blur-xl border border-border/40 rounded-full shadow-lg">
+          {/* Main pill nav */}
+          <div className={cn(
+            'flex items-center justify-between gap-3 px-4 py-2.5 bg-background/95 backdrop-blur-xl border border-border/40 shadow-lg',
+            mobileMenuOpen && isScrolled ? 'rounded-t-2xl rounded-b-none border-b-0' : 'rounded-full'
+          )}>
             {/* Left: Logo + Council name or version */}
             <div className="flex items-center gap-3 shrink-0 min-w-0">
               <Link
@@ -205,6 +213,31 @@ export default function Header() {
               </Button>
             </div>
           </div>
+
+          {/* Mobile menu dropdown - attached to sticky nav */}
+          {mobileMenuOpen && isScrolled && (
+            <div className="sm:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
+              <nav className="flex flex-col gap-1">
+                <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                  <BarChart3 className="h-4 w-4" />
+                  Insights
+                </Link>
+                <Link href="/about" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                  <Info className="h-4 w-4" />
+                  About
+                </Link>
+                <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                  <PulsingDot size="md" />
+                  Updates
+                  <Badge variant="outline" className="text-sm ml-auto">v1.4.2</Badge>
+                </Link>
+                <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
+                  <MessageSquare className="h-4 w-4" />
+                  Feedback
+                </button>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
 
