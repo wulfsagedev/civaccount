@@ -175,8 +175,8 @@ export default function Header() {
             'flex items-center justify-between gap-3 px-4 py-2.5 bg-background/95 backdrop-blur-xl border border-border/40 shadow-lg',
             mobileMenuOpen && isScrolled ? 'rounded-t-2xl rounded-b-none border-b-0' : 'rounded-full'
           )}>
-            {/* Left: Logo + Council name or version */}
-            <div className="flex items-center gap-3 shrink-0 min-w-0">
+            {/* Left: Logo + Council name or page title */}
+            <div className="flex items-center gap-3 shrink-0 min-w-0 flex-1">
               <Link
                 href="/"
                 onClick={handleLogoClick}
@@ -187,9 +187,19 @@ export default function Header() {
               </Link>
 
               {selectedCouncil ? (
-                <p className="text-sm font-semibold truncate leading-tight hidden sm:block">
+                <p className="text-sm font-semibold truncate leading-tight">
                   {getCouncilDisplayName(selectedCouncil)}
                 </p>
+              ) : pathname === '/insights' ? (
+                <p className="text-sm font-semibold truncate leading-tight">Insights</p>
+              ) : pathname === '/about' ? (
+                <p className="text-sm font-semibold truncate leading-tight">About</p>
+              ) : pathname === '/updates' ? (
+                <p className="text-sm font-semibold truncate leading-tight">Updates</p>
+              ) : pathname === '/roadmap' ? (
+                <p className="text-sm font-semibold truncate leading-tight">Roadmap</p>
+              ) : pathname === '/accessibility' ? (
+                <p className="text-sm font-semibold truncate leading-tight">Accessibility</p>
               ) : (
                 <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                   <PulsingDot size="md" />
