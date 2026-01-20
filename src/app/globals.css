@@ -124,13 +124,13 @@
 
   /* Status colours - use sparingly, only for semantic meaning */
   --positive: oklch(0.40 0.12 160);          /* Emerald - decreases, savings */
-  --negative: oklch(0.50 0.14 80);           /* Amber - increases, warnings */
+  --negative: oklch(0.38 0.12 55);           /* Dark amber/brown - increases, warnings - WCAG AA 4.5:1 */
 
   --chart-1: oklch(0.45 0.12 250);           /* Navy - primary chart color */
   --chart-2: oklch(0.55 0.10 250);           /* Lighter navy */
   --chart-3: oklch(0.65 0.08 250);           /* Even lighter navy */
   --chart-4: oklch(0.40 0.12 160);           /* Emerald accent */
-  --chart-5: oklch(0.50 0.14 80);            /* Amber accent */
+  --chart-5: oklch(0.38 0.12 55);            /* Amber accent - matches negative */
 }
 
 .dark {
@@ -174,13 +174,13 @@
 
   /* Status colours for dark mode */
   --positive: oklch(0.70 0.14 160);          /* Emerald - decreases, savings */
-  --negative: oklch(0.75 0.14 80);           /* Amber - increases, warnings */
+  --negative: oklch(0.78 0.14 65);           /* Light amber/orange - increases, warnings - WCAG AA 4.5:1 */
 
   --chart-1: oklch(0.60 0.10 250);           /* Navy - primary chart color */
   --chart-2: oklch(0.68 0.08 250);           /* Lighter navy */
   --chart-3: oklch(0.75 0.06 250);           /* Even lighter navy */
   --chart-4: oklch(0.70 0.14 160);           /* Emerald accent */
-  --chart-5: oklch(0.75 0.14 80);            /* Amber accent */
+  --chart-5: oklch(0.78 0.14 65);            /* Amber accent - matches negative */
 }
 
 @layer base {
