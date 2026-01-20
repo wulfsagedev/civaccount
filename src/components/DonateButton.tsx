@@ -97,7 +97,7 @@ export function DonateButton() {
             {/* Body */}
             <div className="p-6 space-y-6">
               <p className="text-sm text-muted-foreground">
-                CivAccount is free to use. Contributions help cover server and development costs.
+                If you find CivAccount useful, consider supporting its development.
               </p>
 
               {/* Preset amounts */}
