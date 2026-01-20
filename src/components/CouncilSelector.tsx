@@ -31,18 +31,14 @@ const HomepageResultItem = memo(function HomepageResultItem({
     <button
       data-council-item
       onClick={() => onSelect(council)}
-      className={`w-full px-3 py-2 text-left rounded-lg transition-colors cursor-pointer ${
+      className={`w-full px-3 py-2.5 text-left rounded-lg transition-colors cursor-pointer ${
         isHighlighted ? 'bg-muted' : 'hover:bg-muted/60'
       }`}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-medium text-sm truncate text-foreground leading-tight">
-            {council.name}
-          </p>
-          <p className="text-xs text-muted-foreground leading-tight">
-            {council.type_name}
-          </p>
+          <p className="font-semibold text-sm truncate text-foreground">{council.name}</p>
+          <p className="text-sm text-muted-foreground">{council.type_name}</p>
         </div>
         <div className="text-right shrink-0 text-sm text-muted-foreground tabular-nums">
           {bandD && <p>£{Math.round(bandD).toLocaleString('en-GB')}/yr</p>}
