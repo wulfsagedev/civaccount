@@ -12,6 +12,7 @@ import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName } from '@/data/councils';
 import FeedbackModal from '@/components/FeatureRequestDialog';
 import SearchCommand from '@/components/SearchCommand';
+import { DonateButton } from '@/components/DonateButton';
 import { cn } from '@/lib/utils';
 
 export default function Header() {
@@ -106,6 +107,7 @@ export default function Header() {
                   <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   Feedback
                 </button>
+                <DonateButton variant="header" />
                 <ThemeToggle />
               </nav>
             </div>
@@ -147,6 +149,9 @@ export default function Header() {
                   <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   Feedback
                 </button>
+                <div className="pt-2 mt-2 border-t border-border/50">
+                  <DonateButton variant="header" />
+                </div>
               </nav>
             </div>
           )}
@@ -272,6 +277,9 @@ export default function Header() {
                   <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   Feedback
                 </button>
+                <div className="pt-2 mt-2 border-t border-border/50">
+                  <DonateButton variant="header" />
+                </div>
               </nav>
             </div>
           )}
