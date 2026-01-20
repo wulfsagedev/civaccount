@@ -14,8 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UK Council Budget Dashboard",
-  description: "Complete financial overview of UK council budgets and council tax for 2025-26",
+  title: "CivAccount - See where your council tax goes",
+  description: "Explore how your local council spends your money. Budget breakdowns, council tax data, and spending insights for all 324 English councils.",
+  metadataBase: new URL('https://civaccount.uk'),
+  openGraph: {
+    title: "CivAccount - See where your council tax goes",
+    description: "Explore how your local council spends your money. Budget breakdowns, council tax data, and spending insights for all 324 English councils.",
+    siteName: "CivAccount",
+    locale: "en_GB",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CivAccount - See where your council tax goes",
+    description: "Explore how your local council spends your money. Budget breakdowns for all 324 English councils.",
+  },
 };
 
 export default function RootLayout({
