@@ -270,18 +270,20 @@ export default function RoadmapPage() {
 
                       <ul className="space-y-3">
                         {phase.items.map((item, itemIndex) => (
-                          <li key={itemIndex} className="flex items-start gap-3">
-                            {item.completed ? (
-                              <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-positive" />
-                            ) : (
-                              <Circle className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-                            )}
-                            <div>
-                              <span className={`text-sm ${item.completed ? 'text-muted-foreground' : ''}`}>
+                          <li key={itemIndex} className="flex gap-3">
+                            <div className="shrink-0 pt-0.5">
+                              {item.completed ? (
+                                <CheckCircle className="h-4 w-4 text-positive" />
+                              ) : (
+                                <Circle className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className={`text-sm leading-snug ${item.completed ? 'text-muted-foreground' : ''}`}>
                                 {item.text}
-                              </span>
+                              </p>
                               {item.description && (
-                                <p className="text-sm text-muted-foreground mt-0.5">
+                                <p className="text-sm text-muted-foreground mt-1 leading-snug">
                                   {item.description}
                                 </p>
                               )}
