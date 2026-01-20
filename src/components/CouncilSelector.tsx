@@ -197,7 +197,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
             <input
               ref={inputRef}
               type="text"
-              placeholder="Find your council..."
+              placeholder="Search for your council..."
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
@@ -253,7 +253,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Type your council name..."
+                placeholder="Search for your council..."
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}

@@ -235,7 +235,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
                 <input
                   ref={inputCallbackRef}
                   type="text"
-                  placeholder="Find your council..."
+                  placeholder="Search for your council..."
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}

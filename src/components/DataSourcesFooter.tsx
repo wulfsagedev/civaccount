@@ -6,13 +6,23 @@ import {
   ExternalLink,
   FileText,
   Building2,
-  Shield,
   CheckCircle2,
   Globe,
-  ChevronDown
+  ChevronDown,
+  Calendar
 } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
+
+// Format date for display
+function formatVerifiedDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+}
 
 export default function DataSourcesFooter() {
   const { selectedCouncil } = useCouncil();
@@ -62,6 +72,12 @@ export default function DataSourcesFooter() {
   const councilName = getCouncilDisplayName(selectedCouncil);
   const hasDetailedData = selectedCouncil.detailed && selectedCouncil.detailed.sources && selectedCouncil.detailed.sources.length > 0;
   const hasDocuments = selectedCouncil.detailed?.documents && selectedCouncil.detailed.documents.length > 0;
+
+  // Council-specific URLs
+  const councilTaxUrl = selectedCouncil.detailed?.council_tax_url;
+  const budgetUrl = selectedCouncil.detailed?.budget_url;
+  const lastVerified = selectedCouncil.detailed?.last_verified;
+  const hasCouncilLinks = councilTaxUrl || budgetUrl;
 
   // Simplified source list
   const primarySources = hasDetailedData
@@ -170,9 +186,65 @@ export default function DataSourcesFooter() {
             </div>
           )}
 
-          {/* Non-verified councils: Show standard GOV.UK sources */}
-          {!hasDetailedData && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Council-specific links (show for all councils with URLs) */}
+          {hasCouncilLinks && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <h3 className="text-sm font-medium">{councilName} Official Pages</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {councilTaxUrl && (
+                  <a
+                    href={councilTaxUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-card hover:border-border hover:bg-muted/30 transition-colors"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-muted/70 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
+                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium group-hover:text-foreground transition-colors">
+                        Council tax rates
+                        <span className="sr-only"> (opens in new tab)</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">Official council tax page</p>
+                    </div>
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
+                  </a>
+                )}
+                {budgetUrl && (
+                  <a
+                    href={budgetUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-card hover:border-border hover:bg-muted/30 transition-colors"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-muted/70 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
+                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium group-hover:text-foreground transition-colors">
+                        Budget documents
+                        <span className="sr-only"> (opens in new tab)</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">Official budget page</p>
+                    </div>
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* GOV.UK sources (shown for all councils) */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+              <h3 className="text-sm font-medium">National Data Sources</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <a
                 href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
                 target="_blank"
@@ -183,7 +255,10 @@ export default function DataSourcesFooter() {
                   <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
-                <p className="text-sm font-medium group-hover:text-foreground transition-colors">Council Tax 2025-26</p>
+                <p className="text-sm font-medium group-hover:text-foreground transition-colors">
+                  Council Tax 2025-26
+                  <span className="sr-only"> (opens in new tab)</span>
+                </p>
                 <p className="text-xs text-muted-foreground mt-1">GOV.UK Statistics</p>
               </a>
 
@@ -197,12 +272,15 @@ export default function DataSourcesFooter() {
                   <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
-                <p className="text-sm font-medium group-hover:text-foreground transition-colors">Budget Data 2024-25</p>
+                <p className="text-sm font-medium group-hover:text-foreground transition-colors">
+                  Budget Data 2024-25
+                  <span className="sr-only"> (opens in new tab)</span>
+                </p>
                 <p className="text-xs text-muted-foreground mt-1">Revenue Expenditure Returns</p>
               </a>
 
               <a
-                href="https://geoportal.statistics.gov.uk/"
+                href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
@@ -211,9 +289,22 @@ export default function DataSourcesFooter() {
                   <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
-                <p className="text-sm font-medium group-hover:text-foreground transition-colors">ONS Geography</p>
-                <p className="text-xs text-muted-foreground mt-1">Council codes & boundaries</p>
+                <p className="text-sm font-medium group-hover:text-foreground transition-colors">
+                  Population Data
+                  <span className="sr-only"> (opens in new tab)</span>
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">ONS Mid-2024 Estimates</p>
               </a>
+            </div>
+          </div>
+
+          {/* Data freshness indicator */}
+          {lastVerified && (
+            <div className="flex items-center justify-center gap-2 pt-4 border-t border-border/50">
+              <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+              <p className="text-xs text-muted-foreground">
+                Data verified {formatVerifiedDate(lastVerified)}
+              </p>
             </div>
           )}
 

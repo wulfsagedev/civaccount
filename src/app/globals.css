@@ -34,10 +34,13 @@
   --color-navy-50: var(--navy-50);
   --color-navy-100: var(--navy-100);
   --color-navy-200: var(--navy-200);
+  --color-navy-300: var(--navy-300);
+  --color-navy-400: var(--navy-400);
   --color-navy-500: var(--navy-500);
   --color-navy-600: var(--navy-600);
   --color-navy-700: var(--navy-700);
   --color-navy-800: var(--navy-800);
+  --color-navy-900: var(--navy-900);
 
   /* Semantic status colours */
   --color-positive: var(--positive);
@@ -117,10 +120,13 @@
   --navy-50: oklch(0.97 0.01 250);           /* Very light navy tint */
   --navy-100: oklch(0.94 0.02 250);          /* Light navy tint */
   --navy-200: oklch(0.88 0.04 250);          /* Subtle navy */
+  --navy-300: oklch(0.78 0.08 250);          /* Light-medium navy */
+  --navy-400: oklch(0.62 0.10 250);          /* Medium-light navy */
   --navy-500: oklch(0.50 0.12 250);          /* Medium navy */
   --navy-600: oklch(0.40 0.14 250);          /* Standard navy - primary accent text */
   --navy-700: oklch(0.32 0.12 250);          /* Dark navy */
   --navy-800: oklch(0.25 0.10 250);          /* Very dark navy */
+  --navy-900: oklch(0.18 0.08 250);          /* Darkest navy */
 
   /* Status colours - use sparingly, only for semantic meaning */
   --positive: oklch(0.40 0.12 160);          /* Emerald - decreases, savings */
@@ -167,10 +173,13 @@
   --navy-50: oklch(0.28 0.02 250);           /* Subtle navy tint */
   --navy-100: oklch(0.32 0.04 250);          /* Light navy */
   --navy-200: oklch(0.38 0.06 250);          /* Medium light navy */
+  --navy-300: oklch(0.48 0.08 250);          /* Light-medium navy */
+  --navy-400: oklch(0.52 0.09 250);          /* Medium-light navy */
   --navy-500: oklch(0.55 0.10 250);          /* Medium navy */
   --navy-600: oklch(0.65 0.12 250);          /* Standard navy - primary accent text */
   --navy-700: oklch(0.75 0.10 250);          /* Light navy text */
   --navy-800: oklch(0.85 0.08 250);          /* Very light navy text */
+  --navy-900: oklch(0.22 0.04 250);          /* Darkest navy */
 
   /* Status colours for dark mode */
   --positive: oklch(0.70 0.14 160);          /* Emerald - decreases, savings */
@@ -865,4 +874,449 @@ select:focus {
 
 .border-navy-200 {
   border-color: var(--navy-200);
+}
+
+.border-navy-600 {
+  border-color: var(--navy-600);
+}
+
+/* Additional navy background utilities */
+.bg-navy-200 {
+  background-color: var(--navy-200);
+}
+
+.bg-navy-400 {
+  background-color: var(--navy-400);
+}
+
+.bg-navy-500 {
+  background-color: var(--navy-500);
+}
+
+.bg-navy-700 {
+  background-color: var(--navy-700);
+}
+
+.bg-navy-800 {
+  background-color: var(--navy-800);
+}
+
+.bg-navy-900 {
+  background-color: var(--navy-900);
+}
+
+/* Navy text utilities */
+.text-navy-200 {
+  color: var(--navy-200);
+}
+
+.text-navy-300 {
+  color: var(--navy-300);
+}
+
+.text-navy-400 {
+  color: var(--navy-400);
+}
+
+.text-navy-500 {
+  color: var(--navy-500);
+}
+
+/* Navy stroke utilities for SVG */
+.stroke-navy-200 {
+  stroke: var(--navy-200);
+}
+
+.stroke-navy-500 {
+  stroke: var(--navy-500);
+}
+
+.stroke-navy-600 {
+  stroke: var(--navy-600);
+}
+
+/* ============================================
+   DATA FLOW ANIMATION
+   Abstract flowing particles for hero section
+   ============================================ */
+
+/* Primary RGB for gradients */
+:root {
+  --primary-rgb: 24 24 27;
+}
+
+.dark {
+  --primary-rgb: 250 250 250;
+}
+
+/* Keyframes */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes float-1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  25% { transform: translate(3px, -5px); opacity: 0.7; }
+  50% { transform: translate(-2px, -8px); opacity: 0.5; }
+  75% { transform: translate(4px, -3px); opacity: 0.6; }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  33% { transform: translate(-4px, -6px); opacity: 0.6; }
+  66% { transform: translate(2px, -4px); opacity: 0.4; }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.35; }
+  40% { transform: translate(5px, -4px); opacity: 0.55; }
+  80% { transform: translate(-3px, -7px); opacity: 0.45; }
+}
+
+/* Animation utility classes */
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 15s linear infinite;
+}
+
+.animate-spin-medium {
+  animation: spin-slow 12s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-reverse 25s linear infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-float-1 {
+  animation: float-1 6s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float-2 8s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: float-3 7s ease-in-out infinite;
+}
+
+/* Morphing gradient keyframes */
+@keyframes morph-1 {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(0.95) rotate(-3deg);
+    opacity: 0.75;
+  }
+  75% {
+    transform: scale(1.05) rotate(2deg);
+    opacity: 0.85;
+  }
+}
+
+@keyframes morph-2 {
+  0%, 100% {
+    transform: scale(1.1) rotate(0deg) translateX(0);
+    opacity: 0.5;
+  }
+  33% {
+    transform: scale(0.9) rotate(-8deg) translateX(-5%);
+    opacity: 0.7;
+  }
+  66% {
+    transform: scale(1.15) rotate(5deg) translateX(5%);
+    opacity: 0.55;
+  }
+}
+
+@keyframes morph-3 {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2) translateY(-10%);
+    opacity: 0.6;
+  }
+}
+
+.animate-morph-1 {
+  animation: morph-1 8s ease-in-out infinite;
+}
+
+.animate-morph-2 {
+  animation: morph-2 12s ease-in-out infinite;
+}
+
+.animate-morph-3 {
+  animation: morph-3 10s ease-in-out infinite;
+}
+
+/* Ethereal orb animations - soft breathing glow */
+@keyframes orb-breathe-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.8;
+  }
+}
+
+@keyframes orb-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes orb-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+@keyframes orb-core {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+.animate-orb-breathe-slow {
+  animation: orb-breathe-slow 8s ease-in-out infinite;
+}
+
+.animate-orb-breathe {
+  animation: orb-breathe 6s ease-in-out infinite 0.5s;
+}
+
+.animate-orb-pulse {
+  animation: orb-pulse 4s ease-in-out infinite 1s;
+}
+
+.animate-orb-core {
+  animation: orb-core 3s ease-in-out infinite 0.25s;
+}
+
+/* Simple breathing animations for hero */
+@keyframes breathe-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+.animate-breathe-slow {
+  animation: breathe-slow 6s ease-in-out infinite;
+}
+
+.animate-breathe-offset {
+  animation: breathe-slow 5s ease-in-out infinite 1s;
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite 0.5s;
+}
+
+/* Floating coin animations - gentle drift */
+@keyframes float-coin-1 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-8px) translateX(3px); }
+  50% { transform: translateY(-4px) translateX(-2px); }
+  75% { transform: translateY(-10px) translateX(1px); }
+}
+
+@keyframes float-coin-2 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  33% { transform: translateY(-6px) translateX(-4px); }
+  66% { transform: translateY(-10px) translateX(2px); }
+}
+
+@keyframes float-coin-3 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  20% { transform: translateY(-5px) translateX(4px); }
+  50% { transform: translateY(-12px) translateX(-1px); }
+  80% { transform: translateY(-3px) translateX(2px); }
+}
+
+@keyframes float-coin-4 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  40% { transform: translateY(-7px) translateX(-3px); }
+  70% { transform: translateY(-4px) translateX(5px); }
+}
+
+@keyframes float-coin-5 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  35% { transform: translateY(-9px) translateX(2px); }
+  65% { transform: translateY(-5px) translateX(-3px); }
+}
+
+@keyframes float-coin-6 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  30% { transform: translateY(-6px) translateX(-2px); }
+  60% { transform: translateY(-11px) translateX(3px); }
+}
+
+/* 3D rotation animations for coins */
+@keyframes rotate-coin-1 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(10deg) rotateY(-8deg); }
+  50% { transform: rotateX(-5deg) rotateY(12deg); }
+  75% { transform: rotateX(8deg) rotateY(-5deg); }
+}
+
+@keyframes rotate-coin-2 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  33% { transform: rotateX(-8deg) rotateY(10deg); }
+  66% { transform: rotateX(12deg) rotateY(-6deg); }
+}
+
+@keyframes rotate-coin-3 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  20% { transform: rotateX(6deg) rotateY(8deg); }
+  50% { transform: rotateX(-10deg) rotateY(-5deg); }
+  80% { transform: rotateX(4deg) rotateY(10deg); }
+}
+
+@keyframes rotate-coin-4 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  40% { transform: rotateX(-12deg) rotateY(6deg); }
+  70% { transform: rotateX(8deg) rotateY(-10deg); }
+}
+
+@keyframes rotate-coin-5 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  50% { transform: rotateX(15deg) rotateY(-12deg); }
+}
+
+@keyframes rotate-coin-6 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  50% { transform: rotateX(-10deg) rotateY(15deg); }
+}
+
+.animate-float-coin-1 { animation: float-coin-1 7s ease-in-out infinite; }
+.animate-float-coin-2 { animation: float-coin-2 6s ease-in-out infinite 0.5s; }
+.animate-float-coin-3 { animation: float-coin-3 8s ease-in-out infinite 1s; }
+.animate-float-coin-4 { animation: float-coin-4 5s ease-in-out infinite 0.3s; }
+.animate-float-coin-5 { animation: float-coin-5 9s ease-in-out infinite 1.5s; }
+.animate-float-coin-6 { animation: float-coin-6 6.5s ease-in-out infinite 0.8s; }
+
+.animate-rotate-coin-1 { animation: rotate-coin-1 10s ease-in-out infinite; }
+.animate-rotate-coin-2 { animation: rotate-coin-2 8s ease-in-out infinite 0.5s; }
+.animate-rotate-coin-3 { animation: rotate-coin-3 12s ease-in-out infinite 1s; }
+.animate-rotate-coin-4 { animation: rotate-coin-4 7s ease-in-out infinite 0.3s; }
+.animate-rotate-coin-5 { animation: rotate-coin-5 11s ease-in-out infinite 1.5s; }
+.animate-rotate-coin-6 { animation: rotate-coin-6 9s ease-in-out infinite 0.8s; }
+
+/* Perspective utility for 3D transforms */
+.perspective-500 {
+  perspective: 500px;
+}
+
+/* Mesh network animations - subtle organic movement */
+@keyframes mesh-pulse {
+  0%, 100% {
+    stroke-opacity: 0.3;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-opacity: 0.6;
+    stroke-dashoffset: 10;
+  }
+}
+
+@keyframes node-pulse {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.2);
+  }
+}
+
+.animate-mesh-1 {
+  animation: mesh-pulse 4s ease-in-out infinite;
+}
+
+.animate-mesh-2 {
+  animation: mesh-pulse 5s ease-in-out infinite 0.5s;
+}
+
+.animate-mesh-3 {
+  animation: mesh-pulse 6s ease-in-out infinite 1s;
+}
+
+.animate-node-1 {
+  animation: node-pulse 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-node-2 {
+  animation: node-pulse 4s ease-in-out infinite 0.7s;
+  transform-origin: center;
+}
+
+.animate-node-3 {
+  animation: node-pulse 5s ease-in-out infinite 1.4s;
+  transform-origin: center;
+}
+
+/* Radial gradient utility for soft circular gradients */
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
 }
