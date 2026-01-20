@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CivAccount - See where your council tax goes",
-  description: "Explore how your local council spends your money. Budget breakdowns, council tax data, and spending insights for all 324 English councils.",
+  description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 324 English councils.",
   metadataBase: new URL('https://civaccount.uk'),
   openGraph: {
     title: "CivAccount - See where your council tax goes",
-    description: "Explore how your local council spends your money. Budget breakdowns, council tax data, and spending insights for all 324 English councils.",
+    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 324 English councils.",
     siteName: "CivAccount",
     locale: "en_GB",
     type: "website",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CivAccount - See where your council tax goes",
-    description: "Explore how your local council spends your money. Budget breakdowns for all 324 English councils.",
+    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 324 English councils.",
   },
 };
 
@@ -51,6 +51,44 @@ export default function RootLayout({
                 }
               } catch (_) {}
             `,
+          }}
+        />
+        {/* Structured Data - Organization and WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": "https://civaccount.uk/#website",
+                  "url": "https://civaccount.uk",
+                  "name": "CivAccount",
+                  "description": "UK council budget transparency. See exactly where your council tax goes.",
+                  "inLanguage": "en-GB",
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                      "@type": "EntryPoint",
+                      "urlTemplate": "https://civaccount.uk/?search={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                  }
+                },
+                {
+                  "@type": "Organization",
+                  "@id": "https://civaccount.uk/#organization",
+                  "name": "CivAccount",
+                  "url": "https://civaccount.uk",
+                  "description": "Open source council budget transparency project for UK citizens.",
+                  "areaServed": {
+                    "@type": "Country",
+                    "name": "United Kingdom"
+                  }
+                }
+              ]
+            })
           }}
         />
       </head>
