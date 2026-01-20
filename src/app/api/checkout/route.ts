@@ -24,6 +24,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get origin with fallback for local development
+    const origin = request.headers.get('origin') || 'http://localhost:3000';
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -40,13 +43,22 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${request.headers.get('origin')}/donate/thank-you`,
-      cancel_url: `${request.headers.get('origin')}`,
+      success_url: `${origin}/donate/thank-you`,
+      cancel_url: `${origin}`,
     });
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Stripe error:', error);
+
+    // Return more specific error message
+    if (error instanceof Stripe.errors.StripeError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode || 500 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to create checkout session' },
       { status: 500 }
