@@ -40,44 +40,41 @@ const roadmapItems: RoadmapPhase[] = [
     phase: "Phase 1",
     title: "Foundation",
     status: "completed",
-    quarter: "Q3-Q4 2025",
+    quarter: "2025",
     items: [
-      { text: "Launch with all 324 English councils", completed: true },
+      { text: "All 324 English councils", completed: true },
       { text: "Council tax data for 2025-26", completed: true },
-      { text: "Basic budget breakdowns by service", completed: true },
-      { text: "Search and filter functionality", completed: true },
-      { text: "Mobile-responsive design", completed: true },
-      { text: "Dark mode support", completed: true },
-      { text: "WCAG 2.1 AA accessibility compliance", completed: true },
-      { text: "Fair comparisons by council type", completed: true, description: "Insights page groups councils by comparable service scope" }
+      { text: "Budget breakdowns by service", completed: true },
+      { text: "Search to find your council", completed: true },
+      { text: "Works on phones and tablets", completed: true },
+      { text: "Dark mode", completed: true },
+      { text: "Compare similar councils fairly", completed: true }
     ]
   },
   {
     phase: "Phase 2",
-    title: "Data depth",
+    title: "More detail",
     status: "in_progress",
     quarter: "Q1 2026",
     items: [
-      { text: "Individual council data sourcing", completed: true, description: "Link each data point to its original council source document" },
-      { text: "County council enrichment", completed: true, description: "20 county councils with detailed budget data and verified source URLs" },
-      { text: "Lightning-fast search", completed: true, description: "Pre-computed search index for instant council lookup" },
-      { text: "Historical data (5 year trends)", completed: false, description: "Track council tax and spending changes over time" },
-      { text: "Precept breakdowns for all councils", completed: false, description: "Show police, fire, and parish contributions everywhere" },
-      { text: "Service-level detail from council websites", completed: false, description: "What each council actually provides to residents" },
-      { text: "Data freshness indicators", completed: false, description: "Show when data was last verified and updated" }
+      { text: "Data linked to official sources", completed: true },
+      { text: "County councils with full budget breakdowns", completed: true },
+      { text: "Faster search", completed: true },
+      { text: "Support CivAccount development", completed: true, description: "Contribute button added" },
+      { text: "5 year council tax history", completed: false, description: "See how your bill has changed" },
+      { text: "Police, fire and parish breakdown", completed: false, description: "See all parts of your council tax bill" },
+      { text: "When data was last updated", completed: false }
     ]
   },
   {
     phase: "Phase 3",
-    title: "Verification",
+    title: "Trust",
     status: "planned",
     quarter: "Q2 2026",
     items: [
-      { text: "Direct links to source documents", completed: false, description: "Every figure links back to official council PDFs and spreadsheets" },
-      { text: "Council budget document library", completed: false, description: "Archive of council Medium Term Financial Plans and budget reports" },
-      { text: "Automated data validation", completed: false, description: "Cross-check figures against multiple sources" },
-      { text: "Community corrections", completed: false, description: "Let residents flag potential data errors" },
-      { text: "Data confidence scores", completed: false, description: "Show how reliable each data point is" }
+      { text: "Links to original council documents", completed: false },
+      { text: "Budget document library", completed: false, description: "Find your council's actual budget reports" },
+      { text: "Flag errors", completed: false, description: "Help us fix mistakes" }
     ]
   },
   {
@@ -86,24 +83,21 @@ const roadmapItems: RoadmapPhase[] = [
     status: "planned",
     quarter: "Q3 2026",
     items: [
-      { text: "Council performance comparisons", completed: false, description: "Compare similar councils on key metrics" },
-      { text: "Value for money analysis", completed: false, description: "What you get for your council tax compared to others" },
-      { text: "Budget change alerts", completed: false, description: "Get notified when your council budget changes" },
-      { text: "Election and leadership data", completed: false, description: "Who runs your council and when elections happen" },
-      { text: "Local news integration", completed: false, description: "Relevant council news from local sources" }
+      { text: "Value for money comparisons", completed: false, description: "What you get for your council tax" },
+      { text: "Budget change alerts", completed: false, description: "Know when your council tax changes" },
+      { text: "Who runs your council", completed: false, description: "Council leaders and election dates" }
     ]
   },
   {
     phase: "Phase 5",
-    title: "Expansion",
+    title: "UK-wide",
     status: "planned",
     quarter: "Q4 2026",
     items: [
-      { text: "Wales councils", completed: false, description: "Expand coverage to all Welsh local authorities" },
-      { text: "Scotland councils", completed: false, description: "Include Scottish council data with different tax bands" },
-      { text: "Northern Ireland councils", completed: false, description: "Cover NI district councils" },
-      { text: "Parish and town councils", completed: false, description: "Include precept data for over 10,000 parish councils" },
-      { text: "Combined authorities and mayors", completed: false, description: "Track spending by metro mayors and combined authorities" }
+      { text: "Wales councils", completed: false },
+      { text: "Scotland councils", completed: false },
+      { text: "Northern Ireland councils", completed: false },
+      { text: "Parish and town councils", completed: false }
     ]
   }
 ];
