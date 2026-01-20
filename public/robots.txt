@@ -1,0 +1,14 @@
+# CivAccount robots.txt
+# https://civaccount.uk
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://civaccount.uk/sitemap.xml
+
+# Disallow API routes
+Disallow: /api/
+
+# Disallow internal Next.js routes
+Disallow: /_next/
