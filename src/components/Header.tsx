@@ -93,17 +93,17 @@ export default function Header() {
             {/* Right: Search + Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 shrink-0">
               <SearchCommand />
-              <nav className="flex items-center gap-1 ml-2">
+              <nav className="flex items-center gap-1 ml-2" aria-label="Main navigation">
                 <Link href="/insights" className={navLinkClass}>
-                  <BarChart3 className="h-4 w-4" />
+                  <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
                 </Link>
                 <Link href="/about" className={navLinkClass}>
-                  <Info className="h-4 w-4" />
+                  <Info className="h-4 w-4" aria-hidden="true" />
                   About
                 </Link>
                 <button type="button" onClick={openFeedback} className={navLinkClass}>
-                  <MessageSquare className="h-4 w-4" />
+                  <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   Feedback
                 </button>
                 <ThemeToggle />
@@ -129,13 +129,13 @@ export default function Header() {
           {/* Mobile Menu Dropdown */}
           {mobileMenuOpen && (
             <div className="lg:hidden mt-4 pt-4 border-t">
-              <nav className="flex flex-col gap-1">
+              <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                  <BarChart3 className="h-4 w-4" />
+                  <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
                 </Link>
                 <Link href="/about" onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                  <Info className="h-4 w-4" />
+                  <Info className="h-4 w-4" aria-hidden="true" />
                   About
                 </Link>
                 <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
@@ -144,7 +144,7 @@ export default function Header() {
                   <Badge variant="outline" className="text-sm ml-auto">v1.6</Badge>
                 </Link>
                 <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
-                  <MessageSquare className="h-4 w-4" />
+                  <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   Feedback
                 </button>
               </nav>
@@ -177,7 +177,7 @@ export default function Header() {
                 className="flex items-center justify-center w-9 h-9 bg-primary rounded-full cursor-pointer hover:opacity-80 transition-opacity shrink-0"
                 aria-label="CivAccount home"
               >
-                <Landmark className="h-5 w-5 text-primary-foreground" />
+                <Landmark className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
               </Link>
 
               {/* Derive title from pathname - council pages show council name, others show page title */}
@@ -235,7 +235,7 @@ export default function Header() {
                 className="lg:hidden h-9 w-9"
                 aria-label="Search councils"
               >
-                <Search className="h-5 w-5" />
+                <Search className="h-5 w-5" aria-hidden="true" />
               </Button>
               <ThemeToggle />
               {/* Mobile: Hamburger menu */}
@@ -246,7 +246,7 @@ export default function Header() {
                 className="lg:hidden h-9 w-9"
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
               </Button>
             </div>
           </div>
@@ -254,13 +254,13 @@ export default function Header() {
           {/* Mobile menu dropdown - attached to sticky nav */}
           {mobileMenuOpen && isScrolled && (
             <div className="lg:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
-              <nav className="flex flex-col gap-1">
+              <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                  <BarChart3 className="h-4 w-4" />
+                  <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
                 </Link>
                 <Link href="/about" onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                  <Info className="h-4 w-4" />
+                  <Info className="h-4 w-4" aria-hidden="true" />
                   About
                 </Link>
                 <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
@@ -269,7 +269,7 @@ export default function Header() {
                   <Badge variant="outline" className="text-sm ml-auto">v1.6</Badge>
                 </Link>
                 <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
-                  <MessageSquare className="h-4 w-4" />
+                  <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   Feedback
                 </button>
               </nav>

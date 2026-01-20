@@ -21,7 +21,7 @@ export default function DataSourcesFooter() {
   // If no council selected, show generic footer
   if (!selectedCouncil) {
     return (
-      <footer className="bg-muted/20 border-t border-border/50 mt-12">
+      <footer className="bg-muted/20 border-t border-border/50 mt-12" aria-label="Data sources">
         <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-14 max-w-7xl">
           <div className="space-y-8">
             <div className="text-center space-y-3">
@@ -85,7 +85,7 @@ export default function DataSourcesFooter() {
               </h2>
               {hasDetailedData && (
                 <Badge variant="secondary" className="bg-navy-100 text-navy-600 border-0">
-                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                  <CheckCircle2 className="h-3 w-3 mr-1" aria-hidden="true" />
                   Verified
                 </Badge>
               )}
@@ -102,7 +102,7 @@ export default function DataSourcesFooter() {
           {hasDocuments && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
+                <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                 <h3 className="text-sm font-medium">Official Documents</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -115,7 +115,7 @@ export default function DataSourcesFooter() {
                     className="group flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-card hover:border-border hover:bg-muted/30 transition-colors"
                   >
                     <div className="w-9 h-9 rounded-lg bg-muted/70 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium truncate group-hover:text-foreground transition-colors">
@@ -125,7 +125,7 @@ export default function DataSourcesFooter() {
                         {doc.year}{doc.size_kb ? ` · ${(doc.size_kb / 1024).toFixed(1)}MB` : ''}
                       </p>
                     </div>
-                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" />
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
                   </a>
                 ))}
               </div>
@@ -137,7 +137,7 @@ export default function DataSourcesFooter() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   <h3 className="text-sm font-medium">Source Links</h3>
                 </div>
                 {allSources.length > 3 && (
@@ -146,7 +146,7 @@ export default function DataSourcesFooter() {
                     className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors cursor-pointer"
                   >
                     {showAllSources ? 'Show less' : `Show all ${allSources.length}`}
-                    <ChevronDown className={`h-3 w-3 transition-transform ${showAllSources ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`h-3 w-3 transition-transform ${showAllSources ? 'rotate-180' : ''}`} aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -163,7 +163,7 @@ export default function DataSourcesFooter() {
                     <span className="text-sm group-hover:text-foreground transition-colors truncate pr-2">
                       {source.title}
                     </span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" />
+                    <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
                   </a>
                 ))}
               </div>
@@ -180,8 +180,8 @@ export default function DataSourcesFooter() {
                 className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
+                  <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
                 <p className="text-sm font-medium group-hover:text-foreground transition-colors">Council Tax 2025-26</p>
                 <p className="text-xs text-muted-foreground mt-1">GOV.UK Statistics</p>
@@ -194,8 +194,8 @@ export default function DataSourcesFooter() {
                 className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
+                  <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
                 <p className="text-sm font-medium group-hover:text-foreground transition-colors">Budget Data 2024-25</p>
                 <p className="text-xs text-muted-foreground mt-1">Revenue Expenditure Returns</p>
@@ -208,8 +208,8 @@ export default function DataSourcesFooter() {
                 className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
-                  <Globe className="h-4 w-4 text-muted-foreground" />
-                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" />
+                  <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
                 <p className="text-sm font-medium group-hover:text-foreground transition-colors">ONS Geography</p>
                 <p className="text-xs text-muted-foreground mt-1">Council codes & boundaries</p>
