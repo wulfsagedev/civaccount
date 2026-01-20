@@ -57,7 +57,7 @@ export default function Footer() {
           <Link href="/updates" className="inline-flex items-center gap-1.5 cursor-pointer">
             <PulsingDot />
             <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-              v1.4
+              v1.6
             </Badge>
           </Link>
         </div>

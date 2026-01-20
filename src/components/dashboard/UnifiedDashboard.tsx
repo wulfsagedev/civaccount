@@ -14,7 +14,6 @@ import {
   Building2,
   Shield,
   Flame,
-  FileText,
   ExternalLink,
   Info,
   GraduationCap,
@@ -1218,85 +1217,7 @@ const UnifiedDashboard = () => {
         </section>
       )}
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 9: Official Sources
-          ═══════════════════════════════════════════════════════════════════════ */}
-      {(detailed?.documents?.length || detailed?.website) && (
-        <section className="card-elevated p-5 sm:p-6">
-          <h2 className="type-title-2 mb-1">More information</h2>
-          <p className="type-body-sm text-muted-foreground mb-5">Official documents and links</p>
-
-          {detailed.documents && detailed.documents.length > 0 && (
-            <div className="space-y-1">
-              {detailed.documents.slice(0, 4).map((doc, index) => (
-                <a
-                  key={index}
-                  href={doc.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-2.5 -mx-2.5 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                    <span className="type-body-sm font-medium group-hover:text-foreground transition-colors">
-                      {doc.title}
-                      <span className="sr-only"> (opens in new tab)</span>
-                    </span>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
-                </a>
-              ))}
-            </div>
-          )}
-
-          {detailed.documents && detailed.documents.length > 0 && detailed.website && (
-            <div className="my-3" />
-          )}
-
-          {detailed.website && (
-            <a
-              href={detailed.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted transition-colors group cursor-pointer"
-            >
-              <div>
-                <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
-                  {selectedCouncil.name} website
-                  <span className="sr-only"> (opens in new tab)</span>
-                </p>
-                <p className="type-caption text-muted-foreground">Official council website</p>
-              </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
-            </a>
-          )}
-        </section>
-      )}
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 10: Data Note
-          ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="p-4 rounded-lg bg-muted/30">
-        <p className="type-body-sm font-medium text-foreground mb-1">About this data</p>
-        <p className="type-caption text-muted-foreground mb-2">
-          Council tax rates are for 2025-26. Budget figures are for 2024-25.
-          {detailed?.last_verified && ` Data last verified ${detailed.last_verified}.`}
-        </p>
-        <p className="type-caption text-muted-foreground">
-          <span className="font-medium text-muted-foreground">Sources:</span>{' '}
-          <a href="https://www.gov.uk/government/collections/council-tax-statistics" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground cursor-pointer">GOV.UK</a>
-          {' · '}
-          <a href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground cursor-pointer">ONS</a>
-          {detailed?.website && (
-            <>
-              {' · '}
-              <a href={detailed.website} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground cursor-pointer">{selectedCouncil.name}</a>
-            </>
-          )}
-        </p>
-      </section>
+      {/* Data sources, documents, and methodology are consolidated in DataSourcesFooter */}
     </div>
   );
 };
