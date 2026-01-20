@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Heart, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -22,6 +23,12 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
   const [customAmount, setCustomAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure we only render portal after component mounts (for SSR compatibility)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleDonate = async () => {
     const amount = customAmount ? parseFloat(customAmount) : selectedAmount;
@@ -70,10 +77,10 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
         Contribute
       </button>
 
-      {/* Modal backdrop */}
-      {isOpen && (
+      {/* Modal - rendered via portal to ensure it's above all other content */}
+      {mounted && isOpen && createPortal(
         <div
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setIsOpen(false)}
         >
           {/* Modal content */}
@@ -179,7 +186,8 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
