@@ -897,10 +897,10 @@ const UnifiedDashboard = () => {
             ))}
           </div>
 
-          {detailed.total_councillors && (
+          {(detailed.total_councillors || detailed.councillors_url) && (
             <div className="mt-4">
               <a
-                href="https://www.writetothem.com/"
+                href={detailed.councillors_url || "https://www.writetothem.com/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted transition-colors group cursor-pointer"
@@ -910,7 +910,11 @@ const UnifiedDashboard = () => {
                     Find your councillor
                     <span className="sr-only"> (opens in new tab)</span>
                   </p>
-                  <p className="type-caption text-muted-foreground">{detailed.total_councillors} councillors represent this area</p>
+                  <p className="type-caption text-muted-foreground">
+                    {detailed.total_councillors
+                      ? `${detailed.total_councillors} councillors represent this area`
+                      : "View all councillors on the council website"}
+                  </p>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
               </a>
