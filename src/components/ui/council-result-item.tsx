@@ -36,11 +36,11 @@ export function CouncilResultItem({
         }`}
       >
         <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="font-medium text-sm truncate text-foreground">
+          <div className="min-w-0 space-y-0.5">
+            <p className="font-medium text-sm truncate text-foreground leading-tight">
               {displayName}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground leading-tight">
               {council.type_name}
             </p>
           </div>
