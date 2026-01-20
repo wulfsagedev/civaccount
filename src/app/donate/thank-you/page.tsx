@@ -29,7 +29,7 @@ export default function ThankYouPage() {
             <h1 className="text-2xl sm:text-3xl font-bold mb-4">Thank you!</h1>
 
             <p className="text-muted-foreground mb-8 leading-relaxed">
-              Your contribution helps cover the costs of running CivAccount.
+              Your support is appreciated.
             </p>
 
             <Link href="/">
