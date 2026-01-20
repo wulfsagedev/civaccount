@@ -200,6 +200,20 @@
     scrollbar-gutter: stable;
   }
 
+  /* Smooth theme transition on all color properties */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition:
+      background-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+      color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      fill 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      stroke 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 400ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
   body {
     @apply bg-background text-foreground;
     /* Optimal line height for body text readability */
