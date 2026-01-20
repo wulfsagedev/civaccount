@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Heart, X, Coffee, Loader2 } from 'lucide-react';
 
 const DONATION_AMOUNTS = [
-  { value: 3, label: '£3', description: 'A coffee' },
-  { value: 5, label: '£5', description: 'A small thanks' },
-  { value: 10, label: '£10', description: 'Keep us going' },
-  { value: 25, label: '£25', description: 'Big supporter' },
+  { value: 3, label: '£3', description: 'Small' },
+  { value: 5, label: '£5', description: 'Medium' },
+  { value: 10, label: '£10', description: 'Large' },
+  { value: 25, label: '£25', description: 'Extra large' },
 ];
 
 export function DonateButton() {
@@ -82,7 +82,7 @@ export function DonateButton() {
                   </div>
                   <div>
                     <h2 className="font-semibold text-lg">Support CivAccount</h2>
-                    <p className="text-sm text-muted-foreground">Help keep council data free</p>
+                    <p className="text-sm text-muted-foreground">One-time contribution</p>
                   </div>
                 </div>
                 <button
@@ -97,8 +97,7 @@ export function DonateButton() {
             {/* Body */}
             <div className="p-6 space-y-6">
               <p className="text-sm text-muted-foreground">
-                CivAccount is free and independent. Your donation helps cover hosting costs
-                and keeps the project going.
+                CivAccount is free to use. Contributions help cover server and development costs.
               </p>
 
               {/* Preset amounts */}

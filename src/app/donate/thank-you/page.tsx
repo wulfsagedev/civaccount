@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Heart, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -28,16 +28,9 @@ export default function ThankYouPage() {
 
             <h1 className="text-2xl sm:text-3xl font-bold mb-4">Thank you!</h1>
 
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              Your support helps keep CivAccount free and independent.
-              Every contribution goes towards maintaining and improving
-              this tool for everyone.
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              Your contribution helps cover the costs of running CivAccount.
             </p>
-
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-8">
-              <Heart className="h-4 w-4 text-rose-500" />
-              <span>You&apos;re helping make council data accessible</span>
-            </div>
 
             <Link href="/">
               <Button className="gap-2 cursor-pointer">
