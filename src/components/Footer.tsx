@@ -4,6 +4,7 @@ import { Landmark, History, Map, Accessibility, Github } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
+import { DonateButton } from '@/components/DonateButton';
 
 export default function Footer() {
   return (
@@ -59,6 +60,7 @@ export default function Footer() {
               <Github className="h-3.5 w-3.5" />
               GitHub
             </a>
+            <DonateButton />
           </div>
 
           {/* Version (desktop only - mobile version is next to logo) */}
