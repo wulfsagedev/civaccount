@@ -1,324 +1,127 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  Database,
-  CheckCircle,
-  Circle,
-  Clock,
-  Link as LinkIcon,
-  FileCheck,
-  Users,
-  BarChart3,
-  Bell,
-  Map,
-  Sparkles
-} from 'lucide-react';
+import { ArrowLeft, CheckCircle, Circle } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-interface RoadmapItem {
-  text: string;
-  completed: boolean;
-  description?: string;
-}
-
-interface RoadmapPhase {
-  phase: string;
+interface RoadmapSection {
   title: string;
-  status: 'completed' | 'in_progress' | 'planned';
-  quarter: string;
-  items: RoadmapItem[];
+  status: 'done' | 'now' | 'next';
+  items: { text: string; done: boolean }[];
 }
 
-const roadmapItems: RoadmapPhase[] = [
+const roadmap: RoadmapSection[] = [
   {
-    phase: "Phase 1",
-    title: "Foundation",
-    status: "completed",
-    quarter: "2025",
+    title: "Done",
+    status: "done",
     items: [
-      { text: "All 324 English councils", completed: true },
-      { text: "Council tax data for 2025-26", completed: true },
-      { text: "Budget breakdowns by service", completed: true },
-      { text: "Search to find your council", completed: true },
-      { text: "Works on phones and tablets", completed: true },
-      { text: "Dark mode", completed: true },
-      { text: "Compare similar councils fairly", completed: true }
+      { text: "All 324 English councils with budget data", done: true },
+      { text: "Council tax rates and 5-year history", done: true },
+      { text: "Service spending breakdowns", done: true },
+      { text: "Fast search across all councils", done: true },
+      { text: "Mobile-first design with dark mode", done: true },
+      { text: "Fair comparisons between similar councils", done: true },
     ]
   },
   {
-    phase: "Phase 2",
-    title: "More detail",
-    status: "in_progress",
-    quarter: "Q1 2026",
+    title: "Working on",
+    status: "now",
     items: [
-      { text: "Data linked to official sources", completed: true },
-      { text: "County councils with full budget breakdowns", completed: true },
-      { text: "Faster search", completed: true },
-      { text: "Support CivAccount development", completed: true, description: "Contribute button added" },
-      { text: "5 year council tax history", completed: false, description: "See how your bill has changed" },
-      { text: "Police, fire and parish breakdown", completed: false, description: "See all parts of your council tax bill" },
-      { text: "When data was last updated", completed: false }
+      { text: "Police, fire, and parish council tax breakdown", done: false },
+      { text: "Links to original council budget documents", done: false },
+      { text: "Data freshness indicators", done: false },
     ]
   },
   {
-    phase: "Phase 3",
-    title: "Trust",
-    status: "planned",
-    quarter: "Q2 2026",
+    title: "Up next",
+    status: "next",
     items: [
-      { text: "Links to original council documents", completed: false },
-      { text: "Budget document library", completed: false, description: "Find your council's actual budget reports" },
-      { text: "Flag errors", completed: false, description: "Help us fix mistakes" }
-    ]
-  },
-  {
-    phase: "Phase 4",
-    title: "Insights",
-    status: "planned",
-    quarter: "Q3 2026",
-    items: [
-      { text: "Value for money comparisons", completed: false, description: "What you get for your council tax" },
-      { text: "Budget change alerts", completed: false, description: "Know when your council tax changes" },
-      { text: "Who runs your council", completed: false, description: "Council leaders and election dates" }
-    ]
-  },
-  {
-    phase: "Phase 5",
-    title: "UK-wide",
-    status: "planned",
-    quarter: "Q4 2026",
-    items: [
-      { text: "Wales councils", completed: false },
-      { text: "Scotland councils", completed: false },
-      { text: "Northern Ireland councils", completed: false },
-      { text: "Parish and town councils", completed: false }
+      { text: "Scotland, Wales, and Northern Ireland councils", done: false },
+      { text: "Value for money insights", done: false },
+      { text: "Council leadership and election info", done: false },
     ]
   }
 ];
 
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return (
-        <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
-          Completed
-        </Badge>
-      );
-    case 'in_progress':
-      return (
-        <Badge variant="outline" className="text-xs bg-muted text-foreground border-border">
-          In progress
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="outline" className="text-xs">
-          Planned
-        </Badge>
-      );
-  }
-};
-
-const getPhaseIcon = (phase: string) => {
-  switch (phase) {
-    case 'Phase 1':
-      return Database;
-    case 'Phase 2':
-      return FileCheck;
-    case 'Phase 3':
-      return LinkIcon;
-    case 'Phase 4':
-      return BarChart3;
-    case 'Phase 5':
-      return Map;
-    default:
-      return Circle;
-  }
-};
-
 export default function RoadmapPage() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
       <main id="main-content" className="flex-1">
-        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-7xl">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to home
-                </Button>
-              </Link>
-            </div>
-
-            <div className="space-y-8">
-              {/* Page Header */}
-              <div className="text-center space-y-3">
-                <Badge variant="outline" className="mb-2">Product roadmap</Badge>
-                <h1 className="text-2xl sm:text-3xl font-bold">What we&apos;re building</h1>
-                <p className="text-muted-foreground max-w-xl mx-auto">
-                  Our focus is on data quality, verifiability, and making council information
-                  as trustworthy as possible.
-                </p>
-              </div>
-
-              {/* Current Focus */}
-              <div className="card-elevated p-6 sm:p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                    <Sparkles className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <h2 className="type-title-2">Current focus</h2>
-                      <Badge variant="outline" className="text-xs">
-                        Q1 2026
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">Data depth and individual council sourcing</p>
-                  </div>
-                </div>
-
-                <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                  Right now, most of our data comes from central government sources like GOV.UK and the ONS.
-                  While this is accurate, it doesn&apos;t always reflect the full picture. Our next priority is
-                  sourcing data directly from each council&apos;s own budget documents, so you can trace every
-                  figure back to its origin.
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl">
-                    <LinkIcon className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium text-sm">Source linking</p>
-                      <p className="text-sm text-muted-foreground">Every number links to where it came from</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl">
-                    <Clock className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium text-sm">Historical trends</p>
-                      <p className="text-sm text-muted-foreground">See how your council has changed over time</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl">
-                    <FileCheck className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium text-sm">Council documents</p>
-                      <p className="text-sm text-muted-foreground">Access actual budget reports and plans</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl">
-                    <Users className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium text-sm">Community input</p>
-                      <p className="text-sm text-muted-foreground">Help us improve data accuracy</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Timeline */}
-              <div className="space-y-6">
-                {roadmapItems.map((phase, phaseIndex) => {
-                  const PhaseIcon = getPhaseIcon(phase.phase);
-                  const isCompleted = phase.status === 'completed';
-                  const isInProgress = phase.status === 'in_progress';
-
-                  return (
-                    <div key={phase.phase} className="card-elevated p-6 sm:p-8">
-                      <div className="flex items-start justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                            isCompleted
-                              ? 'bg-navy-50 dark:bg-navy-950/30'
-                              : 'bg-muted'
-                          }`}>
-                            <PhaseIcon className={`h-5 w-5 ${
-                              isCompleted
-                                ? 'text-navy-600 dark:text-navy-400'
-                                : 'text-muted-foreground'
-                            }`} />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-3">
-                              <h3 className="font-semibold">{phase.phase}: {phase.title}</h3>
-                              {getStatusBadge(phase.status)}
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">{phase.quarter}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <ul className="space-y-3">
-                        {phase.items.map((item, itemIndex) => (
-                          <li key={itemIndex} className="flex gap-3">
-                            <div className="shrink-0 pt-0.5">
-                              {item.completed ? (
-                                <CheckCircle className="h-4 w-4 text-positive" />
-                              ) : (
-                                <Circle className="h-4 w-4 text-muted-foreground" />
-                              )}
-                            </div>
-                            <div className="min-w-0">
-                              <p className={`text-sm leading-snug ${item.completed ? 'text-muted-foreground' : ''}`}>
-                                {item.text}
-                              </p>
-                              {item.description && (
-                                <p className="text-sm text-muted-foreground mt-1 leading-snug">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Feedback CTA */}
-              <div className="p-6 rounded-xl bg-muted/50 border border-border/50">
-                <div className="flex gap-4">
-                  <div className="shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                      <Bell className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-2">
-                      Have a suggestion?
-                    </h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      We&apos;re building this for you. If there&apos;s something you&apos;d like to see,
-                      or you have ideas for improving data quality, we&apos;d love to hear from you.
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => document.dispatchEvent(new CustomEvent('open-feedback'))}
-                      className="cursor-pointer"
-                    >
-                      Send feedback
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-3xl">
+          {/* Back link */}
+          <div className="mb-8">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="gap-2 -ml-2 cursor-pointer">
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </Button>
+            </Link>
           </div>
+
+          {/* Header */}
+          <div className="mb-10">
+            <h1 className="type-title-1 mb-2">Roadmap</h1>
+            <p className="type-body text-muted-foreground">
+              What we have built, what we are working on, and what comes next.
+            </p>
+          </div>
+
+          {/* Roadmap sections */}
+          <div className="space-y-8">
+            {roadmap.map((section) => (
+              <section key={section.title} className="card-elevated p-5 sm:p-6">
+                <div className="flex items-center gap-3 mb-5">
+                  <h2 className="type-title-2">{section.title}</h2>
+                  {section.status === 'done' && (
+                    <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
+                      Complete
+                    </Badge>
+                  )}
+                  {section.status === 'now' && (
+                    <Badge variant="outline" className="text-xs bg-muted text-foreground border-border">
+                      In progress
+                    </Badge>
+                  )}
+                </div>
+
+                <ul className="space-y-3">
+                  {section.items.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      {item.done ? (
+                        <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-positive" aria-hidden="true" />
+                      ) : (
+                        <Circle className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                      )}
+                      <span className={`type-body-sm ${item.done ? 'text-muted-foreground' : ''}`}>
+                        {item.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+
+          {/* Feedback CTA */}
+          <section className="mt-8 p-5 sm:p-6 rounded-xl bg-muted/30 border border-border/50">
+            <h3 className="type-title-3 mb-2">Have a suggestion?</h3>
+            <p className="type-body-sm text-muted-foreground mb-4">
+              We are building this for you. Tell us what would make CivAccount more useful.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => document.dispatchEvent(new CustomEvent('open-feedback'))}
+              className="cursor-pointer"
+            >
+              Send feedback
+            </Button>
+          </section>
         </div>
       </main>
 
