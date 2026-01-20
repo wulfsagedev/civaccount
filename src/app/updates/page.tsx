@@ -27,20 +27,12 @@ const updates = [
     ]
   },
   {
-    version: "1.4.2",
+    version: "1.4",
     date: "January 2026",
     isCurrent: false,
     changes: [
       "Sticky navigation bar follows you as you scroll",
       "Quick access to all pages from the floating menu",
-      "Easier to navigate on long pages"
-    ]
-  },
-  {
-    version: "1.4",
-    date: "January 2026",
-    isCurrent: false,
-    changes: [
       "Cleaner, easier to read dashboard layout",
       "Better dark mode that is easier on the eyes",
       "Works better with screen readers and keyboards",
@@ -51,7 +43,7 @@ const updates = [
   },
   {
     version: "1.2",
-    date: "December 2025",
+    date: "January 2026",
     isCurrent: false,
     changes: [
       "Now covers all 324 councils in England",
@@ -66,22 +58,15 @@ const updates = [
     ]
   },
   {
-    version: "1.1",
-    date: "November 2025",
-    isCurrent: false,
-    changes: [
-      "Dark mode toggle",
-      "Works better on phones",
-      "Improved budget charts"
-    ]
-  },
-  {
     version: "1.0",
-    date: "October 2025",
+    date: "December 2025",
     isCurrent: false,
     changes: [
       "First release with Kent County Council data",
-      "Council tax and budget breakdown"
+      "Council tax and budget breakdown",
+      "Dark mode toggle",
+      "Works well on phones",
+      "Budget charts showing where money goes"
     ]
   }
 ];
