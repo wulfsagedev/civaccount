@@ -56,7 +56,7 @@ export function ThemeToggle({ size = 'default' }: ThemeToggleProps) {
     // Remove transition class after animation completes
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
-    }, 400);
+    }, 200);
   }, [isDark]);
 
   const isLarge = size === 'lg';
@@ -93,7 +93,7 @@ export function ThemeToggle({ size = 'default' }: ThemeToggleProps) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="absolute inset-0 transition-all duration-500 ease-out"
+          className="absolute inset-0 transition-all duration-200 ease-out"
           style={{
             width: iconSize,
             height: iconSize,
@@ -120,7 +120,7 @@ export function ThemeToggle({ size = 'default' }: ThemeToggleProps) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="absolute inset-0 transition-all duration-500 ease-out"
+          className="absolute inset-0 transition-all duration-200 ease-out"
           style={{
             width: iconSize,
             height: iconSize,
