@@ -94,7 +94,7 @@ export default function AboutPage() {
                   </div>
                   <h4 className="font-semibold text-sm mb-2">All in one place</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Budget data, council tax rates, and service spending for all English councils
+                    Budget data, council tax rates, and service spending for 324 English councils
                   </p>
                 </div>
                 <div className="p-5 bg-muted/30 rounded-xl">
@@ -139,7 +139,7 @@ export default function AboutPage() {
                   <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
                   <div>
                     <p className="font-medium text-sm">Council Tax Levels 2025-26</p>
-                    <p className="text-sm text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
+                    <p className="text-sm text-muted-foreground mt-1">Ministry of Housing, Communities and Local Government</p>
                   </div>
                 </a>
                 <a
@@ -151,7 +151,19 @@ export default function AboutPage() {
                   <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
                   <div>
                     <p className="font-medium text-sm">Local Authority Revenue Expenditure</p>
-                    <p className="text-sm text-muted-foreground mt-1">Department for Levelling Up, Housing and Communities</p>
+                    <p className="text-sm text-muted-foreground mt-1">Ministry of Housing, Communities and Local Government</p>
+                  </div>
+                </a>
+                <a
+                  href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+                >
+                  <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div>
+                    <p className="font-medium text-sm">Population Estimates</p>
+                    <p className="text-sm text-muted-foreground mt-1">Office for National Statistics</p>
                   </div>
                 </a>
               </div>
