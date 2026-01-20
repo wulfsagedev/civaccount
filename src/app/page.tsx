@@ -19,10 +19,10 @@ const HomepageContent = memo(function HomepageContent() {
             <DataFlowAnimation />
             <div className="space-y-3">
               <h1 className="text-3xl sm:text-4xl font-bold leading-tight">
-                See where your council tax goes
+                Where your council tax goes
               </h1>
               <p className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto">
-                Understand how your local council uses your tax money
+                See how your council spends your money
               </p>
             </div>
           </div>
