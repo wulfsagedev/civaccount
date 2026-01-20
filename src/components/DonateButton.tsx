@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, X, Coffee, Loader2 } from 'lucide-react';
+import { Heart, X, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const DONATION_AMOUNTS = [
   { value: 3, label: '£3', description: 'Small' },
@@ -11,7 +12,11 @@ const DONATION_AMOUNTS = [
   { value: 25, label: '£25', description: 'Extra large' },
 ];
 
-export function DonateButton() {
+interface DonateButtonProps {
+  variant?: 'default' | 'header';
+}
+
+export function DonateButton({ variant = 'default' }: DonateButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(5);
   const [customAmount, setCustomAmount] = useState('');
@@ -52,15 +57,18 @@ export function DonateButton() {
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="sm"
+      <button
         onClick={() => setIsOpen(true)}
-        className="gap-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
+        className={cn(
+          'inline-flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer rounded-lg',
+          variant === 'header'
+            ? 'h-9 px-4 py-2 text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50'
+            : 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 px-2 py-1'
+        )}
       >
-        <Heart className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Donate</span>
-      </Button>
+        <Heart className="h-3.5 w-3.5" aria-hidden="true" />
+        Contribute
+      </button>
 
       {/* Modal backdrop */}
       {isOpen && (
@@ -78,7 +86,7 @@ export function DonateButton() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
-                    <Coffee className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                    <Heart className="h-5 w-5 text-rose-600 dark:text-rose-400" />
                   </div>
                   <div>
                     <h2 className="font-semibold text-lg">Support CivAccount</h2>
