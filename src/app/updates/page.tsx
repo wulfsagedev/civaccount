@@ -8,13 +8,28 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const VERSION = "1.4.2";
+const VERSION = "1.6";
 
 const updates = [
   {
-    version: "1.4.2",
+    version: "1.6",
     date: "January 2026",
     isCurrent: true,
+    changes: [
+      "Lightning-fast search with pre-computed index",
+      "20 county councils enriched with detailed budget data",
+      "All data linked to verified government source documents",
+      "Improved mobile navigation with wider breakpoint",
+      "Logo click always returns to homepage",
+      "Search overlay works from any page (press F)",
+      "Cleaner service descriptions in dashboard",
+      "Fixed reserves calculation for county councils"
+    ]
+  },
+  {
+    version: "1.4.2",
+    date: "January 2026",
+    isCurrent: false,
     changes: [
       "Sticky navigation bar follows you as you scroll",
       "Quick access to all pages from the floating menu",
