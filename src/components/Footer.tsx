@@ -11,13 +11,21 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-4 sm:px-6 max-w-7xl">
         {/* Main row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Brand */}
-          <Link href="/" className="inline-flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-            <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center">
-              <Landmark className="h-3.5 w-3.5 text-primary-foreground" />
-            </div>
-            <span className="font-semibold">CivAccount</span>
-          </Link>
+          {/* Brand + Version (side by side on mobile) */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="inline-flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+              <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center">
+                <Landmark className="h-3.5 w-3.5 text-primary-foreground" />
+              </div>
+              <span className="font-semibold">CivAccount</span>
+            </Link>
+            <Link href="/updates" className="inline-flex items-center gap-1.5 cursor-pointer sm:hidden">
+              <PulsingDot />
+              <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
+                v1.6
+              </Badge>
+            </Link>
+          </div>
 
           {/* Links row */}
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
@@ -53,8 +61,8 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Version */}
-          <Link href="/updates" className="inline-flex items-center gap-1.5 cursor-pointer">
+          {/* Version (desktop only - mobile version is next to logo) */}
+          <Link href="/updates" className="hidden sm:inline-flex items-center gap-1.5 cursor-pointer">
             <PulsingDot />
             <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
               v1.6
