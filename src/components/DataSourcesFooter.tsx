@@ -9,8 +9,7 @@ import {
   Shield,
   CheckCircle2,
   Globe,
-  ChevronDown,
-  Info
+  ChevronDown
 } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
@@ -217,15 +216,6 @@ export default function DataSourcesFooter() {
               </a>
             </div>
           )}
-
-          {/* Methodology note - Subtle */}
-          <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-            <Info className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              <span className="font-medium text-foreground/80">Calculation method:</span>{' '}
-              Band D is the baseline. Other bands use official ratios (Band A = 6/9, Band H = 18/9 of Band D).
-            </p>
-          </div>
 
         </div>
       </div>
