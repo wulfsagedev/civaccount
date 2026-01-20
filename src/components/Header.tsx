@@ -9,7 +9,7 @@ import { PulsingDot } from '@/components/ui/pulsing-dot';
 import { Landmark, Menu, X, BarChart3, Info, MessageSquare, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
-import { getCouncilDisplayName } from '@/data/councils';
+import { getCouncilDisplayName, getCouncilBySlug } from '@/data/councils';
 import FeedbackModal from '@/components/FeatureRequestDialog';
 import SearchCommand from '@/components/SearchCommand';
 import { DonateButton } from '@/components/DonateButton';
@@ -207,8 +207,17 @@ export default function Header() {
                 }
 
                 // If on a council page, show council name
-                if (pathname.startsWith('/council/') && selectedCouncil) {
-                  return <p className="text-sm font-semibold truncate leading-tight">{getCouncilDisplayName(selectedCouncil)}</p>;
+                // Use selectedCouncil if available, otherwise derive from URL slug
+                if (pathname.startsWith('/council/')) {
+                  if (selectedCouncil) {
+                    return <p className="text-sm font-semibold truncate leading-tight">{getCouncilDisplayName(selectedCouncil)}</p>;
+                  }
+                  // Fallback: derive council from URL slug directly
+                  const slug = pathname.replace('/council/', '');
+                  const councilFromSlug = getCouncilBySlug(slug);
+                  if (councilFromSlug) {
+                    return <p className="text-sm font-semibold truncate leading-tight">{getCouncilDisplayName(councilFromSlug)}</p>;
+                  }
                 }
 
                 // Homepage or unknown page - show version badge (desktop only)
