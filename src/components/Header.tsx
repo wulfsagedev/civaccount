@@ -81,7 +81,7 @@ export default function Header() {
                 <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center">
                   <Landmark className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <h1 className="text-lg sm:text-xl font-bold leading-tight">CivAccount</h1>
+                <span className="text-lg sm:text-xl font-bold leading-tight">CivAccount</span>
               </Link>
               <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                 <PulsingDot size="md" />

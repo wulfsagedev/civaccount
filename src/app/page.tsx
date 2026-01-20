@@ -6,6 +6,7 @@ import CouncilSelector from '@/components/CouncilSelector';
 import CouncilDashboard from '@/components/CouncilDashboard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { DataFlowAnimation } from '@/components/ui/data-flow-animation';
 
 // Memoized homepage content to prevent re-renders
 const HomepageContent = memo(function HomepageContent() {
@@ -13,20 +14,17 @@ const HomepageContent = memo(function HomepageContent() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main id="main-content" className="flex-1 flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
-        <div className="w-full max-w-xl space-y-10">
-          <div className="text-center space-y-4">
-            <div className="flex justify-center">
-              <div className="p-4 bg-muted rounded-full">
-                <svg className="h-6 w-6 sm:h-7 sm:w-7 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                </svg>
-              </div>
+        <div className="w-full max-w-xl space-y-8">
+          <div className="text-center space-y-6">
+            <DataFlowAnimation />
+            <div className="space-y-3">
+              <h1 className="text-3xl sm:text-4xl font-bold leading-tight">
+                See where your council tax goes
+              </h1>
+              <p className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto">
+                Understand how your local council uses your tax money
+              </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold leading-tight">Find Your Council</h1>
-            <p className="text-muted-foreground text-base sm:text-lg">
-              See where your council tax goes
-            </p>
           </div>
           <CouncilSelector variant="homepage" />
         </div>

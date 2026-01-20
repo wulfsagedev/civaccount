@@ -16,6 +16,7 @@ const updates = [
     date: "January 2026",
     isCurrent: true,
     changes: [
+      "New animated landing page with floating £ blocks",
       "Lightning-fast search to find your council instantly",
       "20 county councils now have detailed budget breakdowns",
       "All data linked to official government sources",

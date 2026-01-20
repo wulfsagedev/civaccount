@@ -363,20 +363,34 @@ const UnifiedDashboard = () => {
                 if (precept.authority.toLowerCase().includes('fire')) Icon = Flame;
                 if (isThisCouncil) Icon = Home;
 
+                // Default descriptions for common authority types
+                const getDefaultDescription = () => {
+                  if (precept.authority.toLowerCase().includes('police')) return 'Local policing and crime prevention';
+                  if (precept.authority.toLowerCase().includes('fire')) return 'Fire and rescue services';
+                  if (precept.authority.toLowerCase().includes('county')) return 'Education, social care, highways';
+                  return null;
+                };
+                const description = precept.description || getDefaultDescription();
+
                 const rowContent = (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isThisCouncil ? 'bg-foreground/10' : 'bg-muted'}`}>
                         <Icon className={`h-4 w-4 ${isThisCouncil ? 'text-foreground' : 'text-muted-foreground'}`} />
                       </div>
-                      <span className={`type-body-sm ${isThisCouncil ? 'font-semibold' : ''} ${isLinkable ? 'group-hover:text-foreground transition-colors' : ''}`}>
-                        {displayName}
-                      </span>
+                      <div className="min-w-0">
+                        <span className={`type-body-sm ${isThisCouncil ? 'font-semibold' : ''} ${isLinkable ? 'group-hover:text-foreground transition-colors' : ''}`}>
+                          {displayName}
+                        </span>
+                        {description && (
+                          <p className="type-caption text-muted-foreground truncate">{description}</p>
+                        )}
+                      </div>
                       {isLinkable && (
-                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
                       )}
                     </div>
-                    <span className={`type-body-sm font-semibold tabular-nums ${isThisCouncil ? '' : 'text-muted-foreground'}`}>
+                    <span className={`type-body-sm font-semibold tabular-nums shrink-0 ml-3 ${isThisCouncil ? '' : 'text-muted-foreground'}`}>
                       {formatCurrency(precept.band_d, { decimals: 2 })}
                     </span>
                   </div>
