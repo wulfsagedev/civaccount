@@ -128,6 +128,27 @@ const UnifiedDashboard = () => {
   const perCapita = totalBudget && population ? totalBudget / population : null;
   const efficiencyMetrics = selectedCouncil ? calculateEfficiencyMetrics(selectedCouncil) : null;
 
+  // Get the council's own portion from precepts (more precise) or fall back to band_d_2025
+  const thisCouncilBandD = useMemo(() => {
+    if (!selectedCouncil || !councilTax) return null;
+
+    // If we have detailed precepts, find this council's precise amount
+    if (detailed?.precepts && detailed.precepts.length > 0) {
+      const councilNameLower = selectedCouncil.name.toLowerCase();
+      const matchingPrecept = detailed.precepts.find(p => {
+        const authLower = p.authority.toLowerCase();
+        // Check if the authority name contains the council name
+        return authLower.includes(councilNameLower) ||
+               councilNameLower.split(' ').some(word => word.length > 3 && authLower.includes(word));
+      });
+      if (matchingPrecept) {
+        return matchingPrecept.band_d;
+      }
+    }
+    // Fall back to band_d_2025
+    return councilTax.band_d_2025;
+  }, [selectedCouncil, councilTax, detailed]);
+
   const taxChange = councilTax && councilTax.band_d_2024
     ? ((councilTax.band_d_2025 - councilTax.band_d_2024) / councilTax.band_d_2024 * 100)
     : null;
@@ -263,7 +284,7 @@ const UnifiedDashboard = () => {
           <p className="type-caption text-muted-foreground mb-1">You pay this council</p>
           <div className="flex items-baseline gap-2">
             <span className="type-display">
-              {councilTax ? formatCurrency(councilTax.band_d_2025, { decimals: 2 }) : 'N/A'}
+              {thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}
             </span>
             <span className="type-caption text-muted-foreground">/year</span>
           </div>
