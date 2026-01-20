@@ -21,15 +21,15 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLogoClick = (e: React.MouseEvent) => {
+  const handleLogoClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    setSelectedCouncil(null);
     setMobileMenuOpen(false);
-    // Only navigate if not already on homepage
-    if (pathname !== '/') {
-      router.push('/');
-    }
-  };
+    // Navigate first, then clear council to avoid race conditions
+    // with council page trying to set council from URL
+    router.push('/');
+    // Small delay to ensure navigation starts before clearing
+    setTimeout(() => setSelectedCouncil(null), 10);
+  }, [router, setSelectedCouncil]);
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
@@ -85,13 +85,13 @@ export default function Header() {
               <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                 <PulsingDot size="md" />
                 <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-                  v1.4.2
+                  v1.6
                 </Badge>
               </Link>
             </div>
 
             {/* Right: Search + Desktop Navigation */}
-            <div className="hidden sm:flex items-center gap-1 shrink-0">
+            <div className="hidden lg:flex items-center gap-1 shrink-0">
               <SearchCommand />
               <nav className="flex items-center gap-1 ml-2">
                 <Link href="/insights" className={navLinkClass}>
@@ -111,7 +111,7 @@ export default function Header() {
             </div>
 
             {/* Right: Mobile Navigation */}
-            <div className="flex sm:hidden items-center gap-1">
+            <div className="flex lg:hidden items-center gap-1">
               <SearchCommand />
               <ThemeToggle />
               <Button
@@ -128,7 +128,7 @@ export default function Header() {
 
           {/* Mobile Menu Dropdown */}
           {mobileMenuOpen && (
-            <div className="sm:hidden mt-4 pt-4 border-t">
+            <div className="lg:hidden mt-4 pt-4 border-t">
               <nav className="flex flex-col gap-1">
                 <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
                   <BarChart3 className="h-4 w-4" />
@@ -141,7 +141,7 @@ export default function Header() {
                 <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
                   <PulsingDot size="md" />
                   Updates
-                  <Badge variant="outline" className="text-sm ml-auto">v1.4.2</Badge>
+                  <Badge variant="outline" className="text-sm ml-auto">v1.6</Badge>
                 </Link>
                 <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
                   <MessageSquare className="h-4 w-4" />
@@ -211,7 +211,7 @@ export default function Header() {
                   <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                     <PulsingDot size="md" />
                     <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
-                      v1.4.2
+                      v1.6
                     </Badge>
                   </Link>
                 );
@@ -221,7 +221,7 @@ export default function Header() {
             {/* Right: Search + Theme toggle + Mobile menu */}
             <div className="flex items-center gap-2 shrink-0">
               {/* Desktop: Full search button */}
-              <div className="hidden sm:block">
+              <div className="hidden lg:block">
                 <SearchCommand forceDesktopStyle />
               </div>
               {/* Mobile: Icon-only search */}
@@ -232,7 +232,7 @@ export default function Header() {
                   setMobileMenuOpen(false);
                   document.dispatchEvent(new CustomEvent('open-search'));
                 }}
-                className="sm:hidden h-9 w-9"
+                className="lg:hidden h-9 w-9"
                 aria-label="Search councils"
               >
                 <Search className="h-5 w-5" />
@@ -243,7 +243,7 @@ export default function Header() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="sm:hidden h-9 w-9"
+                className="lg:hidden h-9 w-9"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -253,7 +253,7 @@ export default function Header() {
 
           {/* Mobile menu dropdown - attached to sticky nav */}
           {mobileMenuOpen && isScrolled && (
-            <div className="sm:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
+            <div className="lg:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
               <nav className="flex flex-col gap-1">
                 <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
                   <BarChart3 className="h-4 w-4" />
@@ -266,7 +266,7 @@ export default function Header() {
                 <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
                   <PulsingDot size="md" />
                   Updates
-                  <Badge variant="outline" className="text-sm ml-auto">v1.4.2</Badge>
+                  <Badge variant="outline" className="text-sm ml-auto">v1.6</Badge>
                 </Link>
                 <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
                   <MessageSquare className="h-4 w-4" />

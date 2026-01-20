@@ -29,47 +29,46 @@ import {
 import { useCouncil } from '@/context/CouncilContext';
 import { formatBudget, formatCurrency, getCouncilPopulation, getAverageBandDByType, calculateBands, calculateEfficiencyMetrics, getCouncilByName, getCouncilSlug, councils } from '@/data/councils';
 
-// Service descriptions with examples - simple language for all reading levels
-// Colors use muted earth tones with good contrast for accessibility and neurodivergent users
+// Service descriptions with examples - simple, neutral language for all reading levels
 const SERVICE_DETAILS: Record<string, { description: string; examples: string[] }> = {
   environmental: {
-    description: 'Picks up your bins and keeps streets clean',
+    description: 'Bin collection and street cleaning services',
     examples: ['Bin collection', 'Recycling centres', 'Street cleaning', 'Fly-tipping removal']
   },
   planning: {
-    description: 'Decides what can be built in your area',
+    description: 'Planning applications and building control',
     examples: ['Planning applications', 'Building control', 'Conservation areas', 'Listed buildings']
   },
   central_services: {
-    description: 'Runs the council and answers your questions',
+    description: 'Council administration and customer services',
     examples: ['Customer service', 'Council tax collection', 'Elections', 'IT systems']
   },
   cultural: {
-    description: 'Runs libraries, parks, and leisure centres',
+    description: 'Libraries, parks, and leisure facilities',
     examples: ['Libraries', 'Parks', 'Leisure centres', 'Museums', 'Sports facilities']
   },
   housing: {
-    description: 'Helps people find homes',
+    description: 'Council housing and homelessness services',
     examples: ['Council housing', 'Homelessness support', 'Housing benefits', 'Private rental checks']
   },
   adult_social_care: {
-    description: 'Cares for older people and people with disabilities',
+    description: 'Care services for adults and older people',
     examples: ['Care homes', 'Home care visits', 'Disability support', 'Mental health services']
   },
   childrens_social_care: {
-    description: 'Keeps children safe and helps families',
+    description: 'Child protection and family services',
     examples: ['Child protection', 'Foster care', 'Adoption services', 'Family support']
   },
   education: {
-    description: 'Runs school buses and helps children who need extra support',
+    description: 'School transport and special educational needs',
     examples: ['School transport', 'Special educational needs', 'Education welfare', 'School admissions']
   },
   transport: {
-    description: 'Fixes roads and keeps street lights working',
+    description: 'Roads, street lights, and footpaths',
     examples: ['Road repairs', 'Potholes', 'Street lights', 'Traffic signals', 'Footpaths']
   },
   public_health: {
-    description: 'Helps people stay healthy',
+    description: 'Public health and prevention services',
     examples: ['Stop smoking services', 'Health visitors', 'Drug & alcohol support', 'Sexual health']
   }
 };
@@ -145,12 +144,17 @@ const UnifiedDashboard = () => {
     ? councilTax.band_d_2025 - councilTax.band_d_2024
     : null;
 
-  // Calculate reserves in weeks of operation (calculated after totalBudget is available)
+  // Calculate reserves in weeks of operation (use revenue_budget if available, else totalBudget)
   const reservesInWeeks = useMemo(() => {
-    if (!detailed?.reserves || !totalBudget) return null;
-    const weeklyBudget = totalBudget / 52;
-    return Math.round(detailed.reserves / weeklyBudget);
-  }, [detailed?.reserves, totalBudget]);
+    if (!detailed?.reserves) return null;
+    // Prefer revenue_budget from detailed data (for county councils with enriched data)
+    const annualBudget = detailed.revenue_budget || totalBudget;
+    if (!annualBudget || annualBudget === 0) return null;
+    const weeklyBudget = annualBudget / 52;
+    const weeks = Math.round(detailed.reserves / weeklyBudget);
+    // Only return if it's a meaningful number (at least 1 week)
+    return weeks > 0 ? weeks : null;
+  }, [detailed?.reserves, detailed?.revenue_budget, totalBudget]);
 
   // Calculate all bands
   const allBands = useMemo(() => {
@@ -232,11 +236,6 @@ const UnifiedDashboard = () => {
 
   const isDistrictCouncil = selectedCouncil.type === 'SD';
   const isCountyCouncil = selectedCouncil.type === 'SC';
-
-  // Get county council name from precepts if available
-  const countyCouncilName = detailed?.precepts?.find(p =>
-    p.authority.toLowerCase().includes('county')
-  )?.authority.replace(' Council', '') || 'your county council';
 
   // Band descriptions
   const bandDescriptions: Record<string, string> = {
@@ -432,8 +431,8 @@ const UnifiedDashboard = () => {
             ))}
           </div>
 
-          {/* Selected band details - prominent panel */}
-          <div className="p-4 sm:p-5 rounded-lg bg-foreground/5 border border-foreground/10">
+          {/* Selected band details */}
+          <div className="p-4 sm:p-5 rounded-lg bg-muted/30">
             <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]}</p>
             <p className="type-metric mb-4">
               {formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 })}
@@ -482,6 +481,22 @@ const UnifiedDashboard = () => {
               </a>
             </p>
           </div>
+
+          {/* Source link */}
+          {detailed?.council_tax_url && (
+            <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">
+              Source:{' '}
+              <a
+                href={detailed.council_tax_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors cursor-pointer"
+              >
+                {selectedCouncil.name} council tax rates
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            </p>
+          )}
         </section>
       )}
 
@@ -606,6 +621,20 @@ const UnifiedDashboard = () => {
               </div>
             );
           })()}
+
+          {/* Source link */}
+          <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">
+            Source:{' '}
+            <a
+              href="https://www.gov.uk/government/collections/council-tax-statistics"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-foreground transition-colors cursor-pointer"
+            >
+              GOV.UK Council Tax Statistics
+              <span className="sr-only"> (opens in new tab)</span>
+            </a>
+          </p>
         </section>
       )}
 
@@ -666,6 +695,32 @@ const UnifiedDashboard = () => {
               </p>
             </div>
           )}
+
+          {/* Source link */}
+          <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">
+            Source:{' '}
+            {detailed?.budget_url ? (
+              <a
+                href={detailed.budget_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors cursor-pointer"
+              >
+                {selectedCouncil.name} budget
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            ) : (
+              <a
+                href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors cursor-pointer"
+              >
+                GOV.UK Local Authority Finance
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            )}
+          </p>
         </section>
       )}
 
@@ -721,6 +776,42 @@ const UnifiedDashboard = () => {
               Savings for emergencies. This is normal practice.
             </p>
           </div>
+
+          {/* Source link */}
+          <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">
+            Source:{' '}
+            {detailed?.budget_url ? (
+              <a
+                href={detailed.budget_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors cursor-pointer"
+              >
+                {selectedCouncil.name} budget
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            ) : detailed?.accounts_url ? (
+              <a
+                href={detailed.accounts_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors cursor-pointer"
+              >
+                {selectedCouncil.name} accounts
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            ) : (
+              <a
+                href={detailed?.website || `https://www.gov.uk/find-local-council`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground transition-colors cursor-pointer"
+              >
+                {selectedCouncil.name} website
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            )}
+          </p>
         </section>
       )}
 
@@ -806,15 +897,15 @@ const UnifiedDashboard = () => {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* District issues */}
+            {/* District council card */}
             <div className="p-4 rounded-lg bg-foreground/5 border border-foreground/10">
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 rounded-lg bg-foreground/10 flex items-center justify-center shrink-0">
                   <Home className="h-4 w-4 text-foreground" aria-hidden="true" />
                 </div>
                 <p className="type-body-sm font-semibold">{selectedCouncil.name}</p>
               </div>
-              <div className="space-y-2 ml-11">
+              <div className="space-y-2 mb-4">
                 {CONTACT_ISSUES.district.map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <Check className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
@@ -822,49 +913,222 @@ const UnifiedDashboard = () => {
                   </div>
                 ))}
               </div>
+              {/* CTA for district council */}
+              {detailed?.website && (
+                <a
+                  href={detailed.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-foreground text-background type-body-sm font-semibold hover:bg-foreground/90 transition-colors cursor-pointer"
+                >
+                  Contact {selectedCouncil.name}
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span className="sr-only">(opens in new tab)</span>
+                </a>
+              )}
             </div>
 
-            {/* County issues */}
-            <div className="p-4 rounded-lg bg-muted/30">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                  <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            {/* County council card */}
+            {(() => {
+              const countyPrecept = detailed?.precepts?.find(p => p.authority.toLowerCase().includes('county'));
+              const countyLink = countyPrecept ? findLinkedCouncil(countyPrecept.authority) : null;
+              const countyName = countyPrecept?.authority.replace(' Council', '') || null;
+              const countyWebsite = countyLink?.council?.detailed?.website;
+
+              if (!countyName) return null;
+
+              return (
+                <div className="p-4 rounded-lg bg-muted/30">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                      <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    </div>
+                    <p className="type-body-sm font-semibold">{countyName}</p>
+                  </div>
+                  <div className="space-y-2 mb-4">
+                    {CONTACT_ISSUES.county.map((item, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <Check className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                        <span className="type-caption text-muted-foreground">{item.issue}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* CTA for county council - link to their page or external site */}
+                  {countyLink ? (
+                    <Link
+                      href={`/council/${countyLink.slug}`}
+                      className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-muted text-foreground type-body-sm font-semibold hover:bg-muted/70 transition-colors cursor-pointer"
+                    >
+                      View {countyName} budget
+                      <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  ) : countyWebsite ? (
+                    <a
+                      href={countyWebsite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-muted text-foreground type-body-sm font-semibold hover:bg-muted/70 transition-colors cursor-pointer"
+                    >
+                      Contact {countyName}
+                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                      <span className="sr-only">(opens in new tab)</span>
+                    </a>
+                  ) : null}
                 </div>
-                <p className="type-body-sm font-semibold text-muted-foreground">{countyCouncilName}</p>
+              );
+            })()}
+          </div>
+        </section>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 8a: Key facts (for county councils with key_facts data)
+          Shows headline service statistics for county councils
+          ═══════════════════════════════════════════════════════════════════════ */}
+      {isCountyCouncil && detailed?.key_facts && (
+        <section className="card-elevated p-5 sm:p-6">
+          <h2 className="type-title-2 mb-1">At a glance</h2>
+          <p className="type-body-sm text-muted-foreground mb-5">
+            Key facts about {selectedCouncil.name}&apos;s services
+          </p>
+
+          <div className="grid grid-cols-2 gap-4">
+            {detailed.key_facts.population_served && (
+              <div className="p-3 rounded-lg bg-muted/30">
+                <p className="type-metric font-semibold tabular-nums">{(detailed.key_facts.population_served / 1000000).toFixed(1)}m</p>
+                <p className="type-caption text-muted-foreground">residents served</p>
               </div>
-              <div className="space-y-2 ml-11">
+            )}
+            {detailed.key_facts.roads_maintained_miles && (
+              <div className="p-3 rounded-lg bg-muted/30">
+                <p className="type-metric font-semibold tabular-nums">{detailed.key_facts.roads_maintained_miles.toLocaleString('en-GB')}</p>
+                <p className="type-caption text-muted-foreground">miles of roads</p>
+              </div>
+            )}
+            {detailed.key_facts.libraries && (
+              <div className="p-3 rounded-lg bg-muted/30">
+                <p className="type-metric font-semibold tabular-nums">{detailed.key_facts.libraries}</p>
+                <p className="type-caption text-muted-foreground">libraries</p>
+              </div>
+            )}
+            {detailed.key_facts.adult_social_care_clients && (
+              <div className="p-3 rounded-lg bg-muted/30">
+                <p className="type-metric font-semibold tabular-nums">{detailed.key_facts.adult_social_care_clients.toLocaleString('en-GB')}</p>
+                <p className="type-caption text-muted-foreground">adults in care</p>
+              </div>
+            )}
+          </div>
+
+          {/* Additional facts in smaller format */}
+          <div className="mt-4 pt-4 border-t border-border/50 space-y-2">
+            {detailed.key_facts.library_visits_annual && (
+              <div className="flex items-baseline justify-between">
+                <span className="type-caption text-muted-foreground">Library visits per year</span>
+                <span className="type-body-sm font-semibold tabular-nums">{(detailed.key_facts.library_visits_annual / 1000000).toFixed(1)}m</span>
+              </div>
+            )}
+            {detailed.key_facts.potholes_repaired_2025 && (
+              <div className="flex items-baseline justify-between">
+                <span className="type-caption text-muted-foreground">Potholes repaired (2025)</span>
+                <span className="type-body-sm font-semibold tabular-nums">{detailed.key_facts.potholes_repaired_2025.toLocaleString('en-GB')}</span>
+              </div>
+            )}
+            {detailed.key_facts.school_transport_budget && (
+              <div className="flex items-baseline justify-between">
+                <span className="type-caption text-muted-foreground">School transport budget</span>
+                <span className="type-body-sm font-semibold tabular-nums">{formatBudget(detailed.key_facts.school_transport_budget / 1000)}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Source link */}
+          <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">
+            Source:{' '}
+            <a
+              href={detailed?.website || 'https://www.gov.uk/find-local-council'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-foreground transition-colors cursor-pointer"
+            >
+              {selectedCouncil.name} website
+              <span className="sr-only"> (opens in new tab)</span>
+            </a>
+          </p>
+        </section>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 8b: District councils in your area (for county councils)
+          Shows which district councils residents might also pay
+          ═══════════════════════════════════════════════════════════════════════ */}
+      {isCountyCouncil && (
+        <section className="card-elevated p-5 sm:p-6">
+          <h2 className="type-title-2 mb-1">Your local councils</h2>
+          <p className="type-body-sm text-muted-foreground mb-5">
+            You also have a district or borough council for local services.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* County council card (this council) */}
+            <div className="p-4 rounded-lg bg-foreground/5 border border-foreground/10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-foreground/10 flex items-center justify-center shrink-0">
+                  <Building2 className="h-4 w-4 text-foreground" aria-hidden="true" />
+                </div>
+                <p className="type-body-sm font-semibold">{selectedCouncil.name}</p>
+              </div>
+              <div className="space-y-2 mb-4">
                 {CONTACT_ISSUES.county.map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <Check className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" aria-hidden="true" />
+                    <Check className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
                     <span className="type-caption text-muted-foreground">{item.issue}</span>
                   </div>
                 ))}
               </div>
+              {/* CTA for county council */}
+              {detailed?.website && (
+                <a
+                  href={detailed.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-foreground text-background type-body-sm font-semibold hover:bg-foreground/90 transition-colors cursor-pointer"
+                >
+                  Contact {selectedCouncil.name}
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span className="sr-only">(opens in new tab)</span>
+                </a>
+              )}
+            </div>
+
+            {/* District councils info */}
+            <div className="p-4 rounded-lg bg-muted/30">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <Home className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                </div>
+                <p className="type-body-sm font-semibold">Your district council</p>
+              </div>
+              <div className="space-y-2 mb-4">
+                {CONTACT_ISSUES.district.map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                    <span className="type-caption text-muted-foreground">{item.issue}</span>
+                  </div>
+                ))}
+              </div>
+              {/* CTA to find district council */}
+              <a
+                href="https://www.gov.uk/find-local-council"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-muted text-foreground type-body-sm font-semibold hover:bg-muted/70 transition-colors cursor-pointer"
+              >
+                Find your district council
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                <span className="sr-only">(opens in new tab)</span>
+              </a>
             </div>
           </div>
-
-          {/* Link to county council if available */}
-          {(() => {
-            const countyPrecept = detailed?.precepts?.find(p => p.authority.toLowerCase().includes('county'));
-            const countyLink = countyPrecept ? findLinkedCouncil(countyPrecept.authority) : null;
-            if (!countyLink) return null;
-            return (
-              <div className="mt-4">
-                <Link
-                  href={`/council/${countyLink.slug}`}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted transition-colors group cursor-pointer"
-                >
-                  <div>
-                    <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
-                      View {countyCouncilName} budget
-                    </p>
-                    <p className="type-caption text-muted-foreground">See how they spend your money</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
-                </Link>
-              </div>
-            );
-          })()}
         </section>
       )}
 

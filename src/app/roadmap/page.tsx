@@ -58,7 +58,9 @@ const roadmapItems: RoadmapPhase[] = [
     status: "in_progress",
     quarter: "Q1 2026",
     items: [
-      { text: "Individual council data sourcing", completed: false, description: "Link each data point to its original council source document" },
+      { text: "Individual council data sourcing", completed: true, description: "Link each data point to its original council source document" },
+      { text: "County council enrichment", completed: true, description: "20 county councils with detailed budget data and verified source URLs" },
+      { text: "Lightning-fast search", completed: true, description: "Pre-computed search index for instant council lookup" },
       { text: "Historical data (5 year trends)", completed: false, description: "Track council tax and spending changes over time" },
       { text: "Precept breakdowns for all councils", completed: false, description: "Show police, fire, and parish contributions everywhere" },
       { text: "Service-level detail from council websites", completed: false, description: "What each council actually provides to residents" },
