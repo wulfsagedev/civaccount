@@ -16,14 +16,12 @@ const updates = [
     date: "January 2026",
     isCurrent: true,
     changes: [
-      "Lightning-fast search with pre-computed index",
-      "20 county councils enriched with detailed budget data",
-      "All data linked to verified government source documents",
-      "Improved mobile navigation with wider breakpoint",
-      "Logo click always returns to homepage",
-      "Search overlay works from any page (press F)",
-      "Cleaner service descriptions in dashboard",
-      "Fixed reserves calculation for county councils"
+      "Lightning-fast search to find your council instantly",
+      "20 county councils now have detailed budget breakdowns",
+      "All data linked to official government sources",
+      "Contribute button to support CivAccount development",
+      "Better mobile navigation",
+      "Press F to search from any page"
     ]
   },
   {
@@ -33,12 +31,10 @@ const updates = [
     changes: [
       "Sticky navigation bar follows you as you scroll",
       "Quick access to all pages from the floating menu",
-      "Cleaner, easier to read dashboard layout",
-      "Better dark mode that is easier on the eyes",
+      "Cleaner, easier to read dashboard",
+      "Better dark mode for easier reading",
       "Works better with screen readers and keyboards",
-      "New accessibility page explains how we make the site usable for everyone",
-      "New roadmap page shows what features are coming next",
-      "Insights page now groups similar councils together for fairer comparisons"
+      "Insights page groups similar councils for fairer comparisons"
     ]
   },
   {
@@ -49,12 +45,10 @@ const updates = [
       "Now covers all 324 councils in England",
       "Search to find your council quickly",
       "See council tax for all bands (A to H)",
-      "See exactly where your council tax goes (district, county, police, fire)",
-      "Links to official council websites and documents",
-      "See how your council compares to similar councils",
-      "National insights page with averages across England",
-      "Press F to search from any page",
-      "Send us feedback and feature requests"
+      "See where your council tax goes (district, county, police, fire)",
+      "Links to official council websites",
+      "Compare your council to similar councils",
+      "National insights with averages across England"
     ]
   },
   {
@@ -62,11 +56,10 @@ const updates = [
     date: "December 2025",
     isCurrent: false,
     changes: [
-      "First release with Kent County Council data",
+      "First release with Kent County Council",
       "Council tax and budget breakdown",
-      "Dark mode toggle",
-      "Works well on phones",
-      "Budget charts showing where money goes"
+      "Dark mode",
+      "Works on phones and tablets"
     ]
   }
 ];
