@@ -51,6 +51,22 @@ export default function PrivacyPage() {
 
                 <div className="space-y-6 text-sm leading-relaxed">
                   <section className="space-y-3">
+                    <h3 className="font-semibold text-base">Data controller</h3>
+                    <p className="text-muted-foreground">
+                      CivAccount is operated by Owen Fisher as an independent open source project.
+                      For data protection enquiries, please contact us via{' '}
+                      <a
+                        href="https://github.com/wulfsagedev/civaccount"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        GitHub
+                      </a>.
+                    </p>
+                  </section>
+
+                  <section className="space-y-3">
                     <h3 className="font-semibold text-base">What we collect</h3>
                     <p className="text-muted-foreground">
                       CivAccount stores your selected council preference in your browser&apos;s local storage.
@@ -64,18 +80,29 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Analytics</h3>
+                    <h3 className="font-semibold text-base">Legal basis for processing</h3>
                     <p className="text-muted-foreground">
-                      We may use privacy-respecting analytics to understand how people use CivAccount.
-                      This helps us improve the service. Any analytics data is aggregated and anonymous.
+                      Under UK GDPR, we process the minimal data described above based on our legitimate
+                      interest in providing a functional service. Local storage preferences are necessary
+                      for the service to remember your council selection.
                     </p>
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Third-party services</h3>
+                    <h3 className="font-semibold text-base">Analytics</h3>
+                    <p className="text-muted-foreground">
+                      We may use privacy-respecting analytics to understand how people use CivAccount.
+                      This helps us improve the service. Any analytics data is aggregated and anonymous,
+                      and does not identify individual users.
+                    </p>
+                  </section>
+
+                  <section className="space-y-3">
+                    <h3 className="font-semibold text-base">Third-party services and international transfers</h3>
                     <p className="text-muted-foreground">
                       CivAccount is hosted on Vercel. When you visit, Vercel may collect standard
-                      server logs (IP address, browser type, pages visited). See{' '}
+                      server logs (IP address, browser type, pages visited). Vercel&apos;s servers are
+                      located globally, which may involve transfer of data outside the UK. See{' '}
                       <a
                         href="https://vercel.com/legal/privacy-policy"
                         target="_blank"
@@ -84,7 +111,16 @@ export default function PrivacyPage() {
                       >
                         Vercel&apos;s privacy policy
                       </a>
-                      {' '}for details.
+                      {' '}for details on their data handling and safeguards.
+                    </p>
+                  </section>
+
+                  <section className="space-y-3">
+                    <h3 className="font-semibold text-base">Data retention</h3>
+                    <p className="text-muted-foreground">
+                      Your council preference in local storage persists until you clear your browser data.
+                      Server logs retained by Vercel follow their standard retention policies.
+                      We do not maintain any database of user information.
                     </p>
                   </section>
 
@@ -98,11 +134,24 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Your rights</h3>
+                    <h3 className="font-semibold text-base">Your rights under UK GDPR</h3>
                     <p className="text-muted-foreground">
+                      You have the right to access, rectify, erase, or port your personal data.
                       You can clear your browser&apos;s local storage at any time to remove your
-                      council preference. Since we don&apos;t collect personal data, there&apos;s nothing
-                      else to delete.
+                      council preference. Since we don&apos;t collect personal data beyond this,
+                      there&apos;s nothing else to delete.
+                    </p>
+                    <p className="text-muted-foreground">
+                      If you believe your data protection rights have been violated, you have the
+                      right to lodge a complaint with the{' '}
+                      <a
+                        href="https://ico.org.uk/make-a-complaint/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        Information Commissioner&apos;s Office (ICO)
+                      </a>.
                     </p>
                   </section>
 
