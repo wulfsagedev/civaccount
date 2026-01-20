@@ -100,9 +100,14 @@ export default function TermsPage() {
                   <section className="space-y-3">
                     <h3 className="font-semibold text-base">Limitation of liability</h3>
                     <p className="text-muted-foreground">
-                      CivAccount is provided &quot;as is&quot; without warranty of any kind. We are not
-                      liable for any decisions you make based on data shown on this site. Use the
-                      information at your own discretion.
+                      CivAccount is provided &quot;as is&quot; without warranty of any kind. To the fullest
+                      extent permitted by law, we are not liable for any decisions you make based on
+                      data shown on this site. Use the information at your own discretion.
+                    </p>
+                    <p className="text-muted-foreground">
+                      Nothing in these terms excludes or limits our liability for death or personal
+                      injury caused by negligence, fraud, or any other liability that cannot be
+                      excluded under English law.
                     </p>
                   </section>
 
@@ -131,6 +136,14 @@ export default function TermsPage() {
                         license page
                       </Link>
                       {' '}for details about the code license and how you can contribute.
+                    </p>
+                  </section>
+
+                  <section className="space-y-3">
+                    <h3 className="font-semibold text-base">Governing law</h3>
+                    <p className="text-muted-foreground">
+                      These terms are governed by the laws of England and Wales. Any disputes will
+                      be subject to the exclusive jurisdiction of the courts of England and Wales.
                     </p>
                   </section>
                 </div>

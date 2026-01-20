@@ -84,7 +84,7 @@ export default function LicensePage() {
                 <h3 className="font-semibold mb-4">Full license text</h3>
                 <div className="bg-muted/50 rounded-lg p-4 font-mono text-sm text-muted-foreground leading-relaxed">
                   <p className="mb-4">MIT License</p>
-                  <p className="mb-4">Copyright (c) {new Date().getFullYear()} CivAccount</p>
+                  <p className="mb-4">Copyright (c) 2025 Owen Fisher</p>
                   <p className="mb-4">
                     Permission is hereby granted, free of charge, to any person obtaining a copy
                     of this software and associated documentation files (the &quot;Software&quot;), to deal
