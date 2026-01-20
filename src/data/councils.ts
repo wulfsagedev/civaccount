@@ -308,20 +308,6 @@ export function formatCurrency(amount: number | null, options?: { decimals?: num
   }).format(amount);
 }
 
-// Format large numbers for display (daily costs, etc.)
-export function formatDailyCost(amountInPounds: number | null): string {
-  if (amountInPounds === null) return 'N/A';
-
-  // Millions per day
-  if (amountInPounds >= 1000000) {
-    const millions = amountInPounds / 1000000;
-    return `£${millions.toFixed(1)} million`;
-  }
-
-  // Thousands per day - show with commas
-  return `£${Math.round(amountInPounds).toLocaleString('en-GB')}`;
-}
-
 export const councils: Council[] = [
   {
     ons_code: "E07000223",
@@ -15904,19 +15890,6 @@ export function getCouncilsByType(type: string): Council[] {
   return councils.filter(c => c.type === type);
 }
 
-// Get all unique council types
-export function getCouncilTypes(): string[] {
-  return [...new Set(councils.map(c => c.type))];
-}
-
-// Search councils by name
-export function searchCouncils(query: string): Council[] {
-  const lowerQuery = query.toLowerCase();
-  return councils.filter(c => 
-    c.name.toLowerCase().includes(lowerQuery)
-  );
-}
-
 // Get council by ONS code
 export function getCouncilByCode(code: string): Council | undefined {
   return councils.find(c => c.ons_code === code);
@@ -15953,58 +15926,6 @@ export function getAllCouncilSlugs(): string[] {
 // Get slug for a council
 export function getCouncilSlug(council: Council): string {
   return generateSlug(council.name);
-}
-
-// Get councils sorted by council tax (highest to lowest)
-export function getCouncilsByTax(ascending = false): Council[] {
-  return councils
-    .filter(c => c.council_tax?.band_d_2025)
-    .sort((a, b) => {
-      const taxA = a.council_tax?.band_d_2025 || 0;
-      const taxB = b.council_tax?.band_d_2025 || 0;
-      return ascending ? taxA - taxB : taxB - taxA;
-    });
-}
-
-// Get councils sorted by total budget (highest to lowest)
-export function getCouncilsByBudget(ascending = false): Council[] {
-  return councils
-    .filter(c => c.budget?.total_service)
-    .sort((a, b) => {
-      const budgetA = a.budget?.total_service || 0;
-      const budgetB = b.budget?.total_service || 0;
-      return ascending ? budgetA - budgetB : budgetB - budgetA;
-    });
-}
-
-// Calculate service spending percentages for a council
-export function calculateSpendingPercentages(council: Council): Record<string, number> | null {
-  if (!council.budget?.total_service) return null;
-  
-  const total = council.budget.total_service;
-  const result: Record<string, number> = {};
-  
-  const services = [
-    'education', 'transport', 'childrens_social_care', 'adult_social_care',
-    'public_health', 'housing', 'cultural', 'environmental', 'planning',
-    'central_services', 'other'
-  ];
-  
-  for (const service of services) {
-    const amount = council.budget[service as keyof CouncilBudget] as number | null;
-    if (amount !== null) {
-      result[service] = (amount / total) * 100;
-    }
-  }
-  
-  return result;
-}
-
-// Get average Band D council tax
-export function getAverageBandD(): number {
-  const councilsWithTax = councils.filter(c => c.council_tax?.band_d_2025);
-  const total = councilsWithTax.reduce((sum, c) => sum + (c.council_tax?.band_d_2025 || 0), 0);
-  return total / councilsWithTax.length;
 }
 
 // Get average Band D by council type
@@ -16095,16 +16016,6 @@ export function calculateEfficiencyMetrics(council: Council): EfficiencyMetrics 
     adminOverheadPercent: totalBudget > 0 ? (centralServices / totalBudget) * 100 : null,
     serviceSpendingPerCapita,
   };
-}
-
-// Get councils with population data
-export function getCouncilsWithPopulation(): (Council & { population: number })[] {
-  return councils
-    .map(c => ({
-      ...c,
-      population: getCouncilPopulation(c.name) || 0,
-    }))
-    .filter(c => c.population > 0);
 }
 
 // Calculate national efficiency statistics
