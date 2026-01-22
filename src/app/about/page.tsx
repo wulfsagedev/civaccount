@@ -170,6 +170,20 @@ export default function AboutPage() {
               <p className="text-sm text-muted-foreground mt-6 leading-relaxed">
                 Data is updated when new official figures are published. Current data covers the 2025-26 financial year.
               </p>
+              <div className="mt-4 p-4 rounded-lg bg-muted/30">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Open data:</strong> All government data is published under the{' '}
+                  <a
+                    href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground underline hover:text-foreground/80 transition-colors"
+                  >
+                    Open Government Licence v3.0
+                  </a>
+                  , which allows free reuse and visualisation.
+                </p>
+              </div>
             </div>
 
             {/* Important Notes */}
@@ -190,7 +204,16 @@ export default function AboutPage() {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">About this website</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      CivAccount is not part of any council or government body. We take public data and make it easier to read. For official information, check your council&apos;s website or gov.uk.
+                      CivAccount is an independent project. It is not connected to any council or government body and does not represent council policy. We take public data and make it easier to read. For official information, check your council&apos;s website or GOV.UK.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground mb-1">How we use AI</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      AI tools help us gather data from official sources, structure information, and build visualisations. AI is a supporting tool, not a source of truth. All figures come from published government data.{' '}
+                      <Link href="/methodology" className="text-foreground underline hover:text-foreground/80 transition-colors">
+                        Read our methodology
+                      </Link>.
                     </p>
                   </div>
                 </div>

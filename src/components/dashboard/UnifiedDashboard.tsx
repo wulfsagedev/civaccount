@@ -280,7 +280,10 @@ const UnifiedDashboard = () => {
       <section className="card-elevated p-5 sm:p-6">
         {/* Primary amount - This council's share */}
         <div className="mb-6">
-          <p className="type-caption text-muted-foreground mb-1">You pay this council</p>
+          <p className="type-caption text-muted-foreground mb-1">
+            You pay this council
+            <span className="ml-2 text-muted-foreground/60">(Published data)</span>
+          </p>
           <div className="flex items-baseline gap-2">
             <span className="type-display">
               {thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}
@@ -429,7 +432,10 @@ const UnifiedDashboard = () => {
         {vsAverage !== null && (
           <div className="mt-5 p-3 rounded-lg bg-muted/30">
             <div className="flex items-center justify-between">
-              <span className="type-caption text-muted-foreground">Compared to average {selectedCouncil.type_name.toLowerCase()}</span>
+              <span className="type-caption text-muted-foreground">
+                Compared to average {selectedCouncil.type_name.toLowerCase()}
+                <span className="ml-1 text-muted-foreground/60">(Comparison)</span>
+              </span>
               <span className={`type-body-sm font-semibold tabular-nums ${vsAverage > 0 ? 'text-negative' : vsAverage < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
                 {vsAverage > 0 ? '+' : ''}{formatCurrency(vsAverage, { decimals: 2 })}
               </span>
@@ -446,6 +452,7 @@ const UnifiedDashboard = () => {
           <h2 className="type-title-2 mb-1">Council tax by band</h2>
           <p className="type-body-sm text-muted-foreground mb-5">
             Pick your property band to see how much you pay
+            <span className="ml-1 text-muted-foreground/60">(Calculated from Band D)</span>
           </p>
 
           {/* Band selector - horizontal grid that always fits */}
@@ -680,7 +687,8 @@ const UnifiedDashboard = () => {
         <section className="card-elevated p-5 sm:p-6">
           <h2 className="type-title-2 mb-1">What your council tax pays for</h2>
           <p className="type-body-sm text-muted-foreground mb-5">
-            How your {councilTax ? formatCurrency(councilTax.band_d_2025, { decimals: 0 }) : ''} is spent each year
+            This shows how the budget is structured
+            <span className="ml-1 text-muted-foreground/60">(Calculated from published budget)</span>
           </p>
 
           {/* Service breakdown - Monzo/Apple style */}

@@ -308,7 +308,10 @@ export default function InsightsPage() {
             <Badge variant="outline" className="mb-4">2025-26 Data</Badge>
             <h1 className="text-3xl sm:text-4xl font-bold mb-4">Council tax in England</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A complete picture of how council tax works across {stats.totalCouncils} local authorities
+              This page helps explain how council tax works across {stats.totalCouncils} local authorities
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              All figures from published government data. Comparisons and rankings are calculated for context.
             </p>
           </div>
 

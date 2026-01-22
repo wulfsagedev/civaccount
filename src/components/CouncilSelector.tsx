@@ -163,7 +163,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
   // Selected council header (dashboard only)
   if (selectedCouncil && variant === 'dashboard') {
     const displayName = getCouncilDisplayName(selectedCouncil);
-    const hasVerifiedData = selectedCouncil.detailed?.total_band_d;
 
     return (
       <div className="w-full">
@@ -174,11 +173,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
           <Badge variant="outline" className="text-xs font-medium">
             2025-26
           </Badge>
-          {hasVerifiedData && (
-            <Badge variant="outline" className="text-xs font-medium bg-navy-50 text-navy-600 border-navy-200">
-              Verified
-            </Badge>
-          )}
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
           {displayName}

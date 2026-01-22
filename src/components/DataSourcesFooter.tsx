@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Badge } from "@/components/ui/badge";
 import {
   ExternalLink,
   FileText,
   Building2,
-  CheckCircle2,
   Globe,
   ChevronDown,
   Calendar
@@ -15,7 +13,7 @@ import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
 
 // Format date for display
-function formatVerifiedDate(isoDate: string): string {
+function formatCheckedDate(isoDate: string): string {
   const date = new Date(isoDate);
   return date.toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -76,7 +74,7 @@ export default function DataSourcesFooter() {
   // Council-specific URLs
   const councilTaxUrl = selectedCouncil.detailed?.council_tax_url;
   const budgetUrl = selectedCouncil.detailed?.budget_url;
-  const lastVerified = selectedCouncil.detailed?.last_verified;
+  const lastChecked = selectedCouncil.detailed?.last_verified;
   const hasCouncilLinks = councilTaxUrl || budgetUrl;
 
   // Simplified source list
@@ -95,22 +93,11 @@ export default function DataSourcesFooter() {
 
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-semibold">
-                Data Sources
-              </h2>
-              {hasDetailedData && (
-                <Badge variant="secondary" className="bg-navy-100 text-navy-600 border-0">
-                  <CheckCircle2 className="h-3 w-3 mr-1" aria-hidden="true" />
-                  Verified
-                </Badge>
-              )}
-            </div>
+            <h2 className="text-xl sm:text-2xl font-semibold">
+              Data Sources
+            </h2>
             <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-              {hasDetailedData
-                ? `Data from ${councilName}'s official website`
-                : "All data from official UK government websites"
-              }
+              All data from official UK government sources
             </p>
           </div>
 
@@ -299,11 +286,11 @@ export default function DataSourcesFooter() {
           </div>
 
           {/* Data freshness indicator */}
-          {lastVerified && (
+          {lastChecked && (
             <div className="flex items-center justify-center gap-2 pt-4 border-t border-border/50">
               <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
               <p className="text-xs text-muted-foreground">
-                Data verified {formatVerifiedDate(lastVerified)}
+                Data last checked {formatCheckedDate(lastChecked)}
               </p>
             </div>
           )}

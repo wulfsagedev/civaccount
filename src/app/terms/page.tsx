@@ -39,16 +39,20 @@ export default function TermsPage() {
               </div>
 
               {/* Important disclaimer */}
-              <div className="p-5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+              <div className="p-5 rounded-xl bg-muted/50 border border-border">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                  <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 text-foreground" />
                   <div className="text-sm">
-                    <p className="font-semibold text-amber-800 dark:text-amber-300 mb-1">
-                      Not an official government service
+                    <p className="font-semibold text-foreground mb-2">
+                      This is an independent project
                     </p>
-                    <p className="text-amber-700 dark:text-amber-400 leading-relaxed">
-                      CivAccount is an independent project. We are not affiliated with, endorsed by,
+                    <p className="text-muted-foreground leading-relaxed mb-2">
+                      CivAccount is not an official government service. It is not affiliated with, endorsed by,
                       or connected to any UK council or government department.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      This website does not represent council policy or decisions. It exists to help people
+                      understand publicly available information.
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Landmark, History, Map, Accessibility, Github } from 'lucide-react';
+import { Landmark, History, Map, Accessibility, Github, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
@@ -45,6 +45,13 @@ export default function Footer() {
               Roadmap
             </Link>
             <Link
+              href="/methodology"
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+              Methodology
+            </Link>
+            <Link
               href="/accessibility"
               className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
@@ -72,6 +79,26 @@ export default function Footer() {
           </Link>
         </div>
 
+        {/* Independence and transparency notice */}
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <p className="text-xs text-muted-foreground text-center leading-relaxed max-w-2xl mx-auto">
+            CivAccount is an independent project. Not affiliated with any UK council or government body.
+            All data from official government sources under{' '}
+            <a
+              href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-foreground transition-colors"
+            >
+              Open Government Licence v3.0
+            </a>.
+            AI tools assisted with data gathering and presentation.{' '}
+            <Link href="/methodology" className="underline hover:text-foreground transition-colors">
+              Learn more
+            </Link>.
+          </p>
+        </div>
+
         {/* Legal row */}
         <div className="mt-3 pt-3 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-muted-foreground">
           <p>
@@ -84,7 +111,6 @@ Made by{' '}
             >
               Owen
             </a>
-            {' '}· Not affiliated with UK government
           </p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-foreground transition-colors cursor-pointer">
