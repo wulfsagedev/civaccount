@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { CouncilProvider } from "@/context/CouncilContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -103,6 +104,7 @@ export default function RootLayout({
           <ScrollToTop />
           {children}
         </CouncilProvider>
+        <Analytics />
       </body>
     </html>
   );
