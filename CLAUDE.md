@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-CivAccount is a UK council budget transparency application that helps citizens understand how their local council spends money. It displays budget breakdowns, council tax information, and performance metrics for 324+ UK councils.
+CivAccount is a UK council budget transparency application that helps citizens understand how their local council spends money. It displays budget breakdowns, council tax information, and performance metrics for 317 UK councils.
 
 ## Tech Stack
 

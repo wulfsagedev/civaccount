@@ -109,7 +109,7 @@ export default async function Image() {
               color: '#fafaf9',
             }}
           >
-            v1.6 - All 324 English councils
+            v1.6 - All 317 English councils
           </span>
         </div>
       </div>

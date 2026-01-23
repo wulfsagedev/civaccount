@@ -18,11 +18,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CivAccount - See where your council tax goes",
-  description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 324 English councils.",
+  description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 317 English councils.",
   metadataBase: new URL('https://civaccount.uk'),
   openGraph: {
     title: "CivAccount - See where your council tax goes",
-    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 324 English councils.",
+    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 317 English councils.",
     siteName: "CivAccount",
     locale: "en_GB",
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CivAccount - See where your council tax goes",
-    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 324 English councils.",
+    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 317 English councils.",
   },
 };
 

@@ -94,7 +94,7 @@ export default function AboutPage() {
                   </div>
                   <h4 className="font-semibold text-sm mb-2">All in one place</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Budget data, council tax rates, and service spending for 324 English councils
+                    Budget data, council tax rates, and service spending for 317 English councils
                   </p>
                 </div>
                 <div className="p-5 bg-muted/30 rounded-xl">

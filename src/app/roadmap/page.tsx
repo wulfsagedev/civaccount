@@ -18,7 +18,7 @@ const roadmap: RoadmapSection[] = [
     title: "Done",
     status: "done",
     items: [
-      { text: "All 324 English councils with budget data", done: true },
+      { text: "All 317 English councils with budget data", done: true },
       { text: "Council tax rates and 5-year history", done: true },
       { text: "Service spending breakdowns", done: true },
       { text: "Fast search across all councils", done: true },

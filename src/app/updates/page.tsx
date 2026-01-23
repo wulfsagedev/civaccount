@@ -43,7 +43,7 @@ const updates = [
     date: "January 2026",
     isCurrent: false,
     changes: [
-      "Now covers all 324 councils in England",
+      "Now covers all 317 councils in England",
       "Search to find your council quickly",
       "See council tax for all bands (A to H)",
       "See where your council tax goes (district, county, police, fire)",
@@ -114,7 +114,7 @@ export default function UpdatesPage() {
               </div>
 
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                The latest version includes data for all 324 councils in England with detailed breakdowns.
+                The latest version includes data for all 317 councils in England with detailed breakdowns.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

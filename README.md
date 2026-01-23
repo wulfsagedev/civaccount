@@ -4,7 +4,7 @@ Making UK council budget data accessible and easy to understand for everyone.
 
 ## What is CivAccount?
 
-CivAccount is a free, open-source tool that helps UK residents understand how their local council spends money. It displays budget breakdowns, council tax information, and performance metrics for 324+ councils across England.
+CivAccount is a free, open-source tool that helps UK residents understand how their local council spends money. It displays budget breakdowns, council tax information, and performance metrics for 317 councils across England.
 
 **Not affiliated with UK government** - This is an independent project using publicly available data.
 

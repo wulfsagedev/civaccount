@@ -62,7 +62,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  // Council pages - all 324 councils
+  // Council pages - all 317 councils
   const councilPages: MetadataRoute.Sitemap = councils.map((council) => ({
     url: `${baseUrl}/council/${getCouncilSlug(council)}`,
     lastModified: new Date(),
