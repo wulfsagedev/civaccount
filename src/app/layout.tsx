@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { CouncilProvider } from "@/context/CouncilContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 const geistSans = Geist({
@@ -113,10 +114,12 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        <CouncilProvider>
-          <ScrollToTop />
-          {children}
-        </CouncilProvider>
+        <AuthProvider>
+          <CouncilProvider>
+            <ScrollToTop />
+            {children}
+          </CouncilProvider>
+        </AuthProvider>
         <Analytics />
         <SpeedInsights />
       </body>

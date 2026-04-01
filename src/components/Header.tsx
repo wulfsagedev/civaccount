@@ -6,17 +6,20 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
-import { Landmark, Menu, X, BarChart3, Info, MessageSquare, Search } from 'lucide-react';
+import { Landmark, Menu, X, BarChart3, Info, MessageSquare, Search, Vote, User, LogOut, GitCompareArrows } from 'lucide-react';
 import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
-import { getCouncilDisplayName, getCouncilBySlug } from '@/data/councils';
+import { useAuth } from '@/context/AuthContext';
+import { getCouncilDisplayName, getCouncilBySlug, getCouncilSlug } from '@/data/councils';
 import FeedbackModal from '@/components/FeatureRequestDialog';
 import SearchCommand from '@/components/SearchCommand';
+import AccountModal from '@/components/AccountModal';
 import { DonateButton } from '@/components/DonateButton';
 import { cn } from '@/lib/utils';
 
 export default function Header() {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
+  const { user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
@@ -95,6 +98,16 @@ export default function Header() {
             <div className="hidden lg:flex items-center gap-1 shrink-0">
               <SearchCommand />
               <nav className="flex items-center gap-1 ml-2" aria-label="Main navigation">
+                {selectedCouncil && (
+                  <Link href={`/council/${getCouncilSlug(selectedCouncil)}/proposals`} className={navLinkClass}>
+                    <Vote className="h-4 w-4" aria-hidden="true" />
+                    Proposals
+                  </Link>
+                )}
+                <Link href="/compare" className={navLinkClass}>
+                  <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
+                  Compare
+                </Link>
                 <Link href="/insights" className={navLinkClass}>
                   <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
@@ -108,6 +121,14 @@ export default function Header() {
                   Feedback
                 </button>
                 <DonateButton variant="header" />
+                {user ? (
+                  <AccountModal />
+                ) : (
+                  <Link href="/auth/login" className={navLinkClass}>
+                    <User className="h-4 w-4" aria-hidden="true" />
+                    Sign in
+                  </Link>
+                )}
                 <ThemeToggle />
               </nav>
             </div>
@@ -132,6 +153,12 @@ export default function Header() {
           {mobileMenuOpen && (
             <div className="lg:hidden mt-4 pt-4 border-t">
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
+                {selectedCouncil && (
+                  <Link href={`/council/${getCouncilSlug(selectedCouncil)}/proposals`} onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                    <Vote className="h-4 w-4" aria-hidden="true" />
+                    Proposals
+                  </Link>
+                )}
                 <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
                   <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
@@ -151,6 +178,19 @@ export default function Header() {
                 </button>
                 <div className="pt-2 mt-2 border-t border-border/50">
                   <DonateButton variant="header" />
+                </div>
+                <div className="pt-2 mt-2 border-t border-border/50">
+                  {user ? (
+                    <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={mobileNavLinkClass}>
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
+                      Sign out
+                    </button>
+                  ) : (
+                    <Link href="/auth/login" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                      <User className="h-4 w-4" aria-hidden="true" />
+                      Sign in
+                    </Link>
+                  )}
                 </div>
               </nav>
             </div>
@@ -197,6 +237,7 @@ export default function Header() {
                   '/privacy': 'Privacy',
                   '/terms': 'Terms',
                   '/license': 'License',
+                  '/auth/login': 'Sign In',
                 };
 
                 const pageTitle = pageTitles[pathname];
@@ -269,6 +310,12 @@ export default function Header() {
           {mobileMenuOpen && isScrolled && (
             <div className="lg:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
+                {selectedCouncil && (
+                  <Link href={`/council/${getCouncilSlug(selectedCouncil)}/proposals`} onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                    <Vote className="h-4 w-4" aria-hidden="true" />
+                    Proposals
+                  </Link>
+                )}
                 <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
                   <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
@@ -288,6 +335,19 @@ export default function Header() {
                 </button>
                 <div className="pt-2 mt-2 border-t border-border/50">
                   <DonateButton variant="header" />
+                </div>
+                <div className="pt-2 mt-2 border-t border-border/50">
+                  {user ? (
+                    <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={mobileNavLinkClass}>
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
+                      Sign out
+                    </button>
+                  ) : (
+                    <Link href="/auth/login" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                      <User className="h-4 w-4" aria-hidden="true" />
+                      Sign in
+                    </Link>
+                  )}
                 </div>
               </nav>
             </div>
