@@ -1,0 +1,1340 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Navy accent scale - the key accent colour */
+  --color-navy-50: var(--navy-50);
+  --color-navy-100: var(--navy-100);
+  --color-navy-200: var(--navy-200);
+  --color-navy-300: var(--navy-300);
+  --color-navy-400: var(--navy-400);
+  --color-navy-500: var(--navy-500);
+  --color-navy-600: var(--navy-600);
+  --color-navy-700: var(--navy-700);
+  --color-navy-800: var(--navy-800);
+  --color-navy-900: var(--navy-900);
+
+  /* Semantic status colours */
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+
+  --radius-sm: 0.375rem;  /* 6px - small elements like badges */
+  --radius-md: 0.5rem;    /* 8px - buttons, inputs */
+  --radius-lg: 0.75rem;   /* 12px - cards, containers */
+  --radius-xl: 1rem;      /* 16px - large cards, modals */
+  --radius-2xl: 1.25rem;  /* 20px - featured elements */
+  --radius-full: 9999px;  /* pills, avatars */
+}
+
+:root {
+  /* RGB values for rgba() in JS (used by morphing header) */
+  --background-rgb: 253 253 253;
+  --border-rgb: 0 0 0;
+
+  /* 8pt spacing system - modern standard */
+  --spacing-1: 0.25rem;  /* 4px - micro adjustments */
+  --spacing-2: 0.5rem;   /* 8px - tight spacing */
+  --spacing-3: 0.75rem;  /* 12px - compact */
+  --spacing-4: 1rem;     /* 16px - standard */
+  --spacing-5: 1.25rem;  /* 20px - comfortable */
+  --spacing-6: 1.5rem;   /* 24px - generous */
+  --spacing-8: 2rem;     /* 32px - section gaps */
+  --spacing-10: 2.5rem;  /* 40px - large sections */
+  --spacing-12: 3rem;    /* 48px - page sections */
+
+  /* Modern radius system */
+  --radius: 0.75rem;     /* 12px - default for cards */
+
+  /* ============================================
+     COLOUR SYSTEM - Accessible & Neurodivergent Friendly
+     ============================================
+
+     Primary Accent: Navy Blue (hue 250)
+     - Calming, professional, trustworthy
+     - Lower saturation for neurodivergent friendliness
+     - WCAG 2.1 AA compliant contrast ratios
+
+     Secondary: Status colours only where semantically meaningful
+     - Emerald (160): Positive changes, decreases, savings
+     - Amber (80): Negative changes, increases, warnings
+
+     DO NOT use arbitrary colors. Use only:
+     - accent/accent-foreground for primary highlighting
+     - status-success for positive indicators
+     - status-warning for negative indicators
+     ============================================ */
+
+  /* Light mode - optimised for accessibility
+     All text meets WCAG 2.1 AA (4.5:1 for normal, 3:1 for large text) */
+  --background: oklch(0.995 0 0);            /* Slight off-white, easier on eyes */
+  --foreground: oklch(0.12 0 0);             /* Near-black for maximum contrast */
+  --card: oklch(1 0 0);                      /* Pure white for cards */
+  --card-foreground: oklch(0.12 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.12 0 0);
+  --primary: oklch(0.18 0 0);                /* Dark primary for buttons */
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.965 0 0);
+  --secondary-foreground: oklch(0.18 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.45 0 0);       /* WCAG AA: 4.6:1 contrast ratio */
+
+  /* Navy blue accent - the key accent colour */
+  --accent: oklch(0.94 0.02 250);            /* Subtle navy tint for backgrounds */
+  --accent-foreground: oklch(0.35 0.12 250); /* Navy text - AA compliant on white */
+
+  --destructive: oklch(0.50 0.22 25);        /* Darker red for AA compliance */
+  --border: oklch(0.91 0 0);
+  --input: oklch(0.91 0 0);
+  --ring: oklch(0.45 0.14 250);              /* Navy focus ring - matches accent */
+
+  /* Navy accent scale for flexible usage */
+  --navy-50: oklch(0.97 0.01 250);           /* Very light navy tint */
+  --navy-100: oklch(0.94 0.02 250);          /* Light navy tint */
+  --navy-200: oklch(0.88 0.04 250);          /* Subtle navy */
+  --navy-300: oklch(0.78 0.08 250);          /* Light-medium navy */
+  --navy-400: oklch(0.62 0.10 250);          /* Medium-light navy */
+  --navy-500: oklch(0.50 0.12 250);          /* Medium navy */
+  --navy-600: oklch(0.40 0.14 250);          /* Standard navy - primary accent text */
+  --navy-700: oklch(0.32 0.12 250);          /* Dark navy */
+  --navy-800: oklch(0.25 0.10 250);          /* Very dark navy */
+  --navy-900: oklch(0.18 0.08 250);          /* Darkest navy */
+
+  /* Status colours - use sparingly, only for semantic meaning */
+  --positive: oklch(0.40 0.12 160);          /* Emerald - decreases, savings */
+  --negative: oklch(0.38 0.12 55);           /* Dark amber/brown - increases, warnings - WCAG AA 4.5:1 */
+
+  --chart-1: oklch(0.45 0.12 250);           /* Navy - primary chart color */
+  --chart-2: oklch(0.55 0.10 250);           /* Lighter navy */
+  --chart-3: oklch(0.65 0.08 250);           /* Even lighter navy */
+  --chart-4: oklch(0.40 0.12 160);           /* Emerald accent */
+  --chart-5: oklch(0.38 0.12 55);            /* Amber accent - matches negative */
+}
+
+.dark {
+  /* RGB values for rgba() in JS (used by morphing header) */
+  --background-rgb: 30 30 35;
+  --border-rgb: 255 255 255;
+
+  /* Linear-style dark mode: layered surfaces with subtle elevation
+     Base → Card → Elevated creates visual depth without washing out
+     Uses subtle navy undertones for richness (hue 250) */
+  --background: oklch(0.13 0.008 250);       /* Deep charcoal with navy undertone */
+  --foreground: oklch(0.93 0 0);             /* Soft white, not pure (easier on eyes) */
+  --card: oklch(0.17 0.008 250);             /* First elevation layer */
+  --card-foreground: oklch(0.93 0 0);
+  --popover: oklch(0.20 0.008 250);          /* Highest elevation (modals, dropdowns) */
+  --popover-foreground: oklch(0.93 0 0);
+  --primary: oklch(0.93 0 0);
+  --primary-foreground: oklch(0.17 0.008 250);
+  --secondary: oklch(0.22 0.01 250);         /* Subtle elevation for sections */
+  --secondary-foreground: oklch(0.93 0 0);
+  --muted: oklch(0.24 0.012 250);            /* Interactive backgrounds */
+  --muted-foreground: oklch(0.68 0 0);       /* WCAG AA: 4.5:1 contrast ratio */
+
+  /* Navy blue accent - the key accent colour (dark mode) */
+  --accent: oklch(0.28 0.04 250);            /* Navy tint for backgrounds */
+  --accent-foreground: oklch(0.75 0.12 250); /* Lighter navy for text on dark bg */
+
+  --destructive: oklch(0.65 0.18 25);        /* Softer red, still accessible */
+  --border: oklch(1 0 0 / 10%);              /* Subtle but visible borders */
+  --input: oklch(1 0 0 / 8%);
+  --ring: oklch(0.60 0.12 250);              /* Navy focus ring - matches accent */
+
+  /* Navy accent scale for dark mode */
+  --navy-50: oklch(0.28 0.02 250);           /* Subtle navy tint */
+  --navy-100: oklch(0.32 0.04 250);          /* Light navy */
+  --navy-200: oklch(0.38 0.06 250);          /* Medium light navy */
+  --navy-300: oklch(0.48 0.08 250);          /* Light-medium navy */
+  --navy-400: oklch(0.52 0.09 250);          /* Medium-light navy */
+  --navy-500: oklch(0.55 0.10 250);          /* Medium navy */
+  --navy-600: oklch(0.65 0.12 250);          /* Standard navy - primary accent text */
+  --navy-700: oklch(0.75 0.10 250);          /* Light navy text */
+  --navy-800: oklch(0.85 0.08 250);          /* Very light navy text */
+  --navy-900: oklch(0.22 0.04 250);          /* Darkest navy */
+
+  /* Status colours for dark mode */
+  --positive: oklch(0.70 0.14 160);          /* Emerald - decreases, savings */
+  --negative: oklch(0.78 0.14 65);           /* Light amber/orange - increases, warnings - WCAG AA 4.5:1 */
+
+  --chart-1: oklch(0.60 0.10 250);           /* Navy - primary chart color */
+  --chart-2: oklch(0.68 0.08 250);           /* Lighter navy */
+  --chart-3: oklch(0.75 0.06 250);           /* Even lighter navy */
+  --chart-4: oklch(0.70 0.14 160);           /* Emerald accent */
+  --chart-5: oklch(0.78 0.14 65);            /* Amber accent - matches negative */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    /* Base font size 16px, scales smoothly */
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Prevent horizontal scroll on all pages */
+    overflow-x: hidden;
+    /* Prevent layout shift when scrollbar appears/disappears */
+    scrollbar-gutter: stable;
+  }
+
+  /* Smooth theme transition on all color properties */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition:
+      background-color 150ms ease-out,
+      border-color 150ms ease-out,
+      color 100ms ease-out,
+      fill 100ms ease-out,
+      stroke 100ms ease-out,
+      box-shadow 150ms ease-out !important;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* Optimal line height for body text readability */
+    line-height: 1.6;
+    /* Slight letter spacing for improved readability - Stripe style */
+    letter-spacing: -0.011em;
+    /* Prevent horizontal scroll on all pages */
+    overflow-x: hidden;
+  }
+
+  /* Heading styles with proper hierarchy - tighter tracking for headings */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+  }
+
+  h1 { font-weight: 700; }
+
+  /* Paragraph spacing */
+  p {
+    margin-bottom: 1em;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Ensure minimum tap targets for accessibility */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline links and small elements */
+  p a, span a, li a, .badge, [data-slot="badge"] {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Exception for grid/flex item buttons */
+  .grid button, .flex button {
+    min-height: auto;
+    min-width: auto;
+  }
+}
+
+/* ============================================
+   MODERN CARD SYSTEM - Stripe/Linear inspired
+   ============================================ */
+
+/* Premium card with subtle depth */
+.card-elevated {
+  @apply bg-card rounded-xl;
+  border: 1px solid oklch(0 0 0 / 6%);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 4px 12px oklch(0 0 0 / 3%);
+}
+
+.dark .card-elevated {
+  border-color: oklch(1 1 1 / 8%);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 20%),
+    0 4px 12px oklch(0 0 0 / 15%);
+}
+
+/* Hover state for interactive cards */
+.card-elevated-interactive {
+  @apply bg-card rounded-xl transition-all duration-200;
+  border: 1px solid oklch(0 0 0 / 6%);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 4px 12px oklch(0 0 0 / 3%);
+}
+
+.card-elevated-interactive:hover {
+  box-shadow:
+    0 2px 4px oklch(0 0 0 / 5%),
+    0 8px 24px oklch(0 0 0 / 6%);
+  transform: translateY(-1px);
+}
+
+.dark .card-elevated-interactive:hover {
+  box-shadow:
+    0 2px 4px oklch(0 0 0 / 25%),
+    0 8px 24px oklch(0 0 0 / 20%);
+}
+
+/* Featured/highlighted card */
+.card-featured {
+  @apply bg-card rounded-xl;
+  border: 1px solid oklch(0.6 0.15 250 / 30%);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 4px 16px oklch(0.6 0.15 250 / 8%);
+}
+
+.dark .card-featured {
+  border-color: oklch(0.6 0.15 250 / 40%);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 20%),
+    0 4px 16px oklch(0.6 0.15 250 / 15%);
+}
+
+/* Metric/stat card with emphasis */
+.card-metric {
+  @apply bg-gradient-to-br from-card to-muted/30 rounded-xl;
+  border: 1px solid oklch(0 0 0 / 5%);
+}
+
+.dark .card-metric {
+  @apply bg-gradient-to-br from-card to-muted/20;
+  border-color: oklch(1 1 1 / 6%);
+}
+
+/* ============================================
+   TYPOGRAPHY SYSTEM
+   Rigid, accessible type scale for 70+ year old users
+   Base: 16px, optimised for readability
+   ============================================ */
+
+/*
+   TYPE SCALE REFERENCE:
+   ----------------------------------------
+   .type-display    40/48px  Hero numbers, main metrics
+   .type-title-1    28/32px  Page titles (h1)
+   .type-title-2    20/24px  Section titles (h2)
+   .type-title-3    18px     Card titles (h3)
+   .type-body-lg    18px     Large body, important info
+   .type-body       16px     Default body text
+   .type-body-sm    14px     Secondary text, descriptions
+   .type-caption    13px     Labels, metadata
+   .type-overline   11px     Eyebrow text above titles
+*/
+
+/* Display - Hero metrics and main numbers */
+.type-display {
+  font-size: 2.5rem;      /* 40px */
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 640px) {
+  .type-display {
+    font-size: 3rem;      /* 48px */
+  }
+}
+
+/* Title 1 - Page titles (h1) */
+.type-title-1 {
+  font-size: 1.75rem;     /* 28px mobile */
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+@media (min-width: 640px) {
+  .type-title-1 {
+    font-size: 2rem;      /* 32px */
+  }
+}
+
+/* Title 2 - Section titles (h2) */
+.type-title-2 {
+  font-size: 1.25rem;     /* 20px mobile */
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+@media (min-width: 640px) {
+  .type-title-2 {
+    font-size: 1.5rem;    /* 24px */
+  }
+}
+
+/* Title 3 - Card titles, subsections (h3) */
+.type-title-3 {
+  font-size: 1.125rem;    /* 18px */
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+/* Body Large - Important information, lead paragraphs */
+.type-body-lg {
+  font-size: 1.125rem;    /* 18px */
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+/* Body - Default text (minimum for accessibility) */
+.type-body {
+  font-size: 1rem;        /* 16px */
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+  font-weight: 400;
+}
+
+/* Body Small - Secondary text, descriptions */
+.type-body-sm {
+  font-size: 0.875rem;    /* 14px */
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+/* Caption - Labels, metadata, helper text */
+.type-caption {
+  font-size: 0.8125rem;   /* 13px - slightly larger for accessibility */
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+/* Overline - Eyebrow text above titles */
+.type-overline {
+  font-size: 0.6875rem;   /* 11px */
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Large display numbers for metrics - Mercury/Stripe style */
+.type-metric {
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 640px) {
+  .type-metric {
+    font-size: 2.5rem;
+  }
+}
+
+/* Metric label - sits below metric numbers */
+.type-metric-label {
+  font-size: 0.875rem;    /* 14px */
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+/* ============================================
+   SEMANTIC TEXT STYLES
+   For specific UI contexts
+   ============================================ */
+
+/* Numbers in tables and data */
+.type-data {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Currency values - always tabular for alignment */
+.type-currency {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Percentage values */
+.type-percent {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* ============================================
+   BUTTON STYLES
+   Consistent, accessible buttons
+   ============================================ */
+
+/* Primary button base */
+.btn-primary {
+  @apply bg-foreground text-background font-semibold;
+  @apply px-4 py-2.5 rounded-lg;
+  @apply transition-all duration-150;
+  font-size: 0.9375rem;   /* 15px */
+  line-height: 1.4;
+  min-height: 44px;       /* Accessibility minimum */
+}
+
+.btn-primary:hover {
+  @apply opacity-90;
+}
+
+.btn-primary:active {
+  @apply scale-[0.98];
+}
+
+/* Secondary button */
+.btn-secondary {
+  @apply bg-muted text-foreground font-medium;
+  @apply px-4 py-2.5 rounded-lg;
+  @apply border border-border/50;
+  @apply transition-all duration-150;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  min-height: 44px;
+}
+
+.btn-secondary:hover {
+  @apply bg-accent;
+}
+
+/* Ghost button - minimal styling */
+.btn-ghost {
+  @apply text-foreground font-medium;
+  @apply px-3 py-2 rounded-lg;
+  @apply transition-colors duration-150;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  min-height: 44px;
+}
+
+.btn-ghost:hover {
+  @apply bg-muted;
+}
+
+/* ============================================
+   TABLE STYLES
+   Clean, readable data tables
+   ============================================ */
+
+.table-clean {
+  @apply w-full;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-clean th {
+  @apply text-left py-3 px-4 font-semibold text-muted-foreground;
+  @apply border-b border-border/50 bg-muted/30;
+  font-size: 0.8125rem;
+}
+
+.table-clean td {
+  @apply py-3 px-4;
+  @apply border-b border-border/30;
+}
+
+.table-clean tr:last-child td {
+  @apply border-b-0;
+}
+
+.table-clean tr:hover td {
+  @apply bg-muted/30;
+}
+
+/* Numeric cells - right aligned with tabular nums */
+.table-clean td.numeric,
+.table-clean th.numeric {
+  @apply text-right tabular-nums;
+}
+
+/* ============================================
+   BADGE/TAG STYLES
+   Consistent labelling
+   ============================================ */
+
+.tag {
+  @apply inline-flex items-center;
+  @apply px-2.5 py-1 rounded-md;
+  @apply font-medium;
+  @apply bg-muted border border-border/50;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.tag-sm {
+  @apply px-2 py-0.5 rounded;
+  font-size: 0.75rem;
+}
+
+/* ============================================
+   PROGRESS BAR IMPROVEMENTS
+   ============================================ */
+
+/* Gradient progress bar for financial data */
+.progress-gradient {
+  @apply h-2 rounded-full overflow-hidden;
+  background: oklch(0.95 0 0);
+}
+
+.dark .progress-gradient {
+  background: oklch(0.25 0 0);
+}
+
+.progress-gradient > div {
+  @apply h-full rounded-full;
+  background: linear-gradient(90deg,
+    oklch(0.50 0.12 250) 0%,
+    oklch(0.40 0.14 250) 100%
+  );
+}
+
+/* ============================================
+   SECTION DIVIDERS
+   ============================================ */
+
+.section-divider {
+  @apply w-full h-px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    oklch(0 0 0 / 8%) 20%,
+    oklch(0 0 0 / 8%) 80%,
+    transparent 100%
+  );
+}
+
+.dark .section-divider {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    oklch(1 1 1 / 10%) 20%,
+    oklch(1 1 1 / 10%) 80%,
+    transparent 100%
+  );
+}
+
+/* Hide scrollbar for horizontal scroll elements */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   ACCESSIBILITY - WCAG 2.1 AA Compliance
+   ============================================ */
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  background: var(--foreground);
+  color: var(--background);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  z-index: 9999;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Enhanced focus states - visible on all interactive elements */
+:focus-visible:not(input):not(textarea):not(select) {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Input elements have their own focus styles - no ring */
+input:focus-visible,
+input:focus,
+textarea:focus-visible,
+textarea:focus,
+select:focus-visible,
+select:focus {
+  outline: none !important;
+}
+
+/* Focus within for composite components */
+:has(:focus-visible) {
+  --focus-visible: 1;
+}
+
+/* Reduced motion - respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  :root {
+    --muted-foreground: oklch(0.35 0 0);
+    --border: oklch(0.7 0 0);
+  }
+
+  .dark {
+    --muted-foreground: oklch(0.8 0 0);
+    --border: oklch(1 0 0 / 25%);
+  }
+}
+
+/* Forced colors mode (Windows High Contrast) */
+@media (forced-colors: active) {
+  .card-elevated,
+  .card-elevated-interactive,
+  .card-featured,
+  .card-metric {
+    border: 2px solid CanvasText;
+  }
+
+  button,
+  [role="button"] {
+    border: 2px solid ButtonText;
+  }
+}
+
+/* ============================================
+   DARK MODE ELEVATION SYSTEM
+   Linear-style layered surfaces
+   ============================================ */
+
+/* Surface levels for dark mode depth */
+.dark .surface-base {
+  background: var(--background);
+}
+
+.dark .surface-raised {
+  background: var(--card);
+}
+
+.dark .surface-overlay {
+  background: var(--popover);
+}
+
+/* Subtle inner glow for depth in dark mode - navy undertone (hue 250) */
+.dark .card-elevated {
+  background: linear-gradient(
+    180deg,
+    oklch(0.18 0.008 250) 0%,
+    oklch(0.16 0.008 250) 100%
+  );
+  border-color: oklch(1 0 0 / 8%);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 5%) inset,
+    0 1px 2px oklch(0 0 0 / 30%),
+    0 4px 16px oklch(0 0 0 / 25%);
+}
+
+.dark .card-elevated-interactive:hover {
+  background: linear-gradient(
+    180deg,
+    oklch(0.20 0.01 250) 0%,
+    oklch(0.18 0.008 250) 100%
+  );
+  border-color: oklch(1 0 0 / 12%);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 8%) inset,
+    0 2px 4px oklch(0 0 0 / 35%),
+    0 8px 24px oklch(0 0 0 / 30%);
+}
+
+/* ============================================
+   SEMANTIC COLOUR TOKENS
+   For accessible status indicators
+   ============================================ */
+
+/* Success - Emerald */
+.status-success {
+  --status-bg: oklch(0.95 0.05 160);
+  --status-text: oklch(0.35 0.12 160);
+  --status-border: oklch(0.85 0.08 160);
+}
+
+.dark .status-success {
+  --status-bg: oklch(0.25 0.04 160 / 40%);
+  --status-text: oklch(0.75 0.12 160);
+  --status-border: oklch(0.40 0.08 160);
+}
+
+/* Warning - Amber */
+.status-warning {
+  --status-bg: oklch(0.95 0.06 85);
+  --status-text: oklch(0.45 0.12 70);
+  --status-border: oklch(0.85 0.10 80);
+}
+
+.dark .status-warning {
+  --status-bg: oklch(0.28 0.05 80 / 40%);
+  --status-text: oklch(0.78 0.12 80);
+  --status-border: oklch(0.45 0.08 80);
+}
+
+/* Info - Sky */
+.status-info {
+  --status-bg: oklch(0.95 0.04 230);
+  --status-text: oklch(0.40 0.12 240);
+  --status-border: oklch(0.85 0.08 235);
+}
+
+.dark .status-info {
+  --status-bg: oklch(0.25 0.04 240 / 40%);
+  --status-text: oklch(0.75 0.12 240);
+  --status-border: oklch(0.40 0.08 240);
+}
+
+/* ============================================
+   SEMANTIC TEXT COLOUR UTILITIES
+   Use these instead of arbitrary Tailwind colors
+   ============================================ */
+
+/* Positive indicators (decreases, savings, good) - Emerald */
+.text-positive {
+  color: var(--positive);
+}
+
+/* Negative indicators (increases, costs, warnings) - Amber */
+.text-negative {
+  color: var(--negative);
+}
+
+/* Navy accent text - primary accent colour */
+.text-accent-navy {
+  color: var(--accent-foreground);
+}
+
+/* Navy scale utilities */
+.text-navy-600 {
+  color: var(--navy-600);
+}
+
+.bg-navy-50 {
+  background-color: var(--navy-50);
+}
+
+.bg-navy-100 {
+  background-color: var(--navy-100);
+}
+
+.border-navy-200 {
+  border-color: var(--navy-200);
+}
+
+.border-navy-600 {
+  border-color: var(--navy-600);
+}
+
+/* Additional navy background utilities */
+.bg-navy-200 {
+  background-color: var(--navy-200);
+}
+
+.bg-navy-400 {
+  background-color: var(--navy-400);
+}
+
+.bg-navy-500 {
+  background-color: var(--navy-500);
+}
+
+.bg-navy-700 {
+  background-color: var(--navy-700);
+}
+
+.bg-navy-800 {
+  background-color: var(--navy-800);
+}
+
+.bg-navy-900 {
+  background-color: var(--navy-900);
+}
+
+/* Navy text utilities */
+.text-navy-200 {
+  color: var(--navy-200);
+}
+
+.text-navy-300 {
+  color: var(--navy-300);
+}
+
+.text-navy-400 {
+  color: var(--navy-400);
+}
+
+.text-navy-500 {
+  color: var(--navy-500);
+}
+
+/* Navy stroke utilities for SVG */
+.stroke-navy-200 {
+  stroke: var(--navy-200);
+}
+
+.stroke-navy-500 {
+  stroke: var(--navy-500);
+}
+
+.stroke-navy-600 {
+  stroke: var(--navy-600);
+}
+
+/* ============================================
+   DATA FLOW ANIMATION
+   Abstract flowing particles for hero section
+   ============================================ */
+
+/* Primary RGB for gradients */
+:root {
+  --primary-rgb: 24 24 27;
+}
+
+.dark {
+  --primary-rgb: 250 250 250;
+}
+
+/* Keyframes */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes float-1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  25% { transform: translate(3px, -5px); opacity: 0.7; }
+  50% { transform: translate(-2px, -8px); opacity: 0.5; }
+  75% { transform: translate(4px, -3px); opacity: 0.6; }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  33% { transform: translate(-4px, -6px); opacity: 0.6; }
+  66% { transform: translate(2px, -4px); opacity: 0.4; }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.35; }
+  40% { transform: translate(5px, -4px); opacity: 0.55; }
+  80% { transform: translate(-3px, -7px); opacity: 0.45; }
+}
+
+/* Animation utility classes */
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 15s linear infinite;
+}
+
+.animate-spin-medium {
+  animation: spin-slow 12s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-reverse 25s linear infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-float-1 {
+  animation: float-1 6s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float-2 8s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: float-3 7s ease-in-out infinite;
+}
+
+/* Morphing gradient keyframes */
+@keyframes morph-1 {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(0.95) rotate(-3deg);
+    opacity: 0.75;
+  }
+  75% {
+    transform: scale(1.05) rotate(2deg);
+    opacity: 0.85;
+  }
+}
+
+@keyframes morph-2 {
+  0%, 100% {
+    transform: scale(1.1) rotate(0deg) translateX(0);
+    opacity: 0.5;
+  }
+  33% {
+    transform: scale(0.9) rotate(-8deg) translateX(-5%);
+    opacity: 0.7;
+  }
+  66% {
+    transform: scale(1.15) rotate(5deg) translateX(5%);
+    opacity: 0.55;
+  }
+}
+
+@keyframes morph-3 {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2) translateY(-10%);
+    opacity: 0.6;
+  }
+}
+
+.animate-morph-1 {
+  animation: morph-1 8s ease-in-out infinite;
+}
+
+.animate-morph-2 {
+  animation: morph-2 12s ease-in-out infinite;
+}
+
+.animate-morph-3 {
+  animation: morph-3 10s ease-in-out infinite;
+}
+
+/* Ethereal orb animations - soft breathing glow */
+@keyframes orb-breathe-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.8;
+  }
+}
+
+@keyframes orb-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes orb-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+@keyframes orb-core {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+.animate-orb-breathe-slow {
+  animation: orb-breathe-slow 8s ease-in-out infinite;
+}
+
+.animate-orb-breathe {
+  animation: orb-breathe 6s ease-in-out infinite 0.5s;
+}
+
+.animate-orb-pulse {
+  animation: orb-pulse 4s ease-in-out infinite 1s;
+}
+
+.animate-orb-core {
+  animation: orb-core 3s ease-in-out infinite 0.25s;
+}
+
+/* Simple breathing animations for hero */
+@keyframes breathe-slow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+.animate-breathe-slow {
+  animation: breathe-slow 6s ease-in-out infinite;
+}
+
+.animate-breathe-offset {
+  animation: breathe-slow 5s ease-in-out infinite 1s;
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite 0.5s;
+}
+
+/* Floating coin animations - smooth orbital motion */
+@keyframes float-coin-1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(12px, -16px); }
+  50% { transform: translate(0, -24px); }
+  75% { transform: translate(-12px, -16px); }
+}
+
+@keyframes float-coin-2 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-10px, -14px); }
+  50% { transform: translate(0, -20px); }
+  75% { transform: translate(10px, -14px); }
+}
+
+@keyframes float-coin-3 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(14px, -12px); }
+  50% { transform: translate(0, -22px); }
+  75% { transform: translate(-14px, -12px); }
+}
+
+@keyframes float-coin-4 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-8px, -10px); }
+  50% { transform: translate(0, -16px); }
+  75% { transform: translate(8px, -10px); }
+}
+
+@keyframes float-coin-5 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(10px, -18px); }
+  50% { transform: translate(0, -26px); }
+  75% { transform: translate(-10px, -18px); }
+}
+
+@keyframes float-coin-6 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-12px, -10px); }
+  50% { transform: translate(0, -18px); }
+  75% { transform: translate(12px, -10px); }
+}
+
+/* 3D rotation animations for coins - smooth continuous rotation */
+@keyframes rotate-coin-1 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(8deg) rotateY(12deg); }
+  50% { transform: rotateX(0deg) rotateY(20deg); }
+  75% { transform: rotateX(-8deg) rotateY(12deg); }
+}
+
+@keyframes rotate-coin-2 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(-10deg) rotateY(-8deg); }
+  50% { transform: rotateX(0deg) rotateY(-16deg); }
+  75% { transform: rotateX(10deg) rotateY(-8deg); }
+}
+
+@keyframes rotate-coin-3 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(6deg) rotateY(10deg); }
+  50% { transform: rotateX(0deg) rotateY(18deg); }
+  75% { transform: rotateX(-6deg) rotateY(10deg); }
+}
+
+@keyframes rotate-coin-4 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(-8deg) rotateY(-10deg); }
+  50% { transform: rotateX(0deg) rotateY(-18deg); }
+  75% { transform: rotateX(8deg) rotateY(-10deg); }
+}
+
+@keyframes rotate-coin-5 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(10deg) rotateY(8deg); }
+  50% { transform: rotateX(0deg) rotateY(16deg); }
+  75% { transform: rotateX(-10deg) rotateY(8deg); }
+}
+
+@keyframes rotate-coin-6 {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(-6deg) rotateY(-12deg); }
+  50% { transform: rotateX(0deg) rotateY(-20deg); }
+  75% { transform: rotateX(6deg) rotateY(-12deg); }
+}
+
+/* Center element subtle pulse */
+@keyframes center-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.animate-float-coin-1 { animation: float-coin-1 8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.animate-float-coin-2 { animation: float-coin-2 9s cubic-bezier(0.45, 0, 0.55, 1) infinite 1s; }
+.animate-float-coin-3 { animation: float-coin-3 10s cubic-bezier(0.45, 0, 0.55, 1) infinite 2s; }
+.animate-float-coin-4 { animation: float-coin-4 7s cubic-bezier(0.45, 0, 0.55, 1) infinite 0.5s; }
+.animate-float-coin-5 { animation: float-coin-5 11s cubic-bezier(0.45, 0, 0.55, 1) infinite 1.5s; }
+.animate-float-coin-6 { animation: float-coin-6 8s cubic-bezier(0.45, 0, 0.55, 1) infinite 2.5s; }
+
+.animate-rotate-coin-1 { animation: rotate-coin-1 12s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.animate-rotate-coin-2 { animation: rotate-coin-2 10s cubic-bezier(0.45, 0, 0.55, 1) infinite 0.5s; }
+.animate-rotate-coin-3 { animation: rotate-coin-3 14s cubic-bezier(0.45, 0, 0.55, 1) infinite 1s; }
+.animate-rotate-coin-4 { animation: rotate-coin-4 9s cubic-bezier(0.45, 0, 0.55, 1) infinite 1.5s; }
+.animate-rotate-coin-5 { animation: rotate-coin-5 13s cubic-bezier(0.45, 0, 0.55, 1) infinite 2s; }
+.animate-rotate-coin-6 { animation: rotate-coin-6 11s cubic-bezier(0.45, 0, 0.55, 1) infinite 0.8s; }
+
+.animate-center-pulse { animation: center-pulse 4s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+
+/* Perspective utility for 3D transforms */
+.perspective-500 {
+  perspective: 500px;
+}
+
+/* Mesh network animations - subtle organic movement */
+@keyframes mesh-pulse {
+  0%, 100% {
+    stroke-opacity: 0.3;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-opacity: 0.6;
+    stroke-dashoffset: 10;
+  }
+}
+
+@keyframes node-pulse {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.2);
+  }
+}
+
+.animate-mesh-1 {
+  animation: mesh-pulse 4s ease-in-out infinite;
+}
+
+.animate-mesh-2 {
+  animation: mesh-pulse 5s ease-in-out infinite 0.5s;
+}
+
+.animate-mesh-3 {
+  animation: mesh-pulse 6s ease-in-out infinite 1s;
+}
+
+.animate-node-1 {
+  animation: node-pulse 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-node-2 {
+  animation: node-pulse 4s ease-in-out infinite 0.7s;
+  transform-origin: center;
+}
+
+.animate-node-3 {
+  animation: node-pulse 5s ease-in-out infinite 1.4s;
+  transform-origin: center;
+}
+
+/* Radial gradient utility for soft circular gradients */
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}

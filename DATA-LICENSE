@@ -1,0 +1,95 @@
+CivAccount Data License v1.0
+
+Copyright (c) 2025 Owen Fisher / CivAccount
+
+This license applies to the compiled council dataset in this repository,
+specifically all files within src/data/councils/ and any derived data files.
+
+
+1. WHAT THIS COVERS
+
+   The "Dataset" refers to the structured, enriched compilation of UK council
+   data in this repository — including budget breakdowns, service spending,
+   financial figures, service outcomes, leadership details, and all associated
+   metadata contained in the TypeScript data files.
+
+   This license does NOT apply to the underlying raw government data, which
+   remains Crown Copyright under the Open Government Licence v3.0. You are
+   free to obtain that raw data directly from GOV.UK and use it under the
+   OGL terms.
+
+   This license covers the compilation, structure, enrichment, normalisation,
+   and cross-referencing work that transforms raw government data into the
+   CivAccount Dataset.
+
+
+2. PERMITTED USE
+
+   You MAY:
+
+   a) View and inspect the Dataset in this public repository.
+
+   b) Reference individual data points from the Dataset for journalism,
+      research, education, or civic purposes, with attribution to CivAccount.
+
+   c) Use the Dataset structure and schema as inspiration for your own
+      data projects, provided you compile your own data independently.
+
+   d) Fork this repository for the purpose of contributing improvements
+      back to CivAccount via pull requests.
+
+
+3. RESTRICTED USE
+
+   You MAY NOT, without prior written permission from the copyright holder:
+
+   a) Bulk copy, redistribute, or republish the Dataset or any substantial
+      portion of it (whether in its original form or reformatted).
+
+   b) Use the Dataset to build or operate a competing product or service
+      that presents UK council financial data.
+
+   c) Incorporate the Dataset into a commercial product or service.
+
+   d) Create derivative datasets by systematically extracting and
+      restructuring the Dataset's contents.
+
+   e) Offer the Dataset (or a substantial portion of it) as a data feed,
+      API, download, or dataset on any platform.
+
+
+4. ATTRIBUTION
+
+   Any permitted use of data from the Dataset must include:
+
+   "Source: CivAccount (https://civaccount.uk)"
+
+
+5. GOVERNMENT DATA ACKNOWLEDGEMENT
+
+   The Dataset contains public sector information licensed under the
+   Open Government Licence v3.0. Original data sources include:
+
+   - Ministry of Housing, Communities and Local Government (MHCLG)
+   - Office for National Statistics (ONS)
+   - Department for Transport (DfT)
+   - Department for Environment, Food and Rural Affairs (DEFRA)
+   - Ofsted
+   - Individual council publications
+
+   The Open Government Licence permits anyone to freely obtain and use
+   the raw source data. This license restricts only the compiled,
+   enriched Dataset — not the underlying government data.
+
+
+6. NO WARRANTY
+
+   THE DATASET IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+   WHILE EVERY EFFORT IS MADE TO ENSURE ACCURACY, THE DATASET MAY
+   CONTAIN ERRORS OR OMISSIONS. USE AT YOUR OWN RISK.
+
+
+7. CONTACT
+
+   For licensing enquiries, commercial use, or permissions:
+   https://github.com/wulfsagedev/civaccount
