@@ -248,7 +248,7 @@ export default function DataPage() {
           </p>
 
           <code className="block type-caption text-muted-foreground bg-muted/30 px-3 py-2 rounded overflow-x-auto whitespace-pre">
-            {`<iframe src="https://www.civaccount.co.uk/embed/kent" width="432" height="300" frameborder="0" style="border:0;border-radius:12px"></iframe>`}
+            {`<iframe src="https://www.civaccount.co.uk/embed/council/kent" width="432" height="300" frameborder="0" style="border:0;border-radius:12px"></iframe>`}
           </code>
 
           <p className="type-caption text-muted-foreground mt-4">

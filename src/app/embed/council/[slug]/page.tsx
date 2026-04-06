@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function EmbedPage({ params }: Props) {
+export default async function EmbedCouncilPage({ params }: Props) {
   const { slug } = await params;
   const council = getCouncilBySlug(slug);
 
@@ -138,7 +138,7 @@ export default async function EmbedPage({ params }: Props) {
               </div>
               {taxChange !== null && (
                 <div className={`change ${taxChange > 0 ? 'up' : 'down'}`}>
-                  {taxChange > 0 ? '↗' : '↘'} {taxChange > 0 ? '+' : ''}{taxChange.toFixed(1)}% from last year
+                  {taxChange > 0 ? '+' : ''}{taxChange.toFixed(1)}% from last year
                 </div>
               )}
             </>
@@ -165,7 +165,7 @@ export default async function EmbedPage({ params }: Props) {
           <div className="footer">
             <span className="logo">CivAccount</span>
             <a href={`https://www.civaccount.co.uk/council/${slug}`} target="_blank" rel="noopener noreferrer">
-              View full dashboard →
+              View full dashboard
             </a>
           </div>
         </div>

@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     return [
       // Allow embed pages to be framed
       {
-        source: '/embed/:path*',
+        source: '/embed/(.*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'ALLOWALL' },
