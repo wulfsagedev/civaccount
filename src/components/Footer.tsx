@@ -8,7 +8,7 @@ import { PulsingDot } from '@/components/ui/pulsing-dot';
 export default function Footer() {
   return (
     <footer className="border-t bg-muted/20" aria-label="Site footer">
-      <div className="container mx-auto px-4 py-6 sm:px-6 max-w-3xl">
+      <div className="container mx-auto px-4 py-6 sm:px-6 max-w-5xl">
         {/* Brand + links */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">

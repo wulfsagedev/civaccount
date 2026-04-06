@@ -83,7 +83,7 @@ export default function Header() {
     <>
       {/* Main header - always visible at top */}
       <header className="border-b bg-background relative z-40">
-        <div className="container mx-auto px-4 py-3 sm:px-6 max-w-7xl">
+        <div className="container mx-auto px-4 py-3 sm:px-6 max-w-5xl">
           <div className="flex items-center justify-between gap-4">
             {/* Left: Logo and version */}
             <div className="flex items-center gap-4 shrink-0">

@@ -101,7 +101,7 @@ export default function AccessibilityPage() {
       <Header />
 
       <main id="main-content" className="flex-1">
-        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-7xl">
+        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-5xl">
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
               <Link href="/">

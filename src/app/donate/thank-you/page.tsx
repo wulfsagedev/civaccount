@@ -18,7 +18,7 @@ export default function ThankYouPage() {
       <Header />
 
       <main id="main-content" className="flex-1 flex items-center justify-center">
-        <div className="container mx-auto px-4 py-12 sm:px-6 max-w-7xl">
+        <div className="container mx-auto px-4 py-12 sm:px-6 max-w-5xl">
           <div className="max-w-md mx-auto text-center">
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-positive/10 flex items-center justify-center">
               <CheckCircle className="h-8 w-8 text-positive" />
