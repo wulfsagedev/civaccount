@@ -17,19 +17,21 @@ export default function MilestoneBar({ score }: MilestoneBarProps) {
   return (
     <div className="mt-3">
       {/* Progress bar */}
-      <div className="relative h-1.5 rounded-full bg-muted overflow-hidden">
-        <div
-          className="h-full rounded-full bg-foreground/60 transition-all"
-          style={{ width: `${progress}%` }}
-        />
+      <div className="relative h-4 flex items-center">
+        <div className="absolute inset-x-0 h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            className="h-full rounded-full bg-foreground/60 transition-all"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
         {/* Milestone markers */}
         {MILESTONES.map((m) => (
           <div
             key={m.votes}
-            className={`absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border-2 border-background ${
+            className={`absolute w-2.5 h-2.5 rounded-full border-2 border-background ${
               score >= m.votes ? 'bg-foreground' : 'bg-muted-foreground/30'
             }`}
-            style={{ left: `${(m.votes / maxMilestone) * 100}%`, transform: 'translate(-50%, -50%)' }}
+            style={{ left: `${(m.votes / maxMilestone) * 100}%`, transform: 'translateX(-50%)' }}
           />
         ))}
       </div>
