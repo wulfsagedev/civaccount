@@ -39,7 +39,7 @@ export default function UKOnlyPage() {
           </div>
 
           <p className="type-caption text-muted-foreground/50 mt-8">
-            If you believe this is a mistake, contact hello@civaccount.co.uk
+            You are seeing this because we detected your location as outside the UK. If you are using a VPN, try disconnecting it and refreshing the page.
           </p>
         </div>
       </main>
