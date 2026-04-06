@@ -369,50 +369,23 @@ export default function InsightsClient() {
             </p>
           </div>
 
-          {/* Key Statistics - Hero Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-            <div className="card-elevated p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <PoundSterling className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Badge variant="outline" className="type-body-sm">Average</Badge>
-              </div>
-              <p className="type-metric font-semibold tabular-nums">{formatCurrency(stats.avgBandD, { decimals: 0 })}</p>
-              <p className="type-body-sm text-muted-foreground mt-1">Band D average</p>
+          {/* Key Statistics */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+            <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
+              <p className="type-caption text-muted-foreground mb-1">Band D average</p>
+              <p className="type-title-1 font-semibold tabular-nums">{formatCurrency(stats.avgBandD, { decimals: 0 })}</p>
             </div>
-
-            <div className="card-elevated p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Badge variant="outline" className="type-body-sm">Range</Badge>
-              </div>
-              <p className="type-metric font-semibold tabular-nums">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</p>
-              <p className="type-body-sm text-muted-foreground mt-1">Gap between highest & lowest</p>
+            <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
+              <p className="type-caption text-muted-foreground mb-1">Highest vs lowest</p>
+              <p className="type-title-1 font-semibold tabular-nums">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</p>
             </div>
-
-            <div className="card-elevated p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Badge variant="outline" className="type-body-sm">Rising</Badge>
-              </div>
-              <p className="type-metric font-semibold tabular-nums">+{stats.avgYoyChange.toFixed(1)}%</p>
-              <p className="type-body-sm text-muted-foreground mt-1">Average increase this year</p>
+            <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
+              <p className="type-caption text-muted-foreground mb-1">Average increase</p>
+              <p className="type-title-1 font-semibold tabular-nums">+{stats.avgYoyChange.toFixed(1)}%</p>
             </div>
-
-            <div className="card-elevated p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <Landmark className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Badge variant="outline" className="type-body-sm">Total</Badge>
-              </div>
-              <p className="type-metric font-semibold">{formatBillions(stats.totalBudget)}</p>
-              <p className="type-body-sm text-muted-foreground mt-1">Combined council spending</p>
+            <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
+              <p className="type-caption text-muted-foreground mb-1">Total spending</p>
+              <p className="type-title-1 font-semibold tabular-nums">{formatBillions(stats.totalBudget)}</p>
             </div>
           </div>
 
