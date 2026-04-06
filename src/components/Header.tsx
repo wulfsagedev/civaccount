@@ -396,9 +396,9 @@ export default function Header() {
         style={{
           height: '80px',
           background: `linear-gradient(to bottom,
-            rgb(var(--background-rgb) / 0.95) 0%,
-            rgb(var(--background-rgb) / 0.8) 50%,
-            transparent 100%
+            rgba(var(--background-rgb), 0.95) 0%,
+            rgba(var(--background-rgb), 0.8) 50%,
+            rgba(var(--background-rgb), 0) 100%
           )`,
         }}
         aria-hidden="true"
