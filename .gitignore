@@ -41,9 +41,10 @@ yarn-error.log*
 next-env.d.ts
 .claude/
 
-# research artifacts
+# research artifacts & tooling
+scripts/
 council_pdfs/
 pdf_downloads/
 pdf_extracts/
 temp_images/
-officer_salary_bands_2023-24.txt
+.gstack/

@@ -8,7 +8,7 @@ interface PulsingDotProps {
 export function PulsingDot({ size = 'sm', color = 'green' }: PulsingDotProps) {
   const sizeClasses = size === 'sm' ? 'h-1.5 w-1.5' : 'h-2 w-2';
   const colorClasses = color === 'green'
-    ? { ping: 'bg-green-400', dot: 'bg-green-500' }
+    ? { ping: 'bg-positive/60', dot: 'bg-positive' }
     : { ping: 'bg-primary/60', dot: 'bg-primary' };
 
   return (

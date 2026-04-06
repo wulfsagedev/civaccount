@@ -77,7 +77,7 @@ All data comes from official UK government sources:
 
 ## Version
 
-Current: v1.4.2 (January 2026)
+Current: v3.0 (April 2026)
 
 ## License
 

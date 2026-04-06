@@ -5,7 +5,9 @@ import type { Database } from '@/lib/supabase/types';
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/';
+  const rawNext = searchParams.get('next') ?? '/';
+  // Validate redirect path — must start with / and not contain // (prevents open redirect)
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
 
   if (code) {
     const response = NextResponse.redirect(`${origin}${next}`);

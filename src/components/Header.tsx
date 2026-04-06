@@ -17,6 +17,12 @@ import AccountModal from '@/components/AccountModal';
 import { DonateButton } from '@/components/DonateButton';
 import { cn } from '@/lib/utils';
 
+// Static class strings — outside component to avoid recreation on every render
+const NAV_LINK_BASE = 'inline-flex items-center justify-center gap-2 whitespace-nowrap type-body-sm font-medium h-9 px-4 py-2 rounded-lg transition-colors cursor-pointer';
+const MOBILE_NAV_LINK_BASE = 'inline-flex items-center justify-start gap-2 whitespace-nowrap type-body-sm font-medium h-11 px-4 py-2 rounded-lg transition-colors cursor-pointer w-full';
+const NAV_LINK_CLASS = `${NAV_LINK_BASE} text-muted-foreground hover:text-foreground hover:bg-muted`;
+const MOBILE_NAV_LINK_CLASS = `${MOBILE_NAV_LINK_BASE} text-muted-foreground hover:text-foreground hover:bg-muted`;
+
 export default function Header() {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
   const { user, signOut } = useAuth();
@@ -68,9 +74,10 @@ export default function Header() {
     return () => document.removeEventListener('close-mobile-menu', handleCloseMobileMenu);
   }, []);
 
-  // Nav item styling
-  const navLinkClass = 'inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-9 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer';
-  const mobileNavLinkClass = 'inline-flex items-center justify-start gap-2 whitespace-nowrap text-sm font-medium h-11 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer w-full';
+  // Nav item styling — using pathname for active state
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
+  const navLink = (href: string) => `${NAV_LINK_BASE} ${isActive(href) ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`;
+  const mobileNavLink = (href: string) => `${MOBILE_NAV_LINK_BASE} ${isActive(href) ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`;
 
   return (
     <>
@@ -88,43 +95,32 @@ export default function Header() {
               </Link>
               <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                 <PulsingDot size="md" />
-                <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-                  v1.8
+                <Badge variant="outline" className="type-body-sm cursor-pointer hover:bg-muted">
+                  v3.0
                 </Badge>
               </Link>
             </div>
 
-            {/* Right: Search + Desktop Navigation */}
+            {/* Right: Search + Desktop Navigation (simplified: 3 core pages + actions) */}
             <div className="hidden lg:flex items-center gap-1 shrink-0">
               <SearchCommand />
               <nav className="flex items-center gap-1 ml-2" aria-label="Main navigation">
-                {selectedCouncil && (
-                  <Link href={`/council/${getCouncilSlug(selectedCouncil)}/proposals`} className={navLinkClass}>
-                    <Vote className="h-4 w-4" aria-hidden="true" />
-                    Proposals
-                  </Link>
-                )}
-                <Link href="/compare" className={navLinkClass}>
+                <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} className={navLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
+                  <Vote className="h-4 w-4" aria-hidden="true" />
+                  Town Hall
+                </Link>
+                <Link href="/compare" className={navLink('/compare')}>
                   <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
                   Compare
                 </Link>
-                <Link href="/insights" className={navLinkClass}>
+                <Link href="/insights" className={navLink('/insights')}>
                   <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
                 </Link>
-                <Link href="/about" className={navLinkClass}>
-                  <Info className="h-4 w-4" aria-hidden="true" />
-                  About
-                </Link>
-                <button type="button" onClick={openFeedback} className={navLinkClass}>
-                  <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                  Feedback
-                </button>
-                <DonateButton variant="header" />
                 {user ? (
                   <AccountModal />
                 ) : (
-                  <Link href="/auth/login" className={navLinkClass}>
+                  <Link href="/auth/login" className={NAV_LINK_CLASS}>
                     <User className="h-4 w-4" aria-hidden="true" />
                     Sign in
                   </Link>
@@ -133,8 +129,33 @@ export default function Header() {
               </nav>
             </div>
 
-            {/* Right: Mobile Navigation */}
-            <div className="flex lg:hidden items-center gap-1">
+            {/* Right: Medium screens — Town Hall + Compare + essentials */}
+            <div className="hidden md:flex lg:hidden items-center gap-1 shrink-0">
+              <SearchCommand />
+              <nav className="flex items-center gap-1 ml-1" aria-label="Main navigation">
+                <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} className={navLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
+                  <Vote className="h-4 w-4" aria-hidden="true" />
+                  Town Hall
+                </Link>
+                <Link href="/compare" className={navLink('/compare')}>
+                  <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
+                  Compare
+                </Link>
+              </nav>
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="h-11 w-11"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+              </Button>
+            </div>
+
+            {/* Right: Mobile Navigation (small screens only) */}
+            <div className="flex md:hidden items-center gap-1">
               <SearchCommand />
               <ThemeToggle />
               <Button
@@ -149,44 +170,46 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Mobile Menu Dropdown */}
+          {/* Mobile Menu Dropdown — simplified hierarchy */}
           {mobileMenuOpen && (
             <div className="lg:hidden mt-4 pt-4 border-t">
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
-                {selectedCouncil && (
-                  <Link href={`/council/${getCouncilSlug(selectedCouncil)}/proposals`} onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                    <Vote className="h-4 w-4" aria-hidden="true" />
-                    Proposals
-                  </Link>
-                )}
-                <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                {/* Primary: core features */}
+                <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} onClick={closeMobileMenu} className={mobileNavLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
+                  <Vote className="h-4 w-4" aria-hidden="true" />
+                  Town Hall
+                </Link>
+                <Link href="/compare" onClick={closeMobileMenu} className={mobileNavLink('/compare')}>
+                  <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
+                  Compare
+                </Link>
+                <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLink('/insights')}>
                   <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
                 </Link>
-                <Link href="/about" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                <Link href="/about" onClick={closeMobileMenu} className={mobileNavLink('/about')}>
                   <Info className="h-4 w-4" aria-hidden="true" />
                   About
                 </Link>
-                <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                  <PulsingDot size="md" />
-                  Updates
-                  <Badge variant="outline" className="text-sm ml-auto">v1.8</Badge>
-                </Link>
-                <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
-                  <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                  Feedback
-                </button>
-                <div className="pt-2 mt-2 border-t border-border/50">
-                  <DonateButton variant="header" />
-                </div>
-                <div className="pt-2 mt-2 border-t border-border/50">
+
+                {/* Secondary: meta + actions */}
+                <div className="pt-2 mt-2 border-t border-border/50 flex flex-col gap-1">
+                  <Link href="/updates" onClick={closeMobileMenu} className={MOBILE_NAV_LINK_CLASS}>
+                    <PulsingDot size="md" />
+                    Updates
+                    <Badge variant="outline" className="type-body-sm ml-auto">v3.0</Badge>
+                  </Link>
+                  <button type="button" onClick={openFeedback} className={MOBILE_NAV_LINK_CLASS}>
+                    <MessageSquare className="h-4 w-4" aria-hidden="true" />
+                    Feedback
+                  </button>
                   {user ? (
-                    <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={mobileNavLinkClass}>
+                    <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={MOBILE_NAV_LINK_CLASS}>
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       Sign out
                     </button>
                   ) : (
-                    <Link href="/auth/login" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                    <Link href="/auth/login" onClick={closeMobileMenu} className={MOBILE_NAV_LINK_CLASS}>
                       <User className="h-4 w-4" aria-hidden="true" />
                       Sign in
                     </Link>
@@ -229,10 +252,13 @@ export default function Header() {
               {(() => {
                 // Page title mapping
                 const pageTitles: Record<string, string> = {
+                  '/townhall': 'Town Hall',
+                  '/compare': 'Compare',
                   '/insights': 'Insights',
                   '/about': 'About',
                   '/updates': 'Updates',
                   '/roadmap': 'Roadmap',
+                  '/methodology': 'Methodology',
                   '/accessibility': 'Accessibility',
                   '/privacy': 'Privacy',
                   '/terms': 'Terms',
@@ -244,20 +270,20 @@ export default function Header() {
 
                 // If on a known page, show page title
                 if (pageTitle) {
-                  return <p className="text-sm font-semibold truncate leading-tight">{pageTitle}</p>;
+                  return <p className="type-body-sm font-semibold truncate leading-tight">{pageTitle}</p>;
                 }
 
                 // If on a council page, show council name
-                // Use selectedCouncil if available, otherwise derive from URL slug
+                // Short name on mobile (compact pill), full name on desktop
                 if (pathname.startsWith('/council/')) {
-                  if (selectedCouncil) {
-                    return <p className="text-sm font-semibold truncate leading-tight">{getCouncilDisplayName(selectedCouncil)}</p>;
-                  }
-                  // Fallback: derive council from URL slug directly
-                  const slug = pathname.replace('/council/', '');
-                  const councilFromSlug = getCouncilBySlug(slug);
-                  if (councilFromSlug) {
-                    return <p className="text-sm font-semibold truncate leading-tight">{getCouncilDisplayName(councilFromSlug)}</p>;
+                  const council = selectedCouncil || getCouncilBySlug(pathname.split('/')[2] || '');
+                  if (council) {
+                    return (
+                      <p className="type-body-sm font-semibold truncate leading-tight">
+                        <span className="sm:hidden">{council.name}</span>
+                        <span className="hidden sm:inline">{getCouncilDisplayName(council)}</span>
+                      </p>
+                    );
                   }
                 }
 
@@ -265,16 +291,27 @@ export default function Header() {
                 return (
                   <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
                     <PulsingDot size="md" />
-                    <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
-                      v1.8
+                    <Badge variant="outline" className="type-body-sm cursor-pointer hover:bg-muted">
+                      v3.0
                     </Badge>
                   </Link>
                 );
               })()}
             </div>
 
-            {/* Right: Search + Theme toggle + Mobile menu */}
+            {/* Right: Nav links + Search + Theme toggle + Mobile menu */}
             <div className="flex items-center gap-2 shrink-0">
+              {/* Desktop: Town Hall + Compare in compact pill */}
+              <div className="hidden lg:flex items-center gap-1">
+                <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} className={navLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
+                  <Vote className="h-4 w-4" aria-hidden="true" />
+                  Town Hall
+                </Link>
+                <Link href="/compare" className={navLink('/compare')}>
+                  <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
+                  Compare
+                </Link>
+              </div>
               {/* Desktop: Full search button */}
               <div className="hidden lg:block">
                 <SearchCommand forceDesktopStyle />
@@ -310,40 +347,34 @@ export default function Header() {
           {mobileMenuOpen && isScrolled && (
             <div className="lg:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
-                {selectedCouncil && (
-                  <Link href={`/council/${getCouncilSlug(selectedCouncil)}/proposals`} onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                    <Vote className="h-4 w-4" aria-hidden="true" />
-                    Proposals
-                  </Link>
-                )}
-                <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} onClick={closeMobileMenu} className={mobileNavLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
+                  <Vote className="h-4 w-4" aria-hidden="true" />
+                  Town Hall
+                </Link>
+                <Link href="/compare" onClick={closeMobileMenu} className={mobileNavLink('/compare')}>
+                  <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
+                  Compare
+                </Link>
+                <Link href="/insights" onClick={closeMobileMenu} className={mobileNavLink('/insights')}>
                   <BarChart3 className="h-4 w-4" aria-hidden="true" />
                   Insights
                 </Link>
-                <Link href="/about" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                <Link href="/about" onClick={closeMobileMenu} className={mobileNavLink('/about')}>
                   <Info className="h-4 w-4" aria-hidden="true" />
                   About
                 </Link>
-                <Link href="/updates" onClick={closeMobileMenu} className={mobileNavLinkClass}>
-                  <PulsingDot size="md" />
-                  Updates
-                  <Badge variant="outline" className="text-sm ml-auto">v1.8</Badge>
-                </Link>
-                <button type="button" onClick={openFeedback} className={mobileNavLinkClass}>
-                  <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                  Feedback
-                </button>
-                <div className="pt-2 mt-2 border-t border-border/50">
-                  <DonateButton variant="header" />
-                </div>
-                <div className="pt-2 mt-2 border-t border-border/50">
+                <div className="pt-2 mt-2 border-t border-border/50 flex flex-col gap-1">
+                  <button type="button" onClick={openFeedback} className={MOBILE_NAV_LINK_CLASS}>
+                    <MessageSquare className="h-4 w-4" aria-hidden="true" />
+                    Feedback
+                  </button>
                   {user ? (
-                    <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={mobileNavLinkClass}>
+                    <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={MOBILE_NAV_LINK_CLASS}>
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       Sign out
                     </button>
                   ) : (
-                    <Link href="/auth/login" onClick={closeMobileMenu} className={mobileNavLinkClass}>
+                    <Link href="/auth/login" onClick={closeMobileMenu} className={MOBILE_NAV_LINK_CLASS}>
                       <User className="h-4 w-4" aria-hidden="true" />
                       Sign in
                     </Link>

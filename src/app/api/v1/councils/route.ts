@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { councils, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
-import { checkRateLimit } from '../rate-limit';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function GET(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for') ?? 'unknown';
-  const { allowed, remaining } = checkRateLimit(ip);
+  const ip = getClientIP(request);
+  const { success: allowed, remaining } = checkRateLimit(ip, { limit: 100, windowSeconds: 60 });
 
   if (!allowed) {
     return NextResponse.json(

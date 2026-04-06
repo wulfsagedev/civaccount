@@ -1,21 +1,31 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { getCouncilBySlug, getCouncilDisplayName, formatBudget } from '@/data/councils';
 import { useAuth } from '@/context/AuthContext';
 import { createClient } from '@/lib/supabase/client';
-import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS } from '@/lib/proposals';
+import {
+  getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS,
+  PROPOSAL_STATUS_DESCRIPTIONS, PROPOSAL_STATUS_STYLES,
+  canEdit, editWindowRemaining,
+} from '@/lib/proposals';
 import { CARD_STYLES } from '@/lib/utils';
 import VoteButton from '@/components/proposals/VoteButton';
+import ShareButton from '@/components/proposals/ShareButton';
 import CommentThread from '@/components/proposals/CommentThread';
 import CommentForm from '@/components/proposals/CommentForm';
+import ProposalForm from '@/components/proposals/ProposalForm';
+import Breadcrumb from '@/components/proposals/Breadcrumb';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, TrendingUp, TrendingDown } from 'lucide-react';
+import { MessageSquare, TrendingUp, TrendingDown, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { getDiffsForCouncil } from '@/lib/civic-diffs';
+import MilestoneBar from '@/components/proposals/MilestoneBar';
+import { toast } from 'sonner';
 
 interface Proposal {
   id: string;
@@ -29,6 +39,7 @@ interface Proposal {
   labels: string[];
   comment_count: number;
   created_at: string;
+  edited_at?: string | null;
 }
 
 interface Comment {
@@ -36,6 +47,9 @@ interface Comment {
   body: string;
   created_at: string;
   parent_id: string | null;
+  status?: string;
+  edited_at?: string | null;
+  author_id?: string;
   author: {
     display_name: string | null;
   } | null;
@@ -43,6 +57,7 @@ interface Comment {
 
 export default function ProposalDetailPage() {
   const params = useParams();
+  const routerNav = useRouter();
   const slug = params.slug as string;
   const proposalId = params.id as string;
   const council = useMemo(() => getCouncilBySlug(slug), [slug]);
@@ -53,6 +68,9 @@ export default function ProposalDetailPage() {
   const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchData = useCallback(async () => {
     const supabase = createClient();
@@ -93,7 +111,7 @@ export default function ProposalDetailPage() {
     // Fetch comments with author names
     const { data: commentsData } = await supabase
       .from('comments')
-      .select('id, body, created_at, parent_id, author_id')
+      .select('id, body, created_at, parent_id, author_id, status, edited_at')
       .eq('proposal_id', proposalId)
       .order('created_at', { ascending: true });
 
@@ -112,6 +130,9 @@ export default function ProposalDetailPage() {
           body: c.body,
           created_at: c.created_at,
           parent_id: c.parent_id,
+          status: c.status,
+          edited_at: c.edited_at,
+          author_id: c.author_id,
           author: { display_name: authorMap.get(c.author_id) ?? null },
         }))
       );
@@ -124,9 +145,34 @@ export default function ProposalDetailPage() {
     fetchData();
   }, [fetchData]);
 
+  const handleDelete = async () => {
+    if (!user || !proposal) return;
+    setIsDeleting(true);
+
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('proposals')
+      .update({ status: 'deleted' })
+      .eq('id', proposal.id)
+      .eq('author_id', user.id);
+
+    if (error) {
+      toast.error('Could not delete proposal. Try again.');
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+      return;
+    }
+
+    toast('Proposal deleted.');
+    routerNav.push(`/council/${slug}/proposals`);
+  };
+
   if (!council) return null;
 
   const displayName = getCouncilDisplayName(council);
+  const isAuthor = user && proposal && user.id === proposal.author_id;
+  const canEditProposal = isAuthor && proposal && canEdit(proposal.created_at);
+  const editTimeLeft = proposal ? editWindowRemaining(proposal.created_at) : '';
 
   // Get budget figure for the linked category
   const budgetAmount = proposal && council.budget
@@ -161,97 +207,200 @@ export default function ProposalDetailPage() {
             href={`/council/${slug}/proposals`}
             className="type-body-sm text-navy-600 hover:underline mt-4 inline-block cursor-pointer"
           >
-            Back to proposals
+            Back to Town Hall
           </Link>
         </main>
       </>
     );
   }
 
+  // Status badge styling
+  const statusStyle = PROPOSAL_STATUS_STYLES[proposal.status] ?? 'bg-muted text-muted-foreground';
+  const statusDescription = PROPOSAL_STATUS_DESCRIPTIONS[proposal.status] ?? '';
+
   return (
     <>
       <Header />
       <main id="main-content" className="container mx-auto px-4 py-6 max-w-3xl">
-        {/* Back link */}
-        <Link
-          href={`/council/${slug}/proposals`}
-          className="inline-flex items-center gap-2 type-body-sm text-muted-foreground hover:text-foreground transition-colors mb-6 cursor-pointer"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          {displayName} proposals
-        </Link>
+        {/* Breadcrumb */}
+        <Breadcrumb items={[
+          { label: displayName, href: `/council/${slug}` },
+          { label: 'Town Hall', href: `/council/${slug}/proposals` },
+          { label: proposal.title },
+        ]} />
 
         {/* Proposal card */}
-        <div className={`${CARD_STYLES} p-5 sm:p-8`}>
-          <div className="flex gap-4">
-            {/* Vote column */}
-            <div className="shrink-0 pt-1">
-              <VoteButton
-                proposalId={proposal.id}
-                initialScore={proposal.score}
-                initialUserVote={userVote}
-                layout="vertical"
-              />
-            </div>
-
-            {/* Content */}
-            <div className="min-w-0 flex-1">
-              <h1 className="type-title-1 mb-2">{proposal.title}</h1>
-
-              {/* Meta */}
-              <div className="flex items-center flex-wrap gap-2 mb-4">
-                <Badge variant="outline" className="type-caption bg-navy-50 text-navy-600 border-navy-200">
-                  {getCategoryLabel(proposal.budget_category)}
-                </Badge>
-                <Badge variant="outline" className="type-caption">
-                  {PROPOSAL_STATUS_LABELS[proposal.status] ?? proposal.status}
-                </Badge>
-                {proposal.labels.map((label) => (
-                  <Badge key={label} variant="outline" className="type-caption">
-                    {label}
-                  </Badge>
-                ))}
+        {isEditing ? (
+          <div className={`${CARD_STYLES} p-5 sm:p-8`}>
+            <h2 className="type-title-2 mb-6">Edit proposal</h2>
+            <ProposalForm
+              council={council}
+              councilSlug={slug}
+              mode="edit"
+              initialData={{
+                id: proposal.id,
+                title: proposal.title,
+                body: proposal.body,
+                budget_category: proposal.budget_category,
+                labels: proposal.labels,
+              }}
+              onSaved={() => {
+                setIsEditing(false);
+                fetchData();
+              }}
+              onCancel={() => setIsEditing(false)}
+            />
+          </div>
+        ) : (
+          <div className={`${CARD_STYLES} p-5 sm:p-8`}>
+            <div className="flex gap-4">
+              {/* Vote column */}
+              <div className="shrink-0 pt-1">
+                <VoteButton
+                  proposalId={proposal.id}
+                  initialScore={proposal.score}
+                  initialUserVote={userVote}
+                  layout="vertical"
+                />
               </div>
 
-              {/* Budget context */}
-              {budgetAmount !== null && budgetAmount !== undefined && (
-                <div className="p-3 rounded-lg bg-muted/30 mb-4">
-                  <p className="type-caption text-muted-foreground">
-                    {displayName} currently spends{' '}
-                    <span className="font-semibold text-foreground">{formatBudget(budgetAmount as number)}</span>
-                    {' '}on {getCategoryLabel(proposal.budget_category).toLowerCase()}.
-                  </p>
+              {/* Content */}
+              <div className="min-w-0 flex-1">
+                {/* Title row with share action */}
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <h1 className="type-title-1">{proposal.title}</h1>
+                  <div className="shrink-0 pt-1">
+                    <ShareButton
+                      title={proposal.title}
+                      text={`${proposal.title} — ${proposal.score} votes on CivAccount. Have your say.`}
+                    />
+                  </div>
                 </div>
-              )}
 
-              {/* Civic diffs — recent changes */}
-              {civicDiffs.length > 0 && (
-                <div className="space-y-2 mb-4">
-                  {civicDiffs.slice(0, 2).map((diff) => (
-                    <div key={diff.id} className="flex items-start gap-2 p-3 rounded-lg bg-muted/30">
-                      {diff.pct_change > 0 ? (
-                        <TrendingUp className="h-4 w-4 text-negative shrink-0 mt-0.5" aria-hidden="true" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 text-positive shrink-0 mt-0.5" aria-hidden="true" />
-                      )}
-                      <p className="type-caption text-muted-foreground">{diff.summary}</p>
-                    </div>
+                {/* Body — immediately after title */}
+                <div className="type-body text-foreground whitespace-pre-wrap mb-4">
+                  {proposal.body}
+                </div>
+
+                {/* Milestone progress */}
+                {proposal.score > 0 && (
+                  <div className="mb-4">
+                    <MilestoneBar score={proposal.score} />
+                  </div>
+                )}
+
+                {/* Footer: author line */}
+                <p className="type-caption text-muted-foreground mb-2">
+                  Posted by {isAuthor ? 'you' : (authorName ?? 'Anonymous')} {timeAgo(proposal.created_at)}
+                  {proposal.edited_at && (
+                    <span title={`Edited ${timeAgo(proposal.edited_at)}`}> (edited)</span>
+                  )}
+                </p>
+                {/* Tags */}
+                <div className="flex items-center flex-wrap gap-1.5">
+                  <Badge variant="outline" className="type-caption bg-navy-50 text-navy-600 border-navy-200">
+                    {getCategoryLabel(proposal.budget_category)}
+                  </Badge>
+                  {proposal.status !== 'open' && (
+                    <Badge
+                      variant="outline"
+                      className={`type-caption ${statusStyle}`}
+                      title={statusDescription}
+                    >
+                      {PROPOSAL_STATUS_LABELS[proposal.status] ?? proposal.status}
+                    </Badge>
+                  )}
+                  {proposal.labels.map((label) => (
+                    <Badge key={label} variant="outline" className="type-caption">
+                      {label}
+                    </Badge>
                   ))}
                 </div>
-              )}
 
-              {/* Body */}
-              <div className="type-body text-foreground whitespace-pre-wrap mb-4">
-                {proposal.body}
+                {/* Author actions */}
+                {isAuthor && (
+                  <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border/50">
+                    {canEditProposal && (
+                      <button
+                        type="button"
+                        onClick={() => setIsEditing(true)}
+                        className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      >
+                        <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                        Edit
+                      </button>
+                    )}
+                    {canEditProposal && editTimeLeft && (
+                      <span className="type-caption text-muted-foreground/60">
+                        {editTimeLeft}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      Delete
+                    </button>
+                  </div>
+                )}
+
+                {/* Context section — budget + recent changes, separated from the proposal */}
+                {(budgetAmount !== null && budgetAmount !== undefined) || civicDiffs.length > 0 ? (
+                  <div className="mt-5 pt-4 border-t border-border/50">
+                    <p className="type-caption font-semibold text-muted-foreground mb-3">Context</p>
+
+                    {/* Budget context — inline, not boxed */}
+                    {budgetAmount !== null && budgetAmount !== undefined && (
+                      <p className="type-caption text-muted-foreground mb-2">
+                        {displayName} spends{' '}
+                        <span className="font-semibold text-foreground">{formatBudget(budgetAmount as number)}</span>
+                        {' '}on {getCategoryLabel(proposal.budget_category).toLowerCase()}.
+                      </p>
+                    )}
+
+                    {/* Civic diffs — compact inline list */}
+                    {civicDiffs.slice(0, 2).map((diff) => (
+                      <div key={diff.id} className="flex items-start gap-2 mb-1.5">
+                        {diff.pct_change > 0 ? (
+                          <TrendingUp className="h-3.5 w-3.5 text-negative shrink-0 mt-0.5" aria-hidden="true" />
+                        ) : (
+                          <TrendingDown className="h-3.5 w-3.5 text-positive shrink-0 mt-0.5" aria-hidden="true" />
+                        )}
+                        <p className="type-caption text-muted-foreground">{diff.summary}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+
+                {/* Status description for non-open statuses */}
+                {proposal.status !== 'open' && statusDescription && (
+                  <p className="type-caption text-muted-foreground mt-3">
+                    {statusDescription}
+                  </p>
+                )}
               </div>
-
-              {/* Author + time */}
-              <p className="type-caption text-muted-foreground">
-                Posted by {authorName ?? 'Anonymous'} {timeAgo(proposal.created_at)}
-              </p>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Budget context — how much the council spends in this area */}
+        {budgetAmount && typeof budgetAmount === 'number' && budgetAmount > 0 && (
+          <div className="mt-4 p-4 sm:p-5 rounded-xl bg-muted/30 border border-border/30">
+            <p className="type-body-sm text-muted-foreground">
+              {displayName} spends{' '}
+              <span className="font-semibold text-foreground">{formatBudget(budgetAmount)}</span>
+              {' '}per year on {getCategoryLabel(proposal.budget_category).toLowerCase()}
+            </p>
+            <Link
+              href={`/council/${slug}`}
+              className="type-body-sm text-muted-foreground hover:text-foreground transition-colors underline mt-1 inline-block cursor-pointer"
+            >
+              See the full budget breakdown
+            </Link>
+          </div>
+        )}
 
         {/* Comments section */}
         <div className={`${CARD_STYLES} p-5 sm:p-8 mt-4`}>
@@ -272,6 +421,18 @@ export default function ProposalDetailPage() {
           {/* Comment thread */}
           <CommentThread comments={comments} proposalId={proposal.id} />
         </div>
+
+        {/* Delete confirmation */}
+        <ConfirmDialog
+          open={showDeleteConfirm}
+          onOpenChange={setShowDeleteConfirm}
+          title="Delete this proposal?"
+          description="This removes the proposal and all its votes and comments permanently."
+          confirmLabel="Delete proposal"
+          variant="destructive"
+          onConfirm={handleDelete}
+          isLoading={isDeleting}
+        />
       </main>
       <Footer />
     </>

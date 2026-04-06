@@ -71,7 +71,7 @@ export default function AccountModal() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium h-9 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+        className="inline-flex items-center justify-center gap-2 whitespace-nowrap type-body-sm font-medium h-9 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
         aria-label="Account"
         aria-expanded={isOpen}
       >

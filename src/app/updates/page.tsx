@@ -8,13 +8,35 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const VERSION = "2.0";
+const VERSION = "3.0";
 
 const updates = [
   {
+    version: "3.0",
+    date: "April 2026",
+    isCurrent: true,
+    changes: [
+      "Town Hall — have your say on how your council spends money",
+      "Vote and comment on ideas from other residents",
+      "Milestone progress bars on proposals (25 and 100 vote thresholds)",
+      "Redesigned Town Hall homepage with product preview and postcode search",
+      "Budget context shown on every proposal detail page",
+      "Cabinet members and leadership for all 317 English councils",
+      "Chief executive salary data for 99% of councils",
+      "Councillor basic allowance data for 96% of councils",
+      "Top suppliers and grant payments for 95% of councils",
+      "Compare any two councils side by side with cross-links to budgets and Town Hall",
+      "Embeddable Town Hall widgets you can share anywhere",
+      "Performance data covering roads, waste, housing, and more",
+      "Full design system audit — all typography, colours, and accessibility standards enforced",
+      "Dashboard split into 10 focused components for faster page loads",
+      "All interactive elements meet 44px minimum tap target for mobile",
+    ]
+  },
+  {
     version: "2.0",
     date: "March 2026",
-    isCurrent: true,
+    isCurrent: false,
     changes: [
       "See who leads your London borough — every cabinet member and their role",
       "Latest Ofsted ratings for children's services across all 33 London boroughs",
@@ -117,7 +139,7 @@ export default function UpdatesPage() {
           <div className="space-y-8">
             <div className="text-center space-y-3">
               <Badge variant="outline" className="mb-2">Changelog</Badge>
-              <h1 className="text-2xl sm:text-3xl font-bold">What&apos;s new in CivAccount</h1>
+              <h1 className="type-title-1 font-semibold">What&apos;s new in CivAccount</h1>
               <p className="text-muted-foreground">
                 We keep making this tool better. Here is what has changed.
               </p>
@@ -132,22 +154,22 @@ export default function UpdatesPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
                     <h2 className="type-title-2">Version {VERSION}</h2>
-                    <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
+                    <Badge variant="outline" className="type-overline bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
                       Current
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Released March 2026</p>
+                  <p className="type-body-sm text-muted-foreground mt-1">Released April 2026</p>
                 </div>
               </div>
 
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Every London borough now has detailed leadership, spending, and community data — so you can see exactly who runs your council and where the money goes.
+              <p className="type-body-sm text-muted-foreground mb-6 leading-relaxed">
+                Now you can have your say. Propose how your council should spend money, vote on ideas from other residents, and join the discussion. Plus, all 317 councils now have detailed leadership, salary, and spending data.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {updates[0].changes.map((change, index) => (
-                  <div key={index} className="flex items-start gap-3 text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-stone-400" />
+                  <div key={index} className="flex items-start gap-3 type-body-sm">
+                    <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
                     <span>{change}</span>
                   </div>
                 ))}
@@ -175,12 +197,12 @@ export default function UpdatesPage() {
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <span className="font-semibold">Version {update.version}</span>
-                        <span className="text-sm text-muted-foreground">{update.date}</span>
+                        <span className="type-body-sm text-muted-foreground">{update.date}</span>
                       </div>
                       <ul className="space-y-2">
                         {update.changes.map((change, changeIndex) => (
-                          <li key={changeIndex} className="text-sm text-muted-foreground flex items-start gap-3">
-                            <span className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-1.5 shrink-0" />
+                          <li key={changeIndex} className="type-body-sm text-muted-foreground flex items-start gap-3">
+                            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground mt-1.5 shrink-0" />
                             {change}
                           </li>
                         ))}
@@ -195,7 +217,7 @@ export default function UpdatesPage() {
             <div className="p-6 rounded-xl bg-muted/50 border border-border/50">
               <div className="flex items-start gap-3">
                 <Info className="h-5 w-5 shrink-0 mt-0.5 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="type-body-sm text-muted-foreground leading-relaxed">
                   CivAccount uses data from official UK government sources.
                   We update the data when new information is published.
                 </p>

@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Terms of Use - CivAccount',
     description: 'Terms of use for CivAccount.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Terms of Use - CivAccount',
+    description: 'Terms of use for CivAccount.',
+  },
 };
 
 export default function TermsLayout({

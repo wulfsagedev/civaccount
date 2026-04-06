@@ -20,13 +20,13 @@ export default function ThankYouPage() {
       <main id="main-content" className="flex-1 flex items-center justify-center">
         <div className="container mx-auto px-4 py-12 sm:px-6 max-w-7xl">
           <div className="max-w-md mx-auto text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-              <CheckCircle className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-positive/10 flex items-center justify-center">
+              <CheckCircle className="h-8 w-8 text-positive" />
             </div>
 
             <Badge variant="outline" className="mb-4">Donation received</Badge>
 
-            <h1 className="text-2xl sm:text-3xl font-bold mb-4">Thank you!</h1>
+            <h1 className="type-title-1 font-semibold mb-4">Thank you!</h1>
 
             <p className="text-muted-foreground mb-8 leading-relaxed">
               Your support is appreciated.

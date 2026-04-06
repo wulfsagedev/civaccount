@@ -29,6 +29,58 @@ export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
   flagged: 'Flagged',
 };
 
+export const PROPOSAL_STATUS_DESCRIPTIONS: Record<string, string> = {
+  open: 'Accepting votes and comments',
+  acknowledged: 'The council is aware of this proposal',
+  in_progress: 'The council is considering this',
+  resolved: 'The council has taken action',
+  closed: 'No longer accepting votes',
+};
+
+export const PROPOSAL_STATUS_STYLES: Record<string, string> = {
+  open: 'bg-muted text-muted-foreground',
+  acknowledged: 'bg-navy-50 text-navy-600 border-navy-200',
+  in_progress: 'bg-negative/10 text-negative border-negative/20',
+  resolved: 'bg-positive/10 text-positive border-positive/20',
+  closed: 'bg-muted text-muted-foreground',
+};
+
+// Milestones — community engagement thresholds
+export const MILESTONES = [
+  { votes: 25, label: 'Community interest' },
+  { votes: 100, label: 'Widely supported' },
+] as const;
+
+export function getCurrentMilestone(score: number): typeof MILESTONES[number] | null {
+  for (let i = MILESTONES.length - 1; i >= 0; i--) {
+    if (score >= MILESTONES[i].votes) return MILESTONES[i];
+  }
+  return null;
+}
+
+export function getNextMilestone(score: number): typeof MILESTONES[number] | null {
+  for (const m of MILESTONES) {
+    if (score < m.votes) return m;
+  }
+  return null;
+}
+
+// Edit window — 15 minutes (like Reddit)
+export const EDIT_WINDOW_MS = 15 * 60 * 1000;
+
+export function canEdit(createdAt: string): boolean {
+  const created = new Date(createdAt).getTime();
+  return Date.now() - created < EDIT_WINDOW_MS;
+}
+
+export function editWindowRemaining(createdAt: string): string {
+  const created = new Date(createdAt).getTime();
+  const remaining = EDIT_WINDOW_MS - (Date.now() - created);
+  if (remaining <= 0) return '';
+  const mins = Math.ceil(remaining / 60000);
+  return `${mins} min${mins !== 1 ? 's' : ''} left to edit`;
+}
+
 export function getCategoryLabel(key: string): string {
   return BUDGET_CATEGORIES[key] ?? key;
 }

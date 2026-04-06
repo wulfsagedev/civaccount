@@ -1,5 +1,31 @@
 # Changelog
 
+## V3.0 — April 2026
+
+The biggest release yet. CivAccount goes from transparency tool to civic participation platform. Residents can now propose how their council should spend money, vote on ideas, and discuss with neighbours. Plus, every English council now has detailed leadership, salary, and spending data.
+
+### Community proposals (new)
+- Create proposals for any budget category — suggest how your council should spend money
+- Vote on proposals from other residents (upvote/downvote with real-time scores)
+- Nested comment threads with reply support (up to 3 levels deep)
+- Community moderation — flag inappropriate content, auto-hidden at 3+ flags
+- Draft auto-save — come back to finish your proposal within 24 hours
+- Embeddable proposal widgets — share proposals on external websites via iframe
+- Dynamic social media previews when sharing proposal links
+- Display name system — choose how you appear to other residents
+
+### Data coverage
+- Cabinet members and leadership for all 317 councils (100% coverage)
+- Chief executive salary for 316 of 317 councils (99.7%)
+- Councillor basic allowance for 306 councils (96.5%)
+- Top suppliers for 301 councils (95%)
+- Waste and recycling destinations for all disposal authorities (100%)
+- Performance data (roads, waste, housing) for every council
+- Council comparison tool — compare any two councils side by side
+- Budget, transparency, and councillor URLs for 93-97% of councils
+
+---
+
 ## Week of 2026-03-13 — Phase 3 Mass Enrichment
 
 ### Overview

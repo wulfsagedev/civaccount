@@ -1,6 +1,6 @@
 'use client';
 
-import { Landmark, History, Map, Accessibility, Github, FileText } from 'lucide-react';
+import { Landmark, History, Accessibility, Github, FileText, Vote, Info, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
@@ -22,27 +22,34 @@ export default function Footer() {
             </Link>
             <Link href="/updates" className="inline-flex items-center gap-1.5 cursor-pointer sm:hidden">
               <PulsingDot />
-              <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-                v2.0
+              <Badge variant="outline" className="cursor-pointer hover:bg-muted">
+                v3.0
               </Badge>
             </Link>
           </div>
 
           {/* Links row */}
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 type-body-sm">
+            <Link
+              href="/townhall"
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <Vote className="h-3.5 w-3.5" aria-hidden="true" />
+              Town Hall
+            </Link>
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <Info className="h-3.5 w-3.5" aria-hidden="true" />
+              About
+            </Link>
             <Link
               href="/updates"
               className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               <History className="h-3.5 w-3.5" aria-hidden="true" />
               Updates
-            </Link>
-            <Link
-              href="/roadmap"
-              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              <Map className="h-3.5 w-3.5" aria-hidden="true" />
-              Roadmap
             </Link>
             <Link
               href="/methodology"
@@ -58,6 +65,14 @@ export default function Footer() {
               <Accessibility className="h-3.5 w-3.5" aria-hidden="true" />
               Accessibility
             </Link>
+            <button
+              type="button"
+              onClick={() => document.dispatchEvent(new CustomEvent('open-feedback'))}
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
+              Feedback
+            </button>
             <a
               href="https://github.com/wulfsagedev/civaccount"
               target="_blank"
@@ -66,6 +81,7 @@ export default function Footer() {
             >
               <Github className="h-3.5 w-3.5" aria-hidden="true" />
               GitHub
+              <span className="sr-only"> (opens in new tab)</span>
             </a>
             <DonateButton />
           </div>
@@ -73,15 +89,15 @@ export default function Footer() {
           {/* Version (desktop only - mobile version is next to logo) */}
           <Link href="/updates" className="hidden sm:inline-flex items-center gap-1.5 cursor-pointer">
             <PulsingDot />
-            <Badge variant="outline" className="text-sm cursor-pointer hover:bg-muted">
-              v2.0
+            <Badge variant="outline" className="cursor-pointer hover:bg-muted">
+              v3.0
             </Badge>
           </Link>
         </div>
 
         {/* Independence and transparency notice */}
         <div className="mt-3 pt-3 border-t border-border/50">
-          <p className="text-xs text-muted-foreground text-center leading-relaxed max-w-2xl mx-auto">
+          <p className="type-body-sm text-muted-foreground text-center leading-relaxed max-w-2xl mx-auto">
             CivAccount is an independent project. Not affiliated with any UK council or government body.
             Contains public sector information licensed under the{' '}
             <a
@@ -91,6 +107,7 @@ export default function Footer() {
               className="underline hover:text-foreground transition-colors"
             >
               Open Government Licence v3.0
+              <span className="sr-only"> (opens in new tab)</span>
             </a>.
             Service descriptions are editorial summaries, not official government text.{' '}
             <Link href="/methodology" className="underline hover:text-foreground transition-colors">
@@ -100,7 +117,7 @@ export default function Footer() {
         </div>
 
         {/* Legal row */}
-        <div className="mt-3 pt-3 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-muted-foreground">
+        <div className="mt-3 pt-3 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-2 type-body-sm text-muted-foreground">
           <p>
 Made by{' '}
             <a
@@ -110,6 +127,7 @@ Made by{' '}
               className="text-foreground hover:underline"
             >
               Owen
+              <span className="sr-only"> (opens in new tab)</span>
             </a>
           </p>
           <div className="flex items-center gap-4">

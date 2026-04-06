@@ -32,7 +32,7 @@ export default function TermsPage() {
             <div className="space-y-8">
               <div className="space-y-3">
                 <Badge variant="outline" className="mb-2">Legal</Badge>
-                <h1 className="text-2xl sm:text-3xl font-bold">Terms of Use</h1>
+                <h1 className="type-title-1 font-semibold">Terms of Use</h1>
                 <p className="text-muted-foreground">
                   Last updated: January 2025
                 </p>
@@ -42,7 +42,7 @@ export default function TermsPage() {
               <div className="p-5 rounded-xl bg-muted/50 border border-border">
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 text-foreground" />
-                  <div className="text-sm">
+                  <div className="type-body-sm">
                     <p className="font-semibold text-foreground mb-2">
                       This is an independent project
                     </p>
@@ -64,14 +64,14 @@ export default function TermsPage() {
                     <FileText className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Using CivAccount</h2>
-                    <p className="text-sm text-muted-foreground">Please read before using this service</p>
+                    <h2 className="type-title-3 font-semibold">Using CivAccount</h2>
+                    <p className="type-body-sm text-muted-foreground">Please read before using this service</p>
                   </div>
                 </div>
 
-                <div className="space-y-6 text-sm leading-relaxed">
+                <div className="space-y-6 type-body-sm leading-relaxed">
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Purpose</h3>
+                    <h3 className="font-semibold type-body">Purpose</h3>
                     <p className="text-muted-foreground">
                       CivAccount is a free tool designed to help UK residents understand how their
                       local councils spend money. We present publicly available government data in
@@ -80,7 +80,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Data accuracy</h3>
+                    <h3 className="font-semibold type-body">Data accuracy</h3>
                     <p className="text-muted-foreground">
                       We take care to present accurate data, but we cannot guarantee it is error-free.
                       All data comes from official UK government sources, which may contain errors or
@@ -93,7 +93,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Not financial advice</h3>
+                    <h3 className="font-semibold type-body">Not financial advice</h3>
                     <p className="text-muted-foreground">
                       CivAccount provides information only. Nothing on this site constitutes financial,
                       legal, or tax advice. For questions about your council tax bill, contact your
@@ -102,7 +102,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Limitation of liability</h3>
+                    <h3 className="font-semibold type-body">Limitation of liability</h3>
                     <p className="text-muted-foreground">
                       CivAccount is provided &quot;as is&quot; without warranty of any kind. To the fullest
                       extent permitted by law, we are not liable for any decisions you make based on
@@ -116,7 +116,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Acceptable use</h3>
+                    <h3 className="font-semibold type-body">Acceptable use</h3>
                     <p className="text-muted-foreground">
                       You may use CivAccount for personal, educational, journalistic, or research
                       purposes. You may not use automated systems to scrape data at high volume
@@ -125,7 +125,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Changes to these terms</h3>
+                    <h3 className="font-semibold type-body">Changes to these terms</h3>
                     <p className="text-muted-foreground">
                       We may update these terms from time to time. Continued use of CivAccount
                       after changes constitutes acceptance of the new terms.
@@ -133,7 +133,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Open source</h3>
+                    <h3 className="font-semibold type-body">Open source</h3>
                     <p className="text-muted-foreground">
                       CivAccount is open source software. See our{' '}
                       <Link href="/license" className="text-primary hover:underline">
@@ -144,7 +144,7 @@ export default function TermsPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Governing law</h3>
+                    <h3 className="font-semibold type-body">Governing law</h3>
                     <p className="text-muted-foreground">
                       These terms are governed by the laws of England and Wales. Any disputes will
                       be subject to the exclusive jurisdiction of the courts of England and Wales.

@@ -90,8 +90,8 @@ export default function FeedbackModal() {
             <div className="flex flex-col items-center justify-center py-12 gap-4">
               <CheckCircle className="h-12 w-12 text-positive" />
               <div className="text-center">
-                <h3 className="font-semibold text-lg">Thank you!</h3>
-                <p className="text-sm text-muted-foreground">Your feedback has been sent.</p>
+                <h3 className="font-semibold type-title-3">Thank you!</h3>
+                <p className="type-body-sm text-muted-foreground">Your feedback has been sent.</p>
               </div>
             </div>
           ) : (
@@ -100,7 +100,7 @@ export default function FeedbackModal() {
               <div className="flex items-center justify-between border-b px-4 py-3">
                 <div>
                   <h2 className="font-semibold text-base">Send Feedback</h2>
-                  <p className="text-sm text-muted-foreground">Feature request or bug report</p>
+                  <p className="type-body-sm text-muted-foreground">Feature request or bug report</p>
                 </div>
                 <Button
                   variant="ghost"
@@ -116,7 +116,7 @@ export default function FeedbackModal() {
               <form onSubmit={handleSubmit}>
                 <div className="p-4 space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm">Name</Label>
+                    <Label htmlFor="name" className="type-body-sm">Name</Label>
                     <Input
                       id="name"
                       placeholder="Your name"
@@ -127,7 +127,7 @@ export default function FeedbackModal() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm">Email</Label>
+                    <Label htmlFor="email" className="type-body-sm">Email</Label>
                     <Input
                       id="email"
                       type="email"
@@ -139,7 +139,7 @@ export default function FeedbackModal() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm">Message</Label>
+                    <Label htmlFor="message" className="type-body-sm">Message</Label>
                     <Textarea
                       id="message"
                       placeholder="Tell us about your feature request or feedback..."

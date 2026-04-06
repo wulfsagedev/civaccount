@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Methodology - How we source our data',
     description: 'How CivAccount collects, verifies, and presents council budget data.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Methodology - How we source our data',
+    description: 'How CivAccount collects, verifies, and presents council budget data.',
+  },
 };
 
 export default function MethodologyLayout({

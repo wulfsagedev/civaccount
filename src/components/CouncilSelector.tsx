@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect, useCallback, memo } from 'react';
+import { councils as allCouncilsList } from '@/data/councils';
 import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +13,8 @@ import { searchCouncilsFast, getAutocompleteSuggestion, totalCouncilCount, getDe
 
 interface CouncilSelectorProps {
   onSelect?: (council: Council) => void;
-  variant?: 'homepage' | 'dashboard';
+  variant?: 'homepage' | 'dashboard' | 'townhall';
+  navigateTo?: (slug: string) => string;
 }
 
 // Memoized result item for homepage variant
@@ -26,22 +28,29 @@ const HomepageResultItem = memo(function HomepageResultItem({
   onSelect: (council: Council) => void;
 }) {
   const bandD = council.council_tax?.band_d_2025;
+  const prevBandD = council.council_tax?.band_d_2024;
+  const yoyChange = bandD && prevBandD ? ((bandD - prevBandD) / prevBandD) * 100 : null;
 
   return (
     <button
       data-council-item
       onClick={() => onSelect(council)}
       className={`w-full px-3 py-2.5 text-left rounded-lg transition-colors cursor-pointer ${
-        isHighlighted ? 'bg-muted' : 'hover:bg-muted/60'
+        isHighlighted ? 'bg-muted' : 'hover:bg-muted'
       }`}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-semibold text-sm truncate text-foreground">{council.name}</p>
-          <p className="text-sm text-muted-foreground">{council.type_name}</p>
+          <p className="font-semibold type-body-sm truncate text-foreground">{council.name}</p>
+          <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
         </div>
-        <div className="text-right shrink-0 text-sm text-muted-foreground tabular-nums">
-          {bandD && <p>£{Math.round(bandD).toLocaleString('en-GB')}/yr</p>}
+        <div className="text-right shrink-0">
+          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">£{Math.round(bandD).toLocaleString('en-GB')}/yr</p>}
+          {yoyChange !== null && (
+            <p className={`type-body-sm tabular-nums ${yoyChange > 0 ? 'text-negative' : yoyChange < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
+              {yoyChange > 0 ? '+' : ''}{yoyChange.toFixed(1)}% from last year
+            </p>
+          )}
         </div>
       </div>
     </button>
@@ -71,18 +80,18 @@ const DashboardResultItem = memo(function DashboardResultItem({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className={`font-medium text-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
+          <p className={`font-medium type-body-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
             {displayName}
           </p>
           <div className="flex items-center gap-2 mt-2">
-            <Badge variant="secondary" className="text-sm">
+            <Badge variant="secondary" className="type-body-sm">
               {council.type_name}
             </Badge>
           </div>
         </div>
         <div className="text-right shrink-0">
           {bandD && (
-            <p className="text-sm text-muted-foreground tabular-nums">
+            <p className="type-body-sm text-muted-foreground tabular-nums">
               £{bandD.toFixed(2)}/year
             </p>
           )}
@@ -95,25 +104,106 @@ const DashboardResultItem = memo(function DashboardResultItem({
 // Pre-compute default councils once at module level
 const defaultCouncils = getDefaultCouncils(SELECTOR_RESULT_LIMIT);
 
-export default function CouncilSelector({ onSelect, variant = 'homepage' }: CouncilSelectorProps) {
+// UK postcode regex (partial or full)
+const POSTCODE_REGEX = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d?[A-Z]{0,2}$/i;
+
+function isPostcode(query: string): boolean {
+  return POSTCODE_REGEX.test(query.trim());
+}
+
+export default function CouncilSelector({ onSelect, variant = 'homepage', navigateTo }: CouncilSelectorProps) {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [postcodeResults, setPostcodeResults] = useState<Council[]>([]);
+  const [postcodeLoading, setPostcodeLoading] = useState(false);
+  const [postcodeError, setPostcodeError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  // Postcode lookup via postcodes.io
+  useEffect(() => {
+    const query = searchQuery.trim();
+    if (!query || !isPostcode(query) || query.replace(/\s/g, '').length < 5) {
+      setPostcodeResults([]);
+      setPostcodeError('');
+      return;
+    }
+
+    const controller = new AbortController();
+    setPostcodeLoading(true);
+    setPostcodeError('');
+
+    fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(query)}`, { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 200 && data.result) {
+          const { admin_district, admin_county } = data.result;
+          const matched: Council[] = [];
+
+          // Normalize for matching: "Folkestone and Hythe" vs "Folkestone & Hythe"
+          const normalize = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+
+          const findCouncil = (name: string) =>
+            allCouncilsList.find(c => normalize(c.name) === normalize(name));
+
+          // Match district council
+          if (admin_district) {
+            const district = findCouncil(admin_district);
+            if (district) matched.push(district);
+          }
+
+          // Match county council
+          if (admin_county) {
+            const county = findCouncil(admin_county);
+            if (county) matched.push(county);
+          }
+
+          // If no exact match, try partial
+          if (matched.length === 0 && admin_district) {
+            const norm = normalize(admin_district);
+            const partial = allCouncilsList.find(c =>
+              normalize(c.name).includes(norm) || norm.includes(normalize(c.name))
+            );
+            if (partial) matched.push(partial);
+          }
+
+          setPostcodeResults(matched);
+          if (matched.length === 0) {
+            setPostcodeError(`We found ${admin_district || 'your area'} but it is not in our database yet.`);
+          }
+        } else {
+          setPostcodeResults([]);
+          setPostcodeError('Postcode not found. Check the spelling.');
+        }
+        setPostcodeLoading(false);
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          setPostcodeResults([]);
+          setPostcodeError('Could not look up postcode. Try searching by council name.');
+          setPostcodeLoading(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, [searchQuery]);
+
+  const isPostcodeQuery = isPostcode(searchQuery.trim()) && searchQuery.trim().replace(/\s/g, '').length >= 5;
+
   // Fast search using pre-computed index
   const filteredCouncils = useMemo(() => {
     if (!searchQuery) return defaultCouncils;
+    if (isPostcodeQuery) return postcodeResults;
     return searchCouncilsFast(searchQuery, SELECTOR_RESULT_LIMIT);
-  }, [searchQuery]);
+  }, [searchQuery, isPostcodeQuery, postcodeResults]);
 
-  // Fast autocomplete
+  // Fast autocomplete (disabled for postcode queries)
   const autocompleteSuggestion = useMemo(() => {
-    if (!searchQuery || filteredCouncils.length === 0) return '';
+    if (!searchQuery || isPostcodeQuery || filteredCouncils.length === 0) return '';
     return getAutocompleteSuggestion(searchQuery);
-  }, [searchQuery, filteredCouncils]);
+  }, [searchQuery, isPostcodeQuery, filteredCouncils]);
 
   useEffect(() => {
     setHighlightedIndex(0);
@@ -133,8 +223,8 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
     setSearchQuery('');
     onSelect?.(council);
     const slug = getCouncilSlug(council);
-    router.push(`/council/${slug}`);
-  }, [setSelectedCouncil, onSelect, router]);
+    router.push(navigateTo ? navigateTo(slug) : `/council/${slug}`);
+  }, [setSelectedCouncil, onSelect, router, navigateTo]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
@@ -167,16 +257,74 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
     return (
       <div className="w-full">
         <div className="flex flex-wrap items-center gap-2 mb-2">
-          <Badge variant="secondary" className="text-xs font-medium">
+          <Badge variant="secondary" className="type-body-sm font-medium">
             {selectedCouncil.type_name}
           </Badge>
-          <Badge variant="outline" className="text-xs font-medium">
+          <Badge variant="outline" className="type-body-sm font-medium">
             2025-26
           </Badge>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+        <h1 className="type-title-1 font-bold text-foreground leading-tight">
           {displayName}
         </h1>
+      </div>
+    );
+  }
+
+  // Town Hall variant — dropdown style, results only when typing
+  if (variant === 'townhall') {
+    return (
+      <div className="w-full">
+        <div className="relative">
+          <div className="relative shadow-sm rounded-xl">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground z-10" />
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Search by name or postcode..."
+              value={searchQuery}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-3.5 text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+            />
+          </div>
+
+          {/* Results — dropdown overlay, no layout shift */}
+          {searchQuery.trim() && (
+            <div ref={listRef} className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border/40 bg-card shadow-lg z-20 overflow-hidden max-h-[280px] overflow-y-auto">
+              {postcodeLoading && isPostcodeQuery ? (
+                <p className="text-center type-body-sm text-muted-foreground py-4">
+                  Looking up postcode...
+                </p>
+              ) : filteredCouncils.length === 0 ? (
+                <p className="text-center type-body-sm text-muted-foreground py-4">
+                  {postcodeError || 'No councils found. Try a different spelling or postcode.'}
+                </p>
+              ) : (
+                filteredCouncils.map((council, index) => (
+                  <button
+                    key={council.ons_code}
+                    data-council-item
+                    onClick={() => handleSelect(council)}
+                    className={`w-full px-4 py-3 text-left transition-colors cursor-pointer min-h-[44px] border-b border-border/20 last:border-b-0 ${
+                      index === highlightedIndex ? 'bg-muted' : 'hover:bg-muted'
+                    }`}
+                  >
+                    <p className="font-semibold type-body-sm text-foreground">{council.name}</p>
+                    <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+        <p className="type-body-sm text-center text-muted-foreground mt-3">
+          {totalCouncilCount} councils across England. Free. No sign-up needed to browse.
+        </p>
       </div>
     );
   }
@@ -191,7 +339,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search for your council..."
+              placeholder="Search by name or postcode..."
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
@@ -204,9 +352,13 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
           </div>
 
           <div ref={listRef} className="h-[220px] overflow-y-auto scrollbar-hide">
-            {filteredCouncils.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-4">
-                No councils found. Try a different spelling.
+            {postcodeLoading && isPostcodeQuery ? (
+              <p className="text-center type-body-sm text-muted-foreground py-4">
+                Looking up postcode...
+              </p>
+            ) : filteredCouncils.length === 0 ? (
+              <p className="text-center type-body-sm text-muted-foreground py-4">
+                {postcodeError || 'No councils found. Try a different spelling or postcode.'}
               </p>
             ) : (
               filteredCouncils.map((council, index) => (
@@ -220,11 +372,22 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
             )}
           </div>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="type-body-sm text-center text-muted-foreground">
             {searchQuery
               ? `${filteredCouncils.length} councils found`
               : `${totalCouncilCount} councils in England`
             }
+          </p>
+          <p className="type-body-sm text-center text-muted-foreground/70 mt-1">
+            Don&apos;t know your council?{' '}
+            <a
+              href="https://www.gov.uk/council-tax-bands"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-foreground transition-colors"
+            >
+              Find it by postcode on GOV.UK
+            </a>
           </p>
         </div>
       </div>
@@ -247,7 +410,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Search for your council..."
+                placeholder="Search by name or postcode..."
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -262,7 +425,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
 
             <div ref={listRef} className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
               {filteredCouncils.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-6">
+                <p className="text-center type-body-sm text-muted-foreground py-6">
                   No councils found. Try a different spelling.
                 </p>
               ) : (
@@ -277,7 +440,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage' }: Coun
               )}
             </div>
 
-            <p className="text-sm text-center text-muted-foreground">
+            <p className="type-body-sm text-center text-muted-foreground">
               {searchQuery
                 ? `${filteredCouncils.length} councils found · Press Enter to select`
                 : `${totalCouncilCount} councils in England`

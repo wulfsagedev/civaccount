@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Updates - What\'s new in CivAccount',
     description: 'See the latest updates and improvements to CivAccount.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Updates - What\'s new in CivAccount',
+    description: 'See the latest updates and improvements to CivAccount.',
+  },
 };
 
 export default function UpdatesLayout({

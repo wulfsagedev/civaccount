@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { isUKUser } from '@/lib/geo';
 
 interface VoteButtonProps {
   proposalId: string;
@@ -27,8 +29,12 @@ export default function VoteButton({
   const [isVoting, setIsVoting] = useState(false);
 
   const handleVote = useCallback(async (direction: 'up' | 'down') => {
+    if (!isUKUser()) {
+      router.push('/uk-only');
+      return;
+    }
     if (!user) {
-      router.push(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      router.push(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}&reason=vote`);
       return;
     }
     if (isVoting) return;
@@ -39,8 +45,9 @@ export default function VoteButton({
     // Optimistic update
     const prevScore = score;
     const prevVote = userVote;
+    const isRemoving = userVote === direction;
 
-    if (userVote === direction) {
+    if (isRemoving) {
       // Remove vote
       setUserVote(null);
       setScore(score + (direction === 'up' ? -1 : 1));
@@ -54,18 +61,28 @@ export default function VoteButton({
     }
 
     try {
-      if (userVote === direction) {
+      if (isRemoving) {
         // Remove vote
         await supabase
           .from('votes')
           .delete()
           .eq('proposal_id', proposalId)
           .eq('user_id', user.id);
-      } else if (userVote === null) {
+        toast('Vote removed.');
+      } else if (prevVote === null) {
         // New vote
         await supabase
           .from('votes')
           .insert({ proposal_id: proposalId, user_id: user.id, direction });
+
+        // First-time voter context (one-time)
+        const explained = localStorage.getItem('civaccount_vote_explained');
+        if (!explained) {
+          toast.success('Vote recorded. You can change or remove your vote at any time.');
+          localStorage.setItem('civaccount_vote_explained', '1');
+        } else {
+          toast.success('Vote recorded.');
+        }
       } else {
         // Change vote direction
         await supabase
@@ -73,11 +90,13 @@ export default function VoteButton({
           .update({ direction })
           .eq('proposal_id', proposalId)
           .eq('user_id', user.id);
+        toast.success('Vote changed.');
       }
     } catch {
       // Revert on error
       setScore(prevScore);
       setUserVote(prevVote);
+      toast.error('Could not record your vote. Try again.');
     }
 
     setIsVoting(false);

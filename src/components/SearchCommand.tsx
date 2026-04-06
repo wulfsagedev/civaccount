@@ -4,10 +4,15 @@ import { useState, useEffect, useMemo, useRef, useCallback, memo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Council, getCouncilSlug } from '@/data/councils';
+import { Council, getCouncilSlug, councils as allCouncilsList } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 import { searchCouncilsFast, getDefaultCouncils } from '@/lib/search-index';
+
+const POSTCODE_REGEX = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d?[A-Z]{0,2}$/i;
+function isPostcode(query: string): boolean {
+  return POSTCODE_REGEX.test(query.trim());
+}
 
 interface SearchCommandProps {
   forceDesktopStyle?: boolean;
@@ -36,11 +41,11 @@ const SearchResultItem = memo(function SearchResultItem({
       }`}
     >
       <div className="min-w-0">
-        <div className="font-medium text-sm truncate">{council.name}</div>
-        <div className="text-sm text-muted-foreground">{council.type_name}</div>
+        <div className="font-medium type-body-sm truncate">{council.name}</div>
+        <div className="type-body-sm text-muted-foreground">{council.type_name}</div>
       </div>
       {bandD && (
-        <span className="text-sm text-muted-foreground shrink-0 ml-2 tabular-nums">
+        <span className="type-body-sm text-muted-foreground shrink-0 ml-2 tabular-nums">
           £{Math.round(bandD).toLocaleString('en-GB')}/yr
         </span>
       )}
@@ -55,6 +60,8 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [postcodeResults, setPostcodeResults] = useState<Council[]>([]);
+  const [postcodeLoading, setPostcodeLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -72,11 +79,56 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
     }
   }, []);
 
+  const isPostcodeQuery = isPostcode(searchQuery.trim()) && searchQuery.trim().replace(/\s/g, '').length >= 5;
+
+  // Postcode lookup
+  useEffect(() => {
+    const query = searchQuery.trim();
+    if (!query || !isPostcode(query) || query.replace(/\s/g, '').length < 5) {
+      setPostcodeResults([]);
+      return;
+    }
+    const controller = new AbortController();
+    setPostcodeLoading(true);
+    const normalize = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+    const findCouncil = (name: string) => allCouncilsList.find(c => normalize(c.name) === normalize(name));
+
+    fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(query)}`, { signal: controller.signal })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 200 && data.result) {
+          const matched: Council[] = [];
+          if (data.result.admin_district) {
+            const d = findCouncil(data.result.admin_district);
+            if (d) matched.push(d);
+          }
+          if (data.result.admin_county) {
+            const c = findCouncil(data.result.admin_county);
+            if (c) matched.push(c);
+          }
+          if (matched.length === 0 && data.result.admin_district) {
+            const norm = normalize(data.result.admin_district);
+            const partial = allCouncilsList.find(c => normalize(c.name).includes(norm) || norm.includes(normalize(c.name)));
+            if (partial) matched.push(partial);
+          }
+          setPostcodeResults(matched);
+        } else {
+          setPostcodeResults([]);
+        }
+        setPostcodeLoading(false);
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') { setPostcodeResults([]); setPostcodeLoading(false); }
+      });
+    return () => controller.abort();
+  }, [searchQuery]);
+
   // Fast search using pre-computed index
   const filteredCouncils = useMemo(() => {
     if (!searchQuery) return defaultCouncils;
+    if (isPostcodeQuery) return postcodeResults;
     return searchCouncilsFast(searchQuery, SEARCH_RESULT_LIMIT);
-  }, [searchQuery]);
+  }, [searchQuery, isPostcodeQuery, postcodeResults]);
 
   // Reset highlighted index when results change
   useEffect(() => {
@@ -185,9 +237,9 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
           >
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4" />
-              <span className="text-sm">Find council</span>
+              <span className="type-body-sm">Find council</span>
             </div>
-            <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground hidden sm:flex">
+            <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono type-body-sm font-medium text-muted-foreground hidden sm:flex">
               F
             </kbd>
           </Button>
@@ -201,9 +253,9 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
             >
               <div className="flex items-center gap-2">
                 <Search className="h-4 w-4" />
-                <span className="text-sm">Find council</span>
+                <span className="type-body-sm">Find council</span>
               </div>
-              <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-sm font-medium text-muted-foreground flex">
+              <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono type-body-sm font-medium text-muted-foreground flex">
                 F
               </kbd>
             </Button>
@@ -235,7 +287,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
                 <input
                   ref={inputCallbackRef}
                   type="text"
-                  placeholder="Search for your council..."
+                  placeholder="Search by name or postcode..."
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
@@ -270,24 +322,26 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
                     ))}
                   </div>
                 ) : (
-                  <div className="py-8 text-center text-muted-foreground text-sm">
-                    No councils found for &quot;{searchQuery}&quot;
+                  <div className="py-8 text-center text-muted-foreground type-body-sm">
+                    {postcodeLoading && isPostcodeQuery
+                      ? 'Looking up postcode...'
+                      : `No councils found for "${searchQuery}"`}
                   </div>
                 )}
               </div>
 
-              <div className="hidden sm:flex border-t px-4 py-2 text-sm text-muted-foreground items-center gap-4">
+              <div className="hidden sm:flex border-t px-4 py-2 type-body-sm text-muted-foreground items-center gap-4">
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↑</kbd>
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">↓</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono type-body-sm">↑</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono type-body-sm">↓</kbd>
                   to navigate
                 </span>
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Enter</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono type-body-sm">Enter</kbd>
                   to select
                 </span>
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono text-sm">Esc</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono type-body-sm">Esc</kbd>
                   to close
                 </span>
               </div>

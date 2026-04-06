@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Product Roadmap - What we\'re building',
     description: 'See what features we\'re working on next for CivAccount.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Product Roadmap - What we\'re building',
+    description: 'See what features we\'re working on next for CivAccount.',
+  },
 };
 
 export default function RoadmapLayout({

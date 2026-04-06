@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Open Source License - CivAccount',
     description: 'CivAccount is open source software under the MIT license.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Open Source License - CivAccount',
+    description: 'CivAccount is open source software under the MIT license.',
+  },
 };
 
 export default function LicenseLayout({

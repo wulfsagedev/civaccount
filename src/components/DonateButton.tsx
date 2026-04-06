@@ -67,14 +67,14 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          'inline-flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer rounded-lg',
+          'inline-flex items-center gap-1.5 type-body-sm font-medium transition-colors cursor-pointer rounded-lg',
           variant === 'header'
-            ? 'h-9 px-4 py-2 text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50'
-            : 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 px-2 py-1'
+            ? 'h-9 px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted'
+            : 'text-muted-foreground hover:text-foreground hover:bg-muted px-2 py-1'
         )}
       >
         <Heart className="h-3.5 w-3.5" aria-hidden="true" />
-        Contribute
+        Donate
       </button>
 
       {/* Modal - rendered via portal to ensure it's above all other content */}
@@ -92,26 +92,27 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
             <div className="p-6 pb-4 border-b border-border/50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
-                    <Heart className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                    <Heart className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-lg">Support CivAccount</h2>
-                    <p className="text-sm text-muted-foreground">One-time contribution</p>
+                    <h2 className="font-semibold type-title-3">Support CivAccount</h2>
+                    <p className="type-body-sm text-muted-foreground">One-time contribution</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center cursor-pointer"
+                  className="w-11 h-11 rounded-full hover:bg-muted flex items-center justify-center cursor-pointer"
+                  aria-label="Close donation modal"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4" aria-hidden="true" />
                 </button>
               </div>
             </div>
 
             {/* Body */}
             <div className="p-6 space-y-6">
-              <p className="text-sm text-muted-foreground">
+              <p className="type-body-sm text-muted-foreground">
                 If you find CivAccount useful, consider supporting its development.
               </p>
 
@@ -128,18 +129,18 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
                     className={`p-4 rounded-xl border-2 text-left transition-all cursor-pointer ${
                       selectedAmount === option.value && !customAmount
                         ? 'border-foreground bg-muted'
-                        : 'border-border/50 hover:border-border hover:bg-muted/50'
+                        : 'border-border/50 hover:border-border hover:bg-muted'
                     }`}
                   >
-                    <span className="text-lg font-semibold">{option.label}</span>
-                    <p className="text-xs text-muted-foreground mt-0.5">{option.description}</p>
+                    <span className="type-body-lg font-semibold">{option.label}</span>
+                    <p className="type-body-sm text-muted-foreground mt-0.5">{option.description}</p>
                   </button>
                 ))}
               </div>
 
               {/* Custom amount */}
               <div>
-                <label className="text-sm font-medium mb-2 block">Or enter a custom amount</label>
+                <label className="type-body-sm font-medium mb-2 block">Or enter a custom amount</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">£</span>
                   <input
@@ -159,7 +160,7 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
 
               {/* Error message */}
               {error && (
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                <p className="type-body-sm text-destructive">{error}</p>
               )}
 
               {/* Donate button */}
@@ -181,7 +182,7 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
                 )}
               </Button>
 
-              <p className="text-xs text-center text-muted-foreground">
+              <p className="type-body-sm text-center text-muted-foreground">
                 Secure payment powered by Stripe. One-time donation.
               </p>
             </div>

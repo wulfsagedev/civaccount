@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'About CivAccount - Why we built this',
     description: 'Learn why we created CivAccount to make UK council budget data accessible to everyone.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About CivAccount - Why we built this',
+    description: 'Learn why we created CivAccount to make UK council budget data accessible to everyone.',
+  },
 };
 
 export default function AboutLayout({

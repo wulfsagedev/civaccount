@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Privacy Policy - CivAccount',
     description: 'CivAccount privacy policy. We respect your privacy.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy - CivAccount',
+    description: 'CivAccount privacy policy. We respect your privacy.',
+  },
 };
 
 export default function PrivacyLayout({

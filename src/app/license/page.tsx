@@ -32,7 +32,7 @@ export default function LicensePage() {
             <div className="space-y-8">
               <div className="space-y-3">
                 <Badge variant="outline" className="mb-2">Open Source</Badge>
-                <h1 className="text-2xl sm:text-3xl font-bold">Licensing</h1>
+                <h1 className="type-title-1 font-semibold">Licensing</h1>
                 <p className="text-muted-foreground">
                   CivAccount uses a dual license to keep the code open while protecting the compiled dataset
                 </p>
@@ -45,12 +45,12 @@ export default function LicensePage() {
                     <Scale className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Application Code &mdash; MIT License</h2>
-                    <p className="text-sm text-muted-foreground">Free to use, modify, and distribute</p>
+                    <h2 className="type-title-3 font-semibold">Application Code &mdash; MIT License</h2>
+                    <p className="type-body-sm text-muted-foreground">Free to use, modify, and distribute</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm leading-relaxed">
+                <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     All application code (components, utilities, configuration, and styling) is released
                     under the MIT License. You are free to:
@@ -83,12 +83,12 @@ export default function LicensePage() {
                     <Database className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Compiled Dataset &mdash; CivAccount Data License</h2>
-                    <p className="text-sm text-muted-foreground">View and reference, but not bulk copy</p>
+                    <h2 className="type-title-3 font-semibold">Compiled Dataset &mdash; CivAccount Data License</h2>
+                    <p className="type-body-sm text-muted-foreground">View and reference, but not bulk copy</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm leading-relaxed">
+                <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     The compiled council dataset (budget breakdowns, service spending, financial figures,
                     and all enriched metadata across 317 councils) is protected under the CivAccount
@@ -141,12 +141,12 @@ export default function LicensePage() {
                     <Scale className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Government Source Data</h2>
-                    <p className="text-sm text-muted-foreground">Open Government Licence v3.0</p>
+                    <h2 className="type-title-3 font-semibold">Government Source Data</h2>
+                    <p className="type-body-sm text-muted-foreground">Open Government Licence v3.0</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm leading-relaxed">
+                <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     The raw government data used to build the CivAccount dataset is Crown Copyright,
                     published under the{' '}
@@ -181,12 +181,12 @@ export default function LicensePage() {
                     <Heart className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Contributing</h2>
-                    <p className="text-sm text-muted-foreground">Help make CivAccount better</p>
+                    <h2 className="type-title-3 font-semibold">Contributing</h2>
+                    <p className="type-body-sm text-muted-foreground">Help make CivAccount better</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+                <div className="space-y-4 type-body-sm text-muted-foreground leading-relaxed">
                   <p>
                     We welcome contributions from the community. Whether it&apos;s fixing bugs,
                     adding features, improving documentation, or suggesting ideas, your help
@@ -201,7 +201,7 @@ export default function LicensePage() {
                   href="https://github.com/wulfsagedev/civaccount"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium cursor-pointer"
+                  className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors type-body-sm font-medium cursor-pointer"
                 >
                   <Github className="h-4 w-4" />
                   View on GitHub
@@ -211,7 +211,7 @@ export default function LicensePage() {
               {/* License text */}
               <div className="card-elevated p-8">
                 <h3 className="font-semibold mb-4">Full MIT License text</h3>
-                <div className="bg-muted/50 rounded-lg p-4 font-mono text-sm text-muted-foreground leading-relaxed">
+                <div className="bg-muted/50 rounded-lg p-4 font-mono type-body-sm text-muted-foreground leading-relaxed">
                   <p className="mb-4">MIT License</p>
                   <p className="mb-4">Copyright (c) 2025 Owen Fisher</p>
                   <p className="mb-4">

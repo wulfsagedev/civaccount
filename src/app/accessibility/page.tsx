@@ -120,7 +120,7 @@ export default function AccessibilityPage() {
                     <Accessibility className="h-7 w-7 text-primary" />
                   </div>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-bold">Accessibility</h1>
+                <h1 className="type-title-1 font-semibold">Accessibility</h1>
                 <p className="text-muted-foreground max-w-xl mx-auto">
                   CivAccount is designed to be accessible to everyone. We follow WCAG 2.1 AA
                   guidelines and continuously work to improve the experience for all users.
@@ -130,7 +130,7 @@ export default function AccessibilityPage() {
               {/* Standards Compliance */}
               <div className="card-elevated p-6 sm:p-8">
                 <h2 className="type-title-2 mb-6">Our standards</h2>
-                <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                <p className="type-body-sm text-muted-foreground mb-6 leading-relaxed">
                   We believe everyone should be able to understand how their council spends money.
                   That means building a site that works for people with visual, motor, auditory,
                   and cognitive disabilities.
@@ -139,7 +139,7 @@ export default function AccessibilityPage() {
                   {standards.map((standard) => (
                     <div key={standard.name} className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
                       <CheckCircle className="h-4 w-4 shrink-0 text-positive" />
-                      <span className="text-sm font-medium">{standard.name}</span>
+                      <span className="type-body-sm font-medium">{standard.name}</span>
                     </div>
                   ))}
                 </div>
@@ -159,13 +159,13 @@ export default function AccessibilityPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold mb-2">{feature.title}</h3>
-                            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                            <p className="type-body-sm text-muted-foreground mb-4 leading-relaxed">
                               {feature.description}
                             </p>
                             <ul className="space-y-2">
                               {feature.details.map((detail, i) => (
-                                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                  <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-stone-400" />
+                                <li key={i} className="flex items-start gap-2 type-body-sm text-muted-foreground">
+                                  <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                                   <span>{detail}</span>
                                 </li>
                               ))}
@@ -186,28 +186,28 @@ export default function AccessibilityPage() {
                   </div>
                   <div>
                     <h2 className="type-title-2 mb-2">How we test</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    <p className="type-body-sm text-muted-foreground leading-relaxed mb-4">
                       We regularly test CivAccount using:
                     </p>
                     <ul className="space-y-2">
-                      <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-stone-400" />
+                      <li className="flex items-start gap-2 type-body-sm text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                         <span>Keyboard-only navigation</span>
                       </li>
-                      <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-stone-400" />
+                      <li className="flex items-start gap-2 type-body-sm text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                         <span>VoiceOver (macOS) and NVDA (Windows) screen readers</span>
                       </li>
-                      <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-stone-400" />
+                      <li className="flex items-start gap-2 type-body-sm text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                         <span>Browser zoom up to 200%</span>
                       </li>
-                      <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-stone-400" />
+                      <li className="flex items-start gap-2 type-body-sm text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                         <span>High contrast mode (Windows)</span>
                       </li>
-                      <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-stone-400" />
+                      <li className="flex items-start gap-2 type-body-sm text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-muted-foreground" />
                         <span>Automated tools (axe, Lighthouse)</span>
                       </li>
                     </ul>
@@ -227,7 +227,7 @@ export default function AccessibilityPage() {
                     <h3 className="font-semibold text-foreground mb-2">
                       Found an accessibility issue?
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    <p className="type-body-sm text-muted-foreground leading-relaxed mb-4">
                       We take accessibility seriously. If you encounter any barriers using CivAccount,
                       please let us know so we can fix them.
                     </p>

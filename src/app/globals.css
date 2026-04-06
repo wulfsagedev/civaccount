@@ -258,7 +258,7 @@
   }
 
   /* Exception for inline links and small elements */
-  p a, span a, li a, .badge, [data-slot="badge"] {
+  p a, span a, li a, .flex a, .badge, [data-slot="badge"] {
     min-height: auto;
     min-width: auto;
   }

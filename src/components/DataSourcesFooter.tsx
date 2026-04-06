@@ -1,301 +1,201 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  ExternalLink,
-  FileText,
-  Building2,
-  Globe,
-  ChevronDown,
-  Calendar
-} from 'lucide-react';
+import { ExternalLink, ChevronDown, Calendar, Shield } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, councilStats } from '@/data/councils';
 
-// Format date for display
 function formatCheckedDate(isoDate: string): string {
   const date = new Date(isoDate);
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 export default function DataSourcesFooter() {
   const { selectedCouncil } = useCouncil();
-  const [showAllSources, setShowAllSources] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  // If no council selected, show generic footer
+  // No council selected — generic footer
   if (!selectedCouncil) {
     return (
-      <footer className="bg-muted/20 border-t border-border/50 mt-12" aria-label="Data sources">
-        <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-14 max-w-7xl">
-          <div className="space-y-8">
-            <div className="text-center space-y-3">
-              <h2 className="text-xl sm:text-2xl font-semibold">Data Sources</h2>
-              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-                Select a council to see where their data comes from.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
-              <div className="text-center p-4 rounded-xl bg-muted/40">
-                <div className="text-2xl font-bold tabular-nums">{councilStats.totalCouncils}</div>
-                <div className="text-xs text-muted-foreground mt-1">Councils</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-muted/40">
-                <div className="text-2xl font-bold tabular-nums">{councilStats.withCouncilTax}</div>
-                <div className="text-xs text-muted-foreground mt-1">With Tax Data</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-muted/40">
-                <div className="text-2xl font-bold tabular-nums">{councilStats.withBudget}</div>
-                <div className="text-xs text-muted-foreground mt-1">With Budgets</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-muted/40">
-                <div className="text-2xl font-bold tabular-nums">2025-26</div>
-                <div className="text-xs text-muted-foreground mt-1">Data Year</div>
-              </div>
-            </div>
-
-            <p className="text-center text-xs text-muted-foreground">
-              All data from official UK government sources
-            </p>
+      <footer className="border-t border-border/50 mt-12" aria-label="Data sources">
+        <div className="container mx-auto px-4 py-8 sm:px-6 max-w-3xl text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Shield className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <p className="type-body-sm font-semibold">Official UK government data</p>
           </div>
+          <p className="type-caption text-muted-foreground">
+            {councilStats.totalCouncils} councils with council tax and budget data for 2025-26
+          </p>
         </div>
       </footer>
     );
   }
 
   const councilName = getCouncilDisplayName(selectedCouncil);
-  const hasDetailedData = selectedCouncil.detailed && selectedCouncil.detailed.sources && selectedCouncil.detailed.sources.length > 0;
-  const hasDocuments = selectedCouncil.detailed?.documents && selectedCouncil.detailed.documents.length > 0;
+  const detailed = selectedCouncil.detailed;
+  const lastChecked = detailed?.last_verified;
 
-  // Council-specific URLs
-  const councilTaxUrl = selectedCouncil.detailed?.council_tax_url;
-  const budgetUrl = selectedCouncil.detailed?.budget_url;
-  const lastChecked = selectedCouncil.detailed?.last_verified;
-  const hasCouncilLinks = councilTaxUrl || budgetUrl;
+  // Collect the 3 most important links to show by default
+  const keyLinks: Array<{ title: string; url: string; meta?: string }> = [];
 
-  // Simplified source list
-  const primarySources = hasDetailedData
-    ? selectedCouncil.detailed!.sources!.slice(0, 3)
-    : [];
+  // 1. Budget document (most relevant)
+  if (detailed?.budget_url) {
+    keyLinks.push({ title: `${selectedCouncil.name} budget`, url: detailed.budget_url });
+  }
+  // 2. Council tax page
+  if (detailed?.council_tax_url) {
+    keyLinks.push({ title: 'Council tax rates', url: detailed.council_tax_url });
+  }
+  // 3. First official document (usually Statement of Accounts)
+  if (detailed?.documents?.[0]) {
+    const doc = detailed.documents[0];
+    keyLinks.push({ title: doc.title, url: doc.url, meta: doc.year });
+  }
 
-  const allSources = hasDetailedData
-    ? selectedCouncil.detailed!.sources!
-    : [];
+  // Collect ALL remaining links for the expanded view
+  const allLinks: Array<{ title: string; url: string; meta?: string; group?: string }> = [];
+
+  // Official documents (skip first if already shown above)
+  if (detailed?.documents) {
+    const startIdx = keyLinks.some(k => k.url === detailed.documents![0]?.url) ? 1 : 0;
+    detailed.documents.slice(startIdx).forEach(doc => {
+      allLinks.push({ title: doc.title, url: doc.url, meta: doc.year, group: 'Documents' });
+    });
+  }
+
+  // Sources
+  if (detailed?.sources) {
+    detailed.sources.forEach(s => {
+      allLinks.push({ title: s.title, url: s.url, group: 'Sources' });
+    });
+  }
+
+  // Open data links
+  if (detailed?.open_data_links) {
+    detailed.open_data_links.forEach(group => {
+      group.links.forEach(link => {
+        allLinks.push({ title: link.label, url: link.url, group: group.theme });
+      });
+    });
+  }
+
+  // National sources (always shown in expanded)
+  const nationalSources = [
+    { title: 'Council Tax 2025-26', url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026', meta: 'GOV.UK' },
+    { title: 'Revenue Expenditure 2024-25', url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing', meta: 'GOV.UK' },
+    { title: 'Population Estimates', url: 'https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates', meta: 'ONS Mid-2024' },
+  ];
+
+  const totalLinkCount = keyLinks.length + allLinks.length + nationalSources.length;
 
   return (
-    <footer className="bg-muted/20 border-t border-border/50 mt-12">
-      <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-14 max-w-7xl">
-        <div className="space-y-10">
+    <footer className="border-t border-border/50 mt-12" aria-label="Data sources">
+      <div className="container mx-auto px-4 py-8 sm:px-6 max-w-3xl">
+        {/* Trust line */}
+        <div className="flex items-center justify-center gap-2 mb-5">
+          <Shield className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <p className="type-body-sm font-semibold">Data from official UK government sources</p>
+        </div>
 
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <h2 className="text-xl sm:text-2xl font-semibold">
-              Data Sources
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-              All data from official UK government sources
+        {/* Key links — always visible (max 3) */}
+        {keyLinks.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-4">
+            {keyLinks.map((link, i) => (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                {link.title}
+                {link.meta && <span className="opacity-50">{link.meta}</span>}
+                <ExternalLink className="h-2.5 w-2.5 opacity-40" aria-hidden="true" />
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Expand toggle */}
+        {allLinks.length > 0 && (
+          <div className="text-center">
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-2"
+            >
+              {expanded ? 'Hide sources' : `View all ${totalLinkCount} sources`}
+              <ChevronDown className={`h-3 w-3 transition-transform ${expanded ? 'rotate-180' : ''}`} aria-hidden="true" />
+            </button>
+          </div>
+        )}
+
+        {/* Expanded: all sources grouped */}
+        {expanded && (
+          <div className="mt-4 pt-4 border-t border-border/30 space-y-4">
+            {/* Group allLinks by group */}
+            {(() => {
+              const groups = new Map<string, typeof allLinks>();
+              allLinks.forEach(link => {
+                const g = link.group || 'Other';
+                if (!groups.has(g)) groups.set(g, []);
+                groups.get(g)!.push(link);
+              });
+              return [...groups.entries()].map(([groupName, links]) => (
+                <div key={groupName}>
+                  <p className="type-caption font-semibold text-muted-foreground mb-1.5">{groupName}</p>
+                  <div className="space-y-1 pl-3">
+                    {links.map((link, i) => (
+                      <a
+                        key={i}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 py-0.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      >
+                        {link.title}
+                        {link.meta && <span className="opacity-50">{link.meta}</span>}
+                        <ExternalLink className="h-2.5 w-2.5 opacity-40 shrink-0" aria-hidden="true" />
+                        <span className="sr-only"> (opens in new tab)</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ));
+            })()}
+
+            {/* National sources */}
+            <div>
+              <p className="type-caption font-semibold text-muted-foreground mb-1.5">National Data</p>
+              <div className="space-y-1 pl-3">
+                {nationalSources.map((link, i) => (
+                  <a
+                    key={i}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 py-0.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    {link.title}
+                    <span className="opacity-50">{link.meta}</span>
+                    <ExternalLink className="h-2.5 w-2.5 opacity-40 shrink-0" aria-hidden="true" />
+                    <span className="sr-only"> (opens in new tab)</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Last checked */}
+        {lastChecked && (
+          <div className="flex items-center justify-center gap-2 mt-5 pt-4 border-t border-border/30">
+            <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+            <p className="type-caption text-muted-foreground">
+              Data last checked {formatCheckedDate(lastChecked)}
             </p>
           </div>
-
-          {/* Official Documents - Primary Section for verified councils */}
-          {hasDocuments && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                <h3 className="text-sm font-medium">Official Documents</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {selectedCouncil.detailed!.documents!.map((doc, index) => (
-                  <a
-                    key={index}
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-card hover:border-border hover:bg-muted/30 transition-colors"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-muted/70 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
-                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate group-hover:text-foreground transition-colors">
-                        {doc.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {doc.year}{doc.size_kb ? ` · ${(doc.size_kb / 1024).toFixed(1)}MB` : ''}
-                      </p>
-                    </div>
-                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Source Links - Collapsible for verified councils */}
-          {hasDetailedData && primarySources.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  <h3 className="text-sm font-medium">Source Links</h3>
-                </div>
-                {allSources.length > 3 && (
-                  <button
-                    onClick={() => setShowAllSources(!showAllSources)}
-                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors cursor-pointer"
-                  >
-                    {showAllSources ? 'Show less' : `Show all ${allSources.length}`}
-                    <ChevronDown className={`h-3 w-3 transition-transform ${showAllSources ? 'rotate-180' : ''}`} aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                {(showAllSources ? allSources : primarySources).map((source, index) => (
-                  <a
-                    key={index}
-                    href={source.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <span className="text-sm group-hover:text-foreground transition-colors truncate pr-2">
-                      {source.title}
-                    </span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Council-specific links (show for all councils with URLs) */}
-          {hasCouncilLinks && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                <h3 className="text-sm font-medium">{councilName} Official Pages</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {councilTaxUrl && (
-                  <a
-                    href={councilTaxUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-card hover:border-border hover:bg-muted/30 transition-colors"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-muted/70 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
-                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium group-hover:text-foreground transition-colors">
-                        Council tax rates
-                        <span className="sr-only"> (opens in new tab)</span>
-                      </p>
-                      <p className="text-xs text-muted-foreground">Official council tax page</p>
-                    </div>
-                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
-                  </a>
-                )}
-                {budgetUrl && (
-                  <a
-                    href={budgetUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-card hover:border-border hover:bg-muted/30 transition-colors"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-muted/70 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
-                      <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium group-hover:text-foreground transition-colors">
-                        Budget documents
-                        <span className="sr-only"> (opens in new tab)</span>
-                      </p>
-                      <p className="text-xs text-muted-foreground">Official budget page</p>
-                    </div>
-                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" aria-hidden="true" />
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* GOV.UK sources (shown for all councils) */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <h3 className="text-sm font-medium">National Data Sources</h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <a
-                href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
-                </div>
-                <p className="text-sm font-medium group-hover:text-foreground transition-colors">
-                  Council Tax 2025-26
-                  <span className="sr-only"> (opens in new tab)</span>
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">GOV.UK Statistics</p>
-              </a>
-
-              <a
-                href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
-                </div>
-                <p className="text-sm font-medium group-hover:text-foreground transition-colors">
-                  Budget Data 2024-25
-                  <span className="sr-only"> (opens in new tab)</span>
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">Revenue Expenditure Returns</p>
-              </a>
-
-              <a
-                href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-4 rounded-xl border border-border/40 bg-card hover:border-border transition-colors"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-muted-foreground" aria-hidden="true" />
-                </div>
-                <p className="text-sm font-medium group-hover:text-foreground transition-colors">
-                  Population Data
-                  <span className="sr-only"> (opens in new tab)</span>
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">ONS Mid-2024 Estimates</p>
-              </a>
-            </div>
-          </div>
-
-          {/* Data freshness indicator */}
-          {lastChecked && (
-            <div className="flex items-center justify-center gap-2 pt-4 border-t border-border/50">
-              <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-              <p className="text-xs text-muted-foreground">
-                Data last checked {formatCheckedDate(lastChecked)}
-              </p>
-            </div>
-          )}
-
-        </div>
+        )}
       </div>
     </footer>
   );

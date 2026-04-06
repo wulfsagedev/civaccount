@@ -64,7 +64,7 @@ export default function NotFound() {
               />
             </div>
             <p className="type-caption text-muted-foreground mt-2">
-              Press Enter to search or <kbd className="px-1.5 py-0.5 rounded bg-muted text-xs">F</kbd> to open search
+              Press Enter to search or <kbd className="px-1.5 py-0.5 rounded bg-muted type-body-sm">F</kbd> to open search
             </p>
           </div>
 

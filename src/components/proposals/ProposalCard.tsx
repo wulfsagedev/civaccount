@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare } from 'lucide-react';
-import { getCategoryLabel, timeAgo } from '@/lib/proposals';
+import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS, PROPOSAL_STATUS_STYLES, PROPOSAL_STATUS_DESCRIPTIONS } from '@/lib/proposals';
 import VoteButton from './VoteButton';
+import ShareButton from './ShareButton';
+import MilestoneBar from './MilestoneBar';
 import { CARD_STYLES } from '@/lib/utils';
 
 interface ProposalCardProps {
@@ -24,11 +26,15 @@ interface ProposalCardProps {
     } | null;
   };
   userVote: 'up' | 'down' | null;
+  isHighlighted?: boolean;
 }
 
-export default function ProposalCard({ proposal, userVote }: ProposalCardProps) {
+export default function ProposalCard({ proposal, userVote, isHighlighted }: ProposalCardProps) {
+  const statusStyle = PROPOSAL_STATUS_STYLES[proposal.status] ?? '';
+  const statusDescription = PROPOSAL_STATUS_DESCRIPTIONS[proposal.status] ?? '';
+
   return (
-    <div className={`${CARD_STYLES} p-4 sm:p-5`}>
+    <div className={`${CARD_STYLES} p-4 sm:p-5 ${isHighlighted ? 'ring-2 ring-foreground/10' : ''}`}>
       <div className="flex gap-3">
         {/* Vote column */}
         <div className="shrink-0">
@@ -55,11 +61,25 @@ export default function ProposalCard({ proposal, userVote }: ProposalCardProps) 
             {proposal.body}
           </p>
 
+          {/* Milestone progress */}
+          {proposal.score > 0 && (
+            <MilestoneBar score={proposal.score} />
+          )}
+
           {/* Meta row */}
           <div className="flex items-center flex-wrap gap-2 mt-3">
             <Badge variant="outline" className="type-caption bg-navy-50 text-navy-600 border-navy-200">
               {getCategoryLabel(proposal.budget_category)}
             </Badge>
+            {proposal.status !== 'open' && (
+              <Badge
+                variant="outline"
+                className={`type-caption ${statusStyle}`}
+                title={statusDescription}
+              >
+                {PROPOSAL_STATUS_LABELS[proposal.status] ?? proposal.status}
+              </Badge>
+            )}
             {proposal.labels.map((label) => (
               <Badge key={label} variant="outline" className="type-caption">
                 {label}
@@ -77,6 +97,11 @@ export default function ProposalCard({ proposal, userVote }: ProposalCardProps) 
                 by {proposal.author.display_name}
               </span>
             )}
+            <ShareButton
+              title={proposal.title}
+              text={`${proposal.title} — ${proposal.score} votes on CivAccount. Have your say.`}
+              url={typeof window !== 'undefined' ? `${window.location.origin}/council/${proposal.council_slug}/proposals/${proposal.id}` : ''}
+            />
           </div>
         </div>
       </div>

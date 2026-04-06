@@ -2,16 +2,19 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
-import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, formatBudget, type Council } from '@/data/councils';
 import { useAuth } from '@/context/AuthContext';
 import { createClient } from '@/lib/supabase/client';
-import { BUDGET_CATEGORIES, getCategoryLabel } from '@/lib/proposals';
+import { BUDGET_CATEGORIES, getCategoryLabel, loadDraft, clearDraft } from '@/lib/proposals';
 import { CARD_STYLES } from '@/lib/utils';
 import ProposalCard from '@/components/proposals/ProposalCard';
+import Breadcrumb from '@/components/proposals/Breadcrumb';
+import CouncilSwitcher from '@/components/proposals/CouncilSwitcher';
+import { StatusPanel } from '@/components/ui/status-panel';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { Plus, ArrowLeft } from 'lucide-react';
+import { Plus, ChevronRight, GitCompareArrows } from 'lucide-react';
 import Link from 'next/link';
 
 type SortMode = 'hot' | 'new';
@@ -34,6 +37,44 @@ interface AuthorMap {
   [userId: string]: { display_name: string | null };
 }
 
+function BudgetContext({ council, slug, availableCategories }: {
+  council: Council;
+  slug: string;
+  availableCategories: [string, string][];
+}) {
+  if (!council.budget || availableCategories.length === 0) return null;
+
+  const budget = council.budget;
+  const topCategories = availableCategories
+    .map(([key, label]) => ({
+      key,
+      label,
+      amount: budget[key as keyof typeof budget] as number,
+    }))
+    .filter(c => c.amount > 0)
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 5);
+
+  if (topCategories.length === 0) return null;
+
+  return (
+    <div className="mb-6">
+      <div className="flex flex-wrap gap-1.5">
+        {topCategories.map(({ key, label, amount }) => (
+          <Link
+            key={key}
+            href={`/council/${slug}/proposals/new`}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted hover:bg-muted/80 transition-colors cursor-pointer"
+          >
+            <span className="type-caption font-medium">{label}</span>
+            <span className="type-caption text-muted-foreground">{formatBudget(amount)}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ProposalsPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -46,6 +87,17 @@ export default function ProposalsPage() {
   const [sort, setSort] = useState<SortMode>('hot');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [hasDraft, setHasDraft] = useState(false);
+
+  // Check for draft on mount
+  useEffect(() => {
+    try {
+      const draft = loadDraft(slug);
+      setHasDraft(!!draft);
+    } catch {
+      // localStorage may not be available
+    }
+  }, [slug]);
 
   const fetchProposals = useCallback(async () => {
     const supabase = createClient();
@@ -54,7 +106,8 @@ export default function ProposalsPage() {
       .from('proposals')
       .select('*')
       .eq('council_slug', slug)
-      .neq('status', 'flagged');
+      .neq('status', 'flagged')
+      .neq('status', 'deleted');
 
     if (categoryFilter) {
       query = query.eq('budget_category', categoryFilter);
@@ -113,7 +166,22 @@ export default function ProposalsPage() {
   }, [fetchProposals]);
 
   if (!council) {
-    return null;
+    return (
+      <>
+        <Header />
+        <main id="main-content" className="container mx-auto px-4 py-12 max-w-3xl text-center">
+          <p className="type-display text-muted-foreground/30 mb-4">404</p>
+          <h1 className="type-title-1 mb-2">Council not found</h1>
+          <p className="type-body-sm text-muted-foreground mb-6">
+            We could not find a council matching this address.
+          </p>
+          <Link href="/">
+            <Button className="cursor-pointer">Go to homepage</Button>
+          </Link>
+        </main>
+        <Footer />
+      </>
+    );
   }
 
   const displayName = getCouncilDisplayName(council);
@@ -130,31 +198,52 @@ export default function ProposalsPage() {
     <>
       <Header />
       <main id="main-content" className="container mx-auto px-4 py-6 max-w-3xl">
-        {/* Back link */}
-        <Link
-          href={`/council/${slug}`}
-          className="inline-flex items-center gap-2 type-body-sm text-muted-foreground hover:text-foreground transition-colors mb-6 cursor-pointer"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          {displayName}
-        </Link>
+        {/* Breadcrumb */}
+        <Breadcrumb items={[
+          { label: displayName, href: `/council/${slug}` },
+          { label: 'Town Hall' },
+        ]} />
 
         {/* Page header */}
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-            <h1 className="type-title-1 mb-1">Community proposals</h1>
-            <p className="type-body-sm text-muted-foreground">
-              Ideas for how {displayName} could spend your money better.
-            </p>
+        <div className="mb-6">
+          <div className="flex items-center justify-between gap-3 mb-1">
+            <h1 className="type-title-1">Town Hall</h1>
+            <Link href={`/council/${slug}/proposals/new`}>
+              <Button size="sm" className="shrink-0 cursor-pointer gap-1.5">
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                New
+              </Button>
+            </Link>
           </div>
-          <Link href={`/council/${slug}/proposals/new`}>
-            <Button className="shrink-0 cursor-pointer gap-2">
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">New proposal</span>
-              <span className="sm:hidden">New</span>
-            </Button>
-          </Link>
+          <p className="type-body-sm text-muted-foreground mb-2">
+            Have your say on how {displayName} spends your money.
+          </p>
+          <CouncilSwitcher currentSlug={slug} />
         </div>
+
+        {/* Draft recovery banner */}
+        {hasDraft && (
+          <div className="mb-4">
+            <StatusPanel
+              variant="info"
+              onDismiss={() => {
+                clearDraft();
+                setHasDraft(false);
+              }}
+            >
+              You have an unsaved draft.{' '}
+              <Link
+                href={`/council/${slug}/proposals/new`}
+                className="font-semibold text-foreground underline underline-offset-2 cursor-pointer"
+              >
+                Continue editing
+              </Link>
+            </StatusPanel>
+          </div>
+        )}
+
+        {/* Budget context */}
+        <BudgetContext council={council} slug={slug} availableCategories={availableCategories} />
 
         {/* Sort + Filter bar */}
         <div className="flex items-center gap-3 mb-6">
@@ -210,33 +299,82 @@ export default function ProposalsPage() {
             ))}
           </div>
         ) : proposals.length === 0 ? (
-          <div className={`${CARD_STYLES} p-8 text-center`}>
-            <p className="type-body-sm text-muted-foreground mb-4">
-              {categoryFilter
-                ? `No proposals for ${getCategoryLabel(categoryFilter)} yet.`
-                : 'No proposals yet. Be the first to suggest how your council could do better.'}
-            </p>
-            <Link href={`/council/${slug}/proposals/new`}>
-              <Button variant="outline" className="cursor-pointer gap-2">
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                Create the first proposal
-              </Button>
-            </Link>
+          <div className={`${CARD_STYLES} p-8`}>
+            {categoryFilter ? (
+              <p className="type-body-sm text-muted-foreground text-center mb-4">
+                Nothing on {getCategoryLabel(categoryFilter)} yet.
+              </p>
+            ) : (
+              <div className="max-w-md mx-auto">
+                <h2 className="type-title-2 mb-2 text-center">No proposals yet</h2>
+                <p className="type-body-sm text-muted-foreground text-center mb-4">
+                  Town Hall is where residents suggest how {displayName} could spend money differently.
+                  Anyone can post a proposal, and other residents vote and comment on it.
+                </p>
+              </div>
+            )}
+            <div className="text-center">
+              <Link href={`/council/${slug}/proposals/new`}>
+                <Button variant="outline" className="cursor-pointer gap-2">
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  Create the first proposal
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="space-y-3">
-            {proposals.map((proposal) => (
-              <ProposalCard
-                key={proposal.id}
-                proposal={{
-                  ...proposal,
-                  author: authors[proposal.author_id] ?? null,
-                }}
-                userVote={userVotes[proposal.id] ?? null}
-              />
-            ))}
+            {(() => {
+              const firstUnvotedId = proposals.find(p => !userVotes[p.id] && p.status === 'open')?.id;
+              return proposals.map((proposal) => (
+                <ProposalCard
+                  key={proposal.id}
+                  proposal={{
+                    ...proposal,
+                    author: authors[proposal.author_id] ?? null,
+                  }}
+                  userVote={userVotes[proposal.id] ?? null}
+                  isHighlighted={proposal.id === firstUnvotedId}
+                />
+              ));
+            })()}
           </div>
         )}
+
+        {/* Cross-promo CTAs */}
+        <div className="mt-8 space-y-2">
+          <Link
+            href={`/council/${slug}`}
+            className="flex items-center justify-between p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+          >
+            <div className="leading-tight">
+              <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
+                See the full budget breakdown
+              </p>
+              <p className="type-caption text-muted-foreground">
+                Where {displayName} spends your council tax
+              </p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+          </Link>
+          <Link
+            href="/compare"
+            className="flex items-center justify-between p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <GitCompareArrows className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+              <div className="leading-tight">
+                <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
+                  Compare with other councils
+                </p>
+                <p className="type-caption text-muted-foreground">
+                  See how {displayName} stacks up
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+          </Link>
+        </div>
       </main>
       <Footer />
     </>

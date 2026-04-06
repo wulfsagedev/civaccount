@@ -134,7 +134,7 @@ export default function EmbedPage() {
           background: '#fafafa',
         }}
       >
-        Vote and discuss on CivAccount
+        Have your say on CivAccount
         <ExternalLink style={{ width: '12px', height: '12px' }} />
       </a>
     </div>

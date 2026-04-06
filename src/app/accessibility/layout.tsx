@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     title: 'Accessibility - CivAccount',
     description: 'CivAccount is designed to be accessible to everyone.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Accessibility - CivAccount',
+    description: 'CivAccount is designed to be accessible to everyone.',
+  },
 };
 
 export default function AccessibilityLayout({

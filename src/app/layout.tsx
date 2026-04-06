@@ -6,6 +6,7 @@ import "./globals.css";
 import { CouncilProvider } from "@/context/CouncilContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,14 +20,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CivAccount - See where your council tax goes",
-  description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 317 English councils.",
+  description: "Search by name or postcode to see how your council spends your money. Budget breakdowns, council tax by band, CEO salary, spending comparisons, and Town Hall — have your say on all 317 English councils. Free and independent.",
   metadataBase: new URL('https://www.civaccount.co.uk'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: "CivAccount - See where your council tax goes",
-    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 317 English councils.",
+    description: "Search by name or postcode to see how your council spends your money. Budget breakdowns, CEO salary, spending comparisons, and Town Hall for all 317 English councils.",
     siteName: "CivAccount",
     locale: "en_GB",
     type: "website",
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CivAccount - See where your council tax goes",
-    description: "Explore how your local council spends your money. See exactly where every pound goes with budget breakdowns, council tax rates by band, and spending insights for all 317 English councils.",
+    description: "Search by name or postcode to see how your council spends your money. Budget breakdowns, CEO salary, spending comparisons, and Town Hall for all 317 English councils.",
   },
 };
 
@@ -120,6 +121,7 @@ export default function RootLayout({
             {children}
           </CouncilProvider>
         </AuthProvider>
+        <Toaster position="bottom-center" toastOptions={{ duration: 5000 }} />
         <Analytics />
         <SpeedInsights />
       </body>

@@ -1,31 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { isUKUser } from '@/lib/geo';
 
 interface CommentFormProps {
   proposalId: string;
   parentId?: string | null;
+  mode?: 'create' | 'edit';
+  commentId?: string;
+  initialBody?: string;
   onCancel?: () => void;
   onSubmitted?: () => void;
+  autoFocus?: boolean;
 }
 
-export default function CommentForm({ proposalId, parentId = null, onCancel, onSubmitted }: CommentFormProps) {
+export default function CommentForm({
+  proposalId,
+  parentId = null,
+  mode = 'create',
+  commentId,
+  initialBody = '',
+  onCancel,
+  onSubmitted,
+  autoFocus = false,
+}: CommentFormProps) {
   const { user } = useAuth();
   const router = useRouter();
-  const [body, setBody] = useState('');
+  const [body, setBody] = useState(mode === 'edit' ? initialBody : '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (autoFocus && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [autoFocus]);
 
   if (!user) {
     return (
       <div className="p-4 rounded-lg bg-muted/30 text-center">
-        <p className="type-body-sm text-muted-foreground mb-2">
+        <p className="type-body-sm text-muted-foreground mb-1">
           Sign in to join the discussion.
+        </p>
+        <p className="type-caption text-muted-foreground mb-3">
+          We use email-only sign in — no passwords needed.
         </p>
         <Button
           variant="outline"
@@ -42,11 +67,39 @@ export default function CommentForm({ proposalId, parentId = null, onCancel, onS
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!body.trim()) return;
+    if (!isUKUser()) {
+      router.push('/uk-only');
+      return;
+    }
 
     setIsSubmitting(true);
     setError('');
 
     const supabase = createClient();
+
+    if (mode === 'edit' && commentId) {
+      const { error: updateError } = await supabase
+        .from('comments')
+        .update({
+          body: body.trim(),
+          edited_at: new Date().toISOString(),
+        })
+        .eq('id', commentId)
+        .eq('author_id', user.id);
+
+      if (updateError) {
+        setError('Could not save your changes. Try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      toast.success('Comment updated.');
+      setIsSubmitting(false);
+      onSubmitted?.();
+      return;
+    }
+
+    // Create mode
     const { error: insertError } = await supabase.from('comments').insert({
       proposal_id: proposalId,
       parent_id: parentId,
@@ -55,7 +108,7 @@ export default function CommentForm({ proposalId, parentId = null, onCancel, onS
     });
 
     if (insertError) {
-      setError('Failed to post comment. Please try again.');
+      setError('Could not post comment. Try again.');
       setIsSubmitting(false);
       return;
     }
@@ -65,12 +118,18 @@ export default function CommentForm({ proposalId, parentId = null, onCancel, onS
     onSubmitted?.();
   };
 
+  const remaining = 2000 - body.length;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <Textarea
+        ref={textareaRef}
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        placeholder={parentId ? 'Write a reply...' : 'Share your thoughts...'}
+        placeholder={
+          mode === 'edit' ? '' :
+          parentId ? 'Write a reply...' : 'Share your thoughts...'
+        }
         maxLength={2000}
         rows={parentId ? 2 : 3}
         className="resize-none"
@@ -83,7 +142,12 @@ export default function CommentForm({ proposalId, parentId = null, onCancel, onS
           disabled={isSubmitting || !body.trim()}
           className="cursor-pointer"
         >
-          {isSubmitting ? 'Posting...' : parentId ? 'Reply' : 'Comment'}
+          {isSubmitting
+            ? (mode === 'edit' ? 'Saving...' : 'Posting...')
+            : mode === 'edit'
+              ? 'Save changes'
+              : parentId ? 'Reply' : 'Comment'
+          }
         </Button>
         {onCancel && (
           <Button
@@ -96,8 +160,13 @@ export default function CommentForm({ proposalId, parentId = null, onCancel, onS
             Cancel
           </Button>
         )}
-        <span className="type-caption text-muted-foreground ml-auto tabular-nums">
-          {body.length}/2000
+        <span
+          className={`type-caption ml-auto tabular-nums ${
+            remaining <= 100 ? 'text-destructive' : remaining <= 400 ? 'text-negative' : 'text-muted-foreground'
+          }`}
+          aria-live="polite"
+        >
+          {remaining} remaining
         </span>
       </div>
     </form>

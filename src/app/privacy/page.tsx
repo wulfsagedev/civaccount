@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             <div className="space-y-8">
               <div className="space-y-3">
                 <Badge variant="outline" className="mb-2">Legal</Badge>
-                <h1 className="text-2xl sm:text-3xl font-bold">Privacy Policy</h1>
+                <h1 className="type-title-1 font-semibold">Privacy Policy</h1>
                 <p className="text-muted-foreground">
                   Last updated: January 2025
                 </p>
@@ -44,14 +44,14 @@ export default function PrivacyPage() {
                     <Shield className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">We respect your privacy</h2>
-                    <p className="text-sm text-muted-foreground">CivAccount collects minimal data</p>
+                    <h2 className="type-title-3 font-semibold">We respect your privacy</h2>
+                    <p className="type-body-sm text-muted-foreground">CivAccount collects minimal data</p>
                   </div>
                 </div>
 
-                <div className="space-y-6 text-sm leading-relaxed">
+                <div className="space-y-6 type-body-sm leading-relaxed">
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Data controller</h3>
+                    <h3 className="font-semibold type-body">Data controller</h3>
                     <p className="text-muted-foreground">
                       CivAccount is operated by Owen Fisher as an independent open source project.
                       For data protection enquiries, please contact us via{' '}
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">What we collect</h3>
+                    <h3 className="font-semibold type-body">What we collect</h3>
                     <p className="text-muted-foreground">
                       CivAccount stores your selected council preference in your browser&apos;s local storage.
                       This data never leaves your device and is only used to remember your council selection
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Legal basis for processing</h3>
+                    <h3 className="font-semibold type-body">Legal basis for processing</h3>
                     <p className="text-muted-foreground">
                       Under UK GDPR, we process the minimal data described above based on our legitimate
                       interest in providing a functional service. Local storage preferences are necessary
@@ -89,7 +89,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Analytics</h3>
+                    <h3 className="font-semibold type-body">Analytics</h3>
                     <p className="text-muted-foreground">
                       We may use privacy-respecting analytics to understand how people use CivAccount.
                       This helps us improve the service. Any analytics data is aggregated and anonymous,
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Third-party services and international transfers</h3>
+                    <h3 className="font-semibold type-body">Third-party services and international transfers</h3>
                     <p className="text-muted-foreground">
                       CivAccount is hosted on Vercel. When you visit, Vercel may collect standard
                       server logs (IP address, browser type, pages visited). Vercel&apos;s servers are
@@ -116,7 +116,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Data retention</h3>
+                    <h3 className="font-semibold type-body">Data retention</h3>
                     <p className="text-muted-foreground">
                       Your council preference in local storage persists until you clear your browser data.
                       Server logs retained by Vercel follow their standard retention policies.
@@ -125,7 +125,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Data sources</h3>
+                    <h3 className="font-semibold type-body">Data sources</h3>
                     <p className="text-muted-foreground">
                       All council data displayed on CivAccount comes from publicly available
                       UK government sources. We do not collect or store any data about individual
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Your rights under UK GDPR</h3>
+                    <h3 className="font-semibold type-body">Your rights under UK GDPR</h3>
                     <p className="text-muted-foreground">
                       You have the right to access, rectify, erase, or port your personal data.
                       You can clear your browser&apos;s local storage at any time to remove your
@@ -156,7 +156,7 @@ export default function PrivacyPage() {
                   </section>
 
                   <section className="space-y-3">
-                    <h3 className="font-semibold text-base">Contact</h3>
+                    <h3 className="font-semibold type-body">Contact</h3>
                     <p className="text-muted-foreground">
                       If you have questions about this privacy policy, please open an issue on our{' '}
                       <a

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 
@@ -18,7 +18,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
+  // Create Supabase client once, not on every render
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
 
   useEffect(() => {
     // Get initial session
@@ -56,7 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const signInWithEmail = useCallback(async (email: string, redirectTo?: string) => {
     const { error } = await supabase.auth.signInWithOtp({
@@ -66,11 +69,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
     return { error: error?.message ?? null };
-  }, [supabase]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-  }, [supabase]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, displayName, isLoading, signInWithEmail, signOut }}>

@@ -45,7 +45,7 @@ export default function MethodologyPage() {
               {/* Page Header */}
               <div className="space-y-3">
                 <Badge variant="outline" className="mb-2">Transparency</Badge>
-                <h1 className="text-2xl sm:text-3xl font-bold">Methodology</h1>
+                <h1 className="type-title-1 font-semibold">Methodology</h1>
                 <p className="text-muted-foreground">
                   How we collect, process, and present council data
                 </p>
@@ -55,7 +55,7 @@ export default function MethodologyPage() {
               <div className="p-5 rounded-xl bg-muted/50 border border-border">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 shrink-0 mt-0.5 text-foreground" />
-                  <div className="text-sm">
+                  <div className="type-body-sm">
                     <p className="font-semibold text-foreground mb-2">
                       This is an independent project
                     </p>
@@ -91,12 +91,12 @@ export default function MethodologyPage() {
                     <Bot className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">How AI is used in this project</h2>
-                    <p className="text-sm text-muted-foreground">AI helps organise data, not create it</p>
+                    <h2 className="type-title-3 font-semibold">How AI is used in this project</h2>
+                    <p className="type-body-sm text-muted-foreground">AI helps organise data, not create it</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm leading-relaxed">
+                <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     AI tools were used to help build this website. Here is exactly how:
                   </p>
@@ -163,12 +163,12 @@ export default function MethodologyPage() {
                     <Database className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Data sources</h2>
-                    <p className="text-sm text-muted-foreground">Where we get our numbers and descriptions</p>
+                    <h2 className="type-title-3 font-semibold">Data sources</h2>
+                    <p className="type-body-sm text-muted-foreground">Where we get our numbers and descriptions</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm">
+                <div className="space-y-4 type-body-sm">
                   <p className="text-muted-foreground leading-relaxed">
                     Every figure on CivAccount (council tax amounts, budgets, salaries, grants, supplier payments)
                     comes from official UK government websites. We do not create, estimate, or model any financial data.
@@ -186,7 +186,7 @@ export default function MethodologyPage() {
                       href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                     >
                       <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
@@ -199,7 +199,7 @@ export default function MethodologyPage() {
                       href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                     >
                       <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
@@ -212,7 +212,7 @@ export default function MethodologyPage() {
                       href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                     >
                       <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
@@ -225,7 +225,7 @@ export default function MethodologyPage() {
                       href="https://www.gov.uk/find-local-council"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted/30 transition-colors cursor-pointer"
+                      className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                     >
                       <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
@@ -244,12 +244,12 @@ export default function MethodologyPage() {
                     <Scale className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Data licensing</h2>
-                    <p className="text-sm text-muted-foreground">Public data, freely reusable</p>
+                    <h2 className="type-title-3 font-semibold">Data licensing</h2>
+                    <p className="type-body-sm text-muted-foreground">Public data, freely reusable</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm leading-relaxed">
+                <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     All government data used on this website is published under the{' '}
                     <a
@@ -297,12 +297,12 @@ export default function MethodologyPage() {
                     <Info className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Understanding the data</h2>
-                    <p className="text-sm text-muted-foreground">What the different types of numbers mean</p>
+                    <h2 className="type-title-3 font-semibold">Understanding the data</h2>
+                    <p className="type-body-sm text-muted-foreground">What the different types of numbers mean</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 text-sm leading-relaxed">
+                <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     This website shows three types of numbers. Each is clearly labelled:
                   </p>
@@ -361,12 +361,12 @@ export default function MethodologyPage() {
                     <Shield className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">Limitations</h2>
-                    <p className="text-sm text-muted-foreground">What this website cannot do</p>
+                    <h2 className="type-title-3 font-semibold">Limitations</h2>
+                    <p className="type-body-sm text-muted-foreground">What this website cannot do</p>
                   </div>
                 </div>
 
-                <div className="space-y-3 text-sm">
+                <div className="space-y-3 type-body-sm">
                   <div className="flex items-start gap-3">
                     <span className="text-muted-foreground">•</span>
                     <p className="text-muted-foreground">
@@ -404,7 +404,7 @@ export default function MethodologyPage() {
                   <CheckCircle className="h-5 w-5 text-muted-foreground" />
                   Transparency checklist
                 </h3>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 type-body-sm">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-positive shrink-0" />
                     <span className="text-muted-foreground">Data sources disclosed</span>

@@ -4,10 +4,11 @@ import { useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
 import ProposalForm from '@/components/proposals/ProposalForm';
+import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
 import { CARD_STYLES } from '@/lib/utils';
-import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function NewProposalPage() {
@@ -16,7 +17,22 @@ export default function NewProposalPage() {
   const council = useMemo(() => getCouncilBySlug(slug), [slug]);
 
   if (!council) {
-    return null;
+    return (
+      <>
+        <Header />
+        <main id="main-content" className="container mx-auto px-4 py-12 max-w-3xl text-center">
+          <p className="type-display text-muted-foreground/30 mb-4">404</p>
+          <h1 className="type-title-1 mb-2">Council not found</h1>
+          <p className="type-body-sm text-muted-foreground mb-6">
+            We could not find a council matching this address.
+          </p>
+          <Link href="/">
+            <Button className="cursor-pointer">Go to homepage</Button>
+          </Link>
+        </main>
+        <Footer />
+      </>
+    );
   }
 
   const displayName = getCouncilDisplayName(council);
@@ -25,14 +41,12 @@ export default function NewProposalPage() {
     <>
       <Header />
       <main id="main-content" className="container mx-auto px-4 py-6 max-w-2xl">
-        {/* Back link */}
-        <Link
-          href={`/council/${slug}/proposals`}
-          className="inline-flex items-center gap-2 type-body-sm text-muted-foreground hover:text-foreground transition-colors mb-6 cursor-pointer"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Back to proposals
-        </Link>
+        {/* Breadcrumb */}
+        <Breadcrumb items={[
+          { label: displayName, href: `/council/${slug}` },
+          { label: 'Town Hall', href: `/council/${slug}/proposals` },
+          { label: 'New proposal' },
+        ]} />
 
         <div className={`${CARD_STYLES} p-5 sm:p-8`}>
           <h1 className="type-title-1 mb-1">New proposal</h1>

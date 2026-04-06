@@ -48,10 +48,11 @@ export type Database = {
           body: string;
           author_id: string;
           score: number;
-          status: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged';
+          status: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged' | 'deleted';
           labels: string[];
           created_at: string;
           comment_count: number;
+          edited_at: string | null;
         };
         Insert: {
           id?: string;
@@ -61,10 +62,11 @@ export type Database = {
           body: string;
           author_id?: string;
           score?: number;
-          status?: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged';
+          status?: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged' | 'deleted';
           labels?: string[];
           created_at?: string;
           comment_count?: number;
+          edited_at?: string | null;
         };
         Update: {
           id?: string;
@@ -74,10 +76,11 @@ export type Database = {
           body?: string;
           author_id?: string;
           score?: number;
-          status?: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged';
+          status?: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged' | 'deleted';
           labels?: string[];
           created_at?: string;
           comment_count?: number;
+          edited_at?: string | null;
         };
         Relationships: [
           {
@@ -138,6 +141,7 @@ export type Database = {
           status: 'visible' | 'flagged' | 'removed';
           flag_count: number;
           created_at: string;
+          edited_at: string | null;
         };
         Insert: {
           id?: string;
@@ -148,6 +152,7 @@ export type Database = {
           status?: 'visible' | 'flagged' | 'removed';
           flag_count?: number;
           created_at?: string;
+          edited_at?: string | null;
         };
         Update: {
           id?: string;
@@ -158,6 +163,7 @@ export type Database = {
           status?: 'visible' | 'flagged' | 'removed';
           flag_count?: number;
           created_at?: string;
+          edited_at?: string | null;
         };
         Relationships: [
           {
@@ -224,7 +230,12 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      flag_comment: {
+        Args: { p_comment_id: string };
+        Returns: undefined;
+      };
+    };
     Enums: Record<string, never>;
   };
 };

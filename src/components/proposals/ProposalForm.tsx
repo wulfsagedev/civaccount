@@ -9,24 +9,49 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { BUDGET_CATEGORIES, PROPOSAL_LABELS, saveDraft, loadDraft, clearDraft } from '@/lib/proposals';
+import { StatusPanel } from '@/components/ui/status-panel';
+import { BUDGET_CATEGORIES, PROPOSAL_LABELS, saveDraft, loadDraft, clearDraft, getCategoryLabel } from '@/lib/proposals';
 import { formatBudget } from '@/data/councils';
+import { toast } from 'sonner';
+import { isUKUser } from '@/lib/geo';
+import Link from 'next/link';
 import type { Council } from '@/data/councils';
 
 interface ProposalFormProps {
   council: Council;
   councilSlug: string;
+  mode?: 'create' | 'edit';
+  initialData?: {
+    id: string;
+    title: string;
+    body: string;
+    budget_category: string;
+    labels: string[];
+  };
+  onSaved?: () => void;
+  onCancel?: () => void;
 }
 
-export default function ProposalForm({ council, councilSlug }: ProposalFormProps) {
+export default function ProposalForm({
+  council,
+  councilSlug,
+  mode = 'create',
+  initialData,
+  onSaved,
+  onCancel,
+}: ProposalFormProps) {
   const { user } = useAuth();
   const router = useRouter();
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const [category, setCategory] = useState('');
-  const [labels, setLabels] = useState<string[]>([]);
+  const [title, setTitle] = useState(initialData?.title ?? '');
+  const [body, setBody] = useState(initialData?.body ?? '');
+  const [category, setCategory] = useState(initialData?.budget_category ?? '');
+  const [labels, setLabels] = useState<string[]>(initialData?.labels ?? []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState<{ id: string } | null>(null);
+
+  // Validation state
+  const [touched, setTouched] = useState({ title: false, body: false, category: false });
 
   // Available budget categories for this council
   const availableCategories = Object.entries(BUDGET_CATEGORIES).filter(([key]) => {
@@ -36,27 +61,27 @@ export default function ProposalForm({ council, councilSlug }: ProposalFormProps
     return val !== null && val !== undefined && val !== 0;
   });
 
-  // Load draft from localStorage on mount
+  // Load draft from localStorage on mount (create mode only)
   useEffect(() => {
-    const draft = loadDraft(councilSlug);
-    if (draft) {
-      setTitle(draft.title);
-      setBody(draft.body);
-      setCategory(draft.budget_category);
-      setLabels(draft.labels);
+    if (mode === 'create' && !initialData) {
+      const draft = loadDraft(councilSlug);
+      if (draft) {
+        setTitle(draft.title);
+        setBody(draft.body);
+        setCategory(draft.budget_category);
+        setLabels(draft.labels);
+      }
     }
-  }, [councilSlug]);
+  }, [councilSlug, mode, initialData]);
 
   // Auto-submit if returning from auth with a saved draft
   useEffect(() => {
-    if (user && title && body && category) {
+    if (mode === 'create' && user && title && body && category) {
       const draft = loadDraft(councilSlug);
       if (draft) {
-        // User just authenticated — submit the draft
         handleSubmit();
       }
     }
-    // Only run when user changes (i.e., after auth)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -66,9 +91,26 @@ export default function ProposalForm({ council, councilSlug }: ProposalFormProps
     );
   };
 
+  // Validation
+  const titleError = touched.title && !title.trim() ? 'Enter a title for your proposal' :
+    touched.title && title.trim().length > 0 && title.trim().length < 10 ? 'Give your proposal a clearer title' : '';
+  const bodyError = touched.body && !body.trim() ? 'Explain what you would change and why' : '';
+  const categoryError = touched.category && !category ? 'Choose which area of spending this is about' : '';
+
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
+
+    // Mark all as touched on submit
+    setTouched({ title: true, body: true, category: true });
+
     if (!title.trim() || !body.trim() || !category) return;
+    if (title.trim().length < 10) return;
+
+    // Geo check — UK residents only
+    if (!isUKUser()) {
+      router.push('/uk-only');
+      return;
+    }
 
     // If not authenticated, save draft and redirect to login
     if (!user) {
@@ -87,6 +129,32 @@ export default function ProposalForm({ council, councilSlug }: ProposalFormProps
     setError('');
 
     const supabase = createClient();
+
+    if (mode === 'edit' && initialData) {
+      const { error: updateError } = await supabase
+        .from('proposals')
+        .update({
+          title: title.trim(),
+          body: body.trim(),
+          labels,
+          edited_at: new Date().toISOString(),
+        })
+        .eq('id', initialData.id)
+        .eq('author_id', user.id);
+
+      if (updateError) {
+        setError('Could not save your changes. Try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      toast.success('Your changes have been saved.');
+      setIsSubmitting(false);
+      onSaved?.();
+      return;
+    }
+
+    // Create mode
     const { data, error: insertError } = await supabase
       .from('proposals')
       .insert({
@@ -102,46 +170,89 @@ export default function ProposalForm({ council, councilSlug }: ProposalFormProps
 
     if (insertError) {
       console.error('[ProposalForm] insert error:', insertError);
-      setError(`Failed to create proposal: ${insertError.message}`);
+      setError(`Could not create proposal. Try again.`);
       setIsSubmitting(false);
       return;
     }
 
     clearDraft();
-    router.push(`/council/${councilSlug}/proposals/${data.id}`);
+    setIsSubmitting(false);
+    setSubmitted({ id: data.id });
   };
+
+  // Success state after creation
+  if (submitted) {
+    return (
+      <StatusPanel variant="success" title="Your proposal has been published.">
+        <p className="mb-4">Other residents can now vote and comment on it.</p>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Link
+            href={`/council/${councilSlug}/proposals/${submitted.id}`}
+            className="inline-flex items-center justify-center h-9 px-4 rounded-md bg-foreground text-background type-body-sm font-medium hover:bg-foreground/90 transition-colors cursor-pointer"
+          >
+            View your proposal
+          </Link>
+          <Link
+            href={`/council/${councilSlug}/proposals`}
+            className="inline-flex items-center justify-center h-9 px-4 rounded-md border border-border type-body-sm font-medium hover:bg-muted transition-colors cursor-pointer"
+          >
+            Back to Town Hall
+          </Link>
+        </div>
+      </StatusPanel>
+    );
+  }
 
   const budgetForCategory = category && council.budget
     ? council.budget[category as keyof typeof council.budget]
     : null;
 
+  const titleRemaining = 200 - title.length;
+  const bodyRemaining = 2000 - body.length;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Budget category */}
-      <div className="space-y-2">
-        <Label htmlFor="category" className="type-body-sm font-semibold">
-          What area of spending is this about?
-        </Label>
-        <select
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="w-full h-12 px-3 rounded-lg border border-border bg-background type-body-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          <option value="">Choose a budget area</option>
-          {availableCategories.map(([key, label]) => (
-            <option key={key} value={key}>
-              {label}
-            </option>
-          ))}
-        </select>
-        {budgetForCategory !== null && budgetForCategory !== undefined && (
+      {/* Budget category — hidden in edit mode (category shouldn't change) */}
+      {mode === 'create' && (
+        <div className="space-y-2">
+          <Label htmlFor="category" className="type-body-sm font-semibold">
+            What area of spending is this about?
+          </Label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            onBlur={() => setTouched(t => ({ ...t, category: true }))}
+            aria-describedby={categoryError ? 'category-error' : undefined}
+            aria-invalid={!!categoryError}
+            className="w-full h-12 px-3 rounded-lg border border-border bg-background type-body-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            <option value="">Choose a budget area</option>
+            {availableCategories.map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+          {categoryError && (
+            <p id="category-error" className="type-caption text-destructive">{categoryError}</p>
+          )}
+          {budgetForCategory !== null && budgetForCategory !== undefined && (
+            <p className="type-caption text-muted-foreground">
+              {council.name} spends {formatBudget(budgetForCategory as number)} on this area.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* In edit mode, show the category as context */}
+      {mode === 'edit' && initialData && (
+        <div className="p-3 rounded-lg bg-muted/30">
           <p className="type-caption text-muted-foreground">
-            {council.name} spends {formatBudget(budgetForCategory as number)} on this area.
+            Category: <span className="font-semibold text-foreground">{getCategoryLabel(initialData.budget_category)}</span>
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Title */}
       <div className="space-y-2">
@@ -152,33 +263,55 @@ export default function ProposalForm({ council, councilSlug }: ProposalFormProps
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onBlur={() => setTouched(t => ({ ...t, title: true }))}
           placeholder="What should change?"
           maxLength={200}
-          required
+          aria-describedby={titleError ? 'title-error' : 'title-count'}
+          aria-invalid={!!titleError}
           className="h-12"
         />
-        <p className="type-caption text-muted-foreground tabular-nums text-right">
-          {title.length}/200
+        {titleError && (
+          <p id="title-error" className="type-caption text-destructive">{titleError}</p>
+        )}
+        <p
+          id="title-count"
+          className={`type-caption tabular-nums text-right ${
+            titleRemaining <= 10 ? 'text-destructive' : titleRemaining <= 40 ? 'text-negative' : 'text-muted-foreground'
+          }`}
+          aria-live="polite"
+        >
+          {titleRemaining} characters remaining
         </p>
       </div>
 
       {/* Body */}
       <div className="space-y-2">
         <Label htmlFor="body" className="type-body-sm font-semibold">
-          Explain your proposal
+          {mode === 'edit' ? 'Explain your proposal' : 'Explain your proposal'}
         </Label>
         <Textarea
           id="body"
           value={body}
           onChange={(e) => setBody(e.target.value)}
+          onBlur={() => setTouched(t => ({ ...t, body: true }))}
           placeholder="Why does this matter? What would you change? Be specific."
           maxLength={2000}
-          required
           rows={6}
+          aria-describedby={bodyError ? 'body-error' : 'body-count'}
+          aria-invalid={!!bodyError}
           className="resize-none"
         />
-        <p className="type-caption text-muted-foreground tabular-nums text-right">
-          {body.length}/2000
+        {bodyError && (
+          <p id="body-error" className="type-caption text-destructive">{bodyError}</p>
+        )}
+        <p
+          id="body-count"
+          className={`type-caption tabular-nums text-right ${
+            bodyRemaining <= 100 ? 'text-destructive' : bodyRemaining <= 400 ? 'text-negative' : 'text-muted-foreground'
+          }`}
+          aria-live="polite"
+        >
+          {bodyRemaining} characters remaining
         </p>
       </div>
 
@@ -208,15 +341,32 @@ export default function ProposalForm({ council, councilSlug }: ProposalFormProps
 
       {error && <p className="type-body-sm text-destructive">{error}</p>}
 
-      <Button
-        type="submit"
-        className="w-full h-12 type-body font-semibold cursor-pointer"
-        disabled={isSubmitting || !title.trim() || !body.trim() || !category}
-      >
-        {isSubmitting ? 'Submitting...' : user ? 'Submit proposal' : 'Sign in to submit'}
-      </Button>
+      <div className="flex items-center gap-3">
+        <Button
+          type="submit"
+          className={`${mode === 'create' ? 'w-full' : ''} h-12 type-body font-semibold cursor-pointer`}
+          disabled={isSubmitting || !title.trim() || !body.trim() || (mode === 'create' && !category)}
+        >
+          {isSubmitting
+            ? (mode === 'edit' ? 'Saving...' : 'Submitting...')
+            : mode === 'edit'
+              ? 'Save changes'
+              : user ? 'Submit proposal' : 'Sign in to submit'
+          }
+        </Button>
+        {mode === 'edit' && onCancel && (
+          <Button
+            type="button"
+            variant="outline"
+            className="h-12 type-body cursor-pointer"
+            onClick={onCancel}
+          >
+            Cancel
+          </Button>
+        )}
+      </div>
 
-      {!user && (
+      {mode === 'create' && !user && (
         <p className="type-caption text-muted-foreground text-center">
           Your draft will be saved. You can sign in and it will be submitted automatically.
         </p>

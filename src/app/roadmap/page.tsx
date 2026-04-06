@@ -20,21 +20,32 @@ const roadmap: RoadmapSection[] = [
     items: [
       { text: "All 317 English councils with budget data", done: true },
       { text: "Council tax rates and 5-year history", done: true },
-      { text: "Service spending breakdowns", done: true },
+      { text: "Service spending breakdowns for every council", done: true },
       { text: "Fast search across all councils", done: true },
       { text: "Mobile-first design with dark mode", done: true },
       { text: "Fair comparisons between similar councils", done: true },
-      { text: "Links to council budget documents and open data", done: true },
+      { text: "Links to budget documents and open data for every council", done: true },
       { text: "Data freshness dates on every council page", done: true },
-      { text: "Cabinet members and council leadership for all London boroughs", done: true },
-      { text: "Local grant payments and councillor allowances for London boroughs", done: true },
+      { text: "Cabinet members and council leadership for all 317 councils", done: true },
+      { text: "Chief executive salary for 99% of councils", done: true },
+      { text: "Councillor allowances for 96% of councils", done: true },
+      { text: "Top suppliers and grant payments data", done: true },
+      { text: "Waste and recycling destinations for all disposal authorities", done: true },
+      { text: "Performance data including roads, waste, and housing", done: true },
+      { text: "Council comparison tool", done: true },
+      { text: "Town Hall — have your say on how your council spends money", done: true },
+      { text: "Vote and comment on ideas from other residents", done: true },
+      { text: "Embeddable Town Hall widgets for external websites", done: true },
+      { text: "Milestone progress bars on proposals", done: true },
+      { text: "Full design system and accessibility audit", done: true },
+      { text: "Cross-linked navigation between dashboard, Town Hall, and Compare", done: true },
     ]
   },
   {
     title: "Working on",
     status: "now",
     items: [
-      { text: "Bringing the same level of detail to all 317 councils", done: false },
+      { text: "Per-councillor allowance breakdowns for remaining councils", done: false },
       { text: "Police, fire, and parish council tax breakdown", done: false },
     ]
   },
@@ -80,12 +91,12 @@ export default function RoadmapPage() {
                 <div className="flex items-center gap-3 mb-5">
                   <h2 className="type-title-2">{section.title}</h2>
                   {section.status === 'done' && (
-                    <Badge variant="outline" className="text-xs bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
+                    <Badge variant="outline" className="bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950/30 dark:text-navy-400 dark:border-navy-800">
                       Complete
                     </Badge>
                   )}
                   {section.status === 'now' && (
-                    <Badge variant="outline" className="text-xs bg-muted text-foreground border-border">
+                    <Badge variant="outline" className="bg-muted text-foreground border-border">
                       In progress
                     </Badge>
                   )}
