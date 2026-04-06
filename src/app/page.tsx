@@ -23,7 +23,7 @@ const HomepageContent = memo(function HomepageContent() {
               <h1 className="type-title-1 font-semibold leading-tight">
                 The average English household pays £1,026 in council tax
               </h1>
-              <p className="text-muted-foreground type-body-lg max-w-md mx-auto">
+              <p className="text-muted-foreground type-body-lg max-w-[280px] mx-auto text-balance">
                 Find out what your council charges and how it's spent
               </p>
             </div>
