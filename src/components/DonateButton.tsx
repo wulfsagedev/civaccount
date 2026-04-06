@@ -74,7 +74,7 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
         )}
       >
         <Heart className="h-3.5 w-3.5" aria-hidden="true" />
-        {variant === 'header' ? 'Donate' : 'Support CivAccount'}
+        Donate
       </button>
 
       {/* Modal - rendered via portal to ensure it's above all other content */}
