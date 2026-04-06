@@ -378,17 +378,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               : `${totalCouncilCount} councils in England`
             }
           </p>
-          <p className="type-body-sm text-center text-muted-foreground/70 mt-1">
-            Don&apos;t know your council?{' '}
-            <a
-              href="https://www.gov.uk/council-tax-bands"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-foreground transition-colors"
-            >
-              Find it by postcode on GOV.UK
-            </a>
-          </p>
         </div>
       </div>
     );
