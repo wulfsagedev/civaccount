@@ -9,7 +9,7 @@ export default function ContributeBanner() {
       <p className="type-body-sm text-muted-foreground mb-4">
         CivAccount is free and independent. If you find it useful, your support keeps it going.
       </p>
-      <DonateButton variant="header" />
+      <DonateButton />
     </section>
   );
 }

@@ -67,14 +67,14 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          'inline-flex items-center gap-1.5 type-body-sm font-medium transition-colors cursor-pointer rounded-lg',
+          'inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer rounded-lg',
           variant === 'header'
-            ? 'h-9 px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted'
-            : 'text-muted-foreground hover:text-foreground hover:bg-muted px-2 py-1'
+            ? 'h-9 px-4 py-2 type-body-sm text-muted-foreground hover:text-foreground hover:bg-muted'
+            : 'h-11 px-5 py-2 type-body-sm bg-foreground text-background hover:bg-foreground/90'
         )}
       >
         <Heart className="h-3.5 w-3.5" aria-hidden="true" />
-        Donate
+        {variant === 'header' ? 'Donate' : 'Support CivAccount'}
       </button>
 
       {/* Modal - rendered via portal to ensure it's above all other content */}
