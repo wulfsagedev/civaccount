@@ -1256,10 +1256,10 @@ export default function InsightsClient() {
               Find your council
             </Link>
           </div>
-        </div>
 
-        <div className="mt-8">
-          <ContributeBanner />
+          <div className="mt-8">
+            <ContributeBanner />
+          </div>
         </div>
       </main>
 
