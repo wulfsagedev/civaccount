@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
 import ProposalForm from '@/components/proposals/ProposalForm';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
@@ -13,8 +13,10 @@ import Link from 'next/link';
 
 export default function NewProposalPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
   const council = useMemo(() => getCouncilBySlug(slug), [slug]);
+  const prefillCategory = searchParams.get('category') || '';
 
   if (!council) {
     return (
@@ -54,7 +56,7 @@ export default function NewProposalPage() {
             Suggest how {displayName} could spend your money better.
           </p>
 
-          <ProposalForm council={council} councilSlug={slug} />
+          <ProposalForm council={council} councilSlug={slug} prefillCategory={prefillCategory} />
         </div>
       </main>
       <Footer />

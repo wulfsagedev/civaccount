@@ -64,7 +64,7 @@ function BudgetContext({ council, slug, availableCategories }: {
         {topCategories.map(({ key, label, amount }) => (
           <Link
             key={key}
-            href={`/council/${slug}/proposals/new`}
+            href={`/council/${slug}/proposals/new?category=${key}`}
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted hover:bg-muted/80 transition-colors cursor-pointer"
           >
             <span className="type-caption font-medium">{label}</span>

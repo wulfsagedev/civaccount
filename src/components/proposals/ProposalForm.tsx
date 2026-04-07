@@ -28,6 +28,7 @@ interface ProposalFormProps {
     budget_category: string;
     labels: string[];
   };
+  prefillCategory?: string;
   onSaved?: () => void;
   onCancel?: () => void;
 }
@@ -37,6 +38,7 @@ export default function ProposalForm({
   councilSlug,
   mode = 'create',
   initialData,
+  prefillCategory,
   onSaved,
   onCancel,
 }: ProposalFormProps) {
@@ -44,7 +46,7 @@ export default function ProposalForm({
   const router = useRouter();
   const [title, setTitle] = useState(initialData?.title ?? '');
   const [body, setBody] = useState(initialData?.body ?? '');
-  const [category, setCategory] = useState(initialData?.budget_category ?? '');
+  const [category, setCategory] = useState(initialData?.budget_category ?? prefillCategory ?? '');
   const [labels, setLabels] = useState<string[]>(initialData?.labels ?? []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');

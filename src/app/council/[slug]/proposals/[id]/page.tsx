@@ -21,7 +21,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
-import { MessageSquare, TrendingUp, TrendingDown, Pencil, Trash2 } from 'lucide-react';
+import { MessageSquare, TrendingUp, TrendingDown, Pencil, Trash2, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { getDiffsForCouncil } from '@/lib/civic-diffs';
 import MilestoneBar from '@/components/proposals/MilestoneBar';
@@ -387,19 +387,22 @@ export default function ProposalDetailPage() {
 
         {/* Budget context — how much the council spends in this area */}
         {budgetAmount && typeof budgetAmount === 'number' && budgetAmount > 0 && (
-          <div className="mt-4 p-4 sm:p-5 rounded-xl bg-muted/30 border border-border/30">
-            <p className="type-body-sm text-muted-foreground">
-              {displayName} spends{' '}
-              <span className="font-semibold text-foreground">{formatBudget(budgetAmount)}</span>
-              {' '}per year on {getCategoryLabel(proposal.budget_category).toLowerCase()}
-            </p>
-            <Link
-              href={`/council/${slug}`}
-              className="type-body-sm text-muted-foreground hover:text-foreground transition-colors underline mt-1 inline-block cursor-pointer"
-            >
-              See the full budget breakdown
-            </Link>
-          </div>
+          <Link
+            href={`/council/${slug}`}
+            className={`${CARD_STYLES} mt-4 p-4 sm:p-5 flex items-center justify-between group hover:bg-muted/50 transition-colors cursor-pointer`}
+          >
+            <div className="leading-tight">
+              <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
+                {displayName} spends{' '}
+                <span className="text-foreground">{formatBudget(budgetAmount)}</span>
+                {' '}per year on {getCategoryLabel(proposal.budget_category).toLowerCase()}
+              </p>
+              <p className="type-caption text-muted-foreground">
+                See the full budget breakdown
+              </p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+          </Link>
         )}
 
         {/* Comments section */}
