@@ -167,6 +167,9 @@ export default function ProposalDetailPage() {
     routerNav.push(`/council/${slug}/proposals`);
   };
 
+  // Hooks must be called before any early returns
+  const civicDiffs = useMemo(() => getDiffsForCouncil(slug), [slug]);
+
   if (!council) return null;
 
   const displayName = getCouncilDisplayName(council);
@@ -174,13 +177,9 @@ export default function ProposalDetailPage() {
   const canEditProposal = isAuthor && proposal && canEdit(proposal.created_at);
   const editTimeLeft = proposal ? editWindowRemaining(proposal.created_at) : '';
 
-  // Get budget figure for the linked category
   const budgetAmount = proposal && council.budget
     ? council.budget[proposal.budget_category as keyof typeof council.budget]
     : null;
-
-  // Get relevant civic diffs for this council
-  const civicDiffs = useMemo(() => getDiffsForCouncil(slug), [slug]);
 
   if (isLoading) {
     return (
