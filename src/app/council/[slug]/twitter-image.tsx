@@ -5,8 +5,8 @@ export const runtime = 'nodejs';
 
 export const alt = 'Council tax and budget breakdown';
 export const size = {
-  width: 1200,
-  height: 600,
+  width: 2400,
+  height: 1200,
 };
 export const contentType = 'image/png';
 
@@ -28,9 +28,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#f5f5f5',
+          background: '#18181b',
           fontFamily: 'system-ui, sans-serif',
-          border: '1px solid #e5e5e5',
         }}
       >
         {/* Logo icon */}
@@ -39,19 +38,19 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: 64,
-            height: 64,
-            background: '#1c1917',
+            width: 128,
+            height: 128,
+            background: '#f0f0f0',
             borderRadius: '50%',
-            marginBottom: 24,
+            marginBottom: 48,
           }}
         >
           <svg
-            width="36"
-            height="36"
+            width="72"
+            height="72"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#fafaf9"
+            stroke="#18181b"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -69,11 +68,11 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div
           style={{
             display: 'flex',
-            fontSize: 16,
-            color: '#737373',
+            fontSize: 32,
+            color: '#9a9a9a',
             letterSpacing: '0.05em',
             textTransform: 'uppercase',
-            marginBottom: 10,
+            marginBottom: 20,
           }}
         >
           {typeName}
@@ -82,13 +81,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         {/* Council name */}
         <div
           style={{
-            fontSize: displayName.length > 30 ? 44 : 52,
+            fontSize: displayName.length > 30 ? 88 : 104,
             fontWeight: 700,
-            color: '#1c1917',
-            marginBottom: 18,
+            color: '#f0f0f0',
+            marginBottom: 36,
             letterSpacing: '-0.02em',
             textAlign: 'center',
-            maxWidth: 1000,
+            maxWidth: 2000,
             lineHeight: 1.1,
           }}
         >
@@ -101,13 +100,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             style={{
               display: 'flex',
               alignItems: 'baseline',
-              gap: 8,
-              fontSize: 28,
-              color: '#525252',
+              gap: 16,
+              fontSize: 56,
+              color: '#b0b0b0',
             }}
           >
-            <span style={{ color: '#a3a3a3', fontSize: 20 }}>Band D</span>
-            <span style={{ fontWeight: 700, color: '#1c1917' }}>
+            <span style={{ color: '#9a9a9a', fontSize: 40 }}>Band D</span>
+            <span style={{ fontWeight: 700, color: '#f0f0f0' }}>
               {`\u00A3${bandD.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`}
             </span>
           </div>
@@ -118,14 +117,14 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 16,
-            marginTop: 28,
-            fontSize: 16,
-            color: '#a3a3a3',
+            gap: 32,
+            marginTop: 56,
+            fontSize: 32,
+            color: '#9a9a9a',
           }}
         >
           <span>2025-26</span>
-          <span style={{ color: '#d4d4d4' }}>|</span>
+          <span style={{ color: '#3f3f46' }}>|</span>
           <span>CivAccount</span>
         </div>
       </div>

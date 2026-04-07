@@ -1,64 +1,45 @@
 import type { Council } from '@/data/councils';
 import type { ReactElement } from 'react';
-import { OG_COLORS, formatCurrencyOG } from '../og-shared';
+import { OG, ogWrap, ogBrand, formatCurrencyOG } from '../og-shared';
 
-export function renderBillBreakdown(council: Council, _councilName: string): ReactElement {
+export function renderBillBreakdown(council: Council, councilName: string): ReactElement {
   const precepts = council.detailed?.precepts;
   if (!precepts?.length) return <div style={{ display: 'flex' }}>No data</div>;
 
   const total = precepts.reduce((sum, p) => sum + p.band_d, 0);
+  const colors = ['#ececec', '#a3a3a3', '#71717a', '#52525b', '#3a3a40'];
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <div style={{ display: 'flex', fontSize: '32px', fontWeight: 700, color: OG_COLORS.text }}>
-          Where your bill goes
+  return ogWrap(
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '48px' }}>
+          <span style={{ fontSize: '72px', fontWeight: 700, color: OG.text }}>Where your bill goes</span>
+          <span style={{ fontSize: '56px', fontWeight: 700, color: OG.text }}>{formatCurrencyOG(total, 2)}</span>
         </div>
-        <div style={{ display: 'flex', fontSize: '24px', fontWeight: 700, color: OG_COLORS.text }}>
-          Total: {formatCurrencyOG(total, 2)}
+
+        <div style={{ display: 'flex', height: '56px', borderRadius: '28px', overflow: 'hidden', gap: '4px', marginBottom: '48px' }}>
+          {precepts.map((p, i) => (
+            <div key={p.authority} style={{ display: 'flex', width: `${(p.band_d / total) * 100}%`, height: '100%', backgroundColor: colors[i % colors.length] }} />
+          ))}
         </div>
-      </div>
 
-      {/* Stacked bar */}
-      <div style={{ display: 'flex', height: '32px', borderRadius: '16px', overflow: 'hidden', gap: '2px' }}>
-        {precepts.map((p, i) => {
-          const pct = (p.band_d / total) * 100;
-          const colors = ['#1c1917', '#525252', '#737373', '#a3a3a3', '#d4d4d4'];
-          return (
-            <div
-              key={p.authority}
-              style={{
-                display: 'flex',
-                width: `${pct}%`,
-                height: '100%',
-                backgroundColor: colors[i % colors.length],
-              }}
-            />
-          );
-        })}
-      </div>
-
-      {/* Legend */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '8px' }}>
-        {precepts.map((p, i) => {
-          const pct = ((p.band_d / total) * 100).toFixed(0);
-          const colors = ['#1c1917', '#525252', '#737373', '#a3a3a3', '#d4d4d4'];
-          return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {precepts.map((p, i) => (
             <div key={p.authority} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ display: 'flex', width: '16px', height: '16px', borderRadius: '4px', backgroundColor: colors[i % colors.length] }} />
-                <span style={{ fontSize: '20px', color: OG_COLORS.text }}>{p.authority}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                <div style={{ display: 'flex', width: '32px', height: '32px', borderRadius: '8px', backgroundColor: colors[i % colors.length] }} />
+                <span style={{ fontSize: '42px', color: OG.text }}>{p.authority}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                <span style={{ fontSize: '18px', color: OG_COLORS.muted }}>{pct}%</span>
-                <span style={{ fontSize: '20px', fontWeight: 600, color: OG_COLORS.text }}>
-                  {formatCurrencyOG(p.band_d, 2)}
-                </span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '24px' }}>
+                <span style={{ fontSize: '36px', color: OG.muted }}>{((p.band_d / total) * 100).toFixed(0)}%</span>
+                <span style={{ fontSize: '42px', fontWeight: 700, color: OG.text }}>{formatCurrencyOG(p.band_d, 2)}</span>
               </div>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
+
+      {ogBrand(councilName, council.type_name)}
     </div>
   );
 }

@@ -1,13 +1,20 @@
 import { ImageResponse } from 'next/og';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-export const runtime = 'edge';
-
+export const runtime = 'nodejs';
 export const alt = 'CivAccount - See where your council tax goes';
-export const size = {
-  width: 1200,
-  height: 630,
-};
+export const size = { width: 2400, height: 1260 };
 export const contentType = 'image/png';
+
+function loadFont(filename: string): ArrayBuffer {
+  return readFileSync(join(process.cwd(), 'node_modules', 'geist', 'dist', 'fonts', 'geist-sans', filename)).buffer as ArrayBuffer;
+}
+
+const fonts = [
+  { name: 'Geist', data: loadFont('Geist-Regular.ttf'), weight: 400 as const, style: 'normal' as const },
+  { name: 'Geist', data: loadFont('Geist-Bold.ttf'), weight: 700 as const, style: 'normal' as const },
+];
 
 export default async function Image() {
   return new ImageResponse(
@@ -20,34 +27,13 @@ export default async function Image() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#f5f5f5',
-          fontFamily: 'system-ui, sans-serif',
-          border: '1px solid #e5e5e5',
+          background: 'linear-gradient(145deg, #22222a 0%, #1c1c20 40%, #181820 100%)',
+          fontFamily: 'Geist, system-ui, sans-serif',
         }}
       >
-        {/* Logo icon */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 96,
-            height: 96,
-            background: '#1c1917',
-            borderRadius: '50%',
-            marginBottom: 36,
-          }}
-        >
-          <svg
-            width="52"
-            height="52"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fafaf9"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 192, height: 192, background: '#f0f0f0', borderRadius: '50%', marginBottom: 72 }}>
+          <svg width="104" height="104" viewBox="0 0 24 24" fill="none" stroke="#1c1c20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" x2="21" y1="22" y2="22" />
             <line x1="6" x2="6" y1="18" y2="11" />
             <line x1="10" x2="10" y1="18" y2="11" />
@@ -57,48 +43,19 @@ export default async function Image() {
           </svg>
         </div>
 
-        {/* Title */}
-        <div
-          style={{
-            fontSize: 72,
-            fontWeight: 700,
-            color: '#1c1917',
-            marginBottom: 16,
-            letterSpacing: '-0.03em',
-          }}
-        >
+        <div style={{ fontSize: 144, fontWeight: 700, color: '#f0f0f0', marginBottom: 32, letterSpacing: '-0.03em' }}>
           CivAccount
         </div>
 
-        {/* Tagline */}
-        <div
-          style={{
-            fontSize: 30,
-            color: '#737373',
-            textAlign: 'center',
-            maxWidth: 700,
-          }}
-        >
+        <div style={{ fontSize: 60, color: '#b0b0b0', textAlign: 'center', maxWidth: 1400 }}>
           See where your council tax goes
         </div>
 
-        {/* Subtle descriptor */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginTop: 36,
-            fontSize: 18,
-            color: '#a3a3a3',
-            letterSpacing: '0.05em',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: 72, fontSize: 36, color: '#9a9a9a', letterSpacing: '0.05em' }}>
           ALL 317 ENGLISH COUNCILS
         </div>
       </div>
     ),
-    {
-      ...size,
-    }
+    { ...size, fonts }
   );
 }

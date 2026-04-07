@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
 import { CARD_TYPES } from '../_lib/card-types';
-import { ogHeader, ogFooter, ogCardWrapper, OG_COLORS } from '../_lib/og-shared';
+import { OG, ogWrap, ogBrand, getGeistFonts } from '../_lib/og-shared';
 import { renderBillHistory } from '../_lib/og-renderers/bill-history';
 import { renderYourBill } from '../_lib/og-renderers/your-bill';
 import { renderSpending } from '../_lib/og-renderers/spending';
@@ -19,7 +19,7 @@ import type { ReactElement } from 'react';
 
 export const runtime = 'nodejs';
 export const alt = 'CivAccount Card';
-export const size = { width: 1200, height: 630 };
+export const size = { width: 2400, height: 1260 };
 export const contentType = 'image/png';
 export const dynamic = 'force-dynamic';
 
@@ -38,43 +38,29 @@ const renderers: Record<string, (council: Council, councilName: string) => React
   'service-outcomes': renderServiceOutcomes,
 };
 
+const ogOptions = { ...size, fonts: getGeistFonts() };
+
 export default async function Image({ params }: { params: Promise<{ slug: string; type: string }> }) {
   const { slug, type } = await params;
   const council = getCouncilBySlug(slug);
   const displayName = council ? getCouncilDisplayName(council) : slug.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  const typeName = council?.type_name;
   const cardType = CARD_TYPES[type];
   const renderer = renderers[type];
 
-  // Fallback if no renderer or no data
   if (!council || !renderer || (cardType && !cardType.hasData(council))) {
     return new ImageResponse(
-      ogCardWrapper(
+      ogWrap(
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-          {ogHeader(displayName, typeName)}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1, justifyContent: 'center' }}>
-            <div style={{ fontSize: '48px', fontWeight: 700, color: OG_COLORS.text }}>{displayName}</div>
-            <div style={{ fontSize: '24px', color: OG_COLORS.secondary }}>Council Tax & Budget 2025-26</div>
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+            <div style={{ fontSize: '120px', fontWeight: 700, color: OG.text, lineHeight: 1.1, marginBottom: '32px' }}>{displayName}</div>
+            <div style={{ fontSize: '56px', color: OG.secondary }}>Council Tax & Budget 2025-26</div>
           </div>
-          {ogFooter()}
+          {ogBrand(displayName, council?.type_name)}
         </div>
       ),
-      { ...size }
+      ogOptions
     );
   }
 
-  const content = renderer(council, displayName);
-
-  return new ImageResponse(
-    ogCardWrapper(
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-        {ogHeader(displayName, typeName)}
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', paddingTop: '16px', paddingBottom: '16px' }}>
-          {content}
-        </div>
-        {ogFooter()}
-      </div>
-    ),
-    { ...size }
-  );
+  return new ImageResponse(renderer(council, displayName), ogOptions);
 }

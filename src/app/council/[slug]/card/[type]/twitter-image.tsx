@@ -2,4 +2,4 @@
 export { default, alt, contentType } from './opengraph-image';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const size = { width: 1200, height: 600 };
+export const size = { width: 2400, height: 1200 };

@@ -965,6 +965,44 @@ const headerStyles = {
 
 ---
 
+## OpenGraph Image Design Rules (UNBREAKABLE)
+
+All OG images are generated with `next/og` (Satori) using **inline styles only** — no Tailwind classes, no CSS files. Satori does not support them.
+
+### Canvas
+- Render at **2400x1260** (2x DPI), served as 1200x630 — produces crisp retina text
+- Twitter images: **2400x1200** (2x of 1200x600)
+
+### Safe Zone
+- **20% vertical margin** (252px top/bottom) + **10% horizontal** (240px left/right)
+- No content may touch the outer edge — enforced by `ogWrap()` padding
+- Brand strip sits inside the safe zone at the very bottom
+
+### Typography
+- **Minimum font size: 32px** at 2x canvas (renders as 16px after downscale)
+- Exported as `MIN_FONT` from `og-shared.tsx`
+- Soft white text (`#ececec`), never pure `#ffffff`
+- One oversized hero number per card — the primary datum dominates
+
+### Colours
+- Must use `OG` constants from `og-shared.tsx` — matches app dark mode
+- Semantic colours (`positive`/`negative`) only for data changes
+- Navy accent (`#7c82d4`) for highlights only (chart lines, Band D highlight)
+- No arbitrary hex values in renderers
+
+### Layout
+- Data fills ~85% of the canvas — hero content is the image
+- Brand strip: single line at bottom (`ogBrand()`), ~5% of height
+- No header bar, no card surface wrapper — content goes edge-to-edge
+- Bar charts: pill-shaped (`borderRadius: 9999px`), single colour fill on muted track
+
+### Files
+- Shared: `src/app/council/[slug]/card/_lib/og-shared.tsx`
+- Renderers: `src/app/council/[slug]/card/_lib/og-renderers/*.tsx`
+- Each renderer exports `render[Type](council, councilName)` returning a full `ogWrap()` layout
+
+---
+
 ## Do NOT
 
 - Add new color tokens - use existing design system colors

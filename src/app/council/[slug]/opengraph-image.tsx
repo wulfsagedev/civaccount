@@ -1,14 +1,21 @@
 import { ImageResponse } from 'next/og';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
 
 export const runtime = 'nodejs';
-
 export const alt = 'Council tax and budget breakdown';
-export const size = {
-  width: 1200,
-  height: 630,
-};
+export const size = { width: 2400, height: 1260 };
 export const contentType = 'image/png';
+
+function loadFont(filename: string): ArrayBuffer {
+  return readFileSync(join(process.cwd(), 'node_modules', 'geist', 'dist', 'fonts', 'geist-sans', filename)).buffer as ArrayBuffer;
+}
+
+const fonts = [
+  { name: 'Geist', data: loadFont('Geist-Regular.ttf'), weight: 400 as const, style: 'normal' as const },
+  { name: 'Geist', data: loadFont('Geist-Bold.ttf'), weight: 700 as const, style: 'normal' as const },
+];
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -28,34 +35,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#f5f5f5',
-          fontFamily: 'system-ui, sans-serif',
-          border: '1px solid #e5e5e5',
+          background: 'linear-gradient(145deg, #22222a 0%, #1c1c20 40%, #181820 100%)',
+          fontFamily: 'Geist, system-ui, sans-serif',
         }}
       >
-        {/* Logo icon */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 72,
-            height: 72,
-            background: '#1c1917',
-            borderRadius: '50%',
-            marginBottom: 28,
-          }}
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fafaf9"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 144, height: 144, background: '#f0f0f0', borderRadius: '50%', marginBottom: 56 }}>
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1c1c20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" x2="21" y1="22" y2="22" />
             <line x1="6" x2="6" y1="18" y2="11" />
             <line x1="10" x2="10" y1="18" y2="11" />
@@ -65,73 +51,34 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           </svg>
         </div>
 
-        {/* Type badge */}
-        <div
-          style={{
-            display: 'flex',
-            fontSize: 18,
-            color: '#737373',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase',
-            marginBottom: 12,
-          }}
-        >
+        {/* Type */}
+        <div style={{ display: 'flex', fontSize: 36, color: '#9a9a9a', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 24 }}>
           {typeName}
         </div>
 
-        {/* Council name */}
-        <div
-          style={{
-            fontSize: displayName.length > 30 ? 48 : 56,
-            fontWeight: 700,
-            color: '#1c1917',
-            marginBottom: 20,
-            letterSpacing: '-0.02em',
-            textAlign: 'center',
-            maxWidth: 1000,
-            lineHeight: 1.1,
-          }}
-        >
+        {/* Name */}
+        <div style={{ fontSize: displayName.length > 30 ? 96 : 112, fontWeight: 700, color: '#f0f0f0', marginBottom: 40, letterSpacing: '-0.02em', textAlign: 'center', maxWidth: 2000, lineHeight: 1.1 }}>
           {displayName}
         </div>
 
-        {/* Band D rate */}
+        {/* Band D */}
         {bandD && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              gap: 8,
-              fontSize: 32,
-              color: '#525252',
-            }}
-          >
-            <span style={{ color: '#a3a3a3', fontSize: 22 }}>Band D</span>
-            <span style={{ fontWeight: 700, color: '#1c1917' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, fontSize: 64, color: '#b0b0b0' }}>
+            <span style={{ color: '#9a9a9a', fontSize: 44 }}>Band D</span>
+            <span style={{ fontWeight: 700, color: '#f0f0f0' }}>
               {`\u00A3${bandD.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`}
             </span>
           </div>
         )}
 
-        {/* Year + branding */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
-            marginTop: 36,
-            fontSize: 18,
-            color: '#a3a3a3',
-          }}
-        >
+        {/* Footer */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32, marginTop: 72, fontSize: 36, color: '#9a9a9a' }}>
           <span>2025-26</span>
-          <span style={{ color: '#d4d4d4' }}>|</span>
+          <span style={{ color: '#3a3a40' }}>|</span>
           <span>CivAccount</span>
         </div>
       </div>
     ),
-    {
-      ...size,
-    }
+    { ...size, fonts }
   );
 }
