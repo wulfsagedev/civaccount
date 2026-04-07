@@ -54,7 +54,8 @@ export default function EmbedPage() {
     );
   }
 
-  const proposalUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/council/${proposal.council_slug}/proposals/${proposal.id}`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://www.civaccount.co.uk');
+  const proposalUrl = `${appUrl}/council/${proposal.council_slug}/proposals/${proposal.id}`;
 
   return (
     <div style={{

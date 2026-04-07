@@ -71,7 +71,7 @@ function toCsv(rows: ReturnType<typeof buildRow>[]) {
 
 export async function GET(request: NextRequest) {
   const ip = getClientIP(request);
-  const { success: allowed } = checkRateLimit(ip, { limit: 10, windowSeconds: 60 });
+  const { success: allowed } = await checkRateLimit(ip, { limit: 10, windowSeconds: 60 });
 
   if (!allowed) {
     return NextResponse.json(

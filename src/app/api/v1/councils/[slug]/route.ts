@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const ip = getClientIP(request);
-  const { success: allowed, remaining } = checkRateLimit(ip, { limit: 100, windowSeconds: 60 });
+  const { success: allowed, remaining } = await checkRateLimit(ip, { limit: 100, windowSeconds: 60 });
 
   if (!allowed) {
     return NextResponse.json(

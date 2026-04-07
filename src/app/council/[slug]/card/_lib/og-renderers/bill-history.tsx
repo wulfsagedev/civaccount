@@ -24,7 +24,7 @@ export function renderBillHistory(council: Council, _councilName: string): React
   const yMin = minVal - pad;
   const yMax = maxVal + pad;
 
-  // Chart area (within 1080px wide content)
+  // Chart area
   const chartLeft = 60;
   const chartRight = 1020;
   const chartTop = 10;
@@ -51,21 +51,20 @@ export function renderBillHistory(council: Council, _councilName: string): React
   const sign = diff >= 0 ? '+' : '';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       {/* Title */}
-      <div style={{ display: 'flex', fontSize: '36px', fontWeight: 700, color: OG_COLORS.text, letterSpacing: '-0.01em' }}>
+      <div style={{ display: 'flex', fontSize: '44px', fontWeight: 700, color: OG_COLORS.text, letterSpacing: '-0.02em' }}>
         How your bill has changed
       </div>
-      <div style={{ display: 'flex', fontSize: '18px', color: OG_COLORS.secondary, marginBottom: '8px' }}>
+      <div style={{ display: 'flex', fontSize: '22px', color: OG_COLORS.secondary, marginBottom: '4px' }}>
         Band D council tax over the last {years.length} years
       </div>
 
-      {/* Chart: SVG for lines only, HTML for labels */}
+      {/* Chart */}
       <div style={{ display: 'flex', position: 'relative', width: '1080px', height: '290px' }}>
-        {/* SVG layer — lines and dots only */}
         <svg width="1080" height="210" viewBox="0 0 1080 210" style={{ position: 'absolute', top: 0, left: 0 }}>
-          <path d={areaPath} fill={OG_COLORS.text} fillOpacity="0.05" />
-          <path d={linePath} fill="none" stroke={OG_COLORS.text} strokeWidth="3" />
+          <path d={areaPath} fill={OG_COLORS.text} fillOpacity="0.06" />
+          <path d={linePath} fill="none" stroke={OG_COLORS.text} strokeWidth="3.5" />
           {points.map((p, i) => {
             const isLast = i === points.length - 1;
             return (
@@ -73,7 +72,7 @@ export function renderBillHistory(council: Council, _councilName: string): React
                 key={p.year}
                 cx={p.x}
                 cy={p.y}
-                r={isLast ? 8 : 6}
+                r={isLast ? 9 : 6}
                 fill={isLast ? OG_COLORS.text : OG_COLORS.bg}
                 stroke={OG_COLORS.text}
                 strokeWidth={isLast ? 0 : 2.5}
@@ -82,7 +81,7 @@ export function renderBillHistory(council: Council, _councilName: string): React
           })}
         </svg>
 
-        {/* HTML labels positioned below chart */}
+        {/* Labels below chart */}
         {points.map((p, i) => {
           const isLast = i === points.length - 1;
           return (
@@ -93,15 +92,15 @@ export function renderBillHistory(council: Council, _councilName: string): React
                 flexDirection: 'column',
                 alignItems: 'center',
                 position: 'absolute',
-                left: `${p.x - 50}px`,
-                top: `${chartBottom + 16}px`,
-                width: '100px',
+                left: `${p.x - 55}px`,
+                top: `${chartBottom + 14}px`,
+                width: '110px',
               }}
             >
-              <span style={{ fontSize: isLast ? '22px' : '20px', fontWeight: isLast ? 700 : 400, color: isLast ? OG_COLORS.text : OG_COLORS.secondary }}>
+              <span style={{ fontSize: isLast ? '24px' : '22px', fontWeight: isLast ? 700 : 500, color: isLast ? OG_COLORS.text : OG_COLORS.secondary }}>
                 {p.year}
               </span>
-              <span style={{ fontSize: isLast ? '22px' : '20px', fontWeight: isLast ? 700 : 400, color: isLast ? OG_COLORS.text : OG_COLORS.secondary, marginTop: '6px' }}>
+              <span style={{ fontSize: isLast ? '26px' : '22px', fontWeight: isLast ? 700 : 500, color: isLast ? OG_COLORS.text : OG_COLORS.secondary, marginTop: '4px' }}>
                 {formatCurrencyOG(p.value, 0)}
               </span>
             </div>
@@ -115,17 +114,17 @@ export function renderBillHistory(council: Council, _councilName: string): React
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '12px 16px',
-          backgroundColor: 'rgba(0,0,0,0.03)',
+          padding: '14px 20px',
+          backgroundColor: 'rgba(0,0,0,0.04)',
           borderRadius: '12px',
         }}
       >
-        <span style={{ fontSize: '20px', color: OG_COLORS.secondary }}>
+        <span style={{ fontSize: '24px', fontWeight: 500, color: OG_COLORS.secondary }}>
           Change over {years.length} years
         </span>
         <span
           style={{
-            fontSize: '22px',
+            fontSize: '28px',
             fontWeight: 700,
             color: diff > 0 ? '#b45309' : OG_COLORS.positive,
           }}

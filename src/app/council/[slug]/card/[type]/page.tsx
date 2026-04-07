@@ -1,7 +1,7 @@
-import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
 import { CARD_TYPES, VALID_CARD_TYPES } from '../_lib/card-types';
+import CardRedirect from './CardRedirect';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,9 +42,9 @@ export default async function CardPage({
 }) {
   const { slug, type } = await params;
 
-  if (VALID_CARD_TYPES.includes(type)) {
-    redirect(`/council/${slug}#${type}`);
-  }
+  const target = VALID_CARD_TYPES.includes(type)
+    ? `/council/${slug}#${type}`
+    : `/council/${slug}`;
 
-  redirect(`/council/${slug}`);
+  return <CardRedirect target={target} />;
 }

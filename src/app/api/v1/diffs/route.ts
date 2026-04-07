@@ -4,7 +4,7 @@ import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function GET(request: NextRequest) {
   const ip = getClientIP(request);
-  const { success: allowed, remaining } = checkRateLimit(ip, { limit: 100, windowSeconds: 60 });
+  const { success: allowed, remaining } = await checkRateLimit(ip, { limit: 100, windowSeconds: 60 });
 
   if (!allowed) {
     return NextResponse.json(
