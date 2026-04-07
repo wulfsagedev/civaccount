@@ -14,6 +14,7 @@ import { StatusPanel } from '@/components/ui/status-panel';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Plus, ChevronRight, GitCompareArrows } from 'lucide-react';
 import Link from 'next/link';
 
@@ -204,10 +205,18 @@ export default function ProposalsPage() {
           { label: 'Town Hall' },
         ]} />
 
-        {/* Page header */}
+        {/* Council header — matches dashboard styling */}
         <div className="mb-6">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <Badge variant="secondary" className="type-body-sm font-medium">
+              {council.type_name}
+            </Badge>
+            <Badge variant="outline" className="type-body-sm font-medium">
+              Town Hall
+            </Badge>
+          </div>
           <div className="flex items-center justify-between gap-3 mb-1">
-            <h1 className="type-title-1">Town Hall</h1>
+            <h1 className="type-title-1 font-bold text-foreground leading-tight">{displayName}</h1>
             <Link href={`/council/${slug}/proposals/new`}>
               <Button size="sm" className="shrink-0 cursor-pointer gap-1.5">
                 <Plus className="h-4 w-4" aria-hidden="true" />
