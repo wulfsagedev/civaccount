@@ -234,10 +234,7 @@ export default function Header() {
         )}
       >
         {/* Gradient fade — masks content scrolling behind the nav */}
-        <div
-          className="absolute inset-x-0 top-0 h-20 pointer-events-none"
-          style={{ background: `linear-gradient(to bottom, rgb(var(--background-rgb)) 40%, transparent)` }}
-        />
+        <div className="absolute inset-x-0 top-0 h-24 pointer-events-none bg-gradient-to-b from-background via-background/80 to-transparent" />
         <div className="relative px-4 sm:px-6 pt-3">
         <div className="mx-auto" style={{ maxWidth: '845px' }}>
           {/* Main pill nav */}
