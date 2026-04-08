@@ -1,7 +1,36 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Check, Loader2, Download, X } from 'lucide-react';
+
+/** OG image with skeleton loader — handles loading state properly */
+function OGImagePreview({ src }: { src: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <div className="rounded-lg overflow-hidden border border-border/30 mb-4 bg-muted/30">
+      {/* Skeleton — shows until image loads */}
+      {!loaded && !error && (
+        <div className="aspect-[1200/630] w-full animate-pulse bg-muted flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground/60 animate-spin" />
+            <span className="type-caption text-muted-foreground">Loading preview</span>
+          </div>
+        </div>
+      )}
+      {/* Image — hidden until loaded */}
+      <img
+        src={src}
+        alt="Share preview"
+        className={`w-full h-auto ${loaded ? 'block' : 'hidden'}`}
+        loading="eager"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+      />
+    </div>
+  );
+}
 
 interface ShareButtonProps {
   title: string;
@@ -80,29 +109,7 @@ function SharePreviewModal({
 
         {/* OG image preview with skeleton loading */}
         {imageUrl && (
-          <div className="rounded-lg overflow-hidden border border-border/30 mb-4 bg-muted/30 relative">
-            {/* Skeleton — visible until image loads */}
-            <div className="aspect-[1200/630] w-full animate-pulse bg-muted flex items-center justify-center peer-[.loaded]:hidden">
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground/60 animate-spin" />
-                <span className="type-caption text-muted-foreground">Loading preview</span>
-              </div>
-            </div>
-            <img
-              src={imageUrl}
-              alt="Share preview"
-              className="w-full h-auto absolute inset-0 opacity-0 transition-opacity duration-300"
-              loading="eager"
-              onLoad={(e) => {
-                const img = e.currentTarget;
-                img.classList.remove('opacity-0');
-                img.classList.add('opacity-100');
-                // Hide skeleton
-                const skeleton = img.previousElementSibling;
-                if (skeleton) (skeleton as HTMLElement).style.display = 'none';
-              }}
-            />
-          </div>
+          <OGImagePreview src={imageUrl} />
         )}
 
         {/* Share text preview */}
