@@ -1,6 +1,8 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useCouncil } from '@/context/CouncilContext';
+import { getCouncilSlug } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
 
 interface CardShareHeaderProps {
@@ -21,9 +23,13 @@ export default function CardShareHeader({
   show = true,
   subtitleClassName = 'mb-5',
 }: CardShareHeaderProps) {
+  // Get slug from URL params OR from CouncilContext (homepage renders dashboard without URL slug)
   const params = useParams<{ slug: string }>();
-  const slug = params?.slug;
-  const shareUrl = slug ? `${typeof window !== 'undefined' ? window.location.origin : ''}/council/${slug}/card/${cardType}` : undefined;
+  const { selectedCouncil } = useCouncil();
+  const slug = params?.slug || (selectedCouncil ? getCouncilSlug(selectedCouncil) : undefined);
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const shareUrl = slug ? `${origin}/council/${slug}/card/${cardType}` : undefined;
   const imageUrl = slug ? `/api/share/${slug}/${cardType}?format=story` : undefined;
 
   return (
