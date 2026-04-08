@@ -57,7 +57,7 @@
 
 :root {
   /* RGB values for rgba() in JS (used by morphing header) */
-  --background-rgb: 253 253 253;
+  --background-rgb: 252 250 246;
   --border-rgb: 0 0 0;
 
   /* 8pt spacing system - modern standard */
@@ -93,19 +93,19 @@
      - status-warning for negative indicators
      ============================================ */
 
-  /* Light mode - optimised for accessibility
+  /* Light mode - warm off-white with cream undertone (hue 75)
      All text meets WCAG 2.1 AA (4.5:1 for normal, 3:1 for large text) */
-  --background: oklch(0.995 0 0);            /* Slight off-white, easier on eyes */
+  --background: oklch(0.985 0.006 75);       /* Warm off-white — subtle cream */
   --foreground: oklch(0.12 0 0);             /* Near-black for maximum contrast */
-  --card: oklch(1 0 0);                      /* Pure white for cards */
+  --card: oklch(0.995 0.003 75);             /* Warm white cards — hint of cream */
   --card-foreground: oklch(0.12 0 0);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.995 0.003 75);
   --popover-foreground: oklch(0.12 0 0);
   --primary: oklch(0.18 0 0);                /* Dark primary for buttons */
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.965 0 0);
+  --secondary: oklch(0.96 0.004 75);         /* Warm light grey */
   --secondary-foreground: oklch(0.18 0 0);
-  --muted: oklch(0.96 0 0);
+  --muted: oklch(0.955 0.005 75);            /* Warm muted — cream tint */
   --muted-foreground: oklch(0.45 0 0);       /* WCAG AA: 4.6:1 contrast ratio */
 
   /* Navy blue accent - the key accent colour */
