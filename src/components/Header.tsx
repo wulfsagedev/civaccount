@@ -93,9 +93,9 @@ export default function Header() {
                 </div>
                 <span className="text-lg sm:text-xl font-bold leading-tight">CivAccount</span>
               </Link>
-              <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
-                <PulsingDot size="md" />
-                <Badge variant="outline" className="type-body-sm cursor-pointer hover:bg-muted">
+              <Link href="/updates" className="hidden sm:flex cursor-pointer">
+                <Badge variant="outline" className="type-body-sm cursor-pointer hover:bg-muted flex items-center gap-1.5">
+                  <PulsingDot size="sm" />
                   v3.0
                 </Badge>
               </Link>
@@ -195,9 +195,11 @@ export default function Header() {
                 {/* Secondary: meta + actions */}
                 <div className="pt-2 mt-2 border-t border-border/50 flex flex-col gap-1">
                   <Link href="/updates" onClick={closeMobileMenu} className={MOBILE_NAV_LINK_CLASS}>
-                    <PulsingDot size="md" />
                     Updates
-                    <Badge variant="outline" className="type-body-sm ml-auto">v3.0</Badge>
+                    <Badge variant="outline" className="type-body-sm ml-auto flex items-center gap-1.5">
+                      <PulsingDot size="sm" />
+                      v3.0
+                    </Badge>
                   </Link>
                   <button type="button" onClick={openFeedback} className={MOBILE_NAV_LINK_CLASS}>
                     <MessageSquare className="h-4 w-4" aria-hidden="true" />
