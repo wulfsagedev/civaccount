@@ -147,32 +147,32 @@
 
 .dark {
   /* RGB values for rgba() in JS (used by morphing header) */
-  --background-rgb: 30 30 35;
+  --background-rgb: 32 32 38;
   --border-rgb: 255 255 255;
 
-  /* Linear-style dark mode: layered surfaces with subtle elevation
-     Base → Card → Elevated creates visual depth without washing out
-     Uses subtle navy undertones for richness (hue 250) */
-  --background: oklch(0.13 0.008 250);       /* Deep charcoal with navy undertone */
-  --foreground: oklch(0.93 0 0);             /* Soft white, not pure (easier on eyes) */
-  --card: oklch(0.17 0.008 250);             /* First elevation layer */
-  --card-foreground: oklch(0.93 0 0);
-  --popover: oklch(0.20 0.008 250);          /* Highest elevation (modals, dropdowns) */
-  --popover-foreground: oklch(0.93 0 0);
-  --primary: oklch(0.93 0 0);
+  /* Dark mode: strong contrast between layers for clarity
+     Background is deep, cards are noticeably lighter, muted brighter
+     More separation = easier to read = matches light mode clarity */
+  --background: oklch(0.14 0.008 250);       /* Deep charcoal base */
+  --foreground: oklch(0.95 0 0);             /* Brighter white for stronger contrast */
+  --card: oklch(0.21 0.008 250);             /* Noticeably lighter than background */
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.24 0.008 250);          /* Highest elevation (modals, dropdowns) */
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.95 0 0);
   --primary-foreground: oklch(0.17 0.008 250);
-  --secondary: oklch(0.22 0.01 250);         /* Subtle elevation for sections */
-  --secondary-foreground: oklch(0.93 0 0);
-  --muted: oklch(0.24 0.012 250);            /* Interactive backgrounds */
-  --muted-foreground: oklch(0.68 0 0);       /* WCAG AA: 4.5:1 contrast ratio */
+  --secondary: oklch(0.26 0.01 250);         /* Subtle elevation for sections */
+  --secondary-foreground: oklch(0.95 0 0);
+  --muted: oklch(0.28 0.012 250);            /* Interactive backgrounds — clearly distinct */
+  --muted-foreground: oklch(0.72 0 0);       /* Brighter secondary text for readability */
 
   /* Navy blue accent - the key accent colour (dark mode) */
   --accent: oklch(0.28 0.04 250);            /* Navy tint for backgrounds */
   --accent-foreground: oklch(0.75 0.12 250); /* Lighter navy for text on dark bg */
 
   --destructive: oklch(0.65 0.18 25);        /* Softer red, still accessible */
-  --border: oklch(1 0 0 / 10%);              /* Subtle but visible borders */
-  --input: oklch(1 0 0 / 8%);
+  --border: oklch(1 0 0 / 14%);              /* Stronger borders for card separation */
+  --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.60 0.12 250);              /* Navy focus ring - matches accent */
 
   /* Navy accent scale for dark mode */
@@ -295,7 +295,7 @@
 }
 
 .dark .card-elevated {
-  border-color: oklch(1 1 1 / 8%);
+  border-color: oklch(1 1 1 / 12%);
   box-shadow:
     0 1px 2px oklch(0 0 0 / 20%),
     0 4px 12px oklch(0 0 0 / 15%);
@@ -783,8 +783,8 @@ select:focus {
 .dark .card-elevated {
   background: linear-gradient(
     180deg,
-    oklch(0.18 0.008 250) 0%,
-    oklch(0.16 0.008 250) 100%
+    oklch(0.23 0.008 250) 0%,
+    oklch(0.20 0.008 250) 100%
   );
   border-color: oklch(1 0 0 / 8%);
   box-shadow:
