@@ -106,9 +106,7 @@ function SharePreviewModal({
             {state === 'success' ? (
               <span className="type-body-sm font-semibold text-positive">{feedback}</span>
             ) : (
-              <span className="type-body-sm font-semibold">
-                {typeof navigator !== 'undefined' && 'share' in navigator ? 'Share' : 'Copy link'}
-              </span>
+              <span className="type-body-sm font-semibold">Share</span>
             )}
           </button>
 
