@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import { ShareableStat } from '@/components/ui/shareable-stat';
 
 interface LeadershipCardProps {
   selectedCouncil: Council;
@@ -53,12 +54,18 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
               <p className="type-body-sm font-semibold leading-none truncate">{detailed.chief_executive}</p>
               <p className="type-caption leading-none text-muted-foreground">Chief Executive</p>
               {detailed.chief_executive_salary && (
-                <p className="type-caption leading-none text-muted-foreground">
-                  Salary: {formatCurrency(detailed.chief_executive_salary, { decimals: 0 })}/year
-                  {detailed.chief_executive_total_remuneration && (
-                    <span> · {formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })} total package</span>
-                  )}
-                </p>
+                <ShareableStat
+                  label="CEO Salary"
+                  value={formatCurrency(detailed.chief_executive_salary, { decimals: 0 })}
+                  context="per year"
+                >
+                  <p className="type-caption leading-none text-muted-foreground">
+                    Salary: {formatCurrency(detailed.chief_executive_salary, { decimals: 0 })}/year
+                    {detailed.chief_executive_total_remuneration && (
+                      <span> · {formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })} total package</span>
+                    )}
+                  </p>
+                </ShareableStat>
               )}
             </div>
           </div>

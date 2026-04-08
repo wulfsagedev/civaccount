@@ -27,21 +27,21 @@ export const OG = {
   card: '#252529',
   surface: '#2e2e33',
   text: '#f0f0f0',     // 14.8:1 on bg — AAA
-  secondary: '#b0b0b0', // 8.2:1 on bg — AAA
-  muted: '#9a9a9a',     // 7.1:1 on bg — AAA minimum
+  secondary: '#d0d0d0', // brighter secondary for readability
+  muted: '#b8b8b8',     // brighter muted — no faint text
   bar: '#ececec',
   barBg: '#3a3a40',
-  positive: '#5fa876',
-  negative: '#d4a86a',
-  accent: '#7c82d4',
+  positive: '#6fc48a',  // brighter green
+  negative: '#e4b87a',  // brighter amber
+  accent: '#e8955a',    // warm orange accent
   border: 'rgba(255,255,255,0.08)',
 } as const;
 
 // ── Layout constants ─────────────────────────────────────────────────────────
 
-const SAFE_V = 252;  // 20% of 1260
-const SAFE_H = 240;  // 10% of 2400
-export const MIN_FONT = 32;
+const SAFE_V = 160;  // ~13% of 1260 — tighter for more content space
+const SAFE_H = 180;  // ~7.5% of 2400 — tighter horizontal
+export const MIN_FONT = 40;
 
 // ── Fonts (loaded once, cached by Node.js module system) ─────────────────────
 
@@ -92,14 +92,11 @@ export function ogWrap(children: ReactElement): ReactElement {
 export function ogBrand(councilName: string, typeName?: string): ReactElement {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+      <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text, letterSpacing: '-0.01em' }}>CivAccount</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: OG.text, display: 'flex', alignItems: 'center', justifyContent: 'center', color: OG.bg, fontSize: '24px', fontWeight: 700 }}>C</div>
-        <span style={{ fontSize: `${MIN_FONT}px`, fontWeight: 600, color: OG.muted }}>CivAccount</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        {typeName && <span style={{ fontSize: `${MIN_FONT}px`, color: OG.muted }}>{typeName}</span>}
-        <span style={{ fontSize: `${MIN_FONT}px`, color: OG.secondary }}>{councilName}</span>
-        <span style={{ fontSize: `${MIN_FONT}px`, color: OG.muted }}>· 2025-26</span>
+        {typeName && <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>{typeName}</span>}
+        <span style={{ fontSize: '44px', fontWeight: 600, color: OG.text }}>{councilName}</span>
+        <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>· 2025-26</span>
       </div>
     </div>
   );

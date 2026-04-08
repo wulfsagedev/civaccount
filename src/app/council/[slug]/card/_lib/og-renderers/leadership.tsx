@@ -18,32 +18,34 @@ export function renderLeadership(council: Council, councilName: string): ReactEl
           Who runs {councilName}
         </div>
 
+        {/* Leader + CEO — label above value, consistent grid */}
         <div style={{ display: 'flex', gap: '80px', marginBottom: '56px' }}>
           {leader && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-              <span style={{ fontSize: '32px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Council Leader</span>
-              <span style={{ fontSize: '72px', fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>{leader}</span>
+              <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Council Leader</span>
+              <span style={{ fontSize: '64px', fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>{leader}</span>
             </div>
           )}
           {ceo && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-              <span style={{ fontSize: '32px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Chief Executive</span>
-              <span style={{ fontSize: '72px', fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>{ceo}</span>
+              <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Chief Executive</span>
+              <span style={{ fontSize: '64px', fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>{ceo}</span>
             </div>
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: '64px' }}>
+        {/* Stats — label above value, same pattern */}
+        <div style={{ display: 'flex', gap: '80px' }}>
           {cabinetCount > 0 && (
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
-              <span style={{ fontSize: '72px', fontWeight: 700, color: OG.accent }}>{cabinetCount}</span>
-              <span style={{ fontSize: '44px', color: OG.secondary }}>cabinet members</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Cabinet members</span>
+              <span style={{ fontSize: '64px', fontWeight: 700, color: OG.text }}>{cabinetCount}</span>
             </div>
           )}
           {totalCouncillors && (
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
-              <span style={{ fontSize: '72px', fontWeight: 700, color: OG.accent }}>{totalCouncillors}</span>
-              <span style={{ fontSize: '44px', color: OG.secondary }}>councillors</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Councillors</span>
+              <span style={{ fontSize: '64px', fontWeight: 700, color: OG.text }}>{totalCouncillors}</span>
             </div>
           )}
         </div>

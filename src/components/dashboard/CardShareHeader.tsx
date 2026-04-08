@@ -27,17 +27,19 @@ export default function CardShareHeader({
   const imageUrl = slug ? `/api/share/${slug}/${cardType}?format=story` : undefined;
 
   return (
-    <div>
+    <div className="group/share">
       <div className="flex items-start justify-between gap-2">
         <h2 className="type-title-2 mb-1">{title}</h2>
         {show && shareUrl && (
-          <ShareButton
-            title={`${title} — ${councilName}`}
-            text={`${title} — ${councilName} on CivAccount`}
-            url={shareUrl}
-            imageUrl={imageUrl}
-            variant="icon"
-          />
+          <div className="sm:opacity-0 sm:group-hover/share:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-150">
+            <ShareButton
+              title={`${title} — ${councilName}`}
+              text={`${title} — ${councilName} on CivAccount`}
+              url={shareUrl}
+              imageUrl={imageUrl}
+              variant="icon"
+            />
+          </div>
         )}
       </div>
       {subtitle && (

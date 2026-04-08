@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, getCouncilByName, getCouncilSlug, councils, type Council } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
+import { ShareableStat } from '@/components/ui/shareable-stat';
 
 // Helper function to find a linkable council from precept authority name
 const findLinkedCouncil = (authorityName: string) => {
@@ -178,7 +179,13 @@ const YourBillCard = ({
             <div>
               <span className="type-body font-semibold">Total annual bill</span>
               {totalDailyCost && (
-                <p className="type-caption text-muted-foreground">{formatCurrency(totalDailyCost, { decimals: 2 })} per day</p>
+                <ShareableStat
+                  label="Daily cost"
+                  value={formatCurrency(totalDailyCost, { decimals: 2 })}
+                  context="per day for council services"
+                >
+                  <p className="type-caption text-muted-foreground">{formatCurrency(totalDailyCost, { decimals: 2 })} per day</p>
+                </ShareableStat>
               )}
             </div>
             <span className="type-metric tabular-nums">

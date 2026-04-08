@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 
@@ -26,8 +27,23 @@ const TaxBandsCard = ({
   allBands,
   totalBandAmounts,
 }: TaxBandsCardProps) => {
-  const [selectedBand, setSelectedBand] = useState('D');
+  const searchParams = useSearchParams();
+  const bandFromUrl = searchParams.get('band')?.toUpperCase();
+  const validBands = Object.keys(allBands);
+  const initialBand = bandFromUrl && validBands.includes(bandFromUrl) ? bandFromUrl : 'D';
+  const [selectedBand, setSelectedBand] = useState(initialBand);
   const detailed = selectedCouncil.detailed;
+
+  // Sync band selection to URL (without adding history entries)
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedBand === 'D') {
+      url.searchParams.delete('band');
+    } else {
+      url.searchParams.set('band', selectedBand);
+    }
+    window.history.replaceState({}, '', url.toString());
+  }, [selectedBand]);
 
   return (
     <section id="tax-bands" className="card-elevated p-5 sm:p-6">

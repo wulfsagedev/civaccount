@@ -18,31 +18,30 @@ export function renderYourBillStory(council: Council, councilName: string): Reac
 
   return ogStoryWrap(
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-      {/* Top section */}
+      {/* Top — council type */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <span style={{ fontSize: '24px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {council.type_name}
         </span>
       </div>
 
-      {/* Center — hero data */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
-        <span style={{ fontSize: '28px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+      {/* Centre — hero data */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+        <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           You pay this council
         </span>
-        <span style={{ fontSize: '120px', fontWeight: 700, color: OG.text, letterSpacing: '-0.03em', lineHeight: 1 }}>
+        <span style={{ fontSize: '160px', fontWeight: 700, color: OG.text, letterSpacing: '-0.03em', lineHeight: 1 }}>
           {formatCurrencyOG(bandD, 2)}
         </span>
-        <span style={{ fontSize: '32px', color: OG.muted }}>/year</span>
+        <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>/year</span>
 
-        {/* Change + daily */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '40px' }}>
           {change != null && changePct != null && (
-            <span style={{ fontSize: '32px', fontWeight: 700, color: change > 0 ? OG.negative : OG.positive }}>
+            <span style={{ fontSize: '44px', fontWeight: 700, color: change > 0 ? OG.negative : OG.positive }}>
               {change > 0 ? '\u2197' : '\u2198'} {change > 0 ? '+' : ''}{changePct}% from last year
             </span>
           )}
-          <span style={{ fontSize: '28px', color: OG.secondary }}>
+          <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
             {`\u00A3${dailyCost}/day`}
           </span>
         </div>
@@ -68,38 +67,38 @@ export function renderSpendingStory(council: Council, councilName: string): Reac
     }))
     .filter((c) => c.value > 0)
     .sort((a, b) => b.value - a.value)
-    .slice(0, 6);
+    .slice(0, 5);
 
   const maxValue = categories[0]?.value || 1;
 
   return ogStoryWrap(
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
       {/* Title */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-        <span style={{ fontSize: '24px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+        <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {council.type_name}
         </span>
-        <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text }}>
+        <span style={{ fontSize: '64px', fontWeight: 700, color: OG.text }}>
           What your tax pays for
         </span>
-        <span style={{ fontSize: '28px', color: OG.muted }}>
+        <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
           {formatBudgetOG(budget.total_service)} total budget
         </span>
       </div>
 
-      {/* Bars */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
+      {/* Bars — bold sizing */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
         {categories.map((cat) => {
           const pct = (cat.value / maxValue) * 100;
           return (
-            <div key={cat.key} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div key={cat.key} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <span style={{ fontSize: '28px', fontWeight: 600, color: OG.text }}>{cat.label}</span>
-                <span style={{ fontSize: '28px', fontWeight: 700, color: OG.text }}>
+                <span style={{ fontSize: '38px', fontWeight: 600, color: OG.text }}>{cat.label}</span>
+                <span style={{ fontSize: '38px', fontWeight: 700, color: OG.text }}>
                   {formatBudgetOG(cat.value)}
                 </span>
               </div>
-              <div style={{ display: 'flex', height: '14px', borderRadius: '9999px', backgroundColor: OG.barBg, overflow: 'hidden' }}>
+              <div style={{ display: 'flex', height: '18px', borderRadius: '9999px', backgroundColor: OG.barBg, overflow: 'hidden' }}>
                 <div style={{ display: 'flex', width: `${pct}%`, height: '100%', borderRadius: '9999px', backgroundColor: OG.bar }} />
               </div>
             </div>
@@ -137,7 +136,7 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
   const yMin = minVal - pad;
   const yMax = maxVal + pad;
 
-  const chartWidth = 864; // 1080 - 2*108 safe margin
+  const chartWidth = 920;
   const chartHeight = 500;
 
   const points = years.map((y, i) => ({
@@ -159,24 +158,24 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
   return ogStoryWrap(
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
       {/* Title */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-        <span style={{ fontSize: '24px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+        <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {council.type_name}
         </span>
-        <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text }}>
+        <span style={{ fontSize: '64px', fontWeight: 700, color: OG.text }}>
           How your bill has changed
         </span>
-        <span style={{ fontSize: '36px', fontWeight: 700, color: diff > 0 ? OG.negative : OG.positive }}>
+        <span style={{ fontSize: '48px', fontWeight: 700, color: diff > 0 ? OG.negative : OG.positive }}>
           {sign}{formatCurrencyOG(Math.abs(diff), 2)} ({sign}{diffPct}%)
         </span>
       </div>
 
       {/* Chart */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ display: 'flex', position: 'relative', width: `${chartWidth}px`, height: `${chartHeight + 100}px` }}>
+        <div style={{ display: 'flex', position: 'relative', width: `${chartWidth}px`, height: `${chartHeight + 120}px` }}>
           <svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`} style={{ position: 'absolute', top: 0, left: 0 }}>
-            <path d={areaPath} fill={OG.accent} fillOpacity="0.12" />
-            <path d={linePath} fill="none" stroke={OG.accent} strokeWidth="5" />
+            <path d={areaPath} fill={OG.accent} fillOpacity="0.15" />
+            <path d={linePath} fill="none" stroke={OG.accent} strokeWidth="6" />
             {points.map((p, i) => {
               const isLast = i === points.length - 1;
               return (
@@ -184,10 +183,10 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
                   key={p.year}
                   cx={p.x}
                   cy={p.y}
-                  r={isLast ? 14 : 9}
+                  r={isLast ? 16 : 10}
                   fill={isLast ? OG.accent : OG.bg}
                   stroke={OG.accent}
-                  strokeWidth={isLast ? 0 : 4}
+                  strokeWidth={isLast ? 0 : 5}
                 />
               );
             })}
@@ -204,15 +203,15 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
                   flexDirection: 'column',
                   alignItems: 'center',
                   position: 'absolute',
-                  left: `${p.x - 80}px`,
-                  top: `${chartHeight + 16}px`,
-                  width: '160px',
+                  left: `${p.x - 90}px`,
+                  top: `${chartHeight + 20}px`,
+                  width: '180px',
                 }}
               >
-                <span style={{ fontSize: isLast ? '28px' : '24px', fontWeight: isLast ? 700 : 500, color: isLast ? OG.text : OG.secondary }}>
+                <span style={{ fontSize: isLast ? '38px' : '32px', fontWeight: isLast ? 700 : 500, color: isLast ? OG.text : OG.secondary }}>
                   {formatCurrencyOG(p.value, 0)}
                 </span>
-                <span style={{ fontSize: '22px', fontWeight: 500, color: isLast ? OG.text : OG.muted, marginTop: '4px' }}>
+                <span style={{ fontSize: '30px', fontWeight: 500, color: isLast ? OG.text : OG.secondary, marginTop: '4px' }}>
                   {p.year}
                 </span>
               </div>

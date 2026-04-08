@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { getCouncilBySlug, getCouncilDisplayName, getCouncilPopulation, councils } from '@/data/councils';
-import { OG, ogWrap, ogBrand, getGeistFonts, formatCurrencyOG, MIN_FONT } from './card/_lib/og-shared';
+import { OG, ogWrap, ogBrand, getGeistFonts, formatCurrencyOG } from './card/_lib/og-shared';
 
 export const runtime = 'nodejs';
 export const alt = 'Council tax and budget breakdown';
@@ -50,7 +50,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const population = getCouncilPopulation(council.name);
   const totalService = council.budget?.total_service;
 
-  // Stats
   const changePct = bandD && bandDPrev ? ((bandD - bandDPrev) / bandDPrev * 100) : null;
   const spendingPerResident = totalService && population ? Math.round((totalService * 1000) / population) : null;
   const ranking = council ? getRankWithinType(council) : null;
@@ -67,43 +66,42 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     stats.push({ label: council.type_name || 'Rank', value: `${ordinal(ranking.rank)} of ${ranking.total}` });
   }
 
-  const nameFontSize = displayName.length > 30 ? 88 : displayName.length > 20 ? 100 : 112;
+  const nameFontSize = displayName.length > 30 ? 96 : displayName.length > 20 ? 112 : 128;
 
   return new ImageResponse(
     ogWrap(
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-        {/* Main content */}
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
-          {/* Type badge */}
-          <div style={{ display: 'flex', fontSize: `${MIN_FONT + 8}px`, color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '20px' }}>
+        {/* Top section — council identity */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', fontSize: '44px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px' }}>
             {council.type_name || 'Council'}
           </div>
-
-          {/* Council name */}
-          <div style={{ display: 'flex', fontSize: `${nameFontSize}px`, fontWeight: 700, color: OG.text, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '40px', maxWidth: '2000px' }}>
+          <div style={{ display: 'flex', fontSize: `${nameFontSize}px`, fontWeight: 700, color: OG.text, letterSpacing: '-0.02em', lineHeight: 1.05 }}>
             {displayName}
           </div>
+        </div>
 
-          {/* Band D hero */}
+        {/* Middle section — hero number + stats */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {bandD && (
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', marginBottom: '48px' }}>
-              <span style={{ fontSize: '40px', color: OG.muted }}>Band D</span>
-              <span style={{ fontSize: '80px', fontWeight: 700, color: OG.text }}>
-                {formatCurrencyOG(bandD, 2)}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '56px' }}>
+              <span style={{ fontSize: '44px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Band D · Council Tax
               </span>
-              <span style={{ fontSize: '40px', color: OG.muted }}>/year</span>
+              <span style={{ fontSize: '120px', fontWeight: 700, color: OG.text, letterSpacing: '-0.02em', lineHeight: 1 }}>
+                {formatCurrencyOG(bandD, 2)}<span style={{ fontSize: '56px', fontWeight: 500, color: OG.secondary }}> /year</span>
+              </span>
             </div>
           )}
 
-          {/* Stats row */}
           {stats.length > 0 && (
-            <div style={{ display: 'flex', gap: '64px' }}>
+            <div style={{ display: 'flex', gap: '80px' }}>
               {stats.map((stat) => (
                 <div key={stat.label} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <span style={{ fontSize: `${MIN_FONT}px`, color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                     {stat.label}
                   </span>
-                  <span style={{ fontSize: '48px', fontWeight: 600, color: OG.secondary }}>
+                  <span style={{ fontSize: '56px', fontWeight: 700, color: OG.text }}>
                     {stat.value}
                   </span>
                 </div>
