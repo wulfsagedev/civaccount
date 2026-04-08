@@ -19,6 +19,7 @@ function SharePreviewModal({
   onShare,
   onCopy,
   onDownload,
+  hasNativeShare,
   imageUrl,
   text,
   shareUrl,
@@ -30,6 +31,7 @@ function SharePreviewModal({
   onShare: () => void;
   onCopy: () => void;
   onDownload?: () => void;
+  hasNativeShare: boolean;
   imageUrl?: string;
   text: string;
   shareUrl: string;
@@ -94,9 +96,9 @@ function SharePreviewModal({
           <p className="type-caption text-muted-foreground mt-1 truncate opacity-60">{shareUrl}</p>
         </div>
 
-        {/* Actions */}
+        {/* Actions — adapt to platform */}
         <div className="flex flex-col gap-2">
-          {/* Primary: Share (mobile) or Copy link (desktop) */}
+          {/* Primary: native share on mobile, copy link on desktop */}
           <button
             onClick={onShare}
             disabled={state === 'loading'}
@@ -106,31 +108,39 @@ function SharePreviewModal({
             {state === 'success' ? (
               <span className="type-body-sm font-semibold text-positive">{feedback}</span>
             ) : (
-              <span className="type-body-sm font-semibold">Share</span>
+              <span className="type-body-sm font-semibold">
+                {hasNativeShare ? 'Share' : 'Copy link'}
+              </span>
             )}
           </button>
 
-          {/* Secondary: only show when there's a download option (avoids duplicate Copy link) */}
-          {onDownload && (
+          {/* Secondary row — platform-aware to avoid duplicates */}
+          {(hasNativeShare || onDownload) && (
             <div className="flex gap-2">
-              <button
-                onClick={onCopy}
-                disabled={state === 'loading'}
-                className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
-              >
-                <span className="type-caption font-medium text-muted-foreground">Copy link</span>
-              </button>
-              <button
-                onClick={onDownload}
-                disabled={state === 'loading'}
-                className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
-              >
-                {state === 'loading' ? (
-                  <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
-                ) : (
-                  <span className="type-caption font-medium text-muted-foreground">Download image</span>
-                )}
-              </button>
+              {/* Copy link: only on mobile (desktop primary already copies) */}
+              {hasNativeShare && (
+                <button
+                  onClick={onCopy}
+                  disabled={state === 'loading'}
+                  className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
+                >
+                  <span className="type-caption font-medium text-muted-foreground">Copy link</span>
+                </button>
+              )}
+              {/* Download image: both platforms */}
+              {onDownload && (
+                <button
+                  onClick={onDownload}
+                  disabled={state === 'loading'}
+                  className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
+                >
+                  {state === 'loading' ? (
+                    <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
+                  ) : (
+                    <span className="type-caption font-medium text-muted-foreground">Download image</span>
+                  )}
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -148,6 +158,9 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
 
   // OG image URL for preview (landscape format, not story)
   const previewImageUrl = imageUrl?.replace('?format=story', '?format=og');
+
+  // Detect native share API (mobile browsers)
+  const hasNativeShare = typeof navigator !== 'undefined' && 'share' in navigator;
 
   const doShare = useCallback(async () => {
     if (navigator.share) {
@@ -226,6 +239,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           shareUrl={shareUrl}
           state={state}
           feedback={feedback}
+          hasNativeShare={hasNativeShare}
         />
       </>
     );
@@ -254,6 +268,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           shareUrl={shareUrl}
           state={state}
           feedback={feedback}
+          hasNativeShare={hasNativeShare}
         />
       </>
     );
@@ -281,6 +296,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
         shareUrl={shareUrl}
         state={state}
         feedback={feedback}
+        hasNativeShare={hasNativeShare}
       />
     </>
   );
