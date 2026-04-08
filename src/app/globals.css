@@ -132,6 +132,10 @@
   --positive: oklch(0.40 0.12 160);          /* Emerald - decreases, savings */
   --negative: oklch(0.38 0.12 55);           /* Dark amber/brown - increases, warnings - WCAG AA 4.5:1 */
 
+  /* Share CTA accent - warm orange for share buttons */
+  --share-accent: oklch(0.65 0.18 55);        /* Warm orange - AA compliant */
+  --share-accent-hover: oklch(0.58 0.18 55);  /* Darker on hover */
+
   --chart-1: oklch(0.45 0.12 250);           /* Navy - primary chart color */
   --chart-2: oklch(0.55 0.10 250);           /* Lighter navy */
   --chart-3: oklch(0.65 0.08 250);           /* Even lighter navy */
@@ -184,6 +188,10 @@
   /* Status colours for dark mode */
   --positive: oklch(0.70 0.14 160);          /* Emerald - decreases, savings */
   --negative: oklch(0.78 0.14 65);           /* Light amber/orange - increases, warnings - WCAG AA 4.5:1 */
+
+  /* Share CTA accent */
+  --share-accent: oklch(0.75 0.16 55);        /* Warm orange for dark mode */
+  --share-accent-hover: oklch(0.68 0.16 55);  /* Darker on hover */
 
   --chart-1: oklch(0.60 0.10 250);           /* Navy - primary chart color */
   --chart-2: oklch(0.68 0.08 250);           /* Lighter navy */
