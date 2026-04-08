@@ -90,10 +90,10 @@ export default async function Image({ params }: { params: Promise<{ matchup: str
           </div>
 
           {/* VS divider */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
-            <div style={{ width: '2px', height: '200px', backgroundColor: OG.border }} />
-            <span style={{ fontSize: '48px', fontWeight: 700, color: OG.secondary }}>vs</span>
-            <div style={{ width: '2px', height: '200px', backgroundColor: OG.border }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px', padding: '0 20px' }}>
+            <div style={{ width: '3px', height: '160px', backgroundColor: OG.border }} />
+            <span style={{ fontSize: '80px', fontWeight: 700, color: OG.text, letterSpacing: '0.05em', textTransform: 'uppercase' }}>vs</span>
+            <div style={{ width: '3px', height: '160px', backgroundColor: OG.border }} />
           </div>
 
           {/* Column B */}
