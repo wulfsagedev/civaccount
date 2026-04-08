@@ -21,12 +21,13 @@ export const metadata: Metadata = {
   },
 };
 
-// Comparable groups for fair comparison
-const GROUPS = [
-  { label: 'All-in-one councils', subtitle: 'Unitary authorities, metropolitan districts, and London boroughs', types: ['UA', 'MD', 'LB', 'OLB', 'ILB'] },
-  { label: 'District councils', subtitle: 'Residents also pay a separate county council tax', types: ['SD'] },
-  { label: 'County councils', subtitle: 'Residents also pay a separate district council tax', types: ['SC'] },
-];
+import { COMPARABLE_GROUPS } from '@/lib/council-averages';
+
+const GROUPS = COMPARABLE_GROUPS.map(g => ({
+  label: g.label,
+  subtitle: g.description,
+  types: g.types as unknown as string[],
+}));
 
 export default function CheapestCouncilTaxPage() {
   const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025);

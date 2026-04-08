@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatBudget, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import { getTypeAverages } from '@/lib/council-averages';
 
 interface PayAllowancesCardProps {
   selectedCouncil: Council;
@@ -38,13 +39,20 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
           {/* Hook stat */}
           {(() => {
             const highest = [...detailed.councillor_allowances_detail!].sort((a, b) => b.total - a.total)[0];
+            const avgAllowance = getTypeAverages(selectedCouncil.type).basicAllowance;
+            const basic = detailed.councillor_basic_allowance;
             return (
-              <div className="p-3 rounded-lg bg-muted/30 mb-4">
+              <div className="p-3 rounded-lg bg-muted/30 mb-4 space-y-1">
                 <p className="type-body-sm">
                   <span className="font-semibold">Highest allowance:</span>{' '}
                   {highest.name} — {formatCurrency(highest.total, { decimals: 0 })}
                   <span className="text-muted-foreground"> · {detailed.councillor_allowances_detail!.length} councillors</span>
                 </p>
+                {basic && avgAllowance > 0 && (
+                  <p className="type-caption text-muted-foreground">
+                    Basic allowance: {formatCurrency(basic, { decimals: 0 })} · Avg for {selectedCouncil.type_name?.toLowerCase()}s: {formatCurrency(Math.round(avgAllowance), { decimals: 0 })}
+                  </p>
+                )}
               </div>
             );
           })()}

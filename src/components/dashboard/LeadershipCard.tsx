@@ -9,6 +9,7 @@ import {
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { ShareableStat } from '@/components/ui/shareable-stat';
+import { getTypeAverages } from '@/lib/council-averages';
 
 interface LeadershipCardProps {
   selectedCouncil: Council;
@@ -53,20 +54,31 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
             <div className="min-w-0 space-y-1">
               <p className="type-body-sm font-semibold leading-none truncate">{detailed.chief_executive}</p>
               <p className="type-caption leading-none text-muted-foreground">Chief Executive</p>
-              {detailed.chief_executive_salary && (
-                <ShareableStat
-                  label="CEO Salary"
-                  value={formatCurrency(detailed.chief_executive_salary, { decimals: 0 })}
-                  context="per year"
-                >
-                  <p className="type-caption leading-none text-muted-foreground">
-                    Salary: {formatCurrency(detailed.chief_executive_salary, { decimals: 0 })}/year
-                    {detailed.chief_executive_total_remuneration && (
-                      <span> · {formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })} total package</span>
-                    )}
-                  </p>
-                </ShareableStat>
-              )}
+              {detailed.chief_executive_salary && (() => {
+                const avgCeo = getTypeAverages(selectedCouncil.type).ceoSalary;
+                const diff = avgCeo ? detailed.chief_executive_salary! - Math.round(avgCeo) : null;
+                return (
+                  <ShareableStat
+                    label="CEO Salary"
+                    value={formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}
+                    context="per year"
+                  >
+                    <div className="space-y-0.5">
+                      <p className="type-caption leading-none text-muted-foreground">
+                        Salary: {formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}/year
+                        {detailed.chief_executive_total_remuneration && (
+                          <span> · {formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })} total package</span>
+                        )}
+                      </p>
+                      {diff !== null && (
+                        <p className="type-caption leading-none text-muted-foreground">
+                          Avg for {selectedCouncil.type_name?.toLowerCase()}s: {formatCurrency(Math.round(avgCeo), { decimals: 0 })}
+                        </p>
+                      )}
+                    </div>
+                  </ShareableStat>
+                );
+              })()}
             </div>
           </div>
         )}

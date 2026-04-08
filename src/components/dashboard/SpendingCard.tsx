@@ -7,8 +7,9 @@ import {
   ChevronRight,
   ExternalLink,
 } from "lucide-react";
-import { formatCurrency, formatBudget, getCouncilSlug, type Council, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilSlug, getCouncilPopulation, type Council, type ServiceSpendingDetail } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import { getTypeAverages } from '@/lib/council-averages';
 
 // Service descriptions with examples
 const SERVICE_DETAILS: Record<string, { description: string; examples: string[] }> = {
@@ -263,17 +264,32 @@ const SpendingCard = ({
         </div>
 
         {/* Context footer */}
-        {totalBudget && (
-          <div className="mt-5 p-3 rounded-lg bg-muted/30">
-            <p className="type-body-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Total budget:</span>{' '}
-              <span className="font-semibold text-foreground">{formatBudget(totalBudget / 1000)}</span>/year
-              {population && (
-                <span className="type-caption"> · Serving {population.toLocaleString('en-GB')} residents</span>
+        {totalBudget && (() => {
+          const typeAvg = getTypeAverages(selectedCouncil.type);
+          const perResident = population ? Math.round((totalBudget) / population) : null;
+          const avgPerResident = typeAvg.spendingPerResident ? Math.round(typeAvg.spendingPerResident) : null;
+          const diff = perResident && avgPerResident ? perResident - avgPerResident : null;
+          return (
+            <div className="mt-5 p-3 rounded-lg bg-muted/30 space-y-2">
+              <p className="type-body-sm text-muted-foreground">
+                <span className="font-medium text-foreground">Total budget:</span>{' '}
+                <span className="font-semibold text-foreground">{formatBudget(totalBudget / 1000)}</span>/year
+                {population && (
+                  <span className="type-caption"> · Serving {population.toLocaleString('en-GB')} residents</span>
+                )}
+              </p>
+              {diff !== null && (
+                <p className="type-caption text-muted-foreground">
+                  Compared to average {selectedCouncil.type_name?.toLowerCase()}:{' '}
+                  <span className={`font-semibold ${diff > 0 ? 'text-negative' : diff < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
+                    {diff > 0 ? '+' : ''}{formatCurrency(diff, { decimals: 0 })}
+                  </span>
+                  {' '}per resident
+                </p>
               )}
-            </p>
-          </div>
-        )}
+            </div>
+          );
+        })()}
 
         {/* Source link */}
         <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">
