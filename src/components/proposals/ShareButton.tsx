@@ -78,14 +78,29 @@ function SharePreviewModal({
           </button>
         </div>
 
-        {/* OG image preview */}
+        {/* OG image preview with skeleton loading */}
         {imageUrl && (
-          <div className="rounded-lg overflow-hidden border border-border/30 mb-4 bg-muted/30">
+          <div className="rounded-lg overflow-hidden border border-border/30 mb-4 bg-muted/30 relative">
+            {/* Skeleton — visible until image loads */}
+            <div className="aspect-[1200/630] w-full animate-pulse bg-muted flex items-center justify-center peer-[.loaded]:hidden">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground/60 animate-spin" />
+                <span className="type-caption text-muted-foreground">Loading preview</span>
+              </div>
+            </div>
             <img
               src={imageUrl}
               alt="Share preview"
-              className="w-full h-auto"
+              className="w-full h-auto absolute inset-0 opacity-0 transition-opacity duration-300"
               loading="eager"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                img.classList.remove('opacity-0');
+                img.classList.add('opacity-100');
+                // Hide skeleton
+                const skeleton = img.previousElementSibling;
+                if (skeleton) (skeleton as HTMLElement).style.display = 'none';
+              }}
             />
           </div>
         )}
