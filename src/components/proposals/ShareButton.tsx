@@ -59,14 +59,14 @@ function SharePreviewModal({
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
-      {/* Modal */}
+      {/* Modal — matches card-elevated design */}
       <div
-        className="relative w-full max-w-md bg-card rounded-2xl border border-border/50 shadow-2xl overflow-hidden"
+        className="relative w-full max-w-md card-elevated p-5 sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border/30">
-          <h3 className="type-body-sm font-semibold">Share</h3>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="type-title-2">Share</h3>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors cursor-pointer"
@@ -76,34 +76,31 @@ function SharePreviewModal({
           </button>
         </div>
 
-        {/* Preview */}
-        <div className="px-5 py-4">
-          {/* OG image preview */}
-          {imageUrl && (
-            <div className="rounded-lg overflow-hidden border border-border/30 mb-4 bg-muted/30">
-              <img
-                src={imageUrl}
-                alt="Share preview"
-                className="w-full h-auto"
-                loading="eager"
-              />
-            </div>
-          )}
-
-          {/* Share text preview */}
-          <div className="p-3 rounded-lg bg-muted/30 mb-4">
-            <p className="type-caption text-muted-foreground break-words whitespace-pre-wrap">{text}</p>
-            <p className="type-caption text-muted-foreground mt-1 truncate opacity-60">{shareUrl}</p>
+        {/* OG image preview */}
+        {imageUrl && (
+          <div className="rounded-lg overflow-hidden border border-border/30 mb-4 bg-muted/30">
+            <img
+              src={imageUrl}
+              alt="Share preview"
+              className="w-full h-auto"
+              loading="eager"
+            />
           </div>
+        )}
+
+        {/* Share text preview */}
+        <div className="p-3 rounded-lg bg-muted/30 mb-5">
+          <p className="type-body-sm text-muted-foreground break-words">{text}</p>
+          <p className="type-caption text-muted-foreground mt-1 truncate opacity-60">{shareUrl}</p>
         </div>
 
         {/* Actions */}
-        <div className="px-5 pb-5 flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           {/* Primary: Share (mobile) or Copy link (desktop) */}
           <button
             onClick={onShare}
             disabled={state === 'loading'}
-            className="w-full flex items-center justify-center gap-2 p-3 rounded-lg transition-colors cursor-pointer min-h-[44px] disabled:opacity-60"
+            className="w-full flex items-center justify-center p-3 rounded-lg transition-colors cursor-pointer min-h-[44px] disabled:opacity-60"
             style={{ backgroundColor: 'var(--share-accent-bg)', color: 'var(--share-accent)' }}
           >
             {state === 'success' ? (
@@ -115,20 +112,20 @@ function SharePreviewModal({
             )}
           </button>
 
-          {/* Secondary actions row */}
-          <div className="flex gap-2">
-            <button
-              onClick={onCopy}
-              disabled={state === 'loading'}
-              className="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
-            >
-              <span className="type-caption font-medium text-muted-foreground">Copy link</span>
-            </button>
-            {onDownload && (
+          {/* Secondary: only show when there's a download option (avoids duplicate Copy link) */}
+          {onDownload && (
+            <div className="flex gap-2">
+              <button
+                onClick={onCopy}
+                disabled={state === 'loading'}
+                className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
+              >
+                <span className="type-caption font-medium text-muted-foreground">Copy link</span>
+              </button>
               <button
                 onClick={onDownload}
                 disabled={state === 'loading'}
-                className="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
+                className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
               >
                 {state === 'loading' ? (
                   <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
@@ -136,8 +133,8 @@ function SharePreviewModal({
                   <span className="type-caption font-medium text-muted-foreground">Download image</span>
                 )}
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
