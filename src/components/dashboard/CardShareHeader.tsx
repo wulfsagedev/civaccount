@@ -24,6 +24,7 @@ export default function CardShareHeader({
   const params = useParams<{ slug: string }>();
   const slug = params?.slug;
   const shareUrl = slug ? `${typeof window !== 'undefined' ? window.location.origin : ''}/council/${slug}/card/${cardType}` : undefined;
+  const imageUrl = slug ? `/api/share/${slug}/${cardType}?format=story` : undefined;
 
   return (
     <div>
@@ -34,6 +35,7 @@ export default function CardShareHeader({
             title={`${title} — ${councilName}`}
             text={`${title} — ${councilName} on CivAccount`}
             url={shareUrl}
+            imageUrl={imageUrl}
             variant="icon"
           />
         )}

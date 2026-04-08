@@ -1,84 +1,121 @@
 import { ImageResponse } from 'next/og';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, getCouncilPopulation, councils } from '@/data/councils';
+import { OG, ogWrap, ogBrand, getGeistFonts, formatCurrencyOG, MIN_FONT } from './card/_lib/og-shared';
 
 export const runtime = 'nodejs';
 export const alt = 'Council tax and budget breakdown';
 export const size = { width: 2400, height: 1260 };
 export const contentType = 'image/png';
 
-function loadFont(filename: string): ArrayBuffer {
-  return readFileSync(join(process.cwd(), 'node_modules', 'geist', 'dist', 'fonts', 'geist-sans', filename)).buffer as ArrayBuffer;
+function getRankWithinType(council: { type: string; council_tax?: { band_d_2025?: number | null } }): { rank: number; total: number } | null {
+  const bandD = council.council_tax?.band_d_2025;
+  if (bandD == null) return null;
+
+  const peers = councils.filter(c => c.type === council.type && c.council_tax?.band_d_2025 != null);
+  const sorted = [...peers].sort((a, b) => (a.council_tax!.band_d_2025! - b.council_tax!.band_d_2025!));
+  const rank = sorted.findIndex(c => c.council_tax!.band_d_2025 === bandD) + 1;
+  return { rank, total: sorted.length };
 }
 
-const fonts = [
-  { name: 'Geist', data: loadFont('Geist-Regular.ttf'), weight: 400 as const, style: 'normal' as const },
-  { name: 'Geist', data: loadFont('Geist-Bold.ttf'), weight: 700 as const, style: 'normal' as const },
-];
+function ordinal(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+const ogOptions = { ...size, fonts: getGeistFonts() };
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const council = getCouncilBySlug(slug);
 
-  const displayName = council ? getCouncilDisplayName(council) : 'Council';
-  const bandD = council?.council_tax?.band_d_2025;
-  const typeName = council?.type_name || 'Council';
+  if (!council) {
+    return new ImageResponse(
+      ogWrap(
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+            <div style={{ fontSize: '120px', fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>CivAccount</div>
+            <div style={{ fontSize: '56px', color: OG.secondary, marginTop: '24px' }}>Where your council tax goes</div>
+          </div>
+          {ogBrand('CivAccount')}
+        </div>
+      ),
+      ogOptions
+    );
+  }
+
+  const displayName = getCouncilDisplayName(council);
+  const bandD = council.council_tax?.band_d_2025;
+  const bandDPrev = council.council_tax?.band_d_2024;
+  const population = getCouncilPopulation(council.name);
+  const totalService = council.budget?.total_service;
+
+  // Stats
+  const changePct = bandD && bandDPrev ? ((bandD - bandDPrev) / bandDPrev * 100) : null;
+  const spendingPerResident = totalService && population ? Math.round((totalService * 1000) / population) : null;
+  const ranking = council ? getRankWithinType(council) : null;
+
+  const stats: { label: string; value: string }[] = [];
+  if (changePct !== null) {
+    const sign = changePct >= 0 ? '+' : '';
+    stats.push({ label: 'Year-on-year', value: `${sign}${changePct.toFixed(1)}%` });
+  }
+  if (spendingPerResident !== null) {
+    stats.push({ label: 'Per resident', value: formatCurrencyOG(spendingPerResident) });
+  }
+  if (ranking) {
+    stats.push({ label: council.type_name || 'Rank', value: `${ordinal(ranking.rank)} of ${ranking.total}` });
+  }
+
+  const nameFontSize = displayName.length > 30 ? 88 : displayName.length > 20 ? 100 : 112;
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(145deg, #22222a 0%, #1c1c20 40%, #181820 100%)',
-          fontFamily: 'Geist, system-ui, sans-serif',
-        }}
-      >
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 144, height: 144, background: '#f0f0f0', borderRadius: '50%', marginBottom: 56 }}>
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1c1c20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" x2="21" y1="22" y2="22" />
-            <line x1="6" x2="6" y1="18" y2="11" />
-            <line x1="10" x2="10" y1="18" y2="11" />
-            <line x1="14" x2="14" y1="18" y2="11" />
-            <line x1="18" x2="18" y1="18" y2="11" />
-            <polygon points="12 2 20 7 4 7" />
-          </svg>
-        </div>
-
-        {/* Type */}
-        <div style={{ display: 'flex', fontSize: 36, color: '#9a9a9a', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 24 }}>
-          {typeName}
-        </div>
-
-        {/* Name */}
-        <div style={{ fontSize: displayName.length > 30 ? 96 : 112, fontWeight: 700, color: '#f0f0f0', marginBottom: 40, letterSpacing: '-0.02em', textAlign: 'center', maxWidth: 2000, lineHeight: 1.1 }}>
-          {displayName}
-        </div>
-
-        {/* Band D */}
-        {bandD && (
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, fontSize: 64, color: '#b0b0b0' }}>
-            <span style={{ color: '#9a9a9a', fontSize: 44 }}>Band D</span>
-            <span style={{ fontWeight: 700, color: '#f0f0f0' }}>
-              {`\u00A3${bandD.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`}
-            </span>
+    ogWrap(
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+        {/* Main content */}
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+          {/* Type badge */}
+          <div style={{ display: 'flex', fontSize: `${MIN_FONT + 8}px`, color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '20px' }}>
+            {council.type_name || 'Council'}
           </div>
-        )}
 
-        {/* Footer */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32, marginTop: 72, fontSize: 36, color: '#9a9a9a' }}>
-          <span>2025-26</span>
-          <span style={{ color: '#3a3a40' }}>|</span>
-          <span>CivAccount</span>
+          {/* Council name */}
+          <div style={{ display: 'flex', fontSize: `${nameFontSize}px`, fontWeight: 700, color: OG.text, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '40px', maxWidth: '2000px' }}>
+            {displayName}
+          </div>
+
+          {/* Band D hero */}
+          {bandD && (
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', marginBottom: '48px' }}>
+              <span style={{ fontSize: '40px', color: OG.muted }}>Band D</span>
+              <span style={{ fontSize: '80px', fontWeight: 700, color: OG.text }}>
+                {formatCurrencyOG(bandD, 2)}
+              </span>
+              <span style={{ fontSize: '40px', color: OG.muted }}>/year</span>
+            </div>
+          )}
+
+          {/* Stats row */}
+          {stats.length > 0 && (
+            <div style={{ display: 'flex', gap: '64px' }}>
+              {stats.map((stat) => (
+                <div key={stat.label} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <span style={{ fontSize: `${MIN_FONT}px`, color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {stat.label}
+                  </span>
+                  <span style={{ fontSize: '48px', fontWeight: 600, color: OG.secondary }}>
+                    {stat.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+
+        {/* Brand strip */}
+        {ogBrand(displayName, council.type_name)}
       </div>
     ),
-    { ...size, fonts }
+    ogOptions
   );
 }
