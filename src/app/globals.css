@@ -45,6 +45,7 @@
   /* Semantic status colours */
   --color-positive: var(--positive);
   --color-negative: var(--negative);
+  --color-share-accent: var(--share-accent);
 
   --radius-sm: 0.375rem;  /* 6px - small elements like badges */
   --radius-md: 0.5rem;    /* 8px - buttons, inputs */
@@ -132,9 +133,10 @@
   --positive: oklch(0.40 0.12 160);          /* Emerald - decreases, savings */
   --negative: oklch(0.38 0.12 55);           /* Dark amber/brown - increases, warnings - WCAG AA 4.5:1 */
 
-  /* Share CTA accent - warm orange for share buttons */
-  --share-accent: oklch(0.65 0.18 55);        /* Warm orange - AA compliant */
-  --share-accent-hover: oklch(0.58 0.18 55);  /* Darker on hover */
+  /* Share CTA accent - warm orange for share buttons (hex for iOS compat) */
+  --share-accent: #c47a30;
+  --share-accent-bg: rgba(196, 122, 48, 0.12);
+  --share-accent-bg-hover: rgba(196, 122, 48, 0.2);
 
   --chart-1: oklch(0.45 0.12 250);           /* Navy - primary chart color */
   --chart-2: oklch(0.55 0.10 250);           /* Lighter navy */
@@ -189,9 +191,10 @@
   --positive: oklch(0.70 0.14 160);          /* Emerald - decreases, savings */
   --negative: oklch(0.78 0.14 65);           /* Light amber/orange - increases, warnings - WCAG AA 4.5:1 */
 
-  /* Share CTA accent */
-  --share-accent: oklch(0.75 0.16 55);        /* Warm orange for dark mode */
-  --share-accent-hover: oklch(0.68 0.16 55);  /* Darker on hover */
+  /* Share CTA accent (hex for iOS compat) */
+  --share-accent: #d4943a;
+  --share-accent-bg: rgba(212, 148, 58, 0.15);
+  --share-accent-bg-hover: rgba(212, 148, 58, 0.25);
 
   --chart-1: oklch(0.60 0.10 250);           /* Navy - primary chart color */
   --chart-2: oklch(0.68 0.08 250);           /* Lighter navy */

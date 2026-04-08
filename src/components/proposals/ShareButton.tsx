@@ -7,18 +7,21 @@ interface ShareButtonProps {
   title: string;
   text: string;
   url?: string;
-  /** API route URL for image generation (e.g. /api/share/kent/your-bill?format=story) */
   imageUrl?: string;
   variant?: 'icon' | 'full' | 'hero';
-  /** Custom label for hero variant */
   label?: string;
-  /** Kept for API compat */
   showPreview?: boolean;
 }
 
-type ShareResult = 'shared-native' | 'copied-url' | 'downloaded' | 'failed';
+const shareStyles = {
+  idle: {
+    backgroundColor: 'var(--share-accent-bg)',
+    color: 'var(--share-accent)',
+  },
+  success: {},
+} as const;
 
-function ShareIcon({ state, accent }: { state: 'idle' | 'loading' | 'success'; accent?: boolean }) {
+function ShareIcon({ state }: { state: 'idle' | 'loading' | 'success' }) {
   if (state === 'loading') {
     return <Loader2 className="h-4 w-4 animate-spin" style={{ color: 'var(--share-accent)' }} aria-hidden="true" />;
   }
@@ -28,7 +31,7 @@ function ShareIcon({ state, accent }: { state: 'idle' | 'loading' | 'success'; a
       <Share2
         className="h-4 w-4 absolute inset-0 transition-all duration-200 ease-out"
         style={{
-          color: accent ? 'var(--share-accent)' : undefined,
+          color: 'var(--share-accent)',
           opacity: state === 'success' ? 0 : 1,
           transform: state === 'success' ? 'scale(0.6)' : 'scale(1)',
         }}
@@ -90,8 +93,9 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
   }, [imageUrl]);
 
   const isSuccess = state === 'success';
+  const btnStyle = isSuccess ? shareStyles.success : shareStyles.idle;
 
-  // Hero: same pill style as icon variant, just wider
+  // Hero: pill style CTA with download option
   if (variant === 'hero') {
     return (
       <div className="flex gap-2">
@@ -100,7 +104,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           onClick={handleShare}
           disabled={state === 'loading'}
           className="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg transition-colors cursor-pointer min-h-[44px] disabled:opacity-60"
-          style={isSuccess ? undefined : { backgroundColor: 'color-mix(in oklch, var(--share-accent) 15%, transparent)', color: 'var(--share-accent)' }}
+          style={btnStyle}
         >
           {isSuccess ? (
             <>
@@ -133,7 +137,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
     );
   }
 
-  // Full: inline orange button
+  // Full: inline button
   if (variant === 'full') {
     return (
       <button
@@ -141,10 +145,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
         onClick={handleShare}
         disabled={state === 'loading'}
         className="inline-flex items-center gap-2 px-3 py-2 rounded-lg transition-colors cursor-pointer type-body-sm font-semibold disabled:opacity-60"
-        style={{
-          backgroundColor: isSuccess ? undefined : 'var(--share-accent)',
-          color: isSuccess ? undefined : 'white',
-        }}
+        style={btnStyle}
       >
         <ShareIcon state={state} />
         {feedback || 'Share'}
@@ -152,18 +153,18 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
     );
   }
 
-  // Icon: compact button with orange bg
+  // Icon: compact pill button
   return (
     <button
       type="button"
       onClick={handleShare}
       disabled={state === 'loading'}
       className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg transition-colors cursor-pointer disabled:opacity-60"
-      style={isSuccess ? undefined : { backgroundColor: 'color-mix(in oklch, var(--share-accent) 15%, transparent)', color: 'var(--share-accent)' }}
+      style={btnStyle}
       aria-label={feedback || `Share ${title}`}
     >
-      <ShareIcon state={state} accent={!isSuccess} />
-      <span className={`type-caption font-semibold ${isSuccess ? 'text-positive' : ''}`}>
+      <ShareIcon state={state} />
+      <span className="type-caption font-semibold" style={isSuccess ? undefined : { color: 'var(--share-accent)' }}>
         {feedback || 'Share'}
       </span>
     </button>
