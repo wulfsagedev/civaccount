@@ -248,33 +248,9 @@ export default function Header() {
                 <Landmark className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
               </Link>
 
-              {/* Derive title from pathname - council pages show council name, others show page title */}
+              {/* Always show context — council name, page title, or brand. Never empty. */}
               {(() => {
-                // Page title mapping
-                const pageTitles: Record<string, string> = {
-                  '/townhall': 'Town Hall',
-                  '/compare': 'Compare',
-                  '/insights': 'Insights',
-                  '/about': 'About',
-                  '/updates': 'Updates',
-                  '/roadmap': 'Roadmap',
-                  '/methodology': 'Methodology',
-                  '/accessibility': 'Accessibility',
-                  '/privacy': 'Privacy',
-                  '/terms': 'Terms',
-                  '/license': 'License',
-                  '/auth/login': 'Sign In',
-                };
-
-                const pageTitle = pageTitles[pathname];
-
-                // If on a known page, show page title
-                if (pageTitle) {
-                  return <p className="type-body-sm font-semibold truncate leading-tight">{pageTitle}</p>;
-                }
-
-                // If on a council page, show council name
-                // Short name on mobile (compact pill), full name on desktop
+                // 1. Council pages — show council name
                 if (pathname.startsWith('/council/')) {
                   const council = selectedCouncil || getCouncilBySlug(pathname.split('/')[2] || '');
                   if (council) {
@@ -287,15 +263,40 @@ export default function Header() {
                   }
                 }
 
-                // Homepage or unknown page - show version badge (desktop only)
-                return (
-                  <Link href="/updates" className="hidden sm:flex items-center gap-2 cursor-pointer">
-                    <PulsingDot size="md" />
-                    <Badge variant="outline" className="type-body-sm cursor-pointer hover:bg-muted">
-                      v3.0
-                    </Badge>
-                  </Link>
-                );
+                // 2. Homepage with selected council — show council name
+                if (pathname === '/' && selectedCouncil) {
+                  return (
+                    <p className="type-body-sm font-semibold truncate leading-tight">
+                      <span className="sm:hidden">{selectedCouncil.name}</span>
+                      <span className="hidden sm:inline">{getCouncilDisplayName(selectedCouncil)}</span>
+                    </p>
+                  );
+                }
+
+                // 3. Known pages and sub-pages — match by prefix
+                const pageRoutes: [string, string][] = [
+                  ['/townhall', 'Town Hall'],
+                  ['/compare', 'Compare'],
+                  ['/insights', 'Insights'],
+                  ['/about', 'About'],
+                  ['/updates', 'Updates'],
+                  ['/roadmap', 'Roadmap'],
+                  ['/methodology', 'Methodology'],
+                  ['/accessibility', 'Accessibility'],
+                  ['/privacy', 'Privacy'],
+                  ['/terms', 'Terms'],
+                  ['/license', 'License'],
+                  ['/auth/login', 'Sign In'],
+                ];
+
+                for (const [route, title] of pageRoutes) {
+                  if (pathname === route || pathname.startsWith(route + '/')) {
+                    return <p className="type-body-sm font-semibold truncate leading-tight">{title}</p>;
+                  }
+                }
+
+                // 4. Fallback — always show brand name, never empty
+                return <p className="type-body-sm font-semibold truncate leading-tight">CivAccount</p>;
               })()}
             </div>
 
