@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
+import { PageShareButton } from '@/components/ui/page-share-button';
 import {
   TrendingUp,
   TrendingDown,
@@ -358,7 +359,13 @@ export default function InsightsClient() {
       <main id="main-content" className="flex-1">
         <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-5xl">
           {/* Page Header */}
-          <div className="text-center mb-10 sm:mb-12">
+          <div className="text-center mb-10 sm:mb-12 relative">
+            <div className="absolute top-0 right-0">
+              <PageShareButton
+                title="Council Tax Insights — CivAccount"
+                description="Council tax statistics and rankings for all 317 English councils on CivAccount"
+              />
+            </div>
             <Badge variant="outline" className="mb-4">2025-26 Data</Badge>
             <h1 className="type-title-1 font-semibold mb-4">Council tax in England</h1>
             <p className="type-body-lg text-muted-foreground max-w-2xl mx-auto">

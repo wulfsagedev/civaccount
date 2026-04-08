@@ -4,6 +4,7 @@ import { councils, formatCurrency, formatBudget, getCouncilDisplayName, getCounc
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import { PageShareButton } from '@/components/ui/page-share-button';
 
 export const metadata: Metadata = {
   title: 'Council Leaderboards — Rankings for all 317 English Councils | CivAccount',
@@ -159,10 +160,18 @@ export default function LeaderboardsPage() {
             { label: 'Leaderboards' },
           ]} />
 
-          <h1 className="type-title-1 mb-2 mt-6">Council Leaderboards</h1>
-          <p className="type-body-sm text-muted-foreground mb-8">
-            See where every council ranks. Grouped by council type for fair comparison.
-          </p>
+          <div className="flex items-start justify-between gap-2 mt-6 mb-8">
+            <div>
+              <h1 className="type-title-1 mb-2">Council Leaderboards</h1>
+              <p className="type-body-sm text-muted-foreground">
+                See where every council ranks. Grouped by council type for fair comparison.
+              </p>
+            </div>
+            <PageShareButton
+              title="Council Leaderboards — CivAccount"
+              description="See where every council ranks for council tax, spending, and CEO salary across all 317 English councils"
+            />
+          </div>
 
           {METRICS.map(metric => (
             <section key={metric.key} className="mb-12">
