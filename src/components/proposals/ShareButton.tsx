@@ -56,7 +56,9 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
   const handleShare = useCallback(async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title, text, url: shareUrl });
+        // Pass URL inside text (not as separate url param) to avoid
+        // iOS Safari's slow preview-fetching blank screen
+        await navigator.share({ text: `${text}\n${shareUrl}` });
         return;
       } catch { /* user cancelled */ }
     }
