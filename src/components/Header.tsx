@@ -224,13 +224,19 @@ export default function Header() {
       {/* Floating compact nav - slides in from top when scrolled */}
       <div
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 pt-3',
+          'fixed top-0 left-0 right-0 z-50',
           'transition-all duration-300 ease-out',
           isScrolled
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 -translate-y-full pointer-events-none'
         )}
       >
+        {/* Gradient fade — masks content scrolling behind the nav */}
+        <div
+          className="absolute inset-x-0 top-0 h-20 pointer-events-none"
+          style={{ background: `linear-gradient(to bottom, rgb(var(--background-rgb)) 40%, transparent)` }}
+        />
+        <div className="relative px-4 sm:px-6 pt-3">
         <div className="mx-auto" style={{ maxWidth: '845px' }}>
           {/* Main pill nav */}
           <div className={cn(
@@ -384,6 +390,7 @@ export default function Header() {
               </nav>
             </div>
           )}
+        </div>
         </div>
       </div>
 
