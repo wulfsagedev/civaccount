@@ -67,14 +67,18 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          'inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer rounded-lg',
+          'inline-flex items-center gap-2 font-semibold transition-all cursor-pointer rounded-lg',
           variant === 'header'
             ? 'h-9 px-4 py-2 type-body-sm text-muted-foreground hover:text-foreground hover:bg-muted'
-            : 'h-11 px-5 py-2 type-body-sm bg-foreground text-background hover:bg-foreground/90'
+            : 'h-11 px-6 py-2 type-body-sm rounded-lg'
         )}
+        style={variant === 'default' ? {
+          backgroundColor: 'var(--share-accent)',
+          color: 'white',
+        } : undefined}
       >
-        <Heart className="h-3.5 w-3.5" aria-hidden="true" />
-        Donate
+        <Heart className="h-4 w-4" aria-hidden="true" />
+        Support CivAccount
       </button>
 
       {/* Modal - rendered via portal to ensure it's above all other content */}
@@ -92,8 +96,8 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
             <div className="p-6 pb-4 border-b border-border/50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <Heart className="h-5 w-5 text-muted-foreground" />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--share-accent-bg)' }}>
+                    <Heart className="h-5 w-5" style={{ color: 'var(--share-accent)' }} />
                   </div>
                   <div>
                     <h2 className="font-semibold type-title-3">Support CivAccount</h2>
@@ -164,23 +168,24 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
               )}
 
               {/* Donate button */}
-              <Button
+              <button
                 onClick={handleDonate}
                 disabled={isLoading}
-                className="w-full h-12 text-base font-semibold cursor-pointer"
+                className="w-full h-12 rounded-xl text-base font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity disabled:opacity-60"
+                style={{ backgroundColor: 'var(--share-accent)', color: 'white' }}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Redirecting to checkout...
                   </>
                 ) : (
                   <>
-                    <Heart className="h-4 w-4 mr-2" />
+                    <Heart className="h-4 w-4" />
                     Donate £{customAmount || selectedAmount}
                   </>
                 )}
-              </Button>
+              </button>
 
               <p className="type-body-sm text-center text-muted-foreground">
                 Secure payment powered by Stripe. One-time donation.
