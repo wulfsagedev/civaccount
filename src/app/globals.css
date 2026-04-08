@@ -779,13 +779,9 @@ select:focus {
   background: var(--popover);
 }
 
-/* Subtle inner glow for depth in dark mode — grey card surfaces */
+/* Dark mode cards — flat colour, no gradient */
 .dark .card-elevated {
-  background: linear-gradient(
-    180deg,
-    oklch(0.27 0.006 250) 0%,
-    oklch(0.24 0.006 250) 100%
-  );
+  background: oklch(0.25 0.006 250);
   border-color: oklch(1 0 0 / 8%);
   box-shadow:
     0 0 0 1px oklch(1 0 0 / 5%) inset,
