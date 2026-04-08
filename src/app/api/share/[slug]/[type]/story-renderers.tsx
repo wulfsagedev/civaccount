@@ -225,3 +225,86 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
     </div>
   );
 }
+
+// ── Tax Card Receipt (Story) ─────────────────────────────────────────────────
+
+export function renderTaxCardStory(council: Council, councilName: string): ReactElement {
+  const precepts = council.detailed?.precepts;
+  const bandD = council.council_tax?.band_d_2025;
+  const bandDPrev = council.council_tax?.band_d_2024;
+
+  if (!bandD) return <div style={{ display: 'flex' }}>No data</div>;
+
+  const total = precepts?.length ? precepts.reduce((s, p) => s + p.band_d, 0) : bandD;
+  const weeklyCost = (total / 52).toFixed(2);
+  const changePct = bandDPrev ? (((bandD - bandDPrev) / bandDPrev) * 100).toFixed(1) : null;
+
+  // Top service weekly costs (council's share only)
+  const budget = council.budget;
+  const serviceCosts = budget?.total_service
+    ? Object.entries(BUDGET_CATEGORIES)
+        .map(([key, label]) => {
+          const amount = (budget[key as keyof typeof budget] as number | null) ?? 0;
+          if (amount <= 0) return null;
+          return { label, weekly: ((bandD / 52) * (amount / budget.total_service!)) };
+        })
+        .filter((x): x is NonNullable<typeof x> => x !== null)
+        .sort((a, b) => b.weekly - a.weekly)
+        .slice(0, 4)
+    : [];
+
+  return ogStoryWrap(
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+      {/* Top — council name */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+        <span style={{ fontSize: '32px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          {council.type_name}
+        </span>
+        <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text, textAlign: 'center', lineHeight: 1.1 }}>
+          {councilName}
+        </span>
+        <span style={{ fontSize: '28px', fontWeight: 500, color: OG.secondary }}>
+          Council tax receipt · 2025-26
+        </span>
+      </div>
+
+      {/* Middle — receipt body */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* Hero — weekly */}
+        <span style={{ fontSize: '32px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
+          Band D · Per week
+        </span>
+        <span style={{ fontSize: '110px', fontWeight: 700, color: OG.text, letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '8px' }}>
+          {`\u00A3${weeklyCost}`}
+        </span>
+        <span style={{ fontSize: '36px', fontWeight: 500, color: OG.secondary, marginBottom: '36px' }}>
+          {formatCurrencyOG(total, 2)}/year
+        </span>
+
+        {/* Service weekly breakdown */}
+        {serviceCosts.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', marginBottom: '36px' }}>
+            {serviceCosts.map((s) => (
+              <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '30px', fontWeight: 500, color: OG.secondary }}>{s.label}</span>
+                <span style={{ fontSize: '30px', fontWeight: 700, color: OG.text }}>{formatCurrencyOG(s.weekly, 2)}/wk</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Divider + change */}
+        <div style={{ display: 'flex', width: '100%', height: '2px', backgroundColor: OG.border, marginBottom: '20px' }} />
+        <span style={{ fontSize: '32px', fontWeight: 500, color: OG.secondary }}>
+          {changePct ? `${Number(changePct) > 0 ? '+' : ''}${changePct}% from last year` : `${formatCurrencyOG(total, 2)} per year`}
+        </span>
+      </div>
+
+      {/* Brand + viral CTA */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+        <span style={{ fontSize: '32px', fontWeight: 600, color: OG.text }}>What do you pay? Check yours</span>
+        {ogStoryBrand(councilName, council.type_name)}
+      </div>
+    </div>
+  );
+}

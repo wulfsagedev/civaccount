@@ -14,7 +14,8 @@ import { renderSuppliers } from '@/app/council/[slug]/card/_lib/og-renderers/sup
 import { renderGrants } from '@/app/council/[slug]/card/_lib/og-renderers/grants';
 import { renderPerformance } from '@/app/council/[slug]/card/_lib/og-renderers/performance';
 import { renderServiceOutcomes } from '@/app/council/[slug]/card/_lib/og-renderers/service-outcomes';
-import { renderYourBillStory, renderSpendingStory, renderBillHistoryStory } from './story-renderers';
+import { renderYourBillStory, renderSpendingStory, renderBillHistoryStory, renderTaxCardStory } from './story-renderers';
+import { renderTaxCard } from '@/app/council/[slug]/card/_lib/og-renderers/tax-card';
 import type { Council } from '@/data/councils';
 import type { ReactElement } from 'react';
 
@@ -36,12 +37,14 @@ const ogRenderers: Record<string, (council: Council, councilName: string) => Rea
   'grants': renderGrants,
   'performance': renderPerformance,
   'service-outcomes': renderServiceOutcomes,
+  'tax-card': renderTaxCard,
 };
 
 const storyRenderers: Record<string, (council: Council, councilName: string) => ReactElement> = {
   'your-bill': renderYourBillStory,
   'spending': renderSpendingStory,
   'bill-history': renderBillHistoryStory,
+  'tax-card': renderTaxCardStory,
 };
 
 export async function GET(

@@ -226,6 +226,22 @@ const YourBillCard = ({
         <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
       </Link>
 
+      {/* Get your tax card */}
+      <Link
+        href={`/council/${getCouncilSlug(selectedCouncil)}/tax-card`}
+        className="mt-4 flex items-center justify-between p-3 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+      >
+        <div className="leading-tight">
+          <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
+            Get your council tax card
+          </p>
+          <p className="type-caption text-muted-foreground">
+            A personalised receipt showing where your money goes
+          </p>
+        </div>
+        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+      </Link>
+
       {/* Share your council tax card */}
       <div className="mt-4">
         <ShareButton
