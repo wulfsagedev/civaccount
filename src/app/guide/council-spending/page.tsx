@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatBudget, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'How UK Councils Spend Your Money — Guide to Council Spending | CivAccount',
+  title: 'How UK Councils Spend Your Money — Guide to Council Spending',
   description: 'Understand how English councils spend your council tax. Learn about service budgets, statutory vs discretionary spending, and where the biggest costs are.',
   alternates: {
     canonical: '/guide/council-spending',
@@ -110,12 +112,13 @@ export default function CouncilSpendingGuidePage() {
   const maxCatTotal = categoryTotals[0].total;
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Guide: Council Spending' },
@@ -275,6 +278,7 @@ export default function CouncilSpendingGuidePage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

@@ -25,14 +25,14 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-wrap gap-x-4 gap-y-1 type-body-sm">
-            <Link href="/townhall" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">Town Hall</Link>
-            <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">About</Link>
-            <Link href="/methodology" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">Methodology</Link>
-            <Link href="/updates" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">Updates</Link>
+            <Link href="/townhall" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Town Hall</Link>
+            <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">About</Link>
+            <Link href="/methodology" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Methodology</Link>
+            <Link href="/updates" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Updates</Link>
             <button
               type="button"
               onClick={() => document.dispatchEvent(new CustomEvent('open-feedback'))}
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center"
             >
               Feedback
             </button>
@@ -40,7 +40,7 @@ export default function Footer() {
               href="https://github.com/wulfsagedev/civaccount"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center"
             >
               GitHub
               <span className="sr-only"> (opens in new tab)</span>
@@ -78,10 +78,10 @@ export default function Footer() {
               </a>
             </p>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="hover:text-foreground transition-colors cursor-pointer">Privacy</Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors cursor-pointer">Terms</Link>
-              <Link href="/license" className="hover:text-foreground transition-colors cursor-pointer">License</Link>
-              <Link href="/accessibility" className="hover:text-foreground transition-colors cursor-pointer">Accessibility</Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Privacy</Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Terms</Link>
+              <Link href="/license" className="hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">License</Link>
+              <Link href="/accessibility" className="hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Accessibility</Link>
             </div>
           </div>
         </div>

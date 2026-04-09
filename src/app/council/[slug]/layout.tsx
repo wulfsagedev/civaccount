@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!council) {
     return {
-      title: 'Council Not Found | CivAccount',
+      title: 'Council Not Found',
     };
   }
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const bandDText = bandD ? ` - Band D £${bandD.toLocaleString('en-GB')}` : '';
 
   return {
-    title: `${displayName} Budget & Council Tax 2025-26 | CivAccount`,
+    title: `${displayName} Budget & Council Tax 2025-26`,
     description: `See how ${displayName} spends your council tax${bandDText}. Budget breakdown, service spending, and tax band information for 2025-26.`,
     alternates: {
       canonical: `/council/${slug}`,

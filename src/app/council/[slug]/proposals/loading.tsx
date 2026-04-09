@@ -6,6 +6,7 @@ export default function ProposalsLoading() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main id="main-content" className="container mx-auto px-4 py-6 max-w-3xl">
+        <div className="sr-only" role="status">Loading proposals</div>
         {/* Breadcrumb skeleton */}
         <div className="flex items-center gap-2 mb-4">
           <div className="h-4 w-20 bg-muted rounded animate-pulse" />

@@ -16,6 +16,8 @@ export default function AccountModal() {
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   // Sync name when displayName loads
   useEffect(() => {
@@ -28,20 +30,54 @@ export default function AccountModal() {
     const handleClick = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
         setIsOpen(false);
+        triggerButtonRef.current?.focus();
       }
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [isOpen]);
 
-  // Close on Escape
+  // Close on Escape and restore focus
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+        triggerButtonRef.current?.focus();
+      }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
+  }, [isOpen]);
+
+  // Move focus into popover when it opens, and trap focus
+  useEffect(() => {
+    if (!isOpen) return;
+    const popover = popoverRef.current;
+    if (!popover) return;
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusables = popover.querySelectorAll(focusableSelector);
+    const first = focusables[0] as HTMLElement;
+    first?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const currentFocusables = popover.querySelectorAll(focusableSelector);
+      const currentFirst = currentFocusables[0] as HTMLElement;
+      const currentLast = currentFocusables[currentFocusables.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === currentFirst) {
+        e.preventDefault();
+        currentLast?.focus();
+      } else if (!e.shiftKey && document.activeElement === currentLast) {
+        e.preventDefault();
+        currentFirst?.focus();
+      }
+    };
+
+    popover.addEventListener('keydown', handleKeyDown);
+    return () => popover.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
   if (!user) return null;
@@ -69,10 +105,12 @@ export default function AccountModal() {
   return (
     <div className="relative" ref={modalRef}>
       <button
+        ref={triggerButtonRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="inline-flex items-center justify-center gap-2 whitespace-nowrap type-body-sm font-medium h-9 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
         aria-label="Account"
+        aria-haspopup="true"
         aria-expanded={isOpen}
       >
         <User className="h-4 w-4" aria-hidden="true" />
@@ -80,7 +118,7 @@ export default function AccountModal() {
       </button>
 
       {isOpen && (
-        <div className={cn(
+        <div ref={popoverRef} role="menu" className={cn(
           "absolute right-0 top-full mt-2 w-72 rounded-xl border border-border/40 bg-card shadow-lg z-50 overflow-hidden"
         )}>
           {/* Header */}
@@ -120,6 +158,7 @@ export default function AccountModal() {
           <div className="p-2 border-t border-border/40">
             <button
               type="button"
+              role="menuitem"
               onClick={handleSignOut}
               className="flex items-center gap-2 w-full px-3 py-2 rounded-lg type-body-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
             >

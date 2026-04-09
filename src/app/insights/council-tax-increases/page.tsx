@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Council Tax Increases 2025-26 — Year-on-Year Changes | CivAccount',
+  title: 'Council Tax Increases 2025-26 — Year-on-Year Changes',
   description: 'See which councils had the biggest and smallest council tax increases in 2025-26. Compare year-on-year Band D rate changes across all 317 English councils.',
   alternates: {
     canonical: '/insights/council-tax-increases',
@@ -75,12 +77,13 @@ export default function CouncilTaxIncreasesPage() {
   const maxIncrease = biggestIncreases[0].changePercent;
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Insights', href: '/insights' },
@@ -183,6 +186,7 @@ export default function CouncilTaxIncreasesPage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

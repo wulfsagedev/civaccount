@@ -91,7 +91,7 @@ export function ShareableStat({ label, value, context, children }: ShareableStat
           type="button"
           onClick={handleShare}
           disabled={state === 'loading'}
-          className="absolute -top-1 -right-1 sm:opacity-0 sm:group-hover/stat:opacity-100 sm:focus-within:opacity-100 transition-all duration-150 w-7 h-7 rounded-full bg-card border border-border/50 shadow-sm flex items-center justify-center cursor-pointer disabled:opacity-60 hover:bg-muted"
+          className="absolute -top-1 -right-1 sm:opacity-0 sm:group-hover/stat:opacity-100 sm:focus-within:opacity-100 transition-all duration-150 w-11 h-11 rounded-full bg-card border border-border/50 shadow-sm flex items-center justify-center cursor-pointer disabled:opacity-60 hover:bg-muted"
           aria-label={`Share ${label}`}
         >
           {state === 'loading' ? (

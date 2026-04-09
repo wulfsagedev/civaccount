@@ -115,7 +115,7 @@ export default function VoteButton({
         disabled={isVoting}
         className={cn(
           'flex items-center justify-center rounded-md transition-colors cursor-pointer',
-          isVertical ? 'w-10 h-10' : 'w-9 h-9',
+          isVertical ? 'w-11 h-11' : 'w-11 h-11',
           userVote === 'up'
             ? 'text-positive bg-muted'
             : 'text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -137,7 +137,7 @@ export default function VoteButton({
         disabled={isVoting}
         className={cn(
           'flex items-center justify-center rounded-md transition-colors cursor-pointer',
-          isVertical ? 'w-10 h-10' : 'w-9 h-9',
+          isVertical ? 'w-11 h-11' : 'w-11 h-11',
           userVote === 'down'
             ? 'text-negative bg-muted'
             : 'text-muted-foreground hover:text-foreground hover:bg-muted'

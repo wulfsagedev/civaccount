@@ -57,6 +57,7 @@ export default function DisplayNamePrompt() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name or nickname"
+              aria-label="Display name"
               maxLength={50}
               className="h-10 flex-1"
             />

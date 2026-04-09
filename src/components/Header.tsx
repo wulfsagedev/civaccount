@@ -260,7 +260,7 @@ export default function Header() {
                   const council = selectedCouncil || getCouncilBySlug(pathname.split('/')[2] || '');
                   if (council) {
                     return (
-                      <p className="type-body-sm font-semibold truncate leading-tight">
+                      <p className="text-lg font-bold truncate leading-tight">
                         <span className="sm:hidden">{council.name}</span>
                         <span className="hidden sm:inline">{getCouncilDisplayName(council)}</span>
                       </p>
@@ -271,7 +271,7 @@ export default function Header() {
                 // 2. Homepage with selected council — show council name
                 if (pathname === '/' && selectedCouncil) {
                   return (
-                    <p className="type-body-sm font-semibold truncate leading-tight">
+                    <p className="text-lg font-bold truncate leading-tight">
                       <span className="sm:hidden">{selectedCouncil.name}</span>
                       <span className="hidden sm:inline">{getCouncilDisplayName(selectedCouncil)}</span>
                     </p>
@@ -296,12 +296,12 @@ export default function Header() {
 
                 for (const [route, title] of pageRoutes) {
                   if (pathname === route || pathname.startsWith(route + '/')) {
-                    return <p className="type-body-sm font-semibold truncate leading-tight">{title}</p>;
+                    return <p className="text-lg font-bold truncate leading-tight">{title}</p>;
                   }
                 }
 
                 // 4. Fallback — always show brand name, never empty
-                return <p className="type-body-sm font-semibold truncate leading-tight">CivAccount</p>;
+                return <p className="text-lg font-bold truncate leading-tight">CivAccount</p>;
               })()}
             </div>
 

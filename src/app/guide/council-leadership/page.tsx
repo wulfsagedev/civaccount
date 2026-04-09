@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Who Runs Your Council — Guide to Council Leadership | CivAccount',
+  title: 'Who Runs Your Council — Guide to Council Leadership',
   description: 'Understand who leads English councils: chief executives, council leaders, cabinet members, and councillors. Learn about their roles, salaries, and accountability.',
   alternates: {
     canonical: '/guide/council-leadership',
@@ -90,12 +92,13 @@ export default function CouncilLeadershipGuidePage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Guide: Council Leadership' }]} />
 
         <h1 className="type-title-1 mb-2">Who Runs Your Council</h1>
@@ -283,6 +286,7 @@ export default function CouncilLeadershipGuidePage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

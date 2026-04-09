@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About CivAccount - Why we built this',
+  title: 'About — Why We Built This',
   description: 'Learn why we created CivAccount to make UK council budget data accessible to everyone. Our mission is transparency in local government spending.',
   alternates: {
     canonical: '/about',

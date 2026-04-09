@@ -6,6 +6,7 @@ import "./globals.css";
 import { CouncilProvider } from "@/context/CouncilContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { RouteAnnouncer } from "@/components/RouteAnnouncer";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -19,7 +20,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CivAccount - See where your council tax goes",
+  title: {
+    default: "CivAccount - See where your council tax goes",
+    template: "%s | CivAccount",
+  },
   description: "Search by name or postcode to see how your council spends your money. Budget breakdowns, council tax by band, CEO salary, spending comparisons, and Town Hall — have your say on all 317 English councils. Free and independent.",
   metadataBase: new URL('https://www.civaccount.co.uk'),
   alternates: {
@@ -37,6 +41,9 @@ export const metadata: Metadata = {
     title: "CivAccount - See where your council tax goes",
     description: "Search by name or postcode to see how your council spends your money. Budget breakdowns, CEO salary, spending comparisons, and Town Hall for all 317 English councils.",
   },
+  other: {
+    'theme-color': '#1c1917',
+  },
 };
 
 export default function RootLayout({
@@ -45,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en-GB" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -91,9 +98,9 @@ export default function RootLayout({
                   "description": "Open source council budget transparency project for UK citizens.",
                   "logo": {
                     "@type": "ImageObject",
-                    "url": "https://www.civaccount.co.uk/icon",
-                    "width": 32,
-                    "height": 32
+                    "url": "https://www.civaccount.co.uk/icon-512",
+                    "width": 512,
+                    "height": 512
                   },
                   "sameAs": [
                     "https://github.com/wulfsagedev/civaccount"
@@ -118,6 +125,7 @@ export default function RootLayout({
         <AuthProvider>
           <CouncilProvider>
             <ScrollToTop />
+            <RouteAnnouncer />
             {children}
           </CouncilProvider>
         </AuthProvider>

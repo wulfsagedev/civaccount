@@ -51,6 +51,7 @@ export default function CouncilSwitcher({ currentSlug }: CouncilSwitcherProps) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           placeholder="Switch council..."
+          aria-label="Switch council"
           className="w-full h-9 pl-9 pr-3 rounded-lg border border-border bg-background type-body-sm text-muted-foreground focus:text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
           onKeyDown={(e) => {
             if (e.key === 'Escape') {

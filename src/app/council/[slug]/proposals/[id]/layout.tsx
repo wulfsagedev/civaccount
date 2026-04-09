@@ -22,7 +22,7 @@ export async function generateMetadata({
 
   if (!proposal) {
     return {
-      title: `Proposal — ${displayName} Town Hall | CivAccount`,
+      title: `Proposal — ${displayName} Town Hall`,
       description: `View this proposal for ${displayName} on CivAccount Town Hall.`,
     };
   }
@@ -33,7 +33,7 @@ export async function generateMetadata({
     : proposal.body;
 
   return {
-    title: `${proposal.title} — ${displayName} Town Hall | CivAccount`,
+    title: `${proposal.title} — ${displayName} Town Hall`,
     description: bodyPreview,
     alternates: {
       canonical: `/council/${slug}/proposals/${id}`,

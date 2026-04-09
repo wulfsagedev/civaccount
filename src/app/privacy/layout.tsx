@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - CivAccount',
+  title: 'Privacy Policy',
   description: 'CivAccount privacy policy. We respect your privacy and only use essential cookies. No tracking, no ads, no data selling.',
   alternates: {
     canonical: '/privacy',

@@ -122,7 +122,7 @@ export default function DataSourcesFooter() {
           <div className="text-center">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-2"
+              className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-2 min-h-[44px]"
             >
               {expanded ? 'Hide sources' : `View all ${totalLinkCount} sources`}
               <ChevronDown className={`h-3 w-3 transition-transform ${expanded ? 'rotate-180' : ''}`} aria-hidden="true" />

@@ -14,7 +14,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif', backgroundColor: '#fafafa', color: '#1c1917' }}>
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 16px' }}>
           <div style={{ maxWidth: '420px', width: '100%', textAlign: 'center' }}>

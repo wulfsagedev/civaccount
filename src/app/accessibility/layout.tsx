@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Accessibility - CivAccount',
+  title: 'Accessibility',
   description: 'CivAccount is designed to be accessible to everyone. We follow WCAG 2.1 AA guidelines with high contrast, keyboard navigation, and screen reader support.',
   alternates: {
     canonical: '/accessibility',

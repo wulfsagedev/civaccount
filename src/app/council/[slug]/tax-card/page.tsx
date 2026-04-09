@@ -11,16 +11,16 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const council = getCouncilBySlug(slug);
-  if (!council) return { title: 'Council Tax Card | CivAccount' };
+  if (!council) return { title: 'Council Tax Card' };
 
   const name = getCouncilDisplayName(council);
   const bandD = council.council_tax?.band_d_2025;
   const bandDText = bandD ? ` Band D: ${formatCurrency(bandD, { decimals: 2 })}` : '';
 
   return {
-    title: `Your Council Tax Card — ${name} | CivAccount`,
+    title: `Your Council Tax Card — ${name}`,
     description: `See exactly where your council tax goes in ${name}.${bandDText}. Get your personalised receipt and share it.`,
-    alternates: { canonical: `/council/${slug}/tax-card` },
+    robots: { index: false, follow: true },
     openGraph: {
       title: `Your Council Tax Card — ${name}`,
       description: `Where does your council tax go? See your personalised receipt for ${name}.`,

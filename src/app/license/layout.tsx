@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Open Source License - CivAccount',
+  title: 'Open Source License',
   description: 'CivAccount is open source software. View our MIT license and contribute to making council data more accessible.',
   alternates: {
     canonical: '/license',

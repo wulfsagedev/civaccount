@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Updates - What\'s new in CivAccount',
+  title: 'Updates — What\'s New',
   description: 'See the latest updates and improvements to CivAccount. We regularly add new councils, features, and data to help you understand your council tax.',
   alternates: {
     canonical: '/updates',

@@ -4,8 +4,9 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'UK Residents Only — CivAccount',
+  title: 'UK Residents Only',
   description: 'CivAccount Town Hall is for UK residents. You can still browse council data.',
+  robots: { index: false, follow: true },
 };
 
 export default function UKOnlyPage() {

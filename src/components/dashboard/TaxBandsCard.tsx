@@ -55,10 +55,12 @@ const TaxBandsCard = ({
       />
 
       {/* Band selector - horizontal grid that always fits */}
-      <div className="grid grid-cols-8 gap-1 sm:gap-1.5 mb-5">
+      <div role="radiogroup" aria-label="Select council tax band" className="grid grid-cols-8 gap-1 sm:gap-1.5 mb-5">
         {Object.keys(allBands).map((band) => (
           <button
             key={band}
+            role="radio"
+            aria-checked={selectedBand === band}
             onClick={() => setSelectedBand(band)}
             className={`py-2.5 sm:py-3 rounded-lg type-body-sm font-semibold transition-all cursor-pointer ${
               selectedBand === band

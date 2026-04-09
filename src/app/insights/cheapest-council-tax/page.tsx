@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Cheapest Council Tax in England 2025-26 | CivAccount',
+  title: 'Cheapest Council Tax in England 2025-26',
   description: 'Find the cheapest council tax rates in England for 2025-26. See which councils charge the lowest Band D rates across unitary authorities, metropolitan districts, London boroughs, county councils, and district councils.',
   alternates: {
     canonical: '/insights/cheapest-council-tax',
@@ -65,12 +67,13 @@ export default function CheapestCouncilTaxPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Insights', href: '/insights' },
@@ -142,6 +145,7 @@ export default function CheapestCouncilTaxPage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

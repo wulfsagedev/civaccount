@@ -5,6 +5,9 @@ import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatCurrency
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { getPopularComparisons } from '@/lib/comparisons';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Check } from 'lucide-react';
 
 interface Props {
   params: Promise<{ matchup: string }>;
@@ -17,17 +20,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { matchup } = await params;
   const parts = matchup.split('-vs-');
-  if (parts.length !== 2) return { title: 'Compare Councils | CivAccount' };
+  if (parts.length !== 2) return { title: 'Compare Councils' };
 
   const councilA = getCouncilBySlug(parts[0]);
   const councilB = getCouncilBySlug(parts[1]);
-  if (!councilA || !councilB) return { title: 'Compare Councils | CivAccount' };
+  if (!councilA || !councilB) return { title: 'Compare Councils' };
 
   const nameA = getCouncilDisplayName(councilA);
   const nameB = getCouncilDisplayName(councilB);
 
   return {
-    title: `${nameA} vs ${nameB} Council Tax 2025-26 | CivAccount`,
+    title: `${nameA} vs ${nameB} Council Tax 2025-26`,
     description: `Compare ${nameA} and ${nameB} council tax rates, spending, and budgets for 2025-26. Side-by-side comparison of Band D rates, service budgets, and CEO salaries.`,
     alternates: {
       canonical: `/compare/${matchup}`,
@@ -187,12 +190,13 @@ export default async function MatchupPage({ params }: Props) {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Compare', href: '/compare' },
@@ -220,9 +224,11 @@ export default async function MatchupPage({ params }: Props) {
                 <span className="type-body-sm text-muted-foreground w-1/3">{metric.label}</span>
                 <span className={`type-body-sm font-semibold tabular-nums text-right w-1/3 ${metric.winner === 'a' ? 'text-positive' : ''}`}>
                   {metric.valueA}
+                  {metric.winner === 'a' && <><Check className="h-3.5 w-3.5 inline ml-1" aria-hidden="true" /><span className="sr-only"> (lower)</span></>}
                 </span>
                 <span className={`type-body-sm font-semibold tabular-nums text-right w-1/3 ${metric.winner === 'b' ? 'text-positive' : ''}`}>
                   {metric.valueB}
+                  {metric.winner === 'b' && <><Check className="h-3.5 w-3.5 inline ml-1" aria-hidden="true" /><span className="sr-only"> (lower)</span></>}
                 </span>
               </div>
             ))}
@@ -287,6 +293,7 @@ export default async function MatchupPage({ params }: Props) {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

@@ -279,6 +279,7 @@ export default function ProposalsPage() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
+            aria-label="Filter by budget area"
             className="h-9 px-3 rounded-lg border border-border bg-background type-caption cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">All areas</option>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Use - CivAccount',
+  title: 'Terms of Use',
   description: 'Terms of use for CivAccount. Our data comes from official government sources but is provided for informational purposes only.',
   alternates: {
     canonical: '/terms',

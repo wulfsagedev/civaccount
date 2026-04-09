@@ -5,135 +5,142 @@ import { getPopularComparisons } from '@/lib/comparisons'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.civaccount.co.uk'
+  const buildDate = new Date().toISOString()
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
       url: `${baseUrl}/insights`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/compare`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/townhall`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: '2026-03-01',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: `${baseUrl}/methodology`,
-      lastModified: '2026-03-01',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: `${baseUrl}/roadmap`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${baseUrl}/updates`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'weekly',
       priority: 0.6,
     },
     {
       url: `${baseUrl}/accessibility`,
-      lastModified: '2026-02-01',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: '2026-02-01',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: '2026-02-01',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/license`,
-      lastModified: '2026-02-01',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.3,
     },
     // Guide pages (content clusters)
     {
       url: `${baseUrl}/guide/council-tax`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/guide/council-spending`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/guide/council-leadership`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/guide/local-democracy`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     // Open data page
     {
       url: `${baseUrl}/data`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     // Long-tail insight sub-pages
     {
       url: `${baseUrl}/insights/cheapest-council-tax`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/insights/most-expensive-council-tax`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/insights/council-tax-increases`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/insights/council-ceo-salaries`,
-      lastModified: '2026-04-06',
+      lastModified: buildDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/insights/leaderboards`,
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.85,
     },
@@ -142,7 +149,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Head-to-head comparison pages
   const comparisonPages: MetadataRoute.Sitemap = getPopularComparisons().map((matchup) => ({
     url: `${baseUrl}/compare/${matchup}`,
-    lastModified: '2026-04-06',
+    lastModified: buildDate,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
@@ -159,7 +166,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       {
         url: `${baseUrl}/council/${slug}/proposals`,
-        lastModified: '2026-04-06',
+        lastModified: buildDate,
         changeFrequency: 'daily' as const,
         priority: 0.7,
       },

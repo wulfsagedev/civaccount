@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatCurrency } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Open Data — Download Council Tax & Budget Data | CivAccount',
+  title: 'Open Data — Download Council Tax & Budget Data',
   description: 'Download council tax rates, budgets, and spending data for all 317 English councils in CSV or JSON format. Free, open data under the Open Government Licence.',
   alternates: {
     canonical: '/data',
@@ -101,12 +103,13 @@ export default function DataPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Open Data' },
@@ -278,6 +281,7 @@ export default function DataPage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

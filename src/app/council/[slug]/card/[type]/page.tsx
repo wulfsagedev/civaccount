@@ -15,12 +15,13 @@ export async function generateMetadata({
   const displayName = council ? getCouncilDisplayName(council) : 'Council';
   const cardType = CARD_TYPES[type];
 
-  const title = cardType ? cardType.title(displayName) : `${displayName} | CivAccount`;
+  const title = cardType ? cardType.title(displayName) : `${displayName}`;
   const description = cardType ? cardType.description(displayName) : `Council data for ${displayName}`;
 
   return {
     title,
     description,
+    robots: { index: false, follow: true },
     openGraph: {
       title,
       description,

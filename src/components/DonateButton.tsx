@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Heart, X, Loader2 } from 'lucide-react';
@@ -24,11 +24,62 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef<Element | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   // Ensure we only render portal after component mounts (for SSR compatibility)
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const closeModal = useCallback(() => {
+    setIsOpen(false);
+    if (triggerRef.current && triggerRef.current instanceof HTMLElement) {
+      triggerRef.current.focus();
+    }
+  }, []);
+
+  // Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, closeModal]);
+
+  // Focus trap and auto-focus
+  useEffect(() => {
+    if (!isOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusables = dialog.querySelectorAll(focusableSelector);
+    const first = focusables[0] as HTMLElement;
+    const last = focusables[focusables.length - 1] as HTMLElement;
+
+    first?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const currentFocusables = dialog.querySelectorAll(focusableSelector);
+      const currentFirst = currentFocusables[0] as HTMLElement;
+      const currentLast = currentFocusables[currentFocusables.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === currentFirst) {
+        e.preventDefault();
+        currentLast?.focus();
+      } else if (!e.shiftKey && document.activeElement === currentLast) {
+        e.preventDefault();
+        currentFirst?.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleKeyDown);
+    return () => dialog.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const handleDonate = async () => {
     const amount = customAmount ? parseFloat(customAmount) : selectedAmount;
@@ -65,7 +116,7 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => { triggerRef.current = document.activeElement; setIsOpen(true); }}
         className={cn(
           'inline-flex items-center gap-2 font-semibold transition-all cursor-pointer rounded-lg',
           variant === 'header'
@@ -84,8 +135,12 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
       {/* Modal - rendered via portal to ensure it's above all other content */}
       {mounted && isOpen && createPortal(
         <div
+          ref={dialogRef}
           className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setIsOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="donate-title"
+          onClick={closeModal}
         >
           {/* Modal content */}
           <div
@@ -100,12 +155,12 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
                     <Heart className="h-5 w-5" style={{ color: 'var(--share-accent)' }} />
                   </div>
                   <div>
-                    <h2 className="font-semibold type-title-3">Support CivAccount</h2>
+                    <h2 id="donate-title" className="font-semibold type-title-3">Support CivAccount</h2>
                     <p className="type-body-sm text-muted-foreground">One-time contribution</p>
                   </div>
                 </div>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeModal}
                   className="w-11 h-11 rounded-full hover:bg-muted flex items-center justify-center cursor-pointer"
                   aria-label="Close donation modal"
                 >
@@ -144,10 +199,11 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
 
               {/* Custom amount */}
               <div>
-                <label className="type-body-sm font-medium mb-2 block">Or enter a custom amount</label>
+                <label htmlFor="custom-donation-amount" className="type-body-sm font-medium mb-2 block">Or enter a custom amount</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">£</span>
                   <input
+                    id="custom-donation-amount"
                     type="number"
                     min="1"
                     max="500"

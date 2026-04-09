@@ -84,7 +84,7 @@ export default function AboutPage() {
                   <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center mb-3">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <h4 className="font-semibold type-body-sm mb-2">Save time</h4>
+                  <h3 className="font-semibold type-body-sm mb-2">Save time</h3>
                   <p className="type-body-sm text-muted-foreground leading-relaxed">
                     Find your council in seconds instead of searching through government websites
                   </p>
@@ -93,7 +93,7 @@ export default function AboutPage() {
                   <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center mb-3">
                     <Database className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <h4 className="font-semibold type-body-sm mb-2">All in one place</h4>
+                  <h3 className="font-semibold type-body-sm mb-2">All in one place</h3>
                   <p className="type-body-sm text-muted-foreground leading-relaxed">
                     Budget data, council tax rates, and service spending for 317 English councils
                   </p>
@@ -102,7 +102,7 @@ export default function AboutPage() {
                   <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center mb-3">
                     <MessageCircle className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <h4 className="font-semibold type-body-sm mb-2">Easy to understand</h4>
+                  <h3 className="font-semibold type-body-sm mb-2">Easy to understand</h3>
                   <p className="type-body-sm text-muted-foreground leading-relaxed">
                     Plain language explanations of what your council does and where money goes
                   </p>
@@ -111,7 +111,7 @@ export default function AboutPage() {
                   <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center mb-3">
                     <Scale className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <h4 className="font-semibold type-body-sm mb-2">Compare councils</h4>
+                  <h3 className="font-semibold type-body-sm mb-2">Compare councils</h3>
                   <p className="type-body-sm text-muted-foreground leading-relaxed">
                     See how your council tax compares to similar councils across the country
                   </p>

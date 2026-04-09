@@ -33,6 +33,7 @@ const HomepageResultItem = memo(function HomepageResultItem({
 
   return (
     <button
+      role="option"
       data-council-item
       onClick={() => onSelect(council)}
       className={`w-full px-3 py-2.5 text-left rounded-lg transition-colors cursor-pointer ${
@@ -72,6 +73,7 @@ const DashboardResultItem = memo(function DashboardResultItem({
 
   return (
     <button
+      role="option"
       data-council-item
       onClick={() => onSelect(council)}
       className={`w-full p-4 text-left rounded-lg transition-colors cursor-pointer ${
@@ -285,6 +287,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              aria-label="Search councils by name or postcode"
               className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-3.5 text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
               autoComplete="off"
               autoCorrect="off"
@@ -295,7 +298,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
           {/* Results — dropdown overlay, no layout shift */}
           {searchQuery.trim() && (
-            <div ref={listRef} className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border/40 bg-card shadow-lg z-20 overflow-hidden max-h-[280px] overflow-y-auto">
+            <div ref={listRef} role="listbox" className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border/40 bg-card shadow-lg z-20 overflow-hidden max-h-[280px] overflow-y-auto">
               {postcodeLoading && isPostcodeQuery ? (
                 <p className="text-center type-body-sm text-muted-foreground py-4">
                   Looking up postcode...
@@ -308,6 +311,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
                 filteredCouncils.map((council, index) => (
                   <button
                     key={council.ons_code}
+                    role="option"
                     data-council-item
                     onClick={() => handleSelect(council)}
                     className={`w-full px-4 py-3 text-left transition-colors cursor-pointer min-h-[44px] border-b border-border/20 last:border-b-0 ${
@@ -343,6 +347,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              aria-label="Search councils by name or postcode"
               className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-3.5 text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
               autoComplete="off"
               autoCorrect="off"
@@ -351,7 +356,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
             />
           </div>
 
-          <div ref={listRef} className="h-[220px] overflow-y-auto scrollbar-hide">
+          <div ref={listRef} role="listbox" className="h-[220px] overflow-y-auto scrollbar-hide">
             {postcodeLoading && isPostcodeQuery ? (
               <p className="text-center type-body-sm text-muted-foreground py-4">
                 Looking up postcode...
@@ -403,6 +408,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                aria-label="Search councils by name or postcode"
                 className="w-full pl-11 pr-4 py-3 border-2 rounded-xl bg-background focus:outline-none focus:border-primary transition-colors text-base"
                 autoComplete="off"
                 autoCorrect="off"
@@ -412,7 +418,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               />
             </div>
 
-            <div ref={listRef} className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
+            <div ref={listRef} role="listbox" className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
               {filteredCouncils.length === 0 ? (
                 <p className="text-center type-body-sm text-muted-foreground py-6">
                   No councils found. Try a different spelling.

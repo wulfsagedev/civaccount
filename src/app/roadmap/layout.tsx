@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Product Roadmap - What we\'re building',
+  title: 'Product Roadmap — What We\'re Building',
   description: 'See what features we\'re working on next for CivAccount. Our focus is on data quality, verifiability, and making council information trustworthy.',
   alternates: {
     canonical: '/roadmap',

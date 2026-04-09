@@ -32,6 +32,7 @@ const SearchResultItem = memo(function SearchResultItem({
 
   return (
     <button
+      role="option"
       data-search-item
       onClick={() => onSelect(council)}
       className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
@@ -64,6 +65,8 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
   const [postcodeLoading, setPostcodeLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<Element | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
@@ -156,6 +159,15 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
     }
   }, [isOpen]);
 
+  const closeSearch = useCallback(() => {
+    setIsOpen(false);
+    setSearchQuery('');
+    // Restore focus to the element that triggered the search
+    if (triggerRef.current && triggerRef.current instanceof HTMLElement) {
+      triggerRef.current.focus();
+    }
+  }, []);
+
   // Global keyboard shortcuts
   const handleGlobalKeyDown = useCallback((e: KeyboardEvent) => {
     const target = e.target as HTMLElement;
@@ -163,14 +175,14 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
 
     if (e.key === 'f' && !isInputFocused) {
       e.preventDefault();
+      triggerRef.current = document.activeElement;
       setIsOpen(true);
     }
 
     if (e.key === 'Escape' && isOpen) {
-      setIsOpen(false);
-      setSearchQuery('');
+      closeSearch();
     }
-  }, [isOpen]);
+  }, [isOpen, closeSearch]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleGlobalKeyDown);
@@ -180,12 +192,40 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
   // Listen for custom event to open search
   useEffect(() => {
     const handleOpenSearch = () => {
+      triggerRef.current = document.activeElement;
       document.dispatchEvent(new CustomEvent('close-mobile-menu'));
       setIsOpen(true);
     };
     document.addEventListener('open-search', handleOpenSearch);
     return () => document.removeEventListener('open-search', handleOpenSearch);
   }, []);
+
+  // Focus trap for the search overlay
+  useEffect(() => {
+    if (!isOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const focusables = dialog.querySelectorAll(focusableSelector);
+      const first = focusables[0] as HTMLElement;
+      const last = focusables[focusables.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleTabKey);
+    return () => dialog.removeEventListener('keydown', handleTabKey);
+  }, [isOpen]);
 
   const handleSelect = useCallback((council: Council) => {
     setSelectedCouncil(council);
@@ -211,11 +251,6 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
       }
     }
   }, [filteredCouncils, highlightedIndex, handleSelect]);
-
-  const closeSearch = useCallback(() => {
-    setIsOpen(false);
-    setSearchQuery('');
-  }, []);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -248,7 +283,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsOpen(true)}
+              onClick={() => { triggerRef.current = document.activeElement; setIsOpen(true); }}
               className="hidden lg:flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[180px]"
             >
               <div className="flex items-center gap-2">
@@ -263,7 +298,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsOpen(true)}
+              onClick={() => { triggerRef.current = document.activeElement; setIsOpen(true); }}
               className="lg:hidden h-11 w-11"
               aria-label="Search councils"
             >
@@ -275,43 +310,45 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
 
       {/* Search overlay - only render from the main instance (not forceDesktopStyle) */}
       {!forceDesktopStyle && isOpen && (
-        <div className="fixed inset-0 z-[60]">
+        <div ref={dialogRef} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Search councils">
           <div
             className="fixed inset-0 bg-background/80 backdrop-blur-sm"
             onClick={closeSearch}
           />
           <div className="fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 top-28 sm:top-[20%]">
-            <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
-              <div className="flex items-center border-b px-4">
-                <Search className="h-5 w-5 text-muted-foreground shrink-0" />
-                <input
-                  ref={inputCallbackRef}
-                  type="text"
-                  placeholder="Search by name or postcode..."
-                  value={searchQuery}
-                  onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  className="flex-1 h-14 text-base px-3 bg-transparent outline-none placeholder:text-muted-foreground"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  enterKeyHint="go"
-                  tabIndex={0}
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={closeSearch}
-                  className="h-10 w-10 shrink-0 cursor-pointer"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
+            <div className="bg-card border rounded-2xl shadow-lg overflow-hidden">
+              <div className="p-3 pb-0">
+                <div className="relative shadow-sm rounded-xl">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground z-10" aria-hidden="true" />
+                  <input
+                    ref={inputCallbackRef}
+                    type="text"
+                    placeholder="Search by name or postcode..."
+                    value={searchQuery}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    aria-label="Search councils by name or postcode"
+                    className="w-full pl-11 sm:pl-12 pr-12 py-3 sm:py-3.5 text-base bg-background border border-muted-foreground/40 rounded-xl focus:outline-none focus:border-foreground placeholder:text-muted-foreground/50"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    enterKeyHint="go"
+                    tabIndex={0}
+                  />
+                  <button
+                    onClick={closeSearch}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    aria-label="Close search"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
               </div>
 
               <div ref={listRef} className="max-h-[60vh] sm:max-h-[300px] overflow-y-auto p-2">
                 {filteredCouncils.length > 0 ? (
-                  <div className="space-y-0.5">
+                  <div className="space-y-0.5" role="listbox">
                     {filteredCouncils.map((council, index) => (
                       <SearchResultItem
                         key={council.ons_code}

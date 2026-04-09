@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'The Complete Guide to Council Tax in England | CivAccount',
+  title: 'The Complete Guide to Council Tax in England',
   description: 'Everything you need to know about council tax in England: how it works, how bands are calculated, who has to pay, discounts and exemptions, and how your money is spent.',
   alternates: {
     canonical: '/guide/council-tax',
@@ -120,12 +122,13 @@ export default function CouncilTaxGuidePage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Guide: Council Tax' },
@@ -396,6 +399,7 @@ export default function CouncilTaxGuidePage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Town Hall — Have Your Say | CivAccount',
+  title: 'Town Hall — Have Your Say',
   description: 'Have your say on how your council spends your money. Vote on ideas, suggest changes, and join the conversation with other residents across 317 English councils.',
   alternates: {
     canonical: '/townhall',

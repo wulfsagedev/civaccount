@@ -2,9 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'How to Influence Your Council — Guide to Local Democracy | CivAccount',
+  title: 'How to Influence Your Council — Guide to Local Democracy',
   description: 'Learn how to have your say on council decisions: attending meetings, submitting FOI requests, contacting councillors, and participating in local democracy.',
   alternates: {
     canonical: '/guide/local-democracy',
@@ -73,12 +75,13 @@ export default function LocalDemocracyGuidePage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Guide: Local Democracy' }]} />
 
         <h1 className="type-title-1 mb-2">How to Influence Your Council</h1>
@@ -271,6 +274,7 @@ export default function LocalDemocracyGuidePage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

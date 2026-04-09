@@ -186,7 +186,7 @@ function CommentNode({
                 <button
                   type="button"
                   onClick={() => setShowReply(!showReply)}
-                  className="type-caption text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 cursor-pointer"
+                  className="type-caption text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 cursor-pointer min-h-[44px] px-2 inline-flex items-center"
                 >
                   <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
                   Reply
@@ -196,7 +196,7 @@ function CommentNode({
                 <button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="type-caption text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 cursor-pointer"
+                  className="type-caption text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 cursor-pointer min-h-[44px] px-2 inline-flex items-center"
                 >
                   <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                   Edit
@@ -206,7 +206,7 @@ function CommentNode({
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="type-caption text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1 cursor-pointer"
+                  className="type-caption text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1 cursor-pointer min-h-[44px] px-2 inline-flex items-center"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   Delete
@@ -225,7 +225,7 @@ function CommentNode({
                   }}
                   disabled={isFlagging || flagged || alreadyFlagged}
                   className={cn(
-                    "type-caption transition-colors flex items-center gap-1 cursor-pointer",
+                    "type-caption transition-colors flex items-center gap-1 cursor-pointer min-h-[44px] px-2 inline-flex items-center",
                     flagged || alreadyFlagged ? "text-negative" : "text-muted-foreground hover:text-negative"
                   )}
                   aria-label="Flag this comment"

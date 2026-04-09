@@ -59,7 +59,7 @@ export function StatusPanel({ variant, title, children, onDismiss, className }: 
           <button
             type="button"
             onClick={onDismiss}
-            className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Dismiss"
           >
             <X className="h-4 w-4" />

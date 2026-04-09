@@ -5,6 +5,7 @@ export default function CouncilLoading() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main id="main-content" className="flex-1">
+        <div className="sr-only" role="status">Loading council data</div>
         <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 max-w-3xl">
           {/* Council selector skeleton */}
           <div className="mb-6">

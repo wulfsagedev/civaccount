@@ -21,7 +21,7 @@ export default function ProposalsError({
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main id="main-content" className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full text-center">
+        <div className="max-w-md w-full text-center" role="alert">
           <div className="mb-6">
             <span className="type-display text-muted-foreground/30">Error</span>
           </div>

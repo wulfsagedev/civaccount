@@ -54,6 +54,7 @@ function SharePreviewModal({
   shareUrl,
   state,
   feedback,
+  triggerRef,
 }: {
   open: boolean;
   onClose: () => void;
@@ -66,7 +67,10 @@ function SharePreviewModal({
   shareUrl: string;
   state: 'idle' | 'loading' | 'success';
   feedback: string;
+  triggerRef?: React.RefObject<Element | null>;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
   // Close on escape
   useEffect(() => {
     if (!open) return;
@@ -83,10 +87,48 @@ function SharePreviewModal({
     }
   }, [open]);
 
+  // Focus trap, auto-focus, and focus restore
+  useEffect(() => {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusables = dialog.querySelectorAll(focusableSelector);
+    const first = focusables[0] as HTMLElement;
+    const last = focusables[focusables.length - 1] as HTMLElement;
+
+    first?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const currentFocusables = dialog.querySelectorAll(focusableSelector);
+      const currentFirst = currentFocusables[0] as HTMLElement;
+      const currentLast = currentFocusables[currentFocusables.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === currentFirst) {
+        e.preventDefault();
+        currentLast?.focus();
+      } else if (!e.shiftKey && document.activeElement === currentLast) {
+        e.preventDefault();
+        currentFirst?.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleKeyDown);
+    return () => {
+      dialog.removeEventListener('keydown', handleKeyDown);
+      // Restore focus on cleanup (when modal closes)
+      if (triggerRef?.current && triggerRef.current instanceof HTMLElement) {
+        triggerRef.current.focus();
+      }
+    };
+  }, [open, triggerRef]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
+    <div ref={dialogRef} className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Share proposal" onClick={onClose}>
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
@@ -234,7 +276,12 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
     }
   }, [imageUrl]);
 
-  const openModal = () => setModalOpen(true);
+  const shareTriggerRef = useRef<Element | null>(null);
+
+  const openModal = () => {
+    shareTriggerRef.current = document.activeElement;
+    setModalOpen(true);
+  };
 
   const isSuccess = state === 'success';
 
@@ -262,6 +309,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           state={state}
           feedback={feedback}
           hasNativeShare={hasNativeShare}
+          triggerRef={shareTriggerRef}
         />
       </>
     );
@@ -291,6 +339,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           state={state}
           feedback={feedback}
           hasNativeShare={hasNativeShare}
+          triggerRef={shareTriggerRef}
         />
       </>
     );
@@ -302,7 +351,7 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
       <button
         type="button"
         onClick={openModal}
-        className="inline-flex items-center h-8 px-3 rounded-lg transition-colors cursor-pointer"
+        className="inline-flex items-center h-11 px-3 rounded-lg transition-colors cursor-pointer"
         style={{ backgroundColor: 'var(--share-accent-bg)', color: 'var(--share-accent)' }}
       >
         <span className="type-caption font-semibold">Share</span>

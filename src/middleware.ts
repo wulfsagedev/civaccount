@@ -5,6 +5,20 @@ import { NextResponse, type NextRequest } from 'next/server';
 const ALLOWED_COUNTRIES = new Set(['GB']);
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // URL normalization: lowercase paths and strip trailing slashes (except root)
+  const lowered = pathname.toLowerCase();
+  const normalized = lowered !== '/' && lowered.endsWith('/')
+    ? lowered.slice(0, -1)
+    : lowered;
+
+  if (pathname !== normalized) {
+    const url = request.nextUrl.clone();
+    url.pathname = normalized;
+    return NextResponse.redirect(url, 308);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(

@@ -12,14 +12,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!council) {
     return {
-      title: 'Proposals | CivAccount',
+      title: 'Proposals',
     };
   }
 
   const displayName = getCouncilDisplayName(council);
 
   return {
-    title: `Town Hall — ${displayName} | CivAccount`,
+    title: `Town Hall — ${displayName}`,
     description: `Have your say on how ${displayName} spends your money. Vote on ideas, suggest changes, and join the conversation.`,
     alternates: {
       canonical: `/council/${slug}/proposals`,

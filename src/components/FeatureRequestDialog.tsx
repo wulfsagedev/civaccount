@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,20 +18,61 @@ export default function FeedbackModal() {
     email: '',
     message: '',
   });
+  const triggerRef = useRef<Element | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const handleClose = useCallback(() => {
     setOpen(false);
     if (isSuccess) {
       setIsSuccess(false);
     }
+    // Restore focus to the element that triggered the dialog
+    if (triggerRef.current && triggerRef.current instanceof HTMLElement) {
+      triggerRef.current.focus();
+    }
   }, [isSuccess]);
 
   // Listen for custom event to open the dialog
   useEffect(() => {
-    const handleOpenFeedback = () => setOpen(true);
+    const handleOpenFeedback = () => {
+      triggerRef.current = document.activeElement;
+      setOpen(true);
+    };
     document.addEventListener('open-feedback', handleOpenFeedback);
     return () => document.removeEventListener('open-feedback', handleOpenFeedback);
   }, []);
+
+  // Focus trap and auto-focus
+  useEffect(() => {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusables = dialog.querySelectorAll(focusableSelector);
+    const first = focusables[0] as HTMLElement;
+    const last = focusables[focusables.length - 1] as HTMLElement;
+
+    first?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const currentFocusables = dialog.querySelectorAll(focusableSelector);
+      const currentFirst = currentFocusables[0] as HTMLElement;
+      const currentLast = currentFocusables[currentFocusables.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === currentFirst) {
+        e.preventDefault();
+        currentLast?.focus();
+      } else if (!e.shiftKey && document.activeElement === currentLast) {
+        e.preventDefault();
+        currentFirst?.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleKeyDown);
+    return () => dialog.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
 
   // Handle escape key
   useEffect(() => {
@@ -76,7 +117,7 @@ export default function FeedbackModal() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div ref={dialogRef} className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-background/80 backdrop-blur-sm"
@@ -99,7 +140,7 @@ export default function FeedbackModal() {
               {/* Header */}
               <div className="flex items-center justify-between border-b px-4 py-3">
                 <div>
-                  <h2 className="font-semibold text-base">Send Feedback</h2>
+                  <h2 id="feedback-title" className="font-semibold text-base">Send Feedback</h2>
                   <p className="type-body-sm text-muted-foreground">Feature request or bug report</p>
                 </div>
                 <Button

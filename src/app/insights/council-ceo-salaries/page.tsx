@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: "Council CEO Salaries — England's Highest-Paid Executives | CivAccount",
+  title: "Council CEO Salaries — England's Highest-Paid Executives",
   description: 'See how much council chief executives earn across England. Compare CEO salaries for all 317 councils, from the highest to the lowest paid.',
   alternates: {
     canonical: '/insights/council-ceo-salaries',
@@ -62,12 +64,13 @@ export default function CouncilCeoSalariesPage() {
   const topCouncils = councilsWithSalary.slice(0, 50);
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="container mx-auto px-4 max-w-3xl py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Insights', href: '/insights' },
@@ -140,6 +143,7 @@ export default function CouncilCeoSalariesPage() {
           </ul>
         </nav>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }
