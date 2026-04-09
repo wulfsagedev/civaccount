@@ -101,6 +101,7 @@ export default function ProposalCard({ proposal, userVote, isHighlighted }: Prop
               title={proposal.title}
               text={`${proposal.title} — ${proposal.score} votes on CivAccount. Have your say.`}
               url={typeof window !== 'undefined' ? `${window.location.origin}/council/${proposal.council_slug}/proposals/${proposal.id}` : ''}
+              imageUrl={`/council/${proposal.council_slug}/proposals/${proposal.id}/opengraph-image`}
             />
           </div>
         </div>

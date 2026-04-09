@@ -272,6 +272,8 @@ export default function ProposalDetailPage() {
                     <ShareButton
                       title={proposal.title}
                       text={`${proposal.title} — ${proposal.score} votes on CivAccount. Have your say.`}
+                      url={`${typeof window !== 'undefined' ? window.location.origin : ''}/council/${slug}/proposals/${proposal.id}`}
+                      imageUrl={`/council/${slug}/proposals/${proposal.id}/opengraph-image`}
                     />
                   </div>
                 </div>
