@@ -1,0 +1,29 @@
+#!/bin/sh
+# Pre-commit hook: block commits containing secrets
+# Install: git config core.hooksPath .githooks
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+# Patterns that should never appear in committed code
+PATTERNS="sk_live_|sk_test_[a-zA-Z0-9]{20,}|AKIA[0-9A-Z]{16}|ghp_[a-zA-Z0-9]{36}|-----BEGIN (RSA |EC )?PRIVATE KEY"
+
+FOUND=$(echo "$STAGED" | xargs grep -lE "$PATTERNS" 2>/dev/null | grep -v node_modules | grep -v ".env.example")
+
+if [ -n "$FOUND" ]; then
+  echo ""
+  echo "BLOCKED: Possible secrets detected in staged files:"
+  echo ""
+  echo "$FOUND" | while read -r file; do
+    echo "  $file"
+  done
+  echo ""
+  echo "If this is intentional, commit with --no-verify (not recommended)."
+  echo ""
+  exit 1
+fi
+
+exit 0
