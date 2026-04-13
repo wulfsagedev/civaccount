@@ -192,15 +192,21 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
   // Extract all supplier names for duplicate checking
   if (d._has.top_suppliers) {
     const supplierNames = [];
-    const re = /name: ["']([^"']+)["']/g;
-    const supplierSection = section.substring(section.indexOf('top_suppliers:'));
-    // Only scan until next top-level field
-    const endIdx = supplierSection.indexOf('\n    },\n    ') !== -1
-      ? supplierSection.indexOf('\n    },\n    ') : supplierSection.length;
-    const sub = supplierSection.substring(0, Math.min(endIdx + 500, supplierSection.length));
-    let m;
-    // Reset regex
+    // Must match 'top_suppliers: [' (the array)
+    const supArrayIdx = section.indexOf('top_suppliers: [');
+    const supplierSection = supArrayIdx !== -1 ? section.substring(supArrayIdx) : '';
+    // Find the matching close bracket by tracking nesting depth
+    let supEndIdx = 0;
+    if (supplierSection.length > 0) {
+      let depth = 0;
+      for (let si = 'top_suppliers: '.length; si < supplierSection.length; si++) {
+        if (supplierSection[si] === '[') depth++;
+        else if (supplierSection[si] === ']') { depth--; if (depth === 0) { supEndIdx = si + 1; break; } }
+      }
+    }
+    const sub = supEndIdx > 0 ? supplierSection.substring(0, supEndIdx) : '';
     const re2 = /name: ["']([^"']+)["']/g;
+    let m;
     while ((m = re2.exec(sub)) !== null) {
       supplierNames.push(m[1]);
     }
@@ -211,10 +217,19 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
   if (d._has.cabinet) {
     const cabinetNames = [];
     const cabinetPortfolios = [];
-    const cabinetSection = section.substring(section.indexOf('cabinet:'));
-    const cabinetEnd = cabinetSection.indexOf('\n    ],') !== -1
-      ? cabinetSection.indexOf('\n    ],') + 10 : Math.min(cabinetSection.length, 5000);
-    const cabSub = cabinetSection.substring(0, cabinetEnd);
+    // Must match 'cabinet: [' (the array), NOT 'cabinet: {' (section_transparency source)
+    const cabArrayIdx = section.indexOf('cabinet: [');
+    const cabinetSection = cabArrayIdx !== -1 ? section.substring(cabArrayIdx) : '';
+    // Find the matching close bracket by tracking nesting depth
+    let cabEndIdx = 0;
+    if (cabinetSection.length > 0) {
+      let depth = 0;
+      for (let ci = 'cabinet: '.length; ci < cabinetSection.length; ci++) {
+        if (cabinetSection[ci] === '[') depth++;
+        else if (cabinetSection[ci] === ']') { depth--; if (depth === 0) { cabEndIdx = ci + 1; break; } }
+      }
+    }
+    const cabSub = cabEndIdx > 0 ? cabinetSection.substring(0, cabEndIdx) : '';
 
     const nameRe = /name: ["']([^"']+)["']/g;
     const portfolioRe = /portfolio: ["']([^"']+)["']/g;
