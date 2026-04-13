@@ -73,7 +73,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                Owen
+                wulfsage
                 <span className="sr-only"> (opens in new tab)</span>
               </a>
             </p>
