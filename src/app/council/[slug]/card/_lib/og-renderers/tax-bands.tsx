@@ -34,7 +34,7 @@ export function renderTaxBands(council: Council, councilName: string): ReactElem
                   padding: '32px 40px',
                   borderRadius: '24px',
                   backgroundColor: isD ? OG.accent : OG.surface,
-                  minWidth: '240px',
+                  width: '230px',
                 }}
               >
                 <span style={{ fontSize: '36px', fontWeight: 600, color: isD ? '#fafafa' : OG.secondary }}>Band {band}</span>

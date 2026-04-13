@@ -35,7 +35,7 @@ export function renderServiceOutcomes(council: Council, councilName: string): Re
                 padding: '32px 40px',
                 borderRadius: '24px',
                 backgroundColor: OG.surface,
-                minWidth: '420px',
+                width: '480px',
               }}
             >
               <span style={{ fontSize: '32px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{stat.label}</span>

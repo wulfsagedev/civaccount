@@ -24,8 +24,9 @@ export function renderBillHistory(council: Council, councilName: string): ReactE
   const yMin = minVal - pad;
   const yMax = maxVal + pad;
 
-  const chartLeft = 80;
-  const chartRight = 2120;
+  const containerWidth = 2040; // fits inside ogWrap safe zone (2400 - 180px×2)
+  const chartLeft = 120;
+  const chartRight = 1920; // leaves 120px for label overhang
   const chartTop = 20;
   const chartBottom = 440;
   const chartWidth = chartRight - chartLeft;
@@ -60,8 +61,8 @@ export function renderBillHistory(council: Council, councilName: string): ReactE
         </div>
 
         {/* Chart fills remaining space */}
-        <div style={{ display: 'flex', position: 'relative', width: '2200px', height: '580px', marginTop: '24px' }}>
-          <svg width="2200" height="460" viewBox="0 0 2200 460" style={{ position: 'absolute', top: 0, left: 0 }}>
+        <div style={{ display: 'flex', position: 'relative', width: `${containerWidth}px`, height: '580px', marginTop: '24px' }}>
+          <svg width={containerWidth} height="460" viewBox={`0 0 ${containerWidth} 460`} style={{ position: 'absolute', top: 0, left: 0 }}>
             <path d={areaPath} fill={OG.accent} fillOpacity="0.12" />
             <path d={linePath} fill="none" stroke={OG.accent} strokeWidth="7" />
             {points.map((p, i) => {
