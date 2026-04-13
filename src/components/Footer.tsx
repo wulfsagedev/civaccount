@@ -68,7 +68,7 @@ export default function Footer() {
             <p>
               Made by{' '}
               <a
-                href="https://owenfisher.co"
+                href="https://wulfsage.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
