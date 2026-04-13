@@ -2,12 +2,15 @@
 /**
  * validate.mjs — CivAccount Data Validation Tool
  *
- * Runs 5 categories of checks across all 317 councils:
- *   1. ranges     — Value bounds and sanity checks
- *   2. cross-field — Inter-field logical consistency
- *   3. quality    — Placeholder text, duplicates, format violations
+ * Runs 8 categories of checks across all 317 councils:
+ *   1. ranges       — Value bounds and sanity checks
+ *   2. cross-field  — Inter-field logical consistency
+ *   3. quality      — Placeholder text, duplicates, format violations
  *   4. completeness — Kent parity audit + regression detection
- *   5. spot-check — Cross-reference against parsed gov.uk CSVs
+ *   5. spot-check   — Cross-reference against parsed gov.uk CSVs
+ *   6. checksum     — SHA-256 integrity of parsed CSV files
+ *   7. random-audit — Deep spot-check on 10 random councils
+ *   8. source-truth — Exact-match band_d values against GOV.UK Area CT source
  *
  * Usage:
  *   node scripts/validate/validate.mjs [--verbose]
@@ -26,6 +29,15 @@ import { validate as validateCrossField } from './validators/cross-field.mjs';
 import { validate as validateQuality } from './validators/quality.mjs';
 import { validate as validateCompleteness } from './validators/completeness.mjs';
 import { validate as validateSpotCheck } from './validators/spot-check.mjs';
+import { validate as validateChecksum } from './validators/checksum.mjs';
+import { validate as validateRandomAudit } from './validators/random-audit.mjs';
+import { validate as validateSourceTruth } from './validators/source-truth.mjs';
+
+// Link-check is async and opt-in (requires network)
+let validateLinkCheck;
+if (process.argv.includes('--link-check')) {
+  validateLinkCheck = (await import('./validators/link-check.mjs')).validate;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,8 +53,9 @@ const BOLD = '\x1b[1m';
 const RESET = '\x1b[0m';
 
 const verbose = process.argv.includes('--verbose');
+const linkCheck = process.argv.includes('--link-check');
 
-function main() {
+async function main() {
   console.log(`\n${BOLD}CivAccount Data Validation Tool${RESET}`);
   console.log(`${'='.repeat(60)}\n`);
 
@@ -63,13 +76,21 @@ function main() {
     ['quality', validateQuality],
     ['completeness', validateCompleteness],
     ['spot-check', validateSpotCheck],
+    ['checksum', validateChecksum],
+    ['random-audit', validateRandomAudit],
+    ['source-truth', validateSourceTruth],
   ];
+
+  // Link-check is opt-in (requires network access, slow)
+  if (linkCheck && validateLinkCheck) {
+    validators.push(['link-check', validateLinkCheck]);
+  }
 
   for (const [name, fn] of validators) {
     const t1 = Date.now();
     process.stdout.write(`  Running ${name}... `);
     try {
-      fn(councils, population, report);
+      await fn(councils, population, report);
       const elapsed = Date.now() - t1;
       const count = report.findings.filter(f => f.validator === name).length;
       const color = count > 0 ? YELLOW : GREEN;

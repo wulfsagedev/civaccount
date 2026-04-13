@@ -4,11 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/generate-coverage-stats.mjs",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "validate": "node scripts/validate/validate.mjs",
-    "validate:verbose": "node scripts/validate/validate.mjs --verbose"
+    "validate:verbose": "node scripts/validate/validate.mjs --verbose",
+    "validate:links": "node scripts/validate/validate.mjs --link-check",
+    "checksum:update": "node scripts/validate/update-checksums.mjs",
+    "sync:band-d": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
+    "generate:coverage": "node scripts/generate-coverage-stats.mjs",
+    "generate:provenance": "node scripts/generate-provenance.mjs"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.8",

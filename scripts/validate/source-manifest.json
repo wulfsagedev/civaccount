@@ -1,0 +1,267 @@
+{
+  "description": "Canonical registry of all gov.uk source data files used by CivAccount. Single source of truth for: CI checksum validation, UI source annotations, methodology page, and monthly freshness checks.",
+  "last_full_check": "2026-04-13",
+  "sources": [
+    {
+      "id": "area-council-tax",
+      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields.",
+      "raw_file": "Band_D_2026-27.ods",
+      "parsed_csv": "parsed-area-band-d.csv",
+      "gov_uk_page": "https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax",
+      "publisher": "MHCLG",
+      "data_year": "2025-26",
+      "update_frequency": "annual_march",
+      "last_downloaded": "2026-04-13",
+      "fields_validated": [
+        "council_tax.band_d_2025",
+        "council_tax.band_d_2024",
+        "council_tax.band_d_2023",
+        "council_tax.band_d_2022",
+        "council_tax.band_d_2021"
+      ],
+      "spot_check_tolerance": "0",
+      "sync_command": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
+      "parsed_csv_sha256": "421e5822ff9eb499c63609b78f2b3ade8ff49d259cc6ba9a958fd9c5e55112bd"
+    },
+    {
+      "id": "council-tax-2025",
+      "description": "Council tax requirement and council-only Band D rates (Table 10). NOT the total bill — use area-council-tax for resident-facing figures.",
+      "raw_file": "ctb-2025-local-authority.xlsx",
+      "parsed_csv": "parsed-council-tax-requirement.csv",
+      "parsed_csv_sha256": "e2cf7d9efe7ac398e68d352cdafd39a35ba6595471a31d139f66d21c3e272faa",
+      "gov_uk_page": "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
+      "publisher": "MHCLG",
+      "data_year": "2025-26",
+      "update_frequency": "annual_february",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "council_tax.band_d_2025",
+        "council_tax.band_d_2024",
+        "council_tax.band_d_2023",
+        "council_tax.band_d_2022",
+        "council_tax.band_d_2021"
+      ],
+      "spot_check_tolerance": "0.01"
+    },
+    {
+      "id": "council-tax-base",
+      "description": "Council tax base (Band D equivalent dwellings) per authority",
+      "raw_file": "ctb-2025-local-authority.xlsx",
+      "parsed_csv": "parsed-council-tax-base.csv",
+      "parsed_csv_sha256": "2a9686bdd654538a74d6ee419dd35989592b84782abc92874e971ec3a83c4c45",
+      "gov_uk_page": "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
+      "publisher": "MHCLG",
+      "data_year": "2025-26",
+      "update_frequency": "annual_february",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "council_tax_base"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "revenue-expenditure-part1",
+      "description": "Revenue Account Part 1 — primary service expenditure by category (education, social care, transport, etc.)",
+      "raw_file": "gov-uk-ra-data/RA_2025-26_data_Part_1.ods",
+      "parsed_csv": "gov-uk-ra-data/RA_Part1_LA_Data.csv",
+      "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
+      "publisher": "MHCLG",
+      "data_year": "2024-25",
+      "update_frequency": "annual_november",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "budget.education",
+        "budget.transport",
+        "budget.childrens_social_care",
+        "budget.adult_social_care",
+        "budget.public_health",
+        "budget.housing",
+        "budget.cultural",
+        "budget.environmental",
+        "budget.planning",
+        "budget.central_services",
+        "budget.other",
+        "budget.total_service"
+      ],
+      "parsed_csv_sha256": "0b1c46a205ffd133211a138804c5c4f45f94168fa8bc2b3b86e0f17d60238d8e"
+    },
+    {
+      "id": "revenue-expenditure-part2",
+      "description": "Revenue Account Part 2 — financial data, reserves, council tax requirement",
+      "raw_file": "gov-uk-ra-data/RA_2025-26_data_Part_2.ods",
+      "parsed_csv": "gov-uk-ra-data/RA_Part2_LA_Data.csv",
+      "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
+      "publisher": "MHCLG",
+      "data_year": "2024-25",
+      "update_frequency": "annual_november",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "budget.net_current",
+        "reserves"
+      ],
+      "parsed_csv_sha256": "bad0bbf659feff834d582016339466de1457fc794d70c349c28d3c73e78af53f"
+    },
+    {
+      "id": "ons-population-mid2024",
+      "description": "Mid-year population estimates for all English local authorities",
+      "raw_file": "ons-population-mid2024.xlsx",
+      "parsed_csv": "parsed-population.csv",
+      "parsed_csv_sha256": "f51dedf68454ecf3b659a4ec2acb75eea045ee637da0af6fd0f5d71101c65efc",
+      "gov_uk_page": "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates",
+      "publisher": "ONS",
+      "data_year": "mid-2024",
+      "update_frequency": "annual_june",
+      "last_downloaded": "2025-11-15",
+      "fields_validated": [
+        "population"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "defra-waste-2022-23",
+      "description": "Local authority waste management statistics — recycling, landfill, energy recovery tonnage by disposal authority",
+      "raw_file": "defra-waste-2022-23.ods",
+      "parsed_csv": "parsed-waste.csv",
+      "parsed_csv_sha256": "c58c4742b48f4fb3dac99a81ed731ba9ba5c620afdad256f2e2805e1c3a162d4",
+      "gov_uk_page": "https://www.gov.uk/government/statistical-data-sets/env18-local-authority-collected-waste-annual-results-tables",
+      "publisher": "DEFRA",
+      "data_year": "2022-23",
+      "update_frequency": "annual_december",
+      "last_downloaded": "2025-09-20",
+      "fields_validated": [
+        "waste_destinations",
+        "service_outcomes.waste.recycling_rate_percent"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "road-condition",
+      "description": "Road condition statistics — percentage of roads in good/acceptable/poor condition by highway authority",
+      "raw_file": "rdc0120-road-condition.ods",
+      "parsed_csv": "parsed-road-condition.csv",
+      "parsed_csv_sha256": "8f6697e1c7e125638064d2177ffb8ed36ccce21f7a4c8aa5edadf7c5056677e2",
+      "gov_uk_page": "https://www.gov.uk/government/statistical-data-sets/road-condition-statistics-data-tables-rdc",
+      "publisher": "DfT",
+      "data_year": "2023",
+      "update_frequency": "annual_march",
+      "last_downloaded": "2025-10-01",
+      "fields_validated": [
+        "service_outcomes.roads.condition_good_percent"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "road-length",
+      "description": "Road length statistics — total miles of road maintained by highway authority",
+      "raw_file": "rdl0102-road-length.ods",
+      "parsed_csv": "parsed-road-length.csv",
+      "parsed_csv_sha256": "95fd5ea0b96cf35fbadf393762ca8f7b15a7ad9ffce33f35d327ab0e047316f7",
+      "gov_uk_page": "https://www.gov.uk/government/statistical-data-sets/road-length-statistics-rdl",
+      "publisher": "DfT",
+      "data_year": "2023",
+      "update_frequency": "annual_march",
+      "last_downloaded": "2025-10-01",
+      "fields_validated": [
+        "service_outcomes.roads.maintained_miles"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "ofsted-childrens-services",
+      "description": "Ofsted children's services inspection outcomes — ratings and inspection dates by authority",
+      "raw_file": "ofsted-childrens-services.ods",
+      "parsed_csv": "parsed-ofsted.csv",
+      "parsed_csv_sha256": "717403e8bc8fb10cb48af9aee0c7406179a70feeb325e3ba1c6c36e1b178d030",
+      "gov_uk_page": "https://www.gov.uk/government/publications/five-year-ofsted-inspection-data",
+      "publisher": "Ofsted",
+      "data_year": "2024",
+      "update_frequency": "continuous",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "service_outcomes.children_services.ofsted_rating"
+      ]
+    },
+    {
+      "id": "lgbce-councillors",
+      "description": "Local Government Boundary Commission electoral data — total councillors per authority",
+      "raw_file": "lgbce-electoral-data.xlsx",
+      "parsed_csv": "parsed-lgbce-councillors.csv",
+      "parsed_csv_sha256": "dbb1da5e39e38720bf85ad4cafc3badd9bb399f33ed92148bcb9d8fcdb0bd136",
+      "gov_uk_page": "https://www.lgbce.org.uk/",
+      "publisher": "LGBCE",
+      "data_year": "2025",
+      "update_frequency": "annual",
+      "last_downloaded": "2025-11-15",
+      "fields_validated": [
+        "total_councillors"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "ceo-salary",
+      "description": "Chief executive salary and total remuneration from individual council Pay Policy Statements",
+      "raw_file": null,
+      "parsed_csv": "parsed-ceo-salary.csv",
+      "parsed_csv_sha256": "18c4b0e89870154dbb00c6ae27f1d0e574183c3508b27f9488331d3905c071e6",
+      "gov_uk_page": null,
+      "publisher": "Individual councils (.gov.uk)",
+      "data_year": "2024-25",
+      "update_frequency": "annual",
+      "last_downloaded": "2026-02-01",
+      "fields_validated": [
+        "chief_executive_salary",
+        "chief_executive_total_remuneration"
+      ],
+      "spot_check_tolerance_absolute": 1000,
+      "note": "Compiled from 317 individual council pay policy statements — no single national download"
+    },
+    {
+      "id": "workforce",
+      "description": "Staff FTE and headcount from Quarterly Public Sector Employment Survey",
+      "raw_file": "qpses-2025-q1.xlsx",
+      "parsed_csv": "parsed-workforce.csv",
+      "parsed_csv_sha256": "f6b88616ab0df002781b3ba87b60a04946f298460ad82afbf78fb2d7f8f97c6f",
+      "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-data-workforce",
+      "publisher": "LGA",
+      "data_year": "2024",
+      "update_frequency": "quarterly",
+      "last_downloaded": "2025-09-20",
+      "fields_validated": [
+        "staff_fte"
+      ],
+      "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "reserves",
+      "description": "Council reserves (usable + earmarked) from Revenue Account Part 2",
+      "raw_file": "gov-uk-ra-data/RA_2025-26_data_Part_2.ods",
+      "parsed_csv": "parsed-reserves.csv",
+      "parsed_csv_sha256": "f4068d984f1687bd3bd2ea7c90bcb658f36b2b9f291de295919fa19bf37444ea",
+      "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
+      "publisher": "MHCLG",
+      "data_year": "2024-25",
+      "update_frequency": "annual_november",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "reserves"
+      ],
+      "spot_check_tolerance": "0.10"
+    },
+    {
+      "id": "capital-expenditure",
+      "description": "Capital expenditure (COR A1) from local authority accounts",
+      "raw_file": "cor-a1-capital-expenditure.ods",
+      "parsed_csv": "parsed-capital-expenditure.csv",
+      "parsed_csv_sha256": "9ce1e76da1dcc601985a56a248dc9eaa33c0e0cfe1034a24fa639eca8e338e14",
+      "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-capital-expenditure-receipts-and-financing",
+      "publisher": "MHCLG",
+      "data_year": "2024-25",
+      "update_frequency": "annual_november",
+      "last_downloaded": "2026-01-15",
+      "fields_validated": [
+        "capital_programme"
+      ],
+      "spot_check_tolerance": "0.05"
+    }
+  ]
+}

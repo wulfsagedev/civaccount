@@ -373,4 +373,17 @@ export function buildCsvIndex(rows) {
   return index;
 }
 
+/**
+ * Build a lookup from ONS code -> CSV row for exact matching.
+ * Preferred over name-based matching — ONS codes are unique identifiers.
+ */
+export function buildOnsIndex(rows) {
+  const index = new Map();
+  for (const row of rows) {
+    const ons = row.ons_code || row.ons;
+    if (ons) index.set(ons, row);
+  }
+  return index;
+}
+
 export { PROJECT_ROOT, BULK_DATA_DIR };
