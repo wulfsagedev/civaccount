@@ -2,6 +2,8 @@
 
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 interface BillHistoryCardProps {
   selectedCouncil: Council;
@@ -11,11 +13,11 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
   const councilTax = selectedCouncil.council_tax!;
 
   const data = [
-    { year: '2021-22', amount: councilTax.band_d_2021! },
-    { year: '2022-23', amount: councilTax.band_d_2022! },
-    { year: '2023-24', amount: councilTax.band_d_2023! },
-    { year: '2024-25', amount: councilTax.band_d_2024! },
-    { year: '2025-26', amount: councilTax.band_d_2025 },
+    { year: '2021-22', amount: councilTax.band_d_2021!, fieldPath: 'council_tax.band_d_2021' },
+    { year: '2022-23', amount: councilTax.band_d_2022!, fieldPath: 'council_tax.band_d_2022' },
+    { year: '2023-24', amount: councilTax.band_d_2023!, fieldPath: 'council_tax.band_d_2023' },
+    { year: '2024-25', amount: councilTax.band_d_2024!, fieldPath: 'council_tax.band_d_2024' },
+    { year: '2025-26', amount: councilTax.band_d_2025, fieldPath: 'council_tax.band_d_2025' },
   ];
   const values = data.map(d => d.amount);
   const minValue = Math.min(...values);
@@ -106,7 +108,9 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
                 {item.year.split('-')[0]}
               </p>
               <p className={`type-caption tabular-nums ${index === data.length - 1 ? 'font-semibold' : 'text-muted-foreground'}`}>
-                {formatCurrency(item.amount, { decimals: 0 })}
+                <SourceAnnotation provenance={getProvenance(item.fieldPath, selectedCouncil)}>
+                  {formatCurrency(item.amount, { decimals: 0 })}
+                </SourceAnnotation>
               </p>
             </div>
           ))}
@@ -118,7 +122,9 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
         <div className="flex items-center justify-between">
           <span className="type-caption text-muted-foreground">Change over 5 years</span>
           <span className={`type-body-sm font-semibold tabular-nums ${fiveYearChange > 0 ? 'text-negative' : 'text-positive'}`}>
-            {fiveYearChange > 0 ? '+' : ''}{formatCurrency(fiveYearChange, { decimals: 2 })} ({fiveYearPercent > 0 ? '+' : ''}{fiveYearPercent.toFixed(1)}%)
+            <SourceAnnotation provenance={getProvenance('bill_history', selectedCouncil)}>
+              {fiveYearChange > 0 ? '+' : ''}{formatCurrency(fiveYearChange, { decimals: 2 })} ({fiveYearPercent > 0 ? '+' : ''}{fiveYearPercent.toFixed(1)}%)
+            </SourceAnnotation>
           </span>
         </div>
       </div>

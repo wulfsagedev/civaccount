@@ -62,6 +62,148 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     data_year: '2024-25',
   },
 
+  // ── Budget category details (GOV.UK Revenue Account) ──
+  'budget.childrens_social_care': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.adult_social_care': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.public_health': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.housing': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.cultural': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.environmental': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.planning': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.central_services': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.other': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+  'budget.net_current': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account Part 2',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+
+  // ── Service spending detail ──
+  'detailed.service_spending': {
+    label: 'published',
+    source_title: 'GOV.UK Revenue Account 2025-26',
+    source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
+    data_year: '2025-26',
+  },
+
+  // ── Financial strategy ──
+  'detailed.budget_gap': {
+    label: 'official',
+    source_title: 'Medium Term Financial Strategy',
+  },
+  'detailed.savings_target': {
+    label: 'official',
+    source_title: 'Medium Term Financial Strategy',
+  },
+
+  // ── Waste ──
+  'detailed.waste_destinations': {
+    label: 'published',
+    source_title: 'DEFRA ENV18 Waste Statistics',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/env18-local-authority-collected-waste-annual-results-tables',
+    data_year: '2022-23',
+  },
+
+  // ── Performance ──
+  'detailed.performance_kpis': {
+    label: 'published',
+    source_title: 'Multiple GOV.UK sources',
+  },
+
+  // ── Leadership ──
+  'detailed.cabinet': {
+    label: 'official',
+    source_title: 'Council website',
+  },
+  'detailed.council_leader': {
+    label: 'official',
+    source_title: 'Council website',
+  },
+  'detailed.chief_executive': {
+    label: 'official',
+    source_title: 'Council website',
+  },
+  'detailed.total_councillors': {
+    label: 'published',
+    source_title: 'LGBCE Electoral Data',
+    source_url: 'https://www.lgbce.org.uk/electoral-data',
+    data_year: '2025',
+  },
+
+  // ── Council Tax historical bands ──
+  'council_tax.band_d_2021': {
+    label: 'published',
+    source_title: 'GOV.UK Council Tax Levels',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    data_year: '2021-22',
+  },
+  'council_tax.band_d_2022': {
+    label: 'published',
+    source_title: 'GOV.UK Council Tax Levels',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    data_year: '2022-23',
+  },
+  'council_tax.band_d_2023': {
+    label: 'published',
+    source_title: 'GOV.UK Council Tax Levels',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    data_year: '2023-24',
+  },
+
+  // ── Bill history (aggregated) ──
+  'bill_history': {
+    label: 'published',
+    source_title: 'GOV.UK Council Tax Levels',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    data_year: '2021-2026',
+  },
+
   // ── Population ──
   'population': {
     label: 'published',

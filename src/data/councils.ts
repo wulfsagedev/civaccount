@@ -48,7 +48,7 @@ export interface DataSource {
 }
 
 // Data provenance — used by SourceAnnotation to show where each number comes from
-export type DataLabel = 'published' | 'calculated' | 'comparison' | 'editorial';
+export type DataLabel = 'published' | 'calculated' | 'comparison' | 'editorial' | 'official';
 
 export interface DataProvenance {
   label: DataLabel;

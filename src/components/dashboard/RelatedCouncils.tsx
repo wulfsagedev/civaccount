@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { Council, councils, getCouncilDisplayName, getCouncilSlug, formatCurrency } from '@/data/councils';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 interface RelatedCouncilsProps {
   council: Council;
@@ -51,7 +53,9 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
               </Link>
               <div className="flex items-baseline gap-3">
                 <span className="type-body-sm font-semibold tabular-nums">
-                  {formatCurrency(relatedBandD, { decimals: 2 })}
+                  <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', c)}>
+                    {formatCurrency(relatedBandD, { decimals: 2 })}
+                  </SourceAnnotation>
                 </span>
                 <Link
                   href={`/compare/${[slug, relatedSlug].sort().join('-vs-')}`}

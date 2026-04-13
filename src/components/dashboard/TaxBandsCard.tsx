@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 const bandDescriptions: Record<string, string> = {
   A: 'Smallest properties',
@@ -77,34 +79,40 @@ const TaxBandsCard = ({
       <div className="p-4 sm:p-5 rounded-lg bg-muted/30">
         <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]}</p>
         <p className="type-metric mb-4">
-          {formatCurrency(
-            totalBandAmounts
-              ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
-              : allBands[selectedBand as keyof typeof allBands],
-            { decimals: 2 }
-          )}
+          <SourceAnnotation provenance={getProvenance('tax_bands', selectedCouncil)}>
+            {formatCurrency(
+              totalBandAmounts
+                ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
+                : allBands[selectedBand as keyof typeof allBands],
+              { decimals: 2 }
+            )}
+          </SourceAnnotation>
         </p>
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
           <div>
             <p className="type-caption text-muted-foreground mb-0.5">Monthly (10 payments)</p>
             <p className="type-body font-semibold tabular-nums">
-              {formatCurrency(
-                (totalBandAmounts
-                  ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
-                  : allBands[selectedBand as keyof typeof allBands]) / 10,
-                { decimals: 2 }
-              )}
+              <SourceAnnotation provenance={getProvenance('tax_bands', selectedCouncil)}>
+                {formatCurrency(
+                  (totalBandAmounts
+                    ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
+                    : allBands[selectedBand as keyof typeof allBands]) / 10,
+                  { decimals: 2 }
+                )}
+              </SourceAnnotation>
             </p>
           </div>
           <div>
             <p className="type-caption text-muted-foreground mb-0.5">Weekly</p>
             <p className="type-body font-semibold tabular-nums">
-              {formatCurrency(
-                (totalBandAmounts
-                  ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
-                  : allBands[selectedBand as keyof typeof allBands]) / 52,
-                { decimals: 2 }
-              )}
+              <SourceAnnotation provenance={getProvenance('tax_bands', selectedCouncil)}>
+                {formatCurrency(
+                  (totalBandAmounts
+                    ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
+                    : allBands[selectedBand as keyof typeof allBands]) / 52,
+                  { decimals: 2 }
+                )}
+              </SourceAnnotation>
             </p>
           </div>
         </div>
@@ -116,7 +124,9 @@ const TaxBandsCard = ({
           <p className="type-body-sm text-muted-foreground">
             <span className="font-medium text-foreground">{selectedCouncil.name}&apos;s share:</span>{' '}
             <span className="font-semibold text-foreground tabular-nums">
-              {formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 })}
+              <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                {formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 })}
+              </SourceAnnotation>
             </span>
             {' '}of your Band {selectedBand} bill
           </p>
