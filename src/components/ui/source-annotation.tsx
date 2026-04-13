@@ -68,7 +68,7 @@ export default function SourceAnnotation({
       <PopoverContent
         className="w-64 p-3"
         side="top"
-        align="start"
+        align="center"
         sideOffset={6}
       >
         <div className="space-y-2">
