@@ -20,8 +20,30 @@ const OUTPUT_PATH = join(__dirname, '..', 'src', 'data', 'coverage-stats.ts');
 
 function main() {
   if (!existsSync(REPORT_PATH)) {
-    console.error('validation-latest.json not found. Run npm run validate first.');
-    process.exit(1);
+    // In CI/Vercel, validation-latest.json won't exist — write fallback stats
+    console.log('validation-latest.json not found — writing fallback coverage stats.');
+    const fallback = `/**
+ * Auto-generated fallback by scripts/generate-coverage-stats.mjs
+ * validation-latest.json was not available at build time.
+ * Run: npm run validate && npm run generate:coverage
+ */
+
+export const COVERAGE_STATS: Record<string, { label: string; present: number; total: number }> = {};
+
+export const VALIDATION_SUMMARY = {
+  errors: 0,
+  warnings: 0,
+  info: 0,
+  regressions: 0,
+  totalChecks: 0,
+  totalCouncils: 317,
+  parityAverage: 0,
+  timestamp: '${new Date().toISOString().split('T')[0]}',
+};
+`;
+    writeFileSync(OUTPUT_PATH, fallback);
+    console.log(`Fallback coverage stats written to ${OUTPUT_PATH}`);
+    return;
   }
 
   const report = JSON.parse(readFileSync(REPORT_PATH, 'utf-8'));
