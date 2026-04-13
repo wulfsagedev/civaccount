@@ -47,6 +47,17 @@ export interface DataSource {
   description?: string;
 }
 
+// Data provenance — used by SourceAnnotation to show where each number comes from
+export type DataLabel = 'published' | 'calculated' | 'comparison' | 'editorial';
+
+export interface DataProvenance {
+  label: DataLabel;
+  source_url?: string;
+  source_title?: string;
+  data_year?: string;
+  methodology?: string;
+}
+
 // Leadership team member
 export interface LeadershipMember {
   name: string;
@@ -347,6 +358,15 @@ export interface DetailedCouncilData {
 
   // When this detailed data was last verified
   last_verified?: string;
+
+  // Per-field source URLs — exact provenance for each data point
+  // Every field that comes from a council website (not GOV.UK bulk data) should have an entry here
+  field_sources?: Record<string, {
+    url: string;        // Direct URL to the source document/page
+    title: string;      // Human-readable source title
+    page?: number;      // Page number within a PDF (optional)
+    accessed: string;   // ISO date when this source was last verified
+  }>;
 }
 
 export interface Council {
