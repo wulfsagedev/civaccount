@@ -12,6 +12,8 @@ import {
 import { formatCurrency, formatBudget, type Council } from '@/data/councils';
 import { getRecyclingContext, getHomesBuiltContext, getOfstedContext, getRoadConditionContext } from '@/data/benchmarks';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 interface ServiceOutcomesCardProps {
   selectedCouncil: Council;
@@ -42,7 +44,9 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <Recycle className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <p className="type-caption text-muted-foreground">Recycling rate</p>
                   </div>
-                  <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.waste.recycling_rate_percent.toFixed(1)}%</p>
+                  <SourceAnnotation provenance={getProvenance('service_outcomes.waste.recycling_rate_percent', selectedCouncil)}>
+                    <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.waste.recycling_rate_percent.toFixed(1)}%</p>
+                  </SourceAnnotation>
                   {detailed.service_outcomes.waste.year && (
                     <p className="type-caption text-muted-foreground/60">{detailed.service_outcomes.waste.year}</p>
                   )}
@@ -87,7 +91,9 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <Car className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <p className="type-caption text-muted-foreground">Road condition</p>
                   </div>
-                  <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads!.condition_good_percent}%</p>
+                  <SourceAnnotation provenance={getProvenance('service_outcomes.roads.condition_good_percent', selectedCouncil)}>
+                    <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads!.condition_good_percent}%</p>
+                  </SourceAnnotation>
                   <p className="type-caption text-muted-foreground/60">in good or acceptable condition</p>
                   <p className="type-caption text-muted-foreground/60 mt-1">
                     Average for {roadCtx.compareLabel}: {roadCtx.compareAverage}%

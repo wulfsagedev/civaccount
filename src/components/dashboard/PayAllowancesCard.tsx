@@ -8,6 +8,8 @@ import {
 import { formatCurrency, formatBudget, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 interface PayAllowancesCardProps {
   selectedCouncil: Council;
@@ -45,7 +47,7 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
               <div className="p-3 rounded-lg bg-muted/30 mb-4 space-y-1">
                 <p className="type-body-sm">
                   <span className="font-semibold">Highest allowance:</span>{' '}
-                  {highest.name} — {formatCurrency(highest.total, { decimals: 0 })}
+                  {highest.name} — <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(highest.total, { decimals: 0 })}</SourceAnnotation>
                   <span className="text-muted-foreground"> · {detailed.councillor_allowances_detail!.length} councillors</span>
                 </p>
                 {basic && avgAllowance > 0 && (

@@ -1,0 +1,49 @@
+name: Weekly Link Check
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Monday 6am UTC
+  workflow_dispatch: {}   # Manual trigger
+
+permissions:
+  issues: write
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run link checker
+        id: links
+        run: npm run validate:links 2>&1 | tee link-check-output.txt
+        continue-on-error: true
+
+      - name: Create issue if broken links found
+        if: steps.links.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('link-check-output.txt', 'utf-8');
+
+            // Extract broken URL lines
+            const brokenLines = output.split('\n')
+              .filter(l => l.includes('broken_url') || l.includes('HTTP 4') || l.includes('HTTP 5'))
+              .slice(0, 20)
+              .join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Automated] Broken source URLs detected — ${new Date().toISOString().split('T')[0]}`,
+              body: `## Broken Links Found\n\nThe weekly link checker found broken URLs in council source data.\n\n\`\`\`\n${brokenLines || output.slice(-2000)}\n\`\`\`\n\n### Next Steps\n1. Check if the URLs have moved (GOV.UK often restructures)\n2. Update the URLs in the council data files\n3. Run \`npm run validate:links\` locally to verify fixes\n\n---\n*Automated by [link-check.yml](.github/workflows/link-check.yml)*`,
+              labels: ['data-quality', 'automated']
+            });

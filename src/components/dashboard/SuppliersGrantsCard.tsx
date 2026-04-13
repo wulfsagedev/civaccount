@@ -7,6 +7,8 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatBudget, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 interface SuppliersGrantsCardProps {
   selectedCouncil: Council;
@@ -89,7 +91,9 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   </div>
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg">
-                      <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
+                      <SourceAnnotation provenance={getProvenance('detailed.top_suppliers.description')}>
+                        <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
+                      </SourceAnnotation>
                     </div>
                   )}
                 </button>

@@ -10,6 +10,8 @@ import {
 import { formatCurrency, formatBudget, getCouncilSlug, getCouncilPopulation, type Council, type ServiceSpendingDetail } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 // Service descriptions with examples
 const SERVICE_DETAILS: Record<string, { description: string; examples: string[] }> = {
@@ -273,7 +275,9 @@ const SpendingCard = ({
             <div className="mt-5 p-3 rounded-lg bg-muted/30 space-y-2">
               <p className="type-body-sm text-muted-foreground">
                 <span className="font-medium text-foreground">Total budget:</span>{' '}
-                <span className="font-semibold text-foreground">{formatBudget(totalBudget / 1000)}</span>/year
+                <SourceAnnotation provenance={getProvenance('budget.total_service', selectedCouncil)}>
+                  <span className="font-semibold text-foreground">{formatBudget(totalBudget / 1000)}</span>
+                </SourceAnnotation>/year
                 {population && (
                   <span className="type-caption"> · Serving {population.toLocaleString('en-GB')} residents</span>
                 )}

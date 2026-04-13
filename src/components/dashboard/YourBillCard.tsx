@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { formatCurrency, getCouncilByName, getCouncilSlug, councils, type Council } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 // Helper function to find a linkable council from precept authority name
 const findLinkedCouncil = (authorityName: string) => {
@@ -54,12 +56,13 @@ const YourBillCard = ({
       <div className="mb-6">
         <p className="type-caption text-muted-foreground mb-1">
           You pay this council
-          <span className="ml-2 text-muted-foreground/60">(Published data)</span>
         </p>
         <div className="flex items-baseline gap-2">
-          <span className="type-display">
-            {thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}
-          </span>
+          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+            <span className="type-display">
+              {thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}
+            </span>
+          </SourceAnnotation>
           <span className="type-caption text-muted-foreground">/year</span>
         </div>
 
@@ -194,11 +197,12 @@ const YourBillCard = ({
           <div className="flex items-center justify-between">
             <span className="type-caption text-muted-foreground">
               Compared to average {selectedCouncil.type_name.toLowerCase()}
-              <span className="ml-1 text-muted-foreground/60">(Comparison)</span>
             </span>
-            <span className={`type-body-sm font-semibold tabular-nums ${vsAverage > 0 ? 'text-negative' : vsAverage < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
-              {vsAverage > 0 ? '+' : ''}{formatCurrency(vsAverage, { decimals: 2 })}
-            </span>
+            <SourceAnnotation provenance={getProvenance('vs_average')}>
+              <span className={`type-body-sm font-semibold tabular-nums ${vsAverage > 0 ? 'text-negative' : vsAverage < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
+                {vsAverage > 0 ? '+' : ''}{formatCurrency(vsAverage, { decimals: 2 })}
+              </span>
+            </SourceAnnotation>
           </div>
         </div>
       )}

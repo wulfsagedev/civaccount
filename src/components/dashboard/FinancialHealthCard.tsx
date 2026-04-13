@@ -7,6 +7,8 @@ import {
 } from "lucide-react";
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 interface FinancialHealthCardProps {
   selectedCouncil: Council;
@@ -35,9 +37,11 @@ const FinancialHealthCard = ({
           {detailed.reserves && (
             <div className="mb-5">
               <p className="type-caption text-muted-foreground mb-1">Emergency reserves</p>
-              <p className="type-metric tabular-nums">
-                {formatCurrency(detailed.reserves, { decimals: 0 })}
-              </p>
+              <SourceAnnotation provenance={getProvenance('detailed.reserves', selectedCouncil)}>
+                <p className="type-metric tabular-nums">
+                  {formatCurrency(detailed.reserves, { decimals: 0 })}
+                </p>
+              </SourceAnnotation>
               {reservesInWeeks && (
                 <p className="type-body-sm text-muted-foreground mt-1">
                   Enough to cover {reservesInWeeks} weeks of running costs

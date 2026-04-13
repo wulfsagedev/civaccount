@@ -15,6 +15,7 @@ import LeadershipCard from '@/components/dashboard/LeadershipCard';
 import PayAllowancesCard from '@/components/dashboard/PayAllowancesCard';
 import WhoToContactCard from '@/components/dashboard/WhoToContactCard';
 import ServiceOutcomesCard from '@/components/dashboard/ServiceOutcomesCard';
+import DataUnavailable from '@/components/ui/data-unavailable';
 
 const UnifiedDashboard = () => {
   const { selectedCouncil } = useCouncil();
@@ -209,15 +210,27 @@ const UnifiedDashboard = () => {
       )}
 
       {/* SECTION 3b: Suppliers & Grants */}
-      {hasSupplierOrGrantData && (
+      {hasSupplierOrGrantData ? (
         <SuppliersGrantsCard selectedCouncil={selectedCouncil} />
+      ) : (
+        <DataUnavailable
+          sectionTitle="Suppliers and grants"
+          reason="Supplier data isn't available for this council yet"
+          councilUrl={detailed?.transparency_url || detailed?.website}
+        />
       )}
 
       {/* SECTION 5 + 5b: Financial Health & Accountability */}
-      {hasFinancialData && (
+      {hasFinancialData ? (
         <FinancialHealthCard
           selectedCouncil={selectedCouncil}
           reservesInWeeks={reservesInWeeks}
+        />
+      ) : (
+        <DataUnavailable
+          sectionTitle="Council finances"
+          reason="Financial data isn't available for this council yet"
+          councilUrl={detailed?.accounts_url || detailed?.website}
         />
       )}
 

@@ -14,11 +14,14 @@ import {
   FileText,
   Scale,
   Info,
-  Shield
+  Shield,
+  BarChart3,
 } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { COVERAGE_STATS, VALIDATION_SUMMARY } from '@/data/coverage-stats';
+import { DATA_YEARS } from '@/lib/data-years';
 
 export default function MethodologyPage() {
   useEffect(() => {
@@ -345,6 +348,19 @@ export default function MethodologyPage() {
                         </p>
                       </div>
                     </div>
+
+                    <div className="flex items-start gap-3 p-4 rounded-lg border border-border/50">
+                      <Badge variant="outline" className="shrink-0 mt-0.5 bg-muted text-muted-foreground">
+                        Editorial summary
+                      </Badge>
+                      <div>
+                        <p className="text-muted-foreground">
+                          Descriptions written by CivAccount to explain what a supplier does or
+                          what a grant pays for. Based on published information but not official
+                          government text.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   <p className="text-muted-foreground mt-4">
@@ -352,6 +368,73 @@ export default function MethodologyPage() {
                     officially published.
                   </p>
                 </div>
+              </div>
+
+              {/* Data Coverage & Validation */}
+              <div className="card-elevated p-6 sm:p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <h2 className="type-title-3 font-semibold">Data coverage</h2>
+                    <p className="type-body-sm text-muted-foreground">
+                      How complete our data is across {VALIDATION_SUMMARY.totalCouncils} councils
+                    </p>
+                  </div>
+                </div>
+
+                {/* Validation health summary */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                  <div className="p-3 rounded-lg bg-muted/30 text-center">
+                    <p className="type-metric font-semibold tabular-nums">{VALIDATION_SUMMARY.parityAverage}%</p>
+                    <p className="type-caption text-muted-foreground">Data parity</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/30 text-center">
+                    <p className="type-metric font-semibold tabular-nums">{VALIDATION_SUMMARY.totalCouncils}</p>
+                    <p className="type-caption text-muted-foreground">Councils</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/30 text-center">
+                    <p className="type-metric font-semibold tabular-nums">{VALIDATION_SUMMARY.totalChecks.toLocaleString('en-GB')}</p>
+                    <p className="type-caption text-muted-foreground">Checks run</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/30 text-center">
+                    <p className="type-metric font-semibold tabular-nums">{VALIDATION_SUMMARY.regressions}</p>
+                    <p className="type-caption text-muted-foreground">Regressions</p>
+                  </div>
+                </div>
+
+                {/* Per-dataset coverage */}
+                <div className="space-y-2">
+                  {Object.entries(COVERAGE_STATS).map(([key, stat]) => {
+                    const pct = stat.total > 0 ? Math.round((stat.present / stat.total) * 100) : 0;
+                    const dataYear = DATA_YEARS[key as keyof typeof DATA_YEARS];
+                    return (
+                      <div key={key} className="flex items-center justify-between py-2 border-b border-border/30 last:border-0">
+                        <div className="min-w-0 flex-1">
+                          <p className="type-body-sm font-medium">{stat.label}</p>
+                          <p className="type-caption text-muted-foreground">
+                            {stat.present}/{stat.total} councils
+                            {dataYear && <span> · {dataYear}</span>}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0 ml-3">
+                          <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-foreground"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="type-caption tabular-nums text-muted-foreground w-8 text-right">{pct}%</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <p className="type-caption text-muted-foreground mt-4">
+                  Last validated: {VALIDATION_SUMMARY.timestamp} · Automated checks run on every code change and monthly against live GOV.UK data
+                </p>
               </div>
 
               {/* Limitations */}
@@ -424,6 +507,14 @@ export default function MethodologyPage() {
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-positive shrink-0" />
                     <span className="text-muted-foreground">Independence and non-official status stated</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-positive shrink-0" />
+                    <span className="text-muted-foreground">Automated validation against GOV.UK source files (monthly)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-positive shrink-0" />
+                    <span className="text-muted-foreground">Every data point tappable to see its exact source</span>
                   </div>
                 </div>
               </div>

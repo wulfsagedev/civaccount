@@ -1,0 +1,184 @@
+name: Monthly Data Freshness Check
+
+on:
+  schedule:
+    - cron: '0 8 1 * *'  # 1st of every month at 8am UTC
+  workflow_dispatch: {}   # Manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  check-freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: npm ci
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      # ─── Step 1: Check for stale data sources ───
+      - name: Check source staleness
+        id: staleness
+        run: |
+          node -e "
+            const manifest = require('./scripts/validate/source-manifest.json');
+            const now = new Date();
+            const stale = [];
+            for (const s of manifest.sources) {
+              if (!s.last_downloaded) continue;
+              const downloaded = new Date(s.last_downloaded);
+              const monthsSince = (now - downloaded) / (1000 * 60 * 60 * 24 * 30);
+              const maxMonths = s.update_frequency === 'quarterly' ? 4 : s.update_frequency === 'continuous' ? 3 : 14;
+              if (monthsSince > maxMonths) {
+                stale.push({ id: s.id, last: s.last_downloaded, months: Math.round(monthsSince), freq: s.update_frequency, page: s.gov_uk_page });
+              }
+            }
+            if (stale.length > 0) {
+              require('fs').writeFileSync('stale-sources.json', JSON.stringify(stale, null, 2));
+              console.log('Found ' + stale.length + ' stale source(s)');
+              process.exit(1);
+            } else {
+              console.log('All sources within expected freshness window');
+            }
+          "
+        continue-on-error: true
+
+      # ─── Step 2: Verify local file checksums ───
+      - name: Verify checksums
+        id: checksums
+        run: node scripts/validate/compare-checksums.mjs 2>&1 | tee freshness-output.txt
+        continue-on-error: true
+
+      # ─── Step 3: Run full validation pipeline ───
+      - name: Validate council data
+        id: validate
+        run: npm run validate 2>&1 | tee validation-output.txt
+        continue-on-error: true
+
+      # ─── Step 4: Regenerate coverage stats ───
+      - name: Regenerate coverage stats
+        run: npm run generate:coverage
+
+      # ─── Step 5: Check if coverage stats changed ───
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --name-only > changed-files.txt
+          if [ -s changed-files.txt ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changed files:"
+            cat changed-files.txt
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No files changed"
+          fi
+
+      # ─── Step 6: Auto-PR if coverage stats updated ───
+      - name: Create PR with updated stats
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          BRANCH="automated/data-freshness-$(date +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add src/data/coverage-stats.ts
+          git commit -m "chore: regenerate coverage stats (automated monthly)
+
+          Updated by data-freshness.yml workflow.
+          Validation: ${{ steps.validate.outcome }}
+          Checksums: ${{ steps.checksums.outcome }}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "chore: monthly data freshness update — $(date +%Y-%m-%d)" \
+            --body "$(cat <<'EOF'
+          ## Automated Monthly Data Freshness
+
+          This PR was created automatically by the monthly data-freshness workflow.
+
+          ### What changed
+          - Regenerated `src/data/coverage-stats.ts` from latest validation report
+
+          ### Validation status
+          - Checksums: ${{ steps.checksums.outcome }}
+          - Validation: ${{ steps.validate.outcome }}
+          - Staleness: ${{ steps.staleness.outcome }}
+
+          ### Review checklist
+          - [ ] Coverage numbers look reasonable
+          - [ ] No unexpected regressions
+
+          ---
+          *Automated by [data-freshness.yml](.github/workflows/data-freshness.yml)*
+          EOF
+          )" \
+            --label "data-quality,automated"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ─── Step 7: Create issue if problems detected ───
+      - name: Create issue if stale or broken
+        if: steps.staleness.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let staleList = '';
+            if (fs.existsSync('stale-sources.json')) {
+              const stale = JSON.parse(fs.readFileSync('stale-sources.json', 'utf-8'));
+              staleList = stale.map(s =>
+                `- **${s.id}** — last downloaded ${s.last} (${s.months} months ago, expected: ${s.freq})\n  ${s.page || 'No URL'}`
+              ).join('\n');
+            }
+
+            const validateOutput = fs.existsSync('validation-output.txt')
+              ? fs.readFileSync('validation-output.txt', 'utf-8').slice(-1500)
+              : 'No output';
+
+            const body = `## Monthly Data Freshness Alert
+
+            ### Stale Sources
+
+            The following datasets are overdue for a refresh:
+
+            ${staleList}
+
+            ### What to do
+
+            1. Visit each GOV.UK page linked above
+            2. Check if newer data has been published
+            3. If so, download the updated file
+            4. Run the relevant parse script (see \`scripts/\`)
+            5. Run \`npm run checksum:update\` to update the manifest
+            6. Run \`npm run validate\` to verify
+            7. Commit and push
+
+            ### Current validation
+            \`\`\`
+            ${validateOutput}
+            \`\`\`
+
+            ---
+            *Automated by [data-freshness.yml](.github/workflows/data-freshness.yml)*`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Automated] Data sources need refresh — ${new Date().toISOString().split('T')[0]}`,
+              body: body,
+              labels: ['data-quality', 'automated']
+            });

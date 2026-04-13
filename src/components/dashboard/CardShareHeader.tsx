@@ -13,6 +13,8 @@ interface CardShareHeaderProps {
   show?: boolean;
   /** Extra className on the subtitle <p> (e.g. "mb-5", "mb-6") */
   subtitleClassName?: string;
+  /** Data year label shown next to the title (e.g. "2024-25 data") */
+  dataYear?: string;
 }
 
 export default function CardShareHeader({
@@ -22,6 +24,7 @@ export default function CardShareHeader({
   councilName,
   show = true,
   subtitleClassName = 'mb-5',
+  dataYear,
 }: CardShareHeaderProps) {
   // Get slug from URL params OR from CouncilContext (homepage renders dashboard without URL slug)
   const params = useParams<{ slug: string }>();
@@ -35,7 +38,12 @@ export default function CardShareHeader({
   return (
     <div>
       <div className="flex items-start justify-between gap-2">
-        <h2 className="type-title-2 mb-1">{title}</h2>
+        <div className="flex items-baseline gap-2">
+          <h2 className="type-title-2 mb-1">{title}</h2>
+          {dataYear && (
+            <span className="type-caption text-muted-foreground whitespace-nowrap">{dataYear} data</span>
+          )}
+        </div>
         {show && shareUrl && (
           <ShareButton
             title={`${title} — ${councilName}`}
