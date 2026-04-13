@@ -83,6 +83,7 @@
         "budget.other",
         "budget.total_service"
       ],
+      "spot_check_tolerance": "0.10",
       "parsed_csv_sha256": "0b1c46a205ffd133211a138804c5c4f45f94168fa8bc2b3b86e0f17d60238d8e"
     },
     {

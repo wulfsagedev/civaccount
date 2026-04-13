@@ -3,8 +3,91 @@
  * All checks are offline — no network calls.
  */
 
-import { loadCsv, buildCsvIndex } from '../load-councils.mjs';
+import { loadCsv, buildCsvIndex, buildOnsIndex } from '../load-councils.mjs';
 import { normalizeCouncilName } from '../lib/normalize.mjs';
+import { readFileSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const RA_DIR = join(__dirname, '..', '..', '..', 'src', 'data', 'councils', 'pdfs', 'gov-uk-ra-data');
+
+/**
+ * Parse RA Part 1 CSV (Revenue Account) — extracts budget category totals per authority.
+ * The CSV has metadata rows at top; row 10 (0-indexed: 9) is the human-readable header.
+ * Returns Map<ons_code, { education, transport, ... total_service }> in £thousands.
+ */
+function loadRaBudgets() {
+  const csvPath = join(RA_DIR, 'RA_Part1_LA_Data.csv');
+  if (!existsSync(csvPath)) return new Map();
+
+  const content = readFileSync(csvPath, 'utf-8');
+  const lines = content.split('\n');
+  if (lines.length < 12) return new Map();
+
+  // Parse header row (row 10, 0-indexed: 9) to find TOTAL column indices
+  const headerLine = lines[9];
+  const headers = parseCSVLine(headerLine);
+
+  const colMap = {};
+  const fieldMap = {
+    'TOTAL EDUCATION SERVICES': 'education',
+    'TOTAL HIGHWAYS AND TRANSPORT SERVICES': 'transport',
+    'TOTAL HOUSING SERVICES (GFRA only)': 'housing',
+    'TOTAL CULTURAL AND RELATED SERVICES': 'cultural',
+    'TOTAL ENVIRONMENTAL AND REGULATORY SERVICES': 'environmental',
+    'TOTAL PLANNING AND DEVELOPMENT SERVICES': 'planning',
+    'TOTAL CENTRAL SERVICES': 'central_services',
+    'TOTAL OTHER SERVICES': 'other',
+    'TOTAL SERVICE EXPENDITURE': 'total_service',
+  };
+
+  for (let i = 0; i < headers.length; i++) {
+    const h = headers[i].trim();
+    if (fieldMap[h]) {
+      colMap[fieldMap[h]] = i;
+    }
+  }
+
+  // Parse data rows (from row 11 onwards, 0-indexed: 10)
+  const budgets = new Map();
+  for (let r = 10; r < lines.length; r++) {
+    const row = parseCSVLine(lines[r]);
+    if (row.length < 5) continue;
+    const ons = (row[1] || '').trim();
+    if (!ons.startsWith('E')) continue;
+
+    const entry = {};
+    for (const [field, colIdx] of Object.entries(colMap)) {
+      const val = parseFloat((row[colIdx] || '').trim());
+      if (!isNaN(val)) entry[field] = val;
+    }
+    if (Object.keys(entry).length > 0) {
+      budgets.set(ons, entry);
+    }
+  }
+  return budgets;
+}
+
+/** Simple CSV line parser that handles quoted fields with commas */
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
+  return result;
+}
 
 function withinTolerance(actual, expected, tolerancePct) {
   if (expected === 0) return actual === 0;
@@ -17,6 +100,7 @@ function withinAbsolute(actual, expected, tolerance) {
 
 export function validate(councils, population, report) {
   // Load all reference CSVs
+  const raBudgets = loadRaBudgets();
   const populationCsv = buildCsvIndex(loadCsv('parsed-population.csv'));
   const workforceCsv = buildCsvIndex(loadCsv('parsed-workforce.csv'));
   const ceoSalaryCsv = buildCsvIndex(loadCsv('parsed-ceo-salary.csv'));
@@ -127,18 +211,17 @@ export function validate(councils, population, report) {
       }
     }
 
-    // -- Children's services Ofsted rating vs parsed-ofsted.csv --
+    // -- Children's services Ofsted rating vs parsed-ofsted.csv (exact match) --
     report.tick();
     const ofstedRef = ofstedCsv.get(normalized);
     if (ofstedRef && d._has?.service_outcomes) {
-      // We can check if the council has children_services in raw section
       const raw = c._raw_section;
       const ratingMatch = raw.match(/ofsted_rating: ["'](Outstanding|Good|Requires improvement|Inadequate)["']/);
       if (ratingMatch) {
         const ourRating = ratingMatch[1];
         const refRating = ofstedRef.rating;
         if (refRating && ourRating !== refRating) {
-          report.finding(c, 'spot-check', 'ofsted_rating_mismatch', 'info',
+          report.finding(c, 'spot-check', 'ofsted_rating_mismatch', 'warning',
             `Ofsted rating "${ourRating}" differs from gov.uk reference "${refRating}"`,
             'detailed.service_outcomes.children_services.ofsted_rating', ourRating, refRating);
         }
@@ -159,6 +242,20 @@ export function validate(councils, population, report) {
             `Road condition poor % (${ourPoor}) differs from DfT reference (${refPoor}) by more than 5pp`,
             'detailed.service_outcomes.roads.condition_poor_percent', ourPoor, `${refPoor} (±5pp)`);
         }
+      }
+    }
+
+    // -- Budget total_service vs RA Part 1 (±10% — RA is estimate vs outturn) --
+    report.tick();
+    const raRef = raBudgets.get(c.ons_code);
+    if (raRef && c.budget?.total_service != null) {
+      const ourTotal = c.budget.total_service; // in £thousands
+      const raTotal = raRef.total_service;     // in £thousands
+      if (raTotal && !withinTolerance(ourTotal, raTotal, 0.10)) {
+        const diff = ((ourTotal - raTotal) / raTotal * 100).toFixed(1);
+        report.finding(c, 'spot-check', 'budget_total_ra_mismatch', 'warning',
+          `budget.total_service ${ourTotal}k differs from RA Part 1 reference ${raTotal}k by ${diff}%`,
+          'budget.total_service', ourTotal, `${raTotal} (±10%)`);
       }
     }
   }
