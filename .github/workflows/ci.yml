@@ -25,6 +25,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Validate council data
+        run: npm run validate
+
+      - name: Regenerate coverage stats
+        run: npm run generate:coverage
+
       - name: Build
         run: npm run build
         env:
