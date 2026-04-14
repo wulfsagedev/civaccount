@@ -68,6 +68,31 @@ export function validate(councils, population, report) {
       }
     }
 
+    // -- Sum of councillor_allowances_detail totals vs total_allowances_cost --
+    // Only warn (not error) since detail may be a subset (top earners) and the sum will undershoot.
+    // Flag only when detail sum EXCEEDS total cost (impossible) or when detail count is full
+    // and sum is ≥ 1.5x or ≤ 0.5x the total cost (likely a unit error or massive omission).
+    report.tick();
+    const detailSum = d._sums?.councillor_allowances_detail_total;
+    const totalCost = d.total_allowances_cost;
+    if (detailSum != null && totalCost != null && typeof totalCost === 'number' && totalCost > 0) {
+      const ratio = detailSum / totalCost;
+      const detailCount = d._counts?.councillor_allowances_detail || 0;
+      const isFullList = d.total_councillors && detailCount >= d.total_councillors * 0.9;
+
+      if (detailSum > totalCost * 1.05) {
+        // Detail sum exceeds total cost — impossible
+        report.finding(c, 'cross-field', 'allowances_sum_exceeds_total', 'error',
+          `Sum of individual allowances (£${Math.round(detailSum).toLocaleString()}) exceeds total_allowances_cost (£${Math.round(totalCost).toLocaleString()})`,
+          'detailed.total_allowances_cost', totalCost, `>= ${Math.round(detailSum)}`);
+      } else if (isFullList && (ratio < 0.7 || ratio > 1.3)) {
+        // Detail covers ~all councillors but sum is wildly off
+        report.finding(c, 'cross-field', 'allowances_sum_inconsistent', 'warning',
+          `Sum of individual allowances (£${Math.round(detailSum).toLocaleString()}) differs from total_allowances_cost (£${Math.round(totalCost).toLocaleString()}) by ${Math.round(Math.abs(1 - ratio) * 100)}% (full councillor list)`,
+          'detailed.total_allowances_cost', totalCost, `~${Math.round(detailSum)}`);
+      }
+    }
+
     // -- budget_gap should be positive if present --
     report.tick();
     if (d.budget_gap != null && typeof d.budget_gap === 'number') {

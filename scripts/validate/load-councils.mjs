@@ -162,13 +162,28 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
     d._counts.top_suppliers = supplierMatches ? supplierMatches.length : 0;
   }
 
-  // Count councillor_allowances_detail
+  // Count councillor_allowances_detail and sum totals
   if (d._has.councillor_allowances_detail) {
-    // Each entry has a "basic:" field inside councillor_allowances_detail
-    const detailSection = section.substring(section.indexOf('councillor_allowances_detail:'));
-    // Count "total:" occurrences within allowance detail (each member has a total)
-    const totalMatches = detailSection.match(/\btotal: \d/g);
-    d._counts.councillor_allowances_detail = totalMatches ? totalMatches.length : 0;
+    // Find the array start, then track bracket depth to find the end
+    const startIdx = section.indexOf('councillor_allowances_detail: [');
+    if (startIdx !== -1) {
+      let depth = 0;
+      let endIdx = section.length;
+      for (let si = 'councillor_allowances_detail: '.length + startIdx; si < section.length; si++) {
+        if (section[si] === '[') depth++;
+        else if (section[si] === ']') { depth--; if (depth === 0) { endIdx = si + 1; break; } }
+      }
+      const detailSection = section.substring(startIdx, endIdx);
+      // Each entry has a "total:" field — sum these for cross-validation
+      const totalMatches = [...detailSection.matchAll(/\btotal:\s*(-?[\d.]+)/g)];
+      d._counts.councillor_allowances_detail = totalMatches.length;
+      d._sums = d._sums || {};
+      d._sums.councillor_allowances_detail_total = totalMatches.reduce(
+        (sum, m) => sum + parseFloat(m[1]), 0
+      );
+    } else {
+      d._counts.councillor_allowances_detail = 0;
+    }
   }
 
   // Count waste destinations
