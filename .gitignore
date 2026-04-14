@@ -42,8 +42,16 @@ next-env.d.ts
 .claude/
 
 # research artifacts & tooling
-scripts/
+# Block one-off research scripts but allow active build/validation scripts.
+scripts/*
 !scripts/validate/
+!scripts/validate/**
+!scripts/parse-area-band-d.py
+!scripts/sync-band-d.mjs
+!scripts/generate-coverage-stats.mjs
+!scripts/generate-provenance.mjs
+!scripts/data-audit-log.mjs
+!scripts/requirements.txt
 scripts/validate/reports/*.json
 council_pdfs/
 pdf_downloads/
