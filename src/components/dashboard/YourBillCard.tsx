@@ -17,6 +17,7 @@ import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceT
 import ShareButton from '@/components/proposals/ShareButton';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import { INFLATION_CONTEXT } from '@/lib/inflation-context';
 
 // Helper function to find a linkable council from precept authority name
 const findLinkedCouncil = (authorityName: string) => {
@@ -106,9 +107,11 @@ const YourBillCard = ({
           <span className="type-caption text-muted-foreground">/year</span>
         </div>
 
-        {/* Year-on-year change — show cash-terms change with inflation context so
-            users can distinguish council decisions from general price rises.
-            UK CPI for Apr 2024 → Mar 2025 averaged ~2.8% (ONS). */}
+        {/* Year-on-year change — show cash-terms change alongside two familiar
+            yardsticks (prices and pay) so the reader can pick the lens that's
+            relevant to them. We deliberately don't subtract one from the other
+            or interpret "real terms" — that's the reader's call. See
+            src/lib/inflation-context.ts for the sources. */}
         {taxChange !== null && (
           <div className="mt-2 space-y-0.5">
             <div className="flex items-center gap-1.5">
@@ -126,11 +129,9 @@ const YourBillCard = ({
                 )}
               </span>
             </div>
-            {taxChange > 0 && (
-              <p className="type-caption text-muted-foreground pl-5">
-                UK inflation was ~2.8% over the same period (CPI), so the bill rose about {Math.max(0, taxChange - 2.8).toFixed(1)}% in real terms.
-              </p>
-            )}
+            <p className="type-caption text-muted-foreground pl-5">
+              Over the same year, prices rose {INFLATION_CONTEXT.cpi_rate}% and average pay rose {INFLATION_CONTEXT.wage_growth_rate}%.
+            </p>
           </div>
         )}
       </div>
