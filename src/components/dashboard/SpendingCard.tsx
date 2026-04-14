@@ -122,7 +122,9 @@ const SpendingCard = ({
                         />
                       </span>
                       <span className="type-body font-semibold tabular-nums">
-                        {category.yourShare ? formatCurrency(category.yourShare, { decimals: 0 }) : ''}
+                        {category.yourShare ? (
+                          <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{formatCurrency(category.yourShare, { decimals: 0 })}</SourceAnnotation>
+                        ) : ''}
                       </span>
                     </div>
                     <div className="flex items-baseline justify-between mb-2">
@@ -130,7 +132,7 @@ const SpendingCard = ({
                         {details?.description || ''}
                       </p>
                       <span className="type-caption text-muted-foreground tabular-nums shrink-0">
-                        {category.percentage.toFixed(0)}%
+                        <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{category.percentage.toFixed(0)}%</SourceAnnotation>
                       </span>
                     </div>
                     <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -145,7 +147,9 @@ const SpendingCard = ({
                     <div className="flex items-baseline justify-between mb-1">
                       <span className="type-body font-semibold">{category.name}</span>
                       <span className="type-body font-semibold tabular-nums">
-                        {category.yourShare ? formatCurrency(category.yourShare, { decimals: 0 }) : ''}
+                        {category.yourShare ? (
+                          <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{formatCurrency(category.yourShare, { decimals: 0 })}</SourceAnnotation>
+                        ) : ''}
                       </span>
                     </div>
                     <div className="flex items-baseline justify-between mb-2">
@@ -153,7 +157,7 @@ const SpendingCard = ({
                         {details?.description || ''}
                       </p>
                       <span className="type-caption text-muted-foreground tabular-nums shrink-0">
-                        {category.percentage.toFixed(0)}%
+                        <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{category.percentage.toFixed(0)}%</SourceAnnotation>
                       </span>
                     </div>
                     <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -191,8 +195,8 @@ const SpendingCard = ({
                           <span className="type-body-sm font-semibold tabular-nums shrink-0">
                             {!service.amount ? '—'
                               : service.amount < 0
-                              ? <span className="text-positive" title="This service earns more than it costs">{formatBudget(Math.abs(service.amount) / 1000)} income</span>
-                              : formatBudget(service.amount / 1000)
+                              ? <span className="text-positive" title="This service earns more than it costs"><SourceAnnotation provenance={getProvenance('detailed.service_spending', selectedCouncil)}>{formatBudget(Math.abs(service.amount) / 1000)}</SourceAnnotation> income</span>
+                              : <SourceAnnotation provenance={getProvenance('detailed.service_spending', selectedCouncil)}>{formatBudget(service.amount / 1000)}</SourceAnnotation>
                             }
                           </span>
                         </div>
@@ -211,7 +215,7 @@ const SpendingCard = ({
                                 {contract.description}
                               </p>
                               <p className="type-body-sm text-muted-foreground">
-                                {contract.annual_value && `${formatBudget(contract.annual_value / 1000)}/year`}
+                                {contract.annual_value && <><SourceAnnotation provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}>{formatBudget(contract.annual_value / 1000)}</SourceAnnotation>/year</>}
                                 {contract.annual_value && contract.contract_period && ' · '}
                                 {contract.contract_period && contract.contract_period}
                               </p>
@@ -279,14 +283,14 @@ const SpendingCard = ({
                   <span className="font-semibold text-foreground">{formatBudget(totalBudget / 1000)}</span>
                 </SourceAnnotation>/year
                 {population && (
-                  <span className="type-caption"> · Serving {population.toLocaleString('en-GB')} residents</span>
+                  <span className="type-caption"> · Serving <SourceAnnotation provenance={getProvenance('population', selectedCouncil)}>{population.toLocaleString('en-GB')}</SourceAnnotation> residents</span>
                 )}
               </p>
               {diff !== null && (
                 <p className="type-caption text-muted-foreground">
                   Compared to average {selectedCouncil.type_name?.toLowerCase()}:{' '}
                   <span className={`font-semibold ${diff > 0 ? 'text-negative' : diff < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
-                    {diff > 0 ? '+' : ''}{formatCurrency(diff, { decimals: 0 })}
+                    <SourceAnnotation provenance={getProvenance('per_capita_spend', selectedCouncil)}>{diff > 0 ? '+' : ''}{formatCurrency(diff, { decimals: 0 })}</SourceAnnotation>
                   </span>
                   {' '}per resident
                 </p>
@@ -339,7 +343,7 @@ const SpendingCard = ({
             >
               <span className="type-body-sm font-medium">{cat.name}</span>
               <span className="type-caption text-muted-foreground">
-                {formatBudget(cat.amount / 1000)}
+                <SourceAnnotation provenance={getProvenance(`budget.${cat.key}`, selectedCouncil)}>{formatBudget(cat.amount / 1000)}</SourceAnnotation>
               </span>
             </Link>
           ))}

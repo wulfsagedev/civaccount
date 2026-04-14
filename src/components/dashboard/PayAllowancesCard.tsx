@@ -52,7 +52,7 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                 </p>
                 {basic && avgAllowance > 0 && (
                   <p className="type-caption text-muted-foreground">
-                    Basic allowance: {formatCurrency(basic, { decimals: 0 })} · Avg for {selectedCouncil.type_name?.toLowerCase()}s: {formatCurrency(Math.round(avgAllowance), { decimals: 0 })}
+                    Basic allowance: <SourceAnnotation provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}>{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation> · Avg for {selectedCouncil.type_name?.toLowerCase()}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgAllowance), { decimals: 0 })}</SourceAnnotation>
                   </p>
                 )}
               </div>
@@ -69,13 +69,13 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                 <div className="min-w-0 mr-3">
                   <p className="type-body-sm font-medium truncate">{cllr.name}</p>
                   <p className="type-body-sm text-muted-foreground">
-                    Basic {formatCurrency(cllr.basic, { decimals: 0 })}
-                    {cllr.special ? ` + SRA ${formatCurrency(cllr.special, { decimals: 0 })}` : ''}
-                    {cllr.travel ? ` + Travel ${formatCurrency(cllr.travel, { decimals: 0 })}` : ''}
+                    Basic <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.basic, { decimals: 0 })}</SourceAnnotation>
+                    {cllr.special ? <> + SRA <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.special, { decimals: 0 })}</SourceAnnotation></> : ''}
+                    {cllr.travel ? <> + Travel <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.travel, { decimals: 0 })}</SourceAnnotation></> : ''}
                   </p>
                 </div>
                 <span className="type-body-sm font-semibold tabular-nums shrink-0">
-                  {formatCurrency(cllr.total, { decimals: 0 })}
+                  <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.total, { decimals: 0 })}</SourceAnnotation>
                 </span>
               </div>
             ))}
@@ -106,13 +106,17 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
         return (
           <div className={detailed?.councillor_allowances_detail?.length ? "mt-6 pt-5 border-t border-border/50" : ""}>
             <p className="type-body-sm font-semibold mb-1">Staff earning over £50,000</p>
-            <p className="type-body-sm text-muted-foreground mb-4">{totalStaff.toLocaleString('en-GB')} staff in salary bands above £50k</p>
+            <p className="type-body-sm text-muted-foreground mb-4">
+              <SourceAnnotation provenance={getProvenance('detailed.salary_bands', selectedCouncil)}>{totalStaff.toLocaleString('en-GB')}</SourceAnnotation> staff in salary bands above £50k
+            </p>
             <div className="space-y-2.5">
               {detailed.salary_bands!.map((band, idx) => (
                 <div key={idx}>
                   <div className="flex items-baseline justify-between mb-1">
                     <span className="type-body-sm text-muted-foreground">{band.band}</span>
-                    <span className="type-body-sm font-medium tabular-nums">{band.count}</span>
+                    <span className="type-body-sm font-medium tabular-nums">
+                      <SourceAnnotation provenance={getProvenance('detailed.salary_bands', selectedCouncil)}>{band.count}</SourceAnnotation>
+                    </span>
                   </div>
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div

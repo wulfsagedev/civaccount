@@ -12,6 +12,7 @@
       "data_year": "2025-26",
       "update_frequency": "annual_march",
       "last_downloaded": "2026-04-13",
+      "next_expected_update": "2027-04-13",
       "fields_validated": [
         "council_tax.band_d_2025",
         "council_tax.band_d_2024",
@@ -34,6 +35,7 @@
       "data_year": "2025-26",
       "update_frequency": "annual_february",
       "last_downloaded": "2026-01-15",
+      "next_expected_update": "2027-01-15",
       "fields_validated": [
         "council_tax.band_d_2025",
         "council_tax.band_d_2024",
@@ -54,6 +56,7 @@
       "data_year": "2025-26",
       "update_frequency": "annual_february",
       "last_downloaded": "2026-01-15",
+      "next_expected_update": "2027-01-15",
       "fields_validated": [
         "council_tax_base"
       ],
@@ -69,6 +72,7 @@
       "data_year": "2024-25",
       "update_frequency": "annual_november",
       "last_downloaded": "2026-01-15",
+      "next_expected_update": "2027-01-15",
       "fields_validated": [
         "budget.education",
         "budget.transport",
@@ -96,6 +100,7 @@
       "data_year": "2024-25",
       "update_frequency": "annual_november",
       "last_downloaded": "2026-01-15",
+      "next_expected_update": "2027-01-15",
       "fields_validated": [
         "budget.net_current",
         "reserves"
@@ -113,6 +118,7 @@
       "data_year": "mid-2024",
       "update_frequency": "annual_june",
       "last_downloaded": "2025-11-15",
+      "next_expected_update": "2026-11-15",
       "fields_validated": [
         "population"
       ],
@@ -129,6 +135,7 @@
       "data_year": "2022-23",
       "update_frequency": "annual_december",
       "last_downloaded": "2025-09-20",
+      "next_expected_update": "2026-09-20",
       "fields_validated": [
         "waste_destinations",
         "service_outcomes.waste.recycling_rate_percent"
@@ -146,6 +153,7 @@
       "data_year": "2023",
       "update_frequency": "annual_march",
       "last_downloaded": "2025-10-01",
+      "next_expected_update": "2026-10-01",
       "fields_validated": [
         "service_outcomes.roads.condition_good_percent"
       ],
@@ -162,6 +170,7 @@
       "data_year": "2023",
       "update_frequency": "annual_march",
       "last_downloaded": "2025-10-01",
+      "next_expected_update": "2026-10-01",
       "fields_validated": [
         "service_outcomes.roads.maintained_miles"
       ],
@@ -193,6 +202,7 @@
       "data_year": "2025",
       "update_frequency": "annual",
       "last_downloaded": "2025-11-15",
+      "next_expected_update": "2026-11-15",
       "fields_validated": [
         "total_councillors"
       ],
@@ -209,6 +219,7 @@
       "data_year": "2024-25",
       "update_frequency": "annual",
       "last_downloaded": "2026-02-01",
+      "next_expected_update": "2027-02-01",
       "fields_validated": [
         "chief_executive_salary",
         "chief_executive_total_remuneration"
@@ -227,6 +238,7 @@
       "data_year": "2024",
       "update_frequency": "quarterly",
       "last_downloaded": "2025-09-20",
+      "next_expected_update": "2025-12-20",
       "fields_validated": [
         "staff_fte"
       ],
@@ -243,6 +255,7 @@
       "data_year": "2024-25",
       "update_frequency": "annual_november",
       "last_downloaded": "2026-01-15",
+      "next_expected_update": "2027-01-15",
       "fields_validated": [
         "reserves"
       ],
@@ -259,6 +272,7 @@
       "data_year": "2024-25",
       "update_frequency": "annual_november",
       "last_downloaded": "2026-01-15",
+      "next_expected_update": "2027-01-15",
       "fields_validated": [
         "capital_programme"
       ],

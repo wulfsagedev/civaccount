@@ -48,7 +48,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
           <div className="p-3 rounded-lg bg-muted/30 mb-2">
             <p className="type-body-sm">
               <span className="font-semibold">Largest supplier:</span>{' '}
-              {detailed.top_suppliers[0].name} — {formatBudget(detailed.top_suppliers[0].annual_spend / 1000)}
+              {detailed.top_suppliers[0].name} — <SourceAnnotation provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}>{formatBudget(detailed.top_suppliers[0].annual_spend / 1000)}</SourceAnnotation>
               <span className="text-muted-foreground"> · {detailed.top_suppliers.length} suppliers published</span>
             </p>
           </div>
@@ -86,7 +86,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      {formatBudget(supplier.annual_spend / 1000)}
+                      <SourceAnnotation provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}>{formatBudget(supplier.annual_spend / 1000)}</SourceAnnotation>
                     </span>
                   </div>
                   {isExpanded && (
@@ -107,7 +107,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      {formatBudget(supplier.annual_spend / 1000)}
+                      <SourceAnnotation provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}>{formatBudget(supplier.annual_spend / 1000)}</SourceAnnotation>
                     </span>
                   </div>
                 </div>
@@ -151,7 +151,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
               <div className="p-3 rounded-lg bg-muted/30 mb-2">
                 <p className="type-body-sm">
                   <span className="font-semibold">Largest grant:</span>{' '}
-                  {largest.recipient} — {formatCurrency(largest.amount, { decimals: 0 })}
+                  {largest.recipient} — <SourceAnnotation provenance={getProvenance('detailed.grant_payments', selectedCouncil)}>{formatCurrency(largest.amount, { decimals: 0 })}</SourceAnnotation>
                   <span className="text-muted-foreground"> · {detailed.grant_payments.length} grants published</span>
                 </p>
               </div>
@@ -191,7 +191,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      {formatCurrency(grant.amount, { decimals: 0 })}
+                      <SourceAnnotation provenance={getProvenance('detailed.grant_payments', selectedCouncil)}>{formatCurrency(grant.amount, { decimals: 0 })}</SourceAnnotation>
                     </span>
                   </div>
                   {isExpanded && (
@@ -210,7 +210,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      {formatCurrency(grant.amount, { decimals: 0 })}
+                      <SourceAnnotation provenance={getProvenance('detailed.grant_payments', selectedCouncil)}>{formatCurrency(grant.amount, { decimals: 0 })}</SourceAnnotation>
                     </span>
                   </div>
                 </div>

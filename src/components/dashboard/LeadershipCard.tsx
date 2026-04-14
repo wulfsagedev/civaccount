@@ -41,7 +41,9 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
               <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="type-body-sm font-semibold leading-none truncate">{leader.name}</p>
+              <p className="type-body-sm font-semibold leading-none truncate">
+                <SourceAnnotation provenance={getProvenance('detailed.cabinet', selectedCouncil)}>{leader.name}</SourceAnnotation>
+              </p>
               <p className="type-caption leading-none text-muted-foreground">Council Leader</p>
             </div>
           </div>
@@ -53,7 +55,9 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
               <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="type-body-sm font-semibold leading-none truncate">{detailed.chief_executive}</p>
+              <p className="type-body-sm font-semibold leading-none truncate">
+                <SourceAnnotation provenance={getProvenance('detailed.chief_executive', selectedCouncil)}>{detailed.chief_executive}</SourceAnnotation>
+              </p>
               <p className="type-caption leading-none text-muted-foreground">Chief Executive</p>
               {detailed.chief_executive_salary && (() => {
                 const avgCeo = getTypeAverages(selectedCouncil.type).ceoSalary;
@@ -62,12 +66,12 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                     <p className="type-caption leading-none text-muted-foreground">
                       Salary: <SourceAnnotation provenance={getProvenance('detailed.chief_executive_salary', selectedCouncil)}>{formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}</SourceAnnotation>/year
                       {detailed.chief_executive_total_remuneration && (
-                        <span> · {formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })} total package</span>
+                        <span> · <SourceAnnotation provenance={getProvenance('detailed.chief_executive_total_remuneration', selectedCouncil)}>{formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })}</SourceAnnotation> total package</span>
                       )}
                     </p>
                     {avgCeo > 0 && (
                       <p className="type-caption leading-none text-muted-foreground">
-                        Avg for {selectedCouncil.type_name?.toLowerCase()}s: {formatCurrency(Math.round(avgCeo), { decimals: 0 })}
+                        Avg for {selectedCouncil.type_name?.toLowerCase()}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgCeo), { decimals: 0 })}</SourceAnnotation>
                       </p>
                     )}
                   </div>
@@ -84,8 +88,12 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
               <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="type-body-sm font-semibold leading-none truncate">{member.name}</p>
-              <p className="type-caption leading-none text-muted-foreground truncate">{member.portfolio}</p>
+              <p className="type-body-sm font-semibold leading-none truncate">
+                <SourceAnnotation provenance={getProvenance('detailed.cabinet', selectedCouncil)}>{member.name}</SourceAnnotation>
+              </p>
+              <p className="type-caption leading-none text-muted-foreground truncate">
+                <SourceAnnotation provenance={getProvenance('detailed.cabinet', selectedCouncil)}>{member.portfolio}</SourceAnnotation>
+              </p>
             </div>
           </div>
         ))}
@@ -114,12 +122,12 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
           <div className="flex flex-wrap gap-x-6 gap-y-1">
             {detailed.staff_fte && (
               <p className="type-caption text-muted-foreground">
-                <span className="font-medium text-foreground">{detailed.staff_fte.toLocaleString('en-GB')}</span> staff (FTE)
+                <SourceAnnotation provenance={getProvenance('detailed.staff_fte', selectedCouncil)}><span className="font-medium text-foreground">{detailed.staff_fte.toLocaleString('en-GB')}</span></SourceAnnotation> staff (FTE)
               </p>
             )}
             {detailed.agency_staff_count && (
               <p className="type-caption text-muted-foreground">
-                <span className="font-medium text-foreground">{detailed.agency_staff_count.toLocaleString('en-GB')}</span> agency staff
+                <SourceAnnotation provenance={getProvenance('detailed.staff_fte', selectedCouncil)}><span className="font-medium text-foreground">{detailed.agency_staff_count.toLocaleString('en-GB')}</span></SourceAnnotation> agency staff
               </p>
             )}
           </div>
@@ -131,9 +139,9 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
         <div className="mt-3 p-3 rounded-lg bg-muted/30">
           <p className="type-body-sm font-semibold mb-1">Councillor allowances</p>
           <p className="type-caption text-muted-foreground">
-            <span className="font-medium text-foreground">{formatCurrency(detailed.councillor_basic_allowance, { decimals: 0 })}</span> basic allowance × {detailed.total_councillors} councillors
+            <SourceAnnotation provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}><span className="font-medium text-foreground">{formatCurrency(detailed.councillor_basic_allowance, { decimals: 0 })}</span></SourceAnnotation> basic allowance × <SourceAnnotation provenance={getProvenance('detailed.total_councillors', selectedCouncil)}>{detailed.total_councillors}</SourceAnnotation> councillors
             {detailed.total_allowances_cost && (
-              <span> · Total cost: <span className="font-medium text-foreground">{formatCurrency(detailed.total_allowances_cost, { decimals: 0 })}</span>/year</span>
+              <span> · Total cost: <SourceAnnotation provenance={getProvenance('detailed.total_allowances_cost', selectedCouncil)}><span className="font-medium text-foreground">{formatCurrency(detailed.total_allowances_cost, { decimals: 0 })}</span></SourceAnnotation>/year</span>
             )}
           </p>
         </div>
@@ -153,9 +161,11 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                 <span className="sr-only"> (opens in new tab)</span>
               </p>
               <p className="type-caption text-muted-foreground">
-                {detailed.total_councillors
-                  ? `${detailed.total_councillors} councillors represent this area`
-                  : "View all councillors on the council website"}
+                {detailed.total_councillors ? (
+                  <><SourceAnnotation provenance={getProvenance('detailed.total_councillors', selectedCouncil)}>{detailed.total_councillors}</SourceAnnotation> councillors represent this area</>
+                ) : (
+                  "View all councillors on the council website"
+                )}
               </p>
             </div>
             <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />

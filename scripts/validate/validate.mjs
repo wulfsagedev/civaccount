@@ -2,7 +2,7 @@
 /**
  * validate.mjs — CivAccount Data Validation Tool
  *
- * Runs 8 categories of checks across all 317 councils:
+ * Runs 9 categories of checks across all 317 councils:
  *   1. ranges       — Value bounds and sanity checks
  *   2. cross-field  — Inter-field logical consistency
  *   3. quality      — Placeholder text, duplicates, format violations
@@ -11,6 +11,7 @@
  *   6. checksum     — SHA-256 integrity of parsed CSV files
  *   7. random-audit — Deep spot-check on 10 random councils
  *   8. source-truth — Exact-match band_d values against GOV.UK Area CT source
+ *   9. freshness    — Flag sources overdue for update based on manifest cadence
  *
  * Usage:
  *   node scripts/validate/validate.mjs [--verbose]
@@ -32,6 +33,7 @@ import { validate as validateSpotCheck } from './validators/spot-check.mjs';
 import { validate as validateChecksum } from './validators/checksum.mjs';
 import { validate as validateRandomAudit } from './validators/random-audit.mjs';
 import { validate as validateSourceTruth } from './validators/source-truth.mjs';
+import { validate as validateFreshness } from './validators/freshness.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -79,6 +81,7 @@ async function main() {
     ['checksum', validateChecksum],
     ['random-audit', validateRandomAudit],
     ['source-truth', validateSourceTruth],
+    ['freshness', validateFreshness],
   ];
 
   // Link-check is opt-in (requires network access, slow)

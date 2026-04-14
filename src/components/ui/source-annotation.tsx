@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Flag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -12,6 +12,40 @@ import type { DataProvenance } from '@/data/councils';
 interface SourceAnnotationProps {
   provenance?: DataProvenance;
   children: React.ReactNode;
+  /** Optional council name + field path for "Report incorrect data" link */
+  reportContext?: {
+    council: string;
+    field: string;
+    value: string | number;
+  };
+}
+
+const GITHUB_REPO = 'wulfsagedev/civaccount';
+
+function buildReportUrl(ctx: { council: string; field: string; value: string | number }, prov?: DataProvenance): string {
+  const title = `Data correction: ${ctx.council} — ${ctx.field}`;
+  const body = `**Council**: ${ctx.council}
+**Field**: ${ctx.field}
+**Current value**: ${ctx.value}
+${prov?.source_title ? `**Listed source**: ${prov.source_title}` : ''}
+${prov?.source_url ? `**Source URL**: ${prov.source_url}` : ''}
+${prov?.data_year ? `**Data year**: ${prov.data_year}` : ''}
+
+**What's wrong?**
+<!-- Describe the issue with this data -->
+
+**Correct value (with source)**
+<!-- Provide the correct value and a link to the source document -->
+
+---
+*Reported via CivAccount in-app feedback*`;
+
+  const params = new URLSearchParams({
+    title,
+    body,
+    labels: 'data-correction,user-reported',
+  });
+  return `https://github.com/${GITHUB_REPO}/issues/new?${params.toString()}`;
 }
 
 const LABEL_CONFIG: Record<string, { text: string; className: string }> = {
@@ -49,10 +83,12 @@ const LABEL_CONFIG: Record<string, { text: string; className: string }> = {
 export default function SourceAnnotation({
   provenance,
   children,
+  reportContext,
 }: SourceAnnotationProps) {
   if (!provenance) return <>{children}</>;
 
   const config = LABEL_CONFIG[provenance.label] || LABEL_CONFIG.published;
+  const reportUrl = reportContext ? buildReportUrl(reportContext, provenance) : null;
 
   return (
     <Popover>
@@ -108,6 +144,21 @@ export default function SourceAnnotation({
             <p className="type-caption text-muted-foreground">
               {provenance.methodology}
             </p>
+          )}
+
+          {reportUrl && (
+            <div className="pt-2 mt-1 border-t border-border/50">
+              <a
+                href={reportUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors"
+              >
+                <Flag className="h-3 w-3 shrink-0" aria-hidden="true" />
+                Report incorrect data
+                <span className="sr-only"> (opens new tab)</span>
+              </a>
+            </div>
           )}
         </div>
       </PopoverContent>
