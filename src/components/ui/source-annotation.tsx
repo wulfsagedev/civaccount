@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Flag } from 'lucide-react';
+import { ExternalLink, Flag, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -21,6 +21,44 @@ interface SourceAnnotationProps {
 }
 
 const GITHUB_REPO = 'wulfsagedev/civaccount';
+
+/**
+ * Compute staleness from a data_year string.
+ * Returns months elapsed since the END of the data year, or null if unparseable.
+ *
+ * Handles formats: "2025-26", "2024", "mid-2024", "2022-23", "2023-24"
+ */
+function computeStaleness(dataYear: string | undefined): { months: number; isStale: boolean; isCritical: boolean } | null {
+  if (!dataYear) return null;
+
+  let endYear: number | null = null;
+
+  // "2025-26" or "2022-23" → end year is the second part
+  const fyMatch = dataYear.match(/^(\d{4})-(\d{2})$/);
+  if (fyMatch) {
+    const startYear = parseInt(fyMatch[1], 10);
+    endYear = startYear + 1; // FY ends April of next year
+  } else {
+    // "2024", "mid-2024", "2023" → just the year
+    const yearMatch = dataYear.match(/(\d{4})/);
+    if (yearMatch) {
+      endYear = parseInt(yearMatch[1], 10);
+    }
+  }
+
+  if (!endYear) return null;
+
+  // Treat data as fresh until ~12 months after the end year/FY
+  const now = new Date();
+  const dataDate = new Date(endYear, 3, 1); // Apr 1 of end year (UK FY end)
+  const monthsElapsed = Math.floor((now.getTime() - dataDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+
+  return {
+    months: monthsElapsed,
+    isStale: monthsElapsed > 18,        // >18 months = stale
+    isCritical: monthsElapsed > 30,      // >30 months = critically stale
+  };
+}
 
 function buildReportUrl(ctx: { council: string; field: string; value: string | number }, prov?: DataProvenance): string {
   const title = `Data correction: ${ctx.council} — ${ctx.field}`;
@@ -89,17 +127,30 @@ export default function SourceAnnotation({
 
   const config = LABEL_CONFIG[provenance.label] || LABEL_CONFIG.published;
   const reportUrl = reportContext ? buildReportUrl(reportContext, provenance) : null;
+  const staleness = computeStaleness(provenance.data_year);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button
-          type="button"
+        <span
+          role="button"
+          tabIndex={0}
           className="inline cursor-pointer decoration-muted-foreground/40 decoration-dotted underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           aria-label={`Source: ${provenance.source_title || config.text}`}
+          onClick={(e) => {
+            // Stop propagation so it doesn't trigger parent buttons (drill-downs, links)
+            e.stopPropagation();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              (e.currentTarget as HTMLElement).click();
+            }
+          }}
         >
           {children}
-        </button>
+        </span>
       </PopoverTrigger>
       <PopoverContent
         className="w-64 p-3"
@@ -135,9 +186,24 @@ export default function SourceAnnotation({
           )}
 
           {provenance.data_year && (
-            <p className="type-caption text-muted-foreground">
-              Data year: {provenance.data_year}
-            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="type-caption text-muted-foreground">
+                Data year: {provenance.data_year}
+              </p>
+              {staleness?.isStale && (
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] font-medium gap-1 ${
+                    staleness.isCritical
+                      ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800'
+                      : 'bg-muted text-muted-foreground border-border'
+                  }`}
+                >
+                  <Clock className="h-2.5 w-2.5" aria-hidden="true" />
+                  {staleness.isCritical ? 'Critically stale' : 'Stale'}
+                </Badge>
+              )}
+            </div>
           )}
 
           {provenance.methodology && (

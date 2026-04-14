@@ -86,14 +86,12 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      <SourceAnnotation provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}>{formatBudget(supplier.annual_spend / 1000)}</SourceAnnotation>
+                      {formatBudget(supplier.annual_spend / 1000)}
                     </span>
                   </div>
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg">
-                      <SourceAnnotation provenance={getProvenance('detailed.top_suppliers.description')}>
-                        <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
-                      </SourceAnnotation>
+                      <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
                     </div>
                   )}
                 </button>
@@ -191,7 +189,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      <SourceAnnotation provenance={getProvenance('detailed.grant_payments', selectedCouncil)}>{formatCurrency(grant.amount, { decimals: 0 })}</SourceAnnotation>
+                      {formatCurrency(grant.amount, { decimals: 0 })}
                     </span>
                   </div>
                   {isExpanded && (

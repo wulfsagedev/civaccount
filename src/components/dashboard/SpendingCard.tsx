@@ -122,9 +122,7 @@ const SpendingCard = ({
                         />
                       </span>
                       <span className="type-body font-semibold tabular-nums">
-                        {category.yourShare ? (
-                          <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{formatCurrency(category.yourShare, { decimals: 0 })}</SourceAnnotation>
-                        ) : ''}
+                        {category.yourShare ? formatCurrency(category.yourShare, { decimals: 0 }) : ''}
                       </span>
                     </div>
                     <div className="flex items-baseline justify-between mb-2">
@@ -132,7 +130,7 @@ const SpendingCard = ({
                         {details?.description || ''}
                       </p>
                       <span className="type-caption text-muted-foreground tabular-nums shrink-0">
-                        <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{category.percentage.toFixed(0)}%</SourceAnnotation>
+                        {category.percentage.toFixed(0)}%
                       </span>
                     </div>
                     <div className="h-2 rounded-full bg-muted overflow-hidden">
