@@ -79,7 +79,19 @@ const TaxBandsCard = ({
       <div className="p-4 sm:p-5 rounded-lg bg-muted/30">
         <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]}</p>
         <p className="type-metric mb-4">
-          <SourceAnnotation provenance={getProvenance('tax_bands', selectedCouncil)}>
+          <SourceAnnotation
+            provenance={getProvenance('tax_bands', selectedCouncil)}
+            reportContext={{
+              council: selectedCouncil.name,
+              field: `Council tax Band ${selectedBand} (annual)`,
+              value: formatCurrency(
+                totalBandAmounts
+                  ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
+                  : allBands[selectedBand as keyof typeof allBands],
+                { decimals: 2 }
+              ),
+            }}
+          >
             {formatCurrency(
               totalBandAmounts
                 ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
@@ -92,7 +104,19 @@ const TaxBandsCard = ({
           <div>
             <p className="type-caption text-muted-foreground mb-0.5">Monthly (10 payments)</p>
             <p className="type-body font-semibold tabular-nums">
-              <SourceAnnotation provenance={getProvenance('tax_bands', selectedCouncil)}>
+              <SourceAnnotation
+                provenance={getProvenance('tax_bands', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: `Council tax Band ${selectedBand} (monthly, 10 payments)`,
+                  value: formatCurrency(
+                    (totalBandAmounts
+                      ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
+                      : allBands[selectedBand as keyof typeof allBands]) / 10,
+                    { decimals: 2 }
+                  ),
+                }}
+              >
                 {formatCurrency(
                   (totalBandAmounts
                     ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
@@ -105,7 +129,19 @@ const TaxBandsCard = ({
           <div>
             <p className="type-caption text-muted-foreground mb-0.5">Weekly</p>
             <p className="type-body font-semibold tabular-nums">
-              <SourceAnnotation provenance={getProvenance('tax_bands', selectedCouncil)}>
+              <SourceAnnotation
+                provenance={getProvenance('tax_bands', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: `Council tax Band ${selectedBand} (weekly)`,
+                  value: formatCurrency(
+                    (totalBandAmounts
+                      ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
+                      : allBands[selectedBand as keyof typeof allBands]) / 52,
+                    { decimals: 2 }
+                  ),
+                }}
+              >
                 {formatCurrency(
                   (totalBandAmounts
                     ? totalBandAmounts[selectedBand as keyof typeof totalBandAmounts]
@@ -124,7 +160,14 @@ const TaxBandsCard = ({
           <p className="type-body-sm text-muted-foreground">
             <span className="font-medium text-foreground">{selectedCouncil.name}&apos;s share:</span>{' '}
             <span className="font-semibold text-foreground tabular-nums">
-              <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+              <SourceAnnotation
+                provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: `Council's share of Band ${selectedBand}`,
+                  value: formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 }),
+                }}
+              >
                 {formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 })}
               </SourceAnnotation>
             </span>

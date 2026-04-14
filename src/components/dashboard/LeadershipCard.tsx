@@ -42,7 +42,14 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
             </div>
             <div className="min-w-0 space-y-1">
               <p className="type-body-sm font-semibold leading-none truncate">
-                <SourceAnnotation provenance={getProvenance('detailed.cabinet', selectedCouncil)}>{leader.name}</SourceAnnotation>
+                <SourceAnnotation
+                  provenance={getProvenance('detailed.cabinet', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Council Leader',
+                    value: leader.name,
+                  }}
+                >{leader.name}</SourceAnnotation>
               </p>
               <p className="type-caption leading-none text-muted-foreground">Council Leader</p>
             </div>
@@ -56,7 +63,14 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
             </div>
             <div className="min-w-0 space-y-1">
               <p className="type-body-sm font-semibold leading-none truncate">
-                <SourceAnnotation provenance={getProvenance('detailed.chief_executive', selectedCouncil)}>{detailed.chief_executive}</SourceAnnotation>
+                <SourceAnnotation
+                  provenance={getProvenance('detailed.chief_executive', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Chief Executive name',
+                    value: detailed.chief_executive,
+                  }}
+                >{detailed.chief_executive}</SourceAnnotation>
               </p>
               <p className="type-caption leading-none text-muted-foreground">Chief Executive</p>
               {detailed.chief_executive_salary && (() => {
@@ -64,9 +78,23 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                 return (
                   <div className="space-y-0.5">
                     <p className="type-caption leading-none text-muted-foreground">
-                      Salary: <SourceAnnotation provenance={getProvenance('detailed.chief_executive_salary', selectedCouncil)}>{formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}</SourceAnnotation>/year
+                      Salary: <SourceAnnotation
+                        provenance={getProvenance('detailed.chief_executive_salary', selectedCouncil)}
+                        reportContext={{
+                          council: selectedCouncil.name,
+                          field: 'Chief Executive salary',
+                          value: formatCurrency(detailed.chief_executive_salary!, { decimals: 0 }),
+                        }}
+                      >{formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}</SourceAnnotation>/year
                       {detailed.chief_executive_total_remuneration && (
-                        <span> · <SourceAnnotation provenance={getProvenance('detailed.chief_executive_total_remuneration', selectedCouncil)}>{formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })}</SourceAnnotation> total package</span>
+                        <span> · <SourceAnnotation
+                          provenance={getProvenance('detailed.chief_executive_total_remuneration', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Chief Executive total remuneration',
+                            value: formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 }),
+                          }}
+                        >{formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })}</SourceAnnotation> total package</span>
                       )}
                     </p>
                     {avgCeo > 0 && (
@@ -89,10 +117,24 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
             </div>
             <div className="min-w-0 space-y-1">
               <p className="type-body-sm font-semibold leading-none truncate">
-                <SourceAnnotation provenance={getProvenance('detailed.cabinet', selectedCouncil)}>{member.name}</SourceAnnotation>
+                <SourceAnnotation
+                  provenance={getProvenance('detailed.cabinet', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: `Cabinet member: ${member.name}`,
+                    value: member.name,
+                  }}
+                >{member.name}</SourceAnnotation>
               </p>
               <p className="type-caption leading-none text-muted-foreground truncate">
-                <SourceAnnotation provenance={getProvenance('detailed.cabinet', selectedCouncil)}>{member.portfolio}</SourceAnnotation>
+                <SourceAnnotation
+                  provenance={getProvenance('detailed.cabinet', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: `Cabinet member: ${member.name} portfolio`,
+                    value: member.portfolio,
+                  }}
+                >{member.portfolio}</SourceAnnotation>
               </p>
             </div>
           </div>
@@ -122,12 +164,26 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
           <div className="flex flex-wrap gap-x-6 gap-y-1">
             {detailed.staff_fte && (
               <p className="type-caption text-muted-foreground">
-                <SourceAnnotation provenance={getProvenance('detailed.staff_fte', selectedCouncil)}><span className="font-medium text-foreground">{detailed.staff_fte.toLocaleString('en-GB')}</span></SourceAnnotation> staff (FTE)
+                <SourceAnnotation
+                  provenance={getProvenance('detailed.staff_fte', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Staff count (FTE)',
+                    value: detailed.staff_fte.toLocaleString('en-GB'),
+                  }}
+                ><span className="font-medium text-foreground">{detailed.staff_fte.toLocaleString('en-GB')}</span></SourceAnnotation> staff (FTE)
               </p>
             )}
             {detailed.agency_staff_count && (
               <p className="type-caption text-muted-foreground">
-                <SourceAnnotation provenance={getProvenance('detailed.staff_fte', selectedCouncil)}><span className="font-medium text-foreground">{detailed.agency_staff_count.toLocaleString('en-GB')}</span></SourceAnnotation> agency staff
+                <SourceAnnotation
+                  provenance={getProvenance('detailed.staff_fte', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Agency staff count',
+                    value: detailed.agency_staff_count.toLocaleString('en-GB'),
+                  }}
+                ><span className="font-medium text-foreground">{detailed.agency_staff_count.toLocaleString('en-GB')}</span></SourceAnnotation> agency staff
               </p>
             )}
           </div>
@@ -139,9 +195,30 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
         <div className="mt-3 p-3 rounded-lg bg-muted/30">
           <p className="type-body-sm font-semibold mb-1">Councillor allowances</p>
           <p className="type-caption text-muted-foreground">
-            <SourceAnnotation provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}><span className="font-medium text-foreground">{formatCurrency(detailed.councillor_basic_allowance, { decimals: 0 })}</span></SourceAnnotation> basic allowance × <SourceAnnotation provenance={getProvenance('detailed.total_councillors', selectedCouncil)}>{detailed.total_councillors}</SourceAnnotation> councillors
+            <SourceAnnotation
+              provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}
+              reportContext={{
+                council: selectedCouncil.name,
+                field: 'Councillor basic allowance',
+                value: formatCurrency(detailed.councillor_basic_allowance, { decimals: 0 }),
+              }}
+            ><span className="font-medium text-foreground">{formatCurrency(detailed.councillor_basic_allowance, { decimals: 0 })}</span></SourceAnnotation> basic allowance × <SourceAnnotation
+              provenance={getProvenance('detailed.total_councillors', selectedCouncil)}
+              reportContext={{
+                council: selectedCouncil.name,
+                field: 'Total number of councillors',
+                value: String(detailed.total_councillors),
+              }}
+            >{detailed.total_councillors}</SourceAnnotation> councillors
             {detailed.total_allowances_cost && (
-              <span> · Total cost: <SourceAnnotation provenance={getProvenance('detailed.total_allowances_cost', selectedCouncil)}><span className="font-medium text-foreground">{formatCurrency(detailed.total_allowances_cost, { decimals: 0 })}</span></SourceAnnotation>/year</span>
+              <span> · Total cost: <SourceAnnotation
+                provenance={getProvenance('detailed.total_allowances_cost', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: 'Total councillor allowances cost per year',
+                  value: formatCurrency(detailed.total_allowances_cost, { decimals: 0 }),
+                }}
+              ><span className="font-medium text-foreground">{formatCurrency(detailed.total_allowances_cost, { decimals: 0 })}</span></SourceAnnotation>/year</span>
             )}
           </p>
         </div>
@@ -162,7 +239,14 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
               </p>
               <p className="type-caption text-muted-foreground">
                 {detailed.total_councillors ? (
-                  <><SourceAnnotation provenance={getProvenance('detailed.total_councillors', selectedCouncil)}>{detailed.total_councillors}</SourceAnnotation> councillors represent this area</>
+                  <><SourceAnnotation
+                    provenance={getProvenance('detailed.total_councillors', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Total number of councillors',
+                      value: String(detailed.total_councillors),
+                    }}
+                  >{detailed.total_councillors}</SourceAnnotation> councillors represent this area</>
                 ) : (
                   "View all councillors on the council website"
                 )}

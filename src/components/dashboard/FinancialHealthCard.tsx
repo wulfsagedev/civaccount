@@ -37,7 +37,14 @@ const FinancialHealthCard = ({
           {detailed.reserves && (
             <div className="mb-5">
               <p className="type-caption text-muted-foreground mb-1">Emergency reserves</p>
-              <SourceAnnotation provenance={getProvenance('detailed.reserves', selectedCouncil)}>
+              <SourceAnnotation
+                provenance={getProvenance('detailed.reserves', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: 'Emergency reserves',
+                  value: formatCurrency(detailed.reserves, { decimals: 0 }),
+                }}
+              >
                 <p className="type-metric tabular-nums">
                   {formatCurrency(detailed.reserves, { decimals: 0 })}
                 </p>
@@ -57,7 +64,14 @@ const FinancialHealthCard = ({
                 <div className="flex items-baseline justify-between">
                   <span className="type-body-sm text-muted-foreground">Saved this year</span>
                   <span className="type-body font-semibold tabular-nums text-positive">
-                    <SourceAnnotation provenance={getProvenance('detailed.savings_target', selectedCouncil)}>{formatCurrency(detailed.savings_achieved, { decimals: 0 })}</SourceAnnotation>
+                    <SourceAnnotation
+                      provenance={getProvenance('detailed.savings_target', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: 'Savings achieved this year',
+                        value: formatCurrency(detailed.savings_achieved, { decimals: 0 }),
+                      }}
+                    >{formatCurrency(detailed.savings_achieved, { decimals: 0 })}</SourceAnnotation>
                   </span>
                 </div>
               )}
@@ -65,7 +79,14 @@ const FinancialHealthCard = ({
                 <div className="flex items-baseline justify-between">
                   <span className="type-body-sm text-muted-foreground">Budget gap to close</span>
                   <span className="type-body font-semibold tabular-nums text-negative">
-                    <SourceAnnotation provenance={getProvenance('detailed.budget_gap', selectedCouncil)}>{formatCurrency(detailed.mtfs_deficit, { decimals: 0 })}</SourceAnnotation>
+                    <SourceAnnotation
+                      provenance={getProvenance('detailed.budget_gap', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: 'Budget gap to close',
+                        value: formatCurrency(detailed.mtfs_deficit, { decimals: 0 }),
+                      }}
+                    >{formatCurrency(detailed.mtfs_deficit, { decimals: 0 })}</SourceAnnotation>
                   </span>
                 </div>
               )}
@@ -142,10 +163,24 @@ const FinancialHealthCard = ({
                     <p className="type-body-sm text-muted-foreground mt-1">
                       {selectedCouncil.name} said it could not balance its budget
                       {detailed.accountability.section_114.dates?.[0] && (
-                        <> in <SourceAnnotation provenance={getProvenance('detailed.accountability', selectedCouncil)}>{new Date(detailed.accountability.section_114.dates[0]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</SourceAnnotation></>
+                        <> in <SourceAnnotation
+                          provenance={getProvenance('detailed.accountability', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Section 114 notice date',
+                            value: new Date(detailed.accountability.section_114.dates[0]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
+                          }}
+                        >{new Date(detailed.accountability.section_114.dates[0]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</SourceAnnotation></>
                       )}
                       {(detailed.accountability.section_114.dates?.length ?? 0) > 1 && (
-                        <> (and again in <SourceAnnotation provenance={getProvenance('detailed.accountability', selectedCouncil)}>{new Date(detailed.accountability.section_114.dates![detailed.accountability.section_114.dates!.length - 1]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</SourceAnnotation>)</>
+                        <> (and again in <SourceAnnotation
+                          provenance={getProvenance('detailed.accountability', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Section 114 notice date (latest)',
+                            value: new Date(detailed.accountability.section_114.dates![detailed.accountability.section_114.dates!.length - 1]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
+                          }}
+                        >{new Date(detailed.accountability.section_114.dates![detailed.accountability.section_114.dates!.length - 1]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</SourceAnnotation>)</>
                       )}
                       . This is rare — only 8 councils have done this since 2018.
                     </p>
@@ -181,7 +216,14 @@ const FinancialHealthCard = ({
               <div className="flex items-baseline justify-between p-3 rounded-lg bg-muted/30">
                 <span className="type-body-sm text-muted-foreground">
                   Audit opinion{detailed.accountability.audit_year ? (
-                    <> (<SourceAnnotation provenance={getProvenance('detailed.accountability', selectedCouncil)}>{detailed.accountability.audit_year}</SourceAnnotation>)</>
+                    <> (<SourceAnnotation
+                      provenance={getProvenance('detailed.accountability', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: 'Audit year',
+                        value: String(detailed.accountability.audit_year),
+                      }}
+                    >{detailed.accountability.audit_year}</SourceAnnotation>)</>
                   ) : ''}
                 </span>
                 <span className={`type-body-sm font-semibold ${
@@ -191,7 +233,14 @@ const FinancialHealthCard = ({
                     ? 'text-muted-foreground'
                     : 'text-foreground'
                 }`}>
-                  <SourceAnnotation provenance={getProvenance('detailed.accountability', selectedCouncil)}>{detailed.accountability.audit_opinion}</SourceAnnotation>
+                  <SourceAnnotation
+                    provenance={getProvenance('detailed.accountability', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Audit opinion',
+                      value: detailed.accountability.audit_opinion,
+                    }}
+                  >{detailed.accountability.audit_opinion}</SourceAnnotation>
                 </span>
               </div>
             )}

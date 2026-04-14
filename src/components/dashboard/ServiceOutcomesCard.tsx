@@ -44,7 +44,14 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <Recycle className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <p className="type-caption text-muted-foreground">Recycling rate</p>
                   </div>
-                  <SourceAnnotation provenance={getProvenance('service_outcomes.waste.recycling_rate_percent', selectedCouncil)}>
+                  <SourceAnnotation
+                    provenance={getProvenance('service_outcomes.waste.recycling_rate_percent', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Recycling rate',
+                      value: `${detailed.service_outcomes.waste.recycling_rate_percent.toFixed(1)}%`,
+                    }}
+                  >
                     <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.waste.recycling_rate_percent.toFixed(1)}%</p>
                   </SourceAnnotation>
                   {detailed.service_outcomes.waste.year && (
@@ -91,7 +98,14 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <Car className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <p className="type-caption text-muted-foreground">Road condition</p>
                   </div>
-                  <SourceAnnotation provenance={getProvenance('service_outcomes.roads.condition_good_percent', selectedCouncil)}>
+                  <SourceAnnotation
+                    provenance={getProvenance('service_outcomes.roads.condition_good_percent', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Road condition (% good or acceptable)',
+                      value: `${detailed.service_outcomes.roads!.condition_good_percent}%`,
+                    }}
+                  >
                     <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads!.condition_good_percent}%</p>
                   </SourceAnnotation>
                   <p className="type-caption text-muted-foreground/60">in good or acceptable condition</p>

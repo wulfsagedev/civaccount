@@ -53,7 +53,14 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
               </Link>
               <div className="flex items-baseline gap-3">
                 <span className="type-body-sm font-semibold tabular-nums">
-                  <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', c)}>
+                  <SourceAnnotation
+                    provenance={getProvenance('council_tax.band_d_2025', c)}
+                    reportContext={{
+                      council: c.name,
+                      field: 'Council tax Band D 2025-26',
+                      value: formatCurrency(relatedBandD, { decimals: 2 }),
+                    }}
+                  >
                     {formatCurrency(relatedBandD, { decimals: 2 })}
                   </SourceAnnotation>
                 </span>

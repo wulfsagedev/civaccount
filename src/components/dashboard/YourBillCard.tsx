@@ -58,7 +58,14 @@ const YourBillCard = ({
           You pay this council
         </p>
         <div className="flex items-baseline gap-2">
-          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+          <SourceAnnotation
+            provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+            reportContext={{
+              council: selectedCouncil.name,
+              field: 'Council tax (your share)',
+              value: thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A',
+            }}
+          >
             <span className="type-display">
               {thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}
             </span>

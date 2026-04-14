@@ -47,12 +47,26 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
               <div className="p-3 rounded-lg bg-muted/30 mb-4 space-y-1">
                 <p className="type-body-sm">
                   <span className="font-semibold">Highest allowance:</span>{' '}
-                  {highest.name} — <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(highest.total, { decimals: 0 })}</SourceAnnotation>
+                  {highest.name} — <SourceAnnotation
+                    provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `Councillor allowance: ${highest.name} total`,
+                      value: formatCurrency(highest.total, { decimals: 0 }),
+                    }}
+                  >{formatCurrency(highest.total, { decimals: 0 })}</SourceAnnotation>
                   <span className="text-muted-foreground"> · {detailed.councillor_allowances_detail!.length} councillors</span>
                 </p>
                 {basic && avgAllowance > 0 && (
                   <p className="type-caption text-muted-foreground">
-                    Basic allowance: <SourceAnnotation provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}>{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation> · Avg for {selectedCouncil.type_name?.toLowerCase()}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgAllowance), { decimals: 0 })}</SourceAnnotation>
+                    Basic allowance: <SourceAnnotation
+                      provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: 'Councillor basic allowance',
+                        value: formatCurrency(basic, { decimals: 0 }),
+                      }}
+                    >{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation> · Avg for {selectedCouncil.type_name?.toLowerCase()}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgAllowance), { decimals: 0 })}</SourceAnnotation>
                   </p>
                 )}
               </div>
@@ -69,13 +83,41 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                 <div className="min-w-0 mr-3">
                   <p className="type-body-sm font-medium truncate">{cllr.name}</p>
                   <p className="type-body-sm text-muted-foreground">
-                    Basic <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.basic, { decimals: 0 })}</SourceAnnotation>
-                    {cllr.special ? <> + SRA <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.special, { decimals: 0 })}</SourceAnnotation></> : ''}
-                    {cllr.travel ? <> + Travel <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.travel, { decimals: 0 })}</SourceAnnotation></> : ''}
+                    Basic <SourceAnnotation
+                      provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `Councillor allowance: ${cllr.name} basic`,
+                        value: formatCurrency(cllr.basic, { decimals: 0 }),
+                      }}
+                    >{formatCurrency(cllr.basic, { decimals: 0 })}</SourceAnnotation>
+                    {cllr.special ? <> + SRA <SourceAnnotation
+                      provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `Councillor allowance: ${cllr.name} special responsibility`,
+                        value: formatCurrency(cllr.special, { decimals: 0 }),
+                      }}
+                    >{formatCurrency(cllr.special, { decimals: 0 })}</SourceAnnotation></> : ''}
+                    {cllr.travel ? <> + Travel <SourceAnnotation
+                      provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `Councillor allowance: ${cllr.name} travel`,
+                        value: formatCurrency(cllr.travel, { decimals: 0 }),
+                      }}
+                    >{formatCurrency(cllr.travel, { decimals: 0 })}</SourceAnnotation></> : ''}
                   </p>
                 </div>
                 <span className="type-body-sm font-semibold tabular-nums shrink-0">
-                  <SourceAnnotation provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}>{formatCurrency(cllr.total, { decimals: 0 })}</SourceAnnotation>
+                  <SourceAnnotation
+                    provenance={getProvenance('detailed.councillor_allowances_detail', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `Councillor allowance: ${cllr.name} total`,
+                      value: formatCurrency(cllr.total, { decimals: 0 }),
+                    }}
+                  >{formatCurrency(cllr.total, { decimals: 0 })}</SourceAnnotation>
                 </span>
               </div>
             ))}
@@ -107,7 +149,14 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
           <div className={detailed?.councillor_allowances_detail?.length ? "mt-6 pt-5 border-t border-border/50" : ""}>
             <p className="type-body-sm font-semibold mb-1">Staff earning over £50,000</p>
             <p className="type-body-sm text-muted-foreground mb-4">
-              <SourceAnnotation provenance={getProvenance('detailed.salary_bands', selectedCouncil)}>{totalStaff.toLocaleString('en-GB')}</SourceAnnotation> staff in salary bands above £50k
+              <SourceAnnotation
+                provenance={getProvenance('detailed.salary_bands', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: 'Total staff over £50,000',
+                  value: totalStaff.toLocaleString('en-GB'),
+                }}
+              >{totalStaff.toLocaleString('en-GB')}</SourceAnnotation> staff in salary bands above £50k
             </p>
             <div className="space-y-2.5">
               {detailed.salary_bands!.map((band, idx) => (
@@ -115,7 +164,14 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                   <div className="flex items-baseline justify-between mb-1">
                     <span className="type-body-sm text-muted-foreground">{band.band}</span>
                     <span className="type-body-sm font-medium tabular-nums">
-                      <SourceAnnotation provenance={getProvenance('detailed.salary_bands', selectedCouncil)}>{band.count}</SourceAnnotation>
+                      <SourceAnnotation
+                        provenance={getProvenance('detailed.salary_bands', selectedCouncil)}
+                        reportContext={{
+                          council: selectedCouncil.name,
+                          field: `Salary band ${band.band} staff count`,
+                          value: String(band.count),
+                        }}
+                      >{band.count}</SourceAnnotation>
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-muted overflow-hidden">

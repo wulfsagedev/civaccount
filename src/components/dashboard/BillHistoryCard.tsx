@@ -108,7 +108,14 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
                 {item.year.split('-')[0]}
               </p>
               <p className={`type-caption tabular-nums ${index === data.length - 1 ? 'font-semibold' : 'text-muted-foreground'}`}>
-                <SourceAnnotation provenance={getProvenance(item.fieldPath, selectedCouncil)}>
+                <SourceAnnotation
+                  provenance={getProvenance(item.fieldPath, selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: `Council tax ${item.year}`,
+                    value: formatCurrency(item.amount, { decimals: 0 }),
+                  }}
+                >
                   {formatCurrency(item.amount, { decimals: 0 })}
                 </SourceAnnotation>
               </p>
@@ -122,7 +129,14 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
         <div className="flex items-center justify-between">
           <span className="type-caption text-muted-foreground">Change over 5 years</span>
           <span className={`type-body-sm font-semibold tabular-nums ${fiveYearChange > 0 ? 'text-negative' : 'text-positive'}`}>
-            <SourceAnnotation provenance={getProvenance('bill_history', selectedCouncil)}>
+            <SourceAnnotation
+              provenance={getProvenance('bill_history', selectedCouncil)}
+              reportContext={{
+                council: selectedCouncil.name,
+                field: 'Council tax 5-year change',
+                value: `${fiveYearChange > 0 ? '+' : ''}${formatCurrency(fiveYearChange, { decimals: 2 })} (${fiveYearPercent > 0 ? '+' : ''}${fiveYearPercent.toFixed(1)}%)`,
+              }}
+            >
               {fiveYearChange > 0 ? '+' : ''}{formatCurrency(fiveYearChange, { decimals: 2 })} ({fiveYearPercent > 0 ? '+' : ''}{fiveYearPercent.toFixed(1)}%)
             </SourceAnnotation>
           </span>

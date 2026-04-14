@@ -146,7 +146,14 @@ const SpendingCard = ({
                       <span className="type-body font-semibold">{category.name}</span>
                       <span className="type-body font-semibold tabular-nums">
                         {category.yourShare ? (
-                          <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{formatCurrency(category.yourShare, { decimals: 0 })}</SourceAnnotation>
+                          <SourceAnnotation
+                            provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
+                            reportContext={{
+                              council: selectedCouncil.name,
+                              field: `${category.name} budget (your share)`,
+                              value: formatCurrency(category.yourShare, { decimals: 0 }),
+                            }}
+                          >{formatCurrency(category.yourShare, { decimals: 0 })}</SourceAnnotation>
                         ) : ''}
                       </span>
                     </div>
@@ -155,7 +162,14 @@ const SpendingCard = ({
                         {details?.description || ''}
                       </p>
                       <span className="type-caption text-muted-foreground tabular-nums shrink-0">
-                        <SourceAnnotation provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}>{category.percentage.toFixed(0)}%</SourceAnnotation>
+                        <SourceAnnotation
+                          provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: `${category.name} budget share (%)`,
+                            value: `${category.percentage.toFixed(0)}%`,
+                          }}
+                        >{category.percentage.toFixed(0)}%</SourceAnnotation>
                       </span>
                     </div>
                     <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -193,8 +207,22 @@ const SpendingCard = ({
                           <span className="type-body-sm font-semibold tabular-nums shrink-0">
                             {!service.amount ? '—'
                               : service.amount < 0
-                              ? <span className="text-positive" title="This service earns more than it costs"><SourceAnnotation provenance={getProvenance('detailed.service_spending', selectedCouncil)}>{formatBudget(Math.abs(service.amount) / 1000)}</SourceAnnotation> income</span>
-                              : <SourceAnnotation provenance={getProvenance('detailed.service_spending', selectedCouncil)}>{formatBudget(service.amount / 1000)}</SourceAnnotation>
+                              ? <span className="text-positive" title="This service earns more than it costs"><SourceAnnotation
+                                  provenance={getProvenance('detailed.service_spending', selectedCouncil)}
+                                  reportContext={{
+                                    council: selectedCouncil.name,
+                                    field: `Service income: ${service.name}`,
+                                    value: formatBudget(Math.abs(service.amount) / 1000),
+                                  }}
+                                >{formatBudget(Math.abs(service.amount) / 1000)}</SourceAnnotation> income</span>
+                              : <SourceAnnotation
+                                  provenance={getProvenance('detailed.service_spending', selectedCouncil)}
+                                  reportContext={{
+                                    council: selectedCouncil.name,
+                                    field: `Service spending: ${service.name}`,
+                                    value: formatBudget(service.amount / 1000),
+                                  }}
+                                >{formatBudget(service.amount / 1000)}</SourceAnnotation>
                             }
                           </span>
                         </div>
@@ -213,7 +241,14 @@ const SpendingCard = ({
                                 {contract.description}
                               </p>
                               <p className="type-body-sm text-muted-foreground">
-                                {contract.annual_value && <><SourceAnnotation provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}>{formatBudget(contract.annual_value / 1000)}</SourceAnnotation>/year</>}
+                                {contract.annual_value && <><SourceAnnotation
+                                  provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}
+                                  reportContext={{
+                                    council: selectedCouncil.name,
+                                    field: `Contract annual value: ${contract.supplier}`,
+                                    value: formatBudget(contract.annual_value / 1000),
+                                  }}
+                                >{formatBudget(contract.annual_value / 1000)}</SourceAnnotation>/year</>}
                                 {contract.annual_value && contract.contract_period && ' · '}
                                 {contract.contract_period && contract.contract_period}
                               </p>
@@ -277,11 +312,25 @@ const SpendingCard = ({
             <div className="mt-5 p-3 rounded-lg bg-muted/30 space-y-2">
               <p className="type-body-sm text-muted-foreground">
                 <span className="font-medium text-foreground">Total budget:</span>{' '}
-                <SourceAnnotation provenance={getProvenance('budget.total_service', selectedCouncil)}>
+                <SourceAnnotation
+                  provenance={getProvenance('budget.total_service', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Total annual budget',
+                    value: formatBudget(totalBudget / 1000),
+                  }}
+                >
                   <span className="font-semibold text-foreground">{formatBudget(totalBudget / 1000)}</span>
                 </SourceAnnotation>/year
                 {population && (
-                  <span className="type-caption"> · Serving <SourceAnnotation provenance={getProvenance('population', selectedCouncil)}>{population.toLocaleString('en-GB')}</SourceAnnotation> residents</span>
+                  <span className="type-caption"> · Serving <SourceAnnotation
+                    provenance={getProvenance('population', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Population',
+                      value: population.toLocaleString('en-GB'),
+                    }}
+                  >{population.toLocaleString('en-GB')}</SourceAnnotation> residents</span>
                 )}
               </p>
               {diff !== null && (
@@ -341,7 +390,14 @@ const SpendingCard = ({
             >
               <span className="type-body-sm font-medium">{cat.name}</span>
               <span className="type-caption text-muted-foreground">
-                <SourceAnnotation provenance={getProvenance(`budget.${cat.key}`, selectedCouncil)}>{formatBudget(cat.amount / 1000)}</SourceAnnotation>
+                <SourceAnnotation
+                  provenance={getProvenance(`budget.${cat.key}`, selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: `${cat.name} budget`,
+                    value: formatBudget(cat.amount / 1000),
+                  }}
+                >{formatBudget(cat.amount / 1000)}</SourceAnnotation>
               </span>
             </Link>
           ))}
