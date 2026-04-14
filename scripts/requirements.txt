@@ -1,0 +1,6 @@
+# Python dependencies for CivAccount data enrichment and parsing scripts
+# Install: pip install -r scripts/requirements.txt
+
+odfpy>=1.4.1       # Parse ODS files (DEFRA waste data, road condition, capital expenditure)
+openpyxl>=3.1.0    # Parse XLSX files (ONS population, council tax, LGBCE electoral data)
+requests>=2.31.0   # HTTP requests for council website scraping (cabinet, URLs)
