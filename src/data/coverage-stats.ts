@@ -32,7 +32,7 @@ export const VALIDATION_SUMMARY = {
   warnings: 558,
   info: 15,
   regressions: 0,
-  totalChecks: 32872,
+  totalChecks: 34774,
   totalCouncils: 317,
   parityAverage: 98.4,
   timestamp: '2026-04-14',
