@@ -114,17 +114,31 @@ export function validate(councils, population, report) {
     }
 
     // -- Council tax requirement vs population * Band D (rough sanity) --
+    // IMPORTANT: council_tax_requirement is what THIS council collects (its own levy),
+    // NOT the total area CT which also includes county + police + fire. After the
+    // Phase 1 migration, `band_d_2025` is the AREA total — so we must find this
+    // council's OWN share from the precepts array for the formula to make sense.
     report.tick();
     if (d.council_tax_requirement != null && typeof d.council_tax_requirement === 'number'
-        && pop != null && c.council_tax?.band_d_2025 != null) {
-      // Rough estimate: CTR ~ population * 0.45 * Band D (assuming ~45% are Band D equivalent)
-      const roughEstimate = pop * 0.45 * c.council_tax.band_d_2025;
-      const ratio = d.council_tax_requirement / roughEstimate;
-      if (ratio < 0.2 || ratio > 5) {
-        report.finding(c, 'cross-field', 'council_tax_requirement_implausible', 'warning',
-          `council_tax_requirement (${d.council_tax_requirement}) vs rough estimate (${roughEstimate.toFixed(0)}) ratio is ${ratio.toFixed(2)}`,
-          'detailed.council_tax_requirement', d.council_tax_requirement,
-          `Roughly ${roughEstimate.toFixed(0)} (pop * 0.45 * Band D)`);
+        && pop != null) {
+      // Find this council's own precept share (match by name prefix)
+      const councilNameLower = c.name.toLowerCase();
+      const ownPrecept = d.precepts?.find(p => {
+        const auth = p.authority.toLowerCase();
+        return auth.includes(councilNameLower) ||
+               councilNameLower.split(' ').some(word => word.length > 3 && auth.includes(word));
+      });
+      const ownBandD = ownPrecept?.band_d ?? c.council_tax?.band_d_2025;
+      if (ownBandD != null && ownBandD > 0) {
+        // Rough estimate: CTR ~ population * 0.45 * own-levy Band D
+        const roughEstimate = pop * 0.45 * ownBandD;
+        const ratio = d.council_tax_requirement / roughEstimate;
+        if (ratio < 0.2 || ratio > 5) {
+          report.finding(c, 'cross-field', 'council_tax_requirement_implausible', 'warning',
+            `council_tax_requirement (${d.council_tax_requirement}) vs rough estimate (${roughEstimate.toFixed(0)}) ratio is ${ratio.toFixed(2)}`,
+            'detailed.council_tax_requirement', d.council_tax_requirement,
+            `Roughly ${roughEstimate.toFixed(0)} (pop * 0.45 * own Band D)`);
+        }
       }
     }
 

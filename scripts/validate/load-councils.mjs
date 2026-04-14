@@ -204,6 +204,29 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
     d._counts.documents = docTypeMatches ? docTypeMatches.length : 0;
   }
 
+  // Extract precepts as a real array so cross-field validators can use them.
+  // Each entry: { authority: string, band_d: number }
+  if (d._has.precepts) {
+    const pStartIdx = section.indexOf('precepts: [');
+    if (pStartIdx !== -1) {
+      let depth = 0;
+      let pEndIdx = section.length;
+      for (let si = pStartIdx + 'precepts: '.length; si < section.length; si++) {
+        if (section[si] === '[') depth++;
+        else if (section[si] === ']') { depth--; if (depth === 0) { pEndIdx = si + 1; break; } }
+      }
+      const pSection = section.substring(pStartIdx, pEndIdx);
+      const precepts = [];
+      // Match: { authority: "...", band_d: NUMBER }  (order-flexible)
+      const entryRe = /\{\s*authority:\s*"([^"]+)"\s*,\s*band_d:\s*([\d.]+)/g;
+      let pm;
+      while ((pm = entryRe.exec(pSection)) !== null) {
+        precepts.push({ authority: pm[1], band_d: parseFloat(pm[2]) });
+      }
+      d.precepts = precepts;
+    }
+  }
+
   // Extract all supplier names for duplicate checking
   if (d._has.top_suppliers) {
     const supplierNames = [];
