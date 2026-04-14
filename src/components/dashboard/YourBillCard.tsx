@@ -5,7 +5,14 @@ import {
   TrendingUp,
   TrendingDown,
   ChevronRight,
+  ExternalLink,
+  Info,
 } from "lucide-react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover';
 import { formatCurrency, getCouncilByName, getCouncilSlug, councils, type Council } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
 import SourceAnnotation from '@/components/ui/source-annotation';
@@ -54,9 +61,35 @@ const YourBillCard = ({
     <section id="your-bill" className="card-elevated p-5 sm:p-6">
       {/* Primary amount - This council's share */}
       <div className="mb-6">
-        <p className="type-caption text-muted-foreground mb-1">
-          You pay this council
-        </p>
+        <div className="flex items-center gap-1.5 mb-1">
+          <p className="type-caption text-muted-foreground">
+            Typical Band D share for this council
+          </p>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                aria-label="What is Band D?"
+              >
+                <Info className="h-3 w-3" aria-hidden="true" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 p-3" side="top" align="start" sideOffset={4}>
+              <div className="space-y-2">
+                <p className="type-caption font-semibold text-foreground">What is Band D?</p>
+                <p className="type-caption text-muted-foreground leading-relaxed">
+                  Band D is the reference property band used to report council tax.
+                  Your actual bill depends on your property's band, parish, and any discounts (single person, students, etc.).
+                </p>
+                <p className="type-caption text-muted-foreground leading-relaxed">
+                  <span className="font-medium text-foreground">Bands at a glance:</span>{' '}
+                  A = ⅔ Band D · B = 7⁄9 · C = 8⁄9 · E = 11⁄9 · H = 2×
+                </p>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
         <div className="flex items-baseline gap-2">
           <SourceAnnotation
             provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
@@ -98,7 +131,8 @@ const YourBillCard = ({
       {/* Full bill breakdown with visual bar */}
       {detailed?.precepts && detailed.precepts.length > 0 && detailed.total_band_d && (
         <div className="pt-5 border-t border-border/50">
-          <p className="type-body-sm font-semibold mb-4">Your total council tax bill</p>
+          <p className="type-body-sm font-semibold mb-1">Typical Band D bill</p>
+          <p className="type-caption text-muted-foreground mb-4">Average across {selectedCouncil.name}. Actual bills vary by band, parish and discounts.</p>
 
           {/* Visual stacked bar with legend */}
           <div className="mb-4">
@@ -186,7 +220,7 @@ const YourBillCard = ({
           {/* Total */}
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
             <div>
-              <span className="type-body font-semibold">Total annual bill</span>
+              <span className="type-body font-semibold">Typical Band D total</span>
               {totalDailyCost && (
                 <p className="type-caption text-muted-foreground">{formatCurrency(totalDailyCost, { decimals: 2 })} per day</p>
               )}
@@ -195,6 +229,25 @@ const YourBillCard = ({
               {formatCurrency(detailed.total_band_d, { decimals: 2 })}
             </span>
           </div>
+
+          {/* Check your exact bill CTA — links out to council's own calculator */}
+          {detailed?.council_tax_url && (
+            <a
+              href={detailed.council_tax_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted transition-colors group cursor-pointer"
+            >
+              <div className="leading-tight">
+                <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
+                  Check your exact bill on {selectedCouncil.name}
+                  <span className="sr-only"> (opens in new tab)</span>
+                </p>
+                <p className="type-caption text-muted-foreground">Band, parish, and discounts make your bill different from the average</p>
+              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
+            </a>
+          )}
         </div>
       )}
 
