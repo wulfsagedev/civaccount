@@ -16,7 +16,7 @@ export const COVERAGE_STATS: Record<string, { label: string; present: number; to
   'salary_bands': { label: 'Salary bands', present: 317, total: 317 },
   'staff_fte': { label: 'Staff headcount (FTE)', present: 317, total: 317 },
   'top_suppliers': { label: 'Top suppliers', present: 317, total: 317 },
-  'grant_payments': { label: 'Grant payments', present: 154, total: 317 },
+  'grant_payments': { label: 'Grant payments', present: 163, total: 317 },
   'service_spending': { label: 'Service spending detail', present: 317, total: 317 },
   'performance_kpis': { label: 'Performance KPIs', present: 317, total: 317 },
   'waste_destinations': { label: 'Waste destinations', present: 153, total: 153 },
@@ -29,11 +29,11 @@ export const COVERAGE_STATS: Record<string, { label: string; present: number; to
 
 export const VALIDATION_SUMMARY = {
   errors: 0,
-  warnings: 558,
+  warnings: 40,
   info: 15,
   regressions: 0,
   totalChecks: 34774,
   totalCouncils: 317,
-  parityAverage: 98.4,
+  parityAverage: 98.5,
   timestamp: '2026-04-14',
 };
