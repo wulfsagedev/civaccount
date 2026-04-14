@@ -7,7 +7,7 @@ import {
   ChevronRight,
   ExternalLink,
 } from "lucide-react";
-import { formatCurrency, formatBudget, getCouncilSlug, getCouncilPopulation, type Council, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilSlug, getCouncilPopulation, toSentenceTypeName, type Council, type ServiceSpendingDetail } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
@@ -335,7 +335,7 @@ const SpendingCard = ({
               </p>
               {diff !== null && (
                 <p className="type-caption text-muted-foreground">
-                  Compared to average {selectedCouncil.type_name?.toLowerCase()}:{' '}
+                  Compared to average {toSentenceTypeName(selectedCouncil.type_name)}:{' '}
                   <span className={`font-semibold ${diff > 0 ? 'text-negative' : diff < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
                     <SourceAnnotation provenance={getProvenance('per_capita_spend', selectedCouncil)}>{diff > 0 ? '+' : ''}{formatCurrency(diff, { decimals: 0 })}</SourceAnnotation>
                   </span>

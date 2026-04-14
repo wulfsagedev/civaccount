@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronUp } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, type ServiceSpendingDetail } from '@/data/councils';
 import ContributeBanner from '@/components/ContributeBanner';
 import YourBillCard from '@/components/dashboard/YourBillCard';
 import TaxBandsCard from '@/components/dashboard/TaxBandsCard';
@@ -113,16 +113,16 @@ const UnifiedDashboard = () => {
     }> = [];
 
     const serviceMap = [
-      { key: 'environmental', name: 'Environment & Streets' },
+      { key: 'environmental', name: 'Bins, streets & environment' },
       { key: 'planning', name: 'Planning' },
-      { key: 'central_services', name: 'Council Services' },
-      { key: 'cultural', name: 'Leisure & Culture' },
+      { key: 'central_services', name: 'Running the council' },
+      { key: 'cultural', name: 'Parks, libraries & leisure' },
       { key: 'housing', name: 'Housing' },
-      { key: 'adult_social_care', name: 'Adult Social Care' },
-      { key: 'childrens_social_care', name: "Children's Services" },
+      { key: 'adult_social_care', name: 'Adult social care' },
+      { key: 'childrens_social_care', name: "Children's services" },
       { key: 'education', name: 'Education' },
-      { key: 'transport', name: 'Roads & Transport' },
-      { key: 'public_health', name: 'Public Health' },
+      { key: 'transport', name: 'Roads & transport' },
+      { key: 'public_health', name: 'Public health' },
     ];
 
     for (const service of serviceMap) {
@@ -288,11 +288,11 @@ const UnifiedDashboard = () => {
                 <p className="type-body-sm font-semibold mb-1">Is this council expensive compared to others?</p>
                 <p className="type-caption text-muted-foreground">
                   {vsAverage > 0 ? (
-                    <>This council charges <span className="font-semibold text-negative">{formatCurrency(vsAverage, { decimals: 2 })} more</span> than the average {selectedCouncil.type_name.toLowerCase()}</>
+                    <>This council charges <span className="font-semibold text-negative">{formatCurrency(vsAverage, { decimals: 2 })} more</span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
                   ) : vsAverage < 0 ? (
-                    <>This council charges <span className="font-semibold text-positive">{formatCurrency(Math.abs(vsAverage), { decimals: 2 })} less</span> than the average {selectedCouncil.type_name.toLowerCase()}</>
+                    <>This council charges <span className="font-semibold text-positive">{formatCurrency(Math.abs(vsAverage), { decimals: 2 })} less</span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
                   ) : (
-                    <>This council charges about the same as the average {selectedCouncil.type_name.toLowerCase()}</>
+                    <>This council charges about the same as the average {toSentenceTypeName(selectedCouncil.type_name)}</>
                   )}
                 </p>
               </div>

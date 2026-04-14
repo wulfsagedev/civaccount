@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName } from '@/data/councils';
 import { buildFAQPageSchema } from '@/lib/structured-data';
 
 
@@ -48,16 +48,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 // Service category mapping (matches UnifiedDashboard)
 const SERVICE_MAP = [
-  { key: 'environmental', name: 'Environment & Streets' },
+  { key: 'environmental', name: 'Bins, streets & environment' },
   { key: 'planning', name: 'Planning' },
-  { key: 'central_services', name: 'Council Services' },
-  { key: 'cultural', name: 'Leisure & Culture' },
+  { key: 'central_services', name: 'Running the council' },
+  { key: 'cultural', name: 'Parks, libraries & leisure' },
   { key: 'housing', name: 'Housing' },
-  { key: 'adult_social_care', name: 'Adult Social Care' },
-  { key: 'childrens_social_care', name: "Children's Services" },
+  { key: 'adult_social_care', name: 'Adult social care' },
+  { key: 'childrens_social_care', name: "Children's services" },
   { key: 'education', name: 'Education' },
-  { key: 'transport', name: 'Roads & Transport' },
-  { key: 'public_health', name: 'Public Health' },
+  { key: 'transport', name: 'Roads & transport' },
+  { key: 'public_health', name: 'Public health' },
 ];
 
 export default async function CouncilLayout({ params, children }: Props) {
@@ -145,8 +145,10 @@ export default async function CouncilLayout({ params, children }: Props) {
   const totalBudget = budget?.total_service ? formatBudget(budget.total_service) : null;
   const biggestCategory = spendingCategories.length > 0 ? spendingCategories[0] : null;
 
+  // Use sentence-form that preserves proper nouns ("London borough", not "london borough").
+  const typeNameSentence = toSentenceTypeName(typeName);
   const narrativeParts: string[] = [];
-  narrativeParts.push(`${displayName} is a ${typeName.toLowerCase()}${population ? ` serving ${population.toLocaleString('en-GB')} residents` : ''}.`);
+  narrativeParts.push(`${displayName} is a ${typeNameSentence}${population ? ` serving ${population.toLocaleString('en-GB')} residents` : ''}.`);
 
   if (bandD) {
     let taxSentence = `In 2025-26, Band D council tax is ${formatCurrency(bandD, { decimals: 2 })}`;

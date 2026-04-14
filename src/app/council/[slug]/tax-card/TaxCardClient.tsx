@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, calculateBands, getCouncilSlug } from '@/data/councils';
+import { formatCurrency, calculateBands, getCouncilSlug, toSentenceTypeName } from '@/data/councils';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { getTypeAverages } from '@/lib/council-averages';
 import ShareButton from '@/components/proposals/ShareButton';
@@ -279,7 +279,7 @@ export default function TaxCardClient() {
           <div className="space-y-3">
             {/* Compared to average */}
             <p className="type-body-sm text-muted-foreground">
-              Compared to the average {council.type_name?.toLowerCase()},{' '}
+              Compared to the average {toSentenceTypeName(council.type_name)},{' '}
               <span className={`font-semibold ${vAvgWeekly > 0 ? 'text-negative' : vAvgWeekly < 0 ? 'text-positive' : ''}`}>
                 you pay {formatCurrency(Math.abs(vAvgWeekly), { decimals: 2 })} {vAvgWeekly > 0 ? 'more' : 'less'} per week
               </span>

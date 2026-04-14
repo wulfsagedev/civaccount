@@ -10,7 +10,7 @@ import DataSourcesFooter from '@/components/DataSourcesFooter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
-import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, formatCurrency, formatBudget } from '@/data/councils';
+import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, formatCurrency, formatBudget, toSentenceTypeName } from '@/data/councils';
 
 export default function CouncilDashboard() {
   const { selectedCouncil, isLoading } = useCouncil();
@@ -46,12 +46,12 @@ export default function CouncilDashboard() {
 
   const taxChange = bandD && bandD2024 ? ((bandD - bandD2024) / bandD2024) * 100 : null;
 
-  // Find biggest spending category
+  // Find biggest spending category (lowercase used in narrative prose)
   const serviceMap = [
-    { key: 'environmental', name: 'environment & streets' },
+    { key: 'environmental', name: 'bins, streets & environment' },
     { key: 'planning', name: 'planning' },
-    { key: 'central_services', name: 'council services' },
-    { key: 'cultural', name: 'leisure & culture' },
+    { key: 'central_services', name: 'running the council' },
+    { key: 'cultural', name: 'parks, libraries & leisure' },
     { key: 'housing', name: 'housing' },
     { key: 'adult_social_care', name: 'adult social care' },
     { key: 'childrens_social_care', name: "children's services" },
@@ -73,9 +73,11 @@ export default function CouncilDashboard() {
     }
   }
 
-  // Narrative summary — visible for users and crawlers
+  // Narrative summary — visible for users and crawlers.
+  // Use sentence-form that preserves proper nouns ("London borough", not "london borough").
+  const typeNameSentence = toSentenceTypeName(typeName);
   const narrativeParts: string[] = [];
-  narrativeParts.push(`${displayName} is a ${typeName.toLowerCase()}${population ? ` serving ${population.toLocaleString('en-GB')} residents` : ''}.`);
+  narrativeParts.push(`${displayName} is a ${typeNameSentence}${population ? ` serving ${population.toLocaleString('en-GB')} residents` : ''}.`);
   if (bandD) {
     let taxSentence = `In 2025-26, Band D council tax is ${formatCurrency(bandD, { decimals: 2 })}`;
     if (taxChange !== null) {

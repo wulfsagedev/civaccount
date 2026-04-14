@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Council, councils, getCouncilDisplayName, getCouncilSlug, formatCurrency } from '@/data/councils';
+import { Council, councils, getCouncilDisplayName, getCouncilSlug, formatCurrency, toSentenceTypeName } from '@/data/councils';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 
@@ -34,7 +34,7 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
     <section className="card-elevated p-5 sm:p-6">
       <h2 className="type-title-2 mb-1">Similar councils</h2>
       <p className="type-body-sm text-muted-foreground mb-5">
-        Other {council.type_name.toLowerCase()}s with similar council tax rates
+        Other {toSentenceTypeName(council.type_name)}s with similar council tax rates
       </p>
 
       <div className="space-y-3">

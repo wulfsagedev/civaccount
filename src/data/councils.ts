@@ -394,6 +394,24 @@ export const COUNCIL_TYPE_NAMES: Record<string, string> = {
   'ILB': 'Inner London Borough',
 };
 
+// Sentence-form of the type name (for use mid-sentence, e.g. "X is a county council").
+// Generic nouns lowercase; proper nouns (London) stay capitalised.
+export const COUNCIL_TYPE_NAMES_SENTENCE: Record<string, string> = {
+  'County Council': 'county council',
+  'District Council': 'district council',
+  'Unitary Authority': 'unitary authority',
+  'Metropolitan District': 'metropolitan district',
+  'London Borough': 'London borough',
+  'Outer London Borough': 'Outer London borough',
+  'Inner London Borough': 'Inner London borough',
+};
+
+/** Return the sentence-form of a council type name, safe for mid-sentence prose. */
+export function toSentenceTypeName(typeName: string | undefined): string {
+  if (!typeName) return 'council';
+  return COUNCIL_TYPE_NAMES_SENTENCE[typeName] || typeName.toLowerCase();
+}
+
 // Calculate council tax bands from Band D
 export function calculateBands(bandD: number): Record<string, number> {
   return {

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { getPopularComparisons } from '@/lib/comparisons';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
@@ -263,7 +263,7 @@ export default async function MatchupPage({ params }: Props) {
         {councilA.type !== councilB.type && (
           <div className="p-3 rounded-lg bg-muted/30 mb-5">
             <p className="type-caption text-muted-foreground">
-              {nameA} is a {councilA.type_name.toLowerCase()} and {nameB} is a {councilB.type_name.toLowerCase()}.
+              {nameA} is a {toSentenceTypeName(councilA.type_name)} and {nameB} is a {toSentenceTypeName(councilB.type_name)}.
               Different council types provide different services, so direct comparisons may not tell the full story.
             </p>
           </div>

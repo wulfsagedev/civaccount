@@ -14,6 +14,7 @@ import { getRecyclingContext, getHomesBuiltContext, getOfstedContext, getRoadCon
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import { DATA_YEARS } from '@/lib/data-years';
 
 interface ServiceOutcomesCardProps {
   selectedCouncil: Council;
@@ -54,9 +55,9 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                   >
                     <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.waste.recycling_rate_percent.toFixed(1)}%</p>
                   </SourceAnnotation>
-                  {detailed.service_outcomes.waste.year && (
-                    <p className="type-caption text-muted-foreground/60">{detailed.service_outcomes.waste.year}</p>
-                  )}
+                  <p className="type-caption text-muted-foreground/60">
+                    {detailed.service_outcomes.waste.year || DATA_YEARS.waste} data
+                  </p>
                   <p className="type-caption text-muted-foreground/60 mt-1">
                     Average for {ctx.compareLabel}: {ctx.compareAverage}%
                   </p>
@@ -108,7 +109,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                   >
                     <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads!.condition_good_percent}%</p>
                   </SourceAnnotation>
-                  <p className="type-caption text-muted-foreground/60">in good or acceptable condition</p>
+                  <p className="type-caption text-muted-foreground/60">in good or acceptable condition <span className="text-muted-foreground/50">({DATA_YEARS.road_condition} data)</span></p>
                   <p className="type-caption text-muted-foreground/60 mt-1">
                     Average for {roadCtx.compareLabel}: {roadCtx.compareAverage}%
                   </p>
@@ -189,6 +190,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                       </div>
                       <p className="type-caption text-muted-foreground/60 mt-1.5">
                         {ofstedCtx.sameRatingCount} of {ofstedCtx.totalAssessed} councils rated {detailed.service_outcomes.children_services.ofsted_rating}
+                        <span className="text-muted-foreground/50"> · {DATA_YEARS.ofsted} data</span>
                       </p>
                     </div>
                   );

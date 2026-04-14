@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, formatCurrency, formatBudget, getAverageBandDByType } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, formatCurrency, formatBudget, getAverageBandDByType, toSentenceTypeName } from '@/data/councils';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -155,7 +155,7 @@ export default async function EmbedCouncilPage({ params }: Props) {
 
           {vsAvg !== null && (
             <div className="row">
-              <span className="label">vs average {council.type_name.toLowerCase()}</span>
+              <span className="label">vs average {toSentenceTypeName(council.type_name)}</span>
               <span className="value" style={{ color: vsAvg > 0 ? '#f59e0b' : '#10b981' }}>
                 {vsAvg > 0 ? '+' : ''}{formatCurrency(vsAvg, { decimals: 2 })}
               </span>

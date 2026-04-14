@@ -5,7 +5,7 @@ import {
   ChevronDown,
   ExternalLink,
 } from "lucide-react";
-import { formatCurrency, formatBudget, type Council } from '@/data/councils';
+import { formatCurrency, formatBudget, toSentenceTypeName, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
@@ -66,7 +66,7 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                         field: 'Councillor basic allowance',
                         value: formatCurrency(basic, { decimals: 0 }),
                       }}
-                    >{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation> · Avg for {selectedCouncil.type_name?.toLowerCase()}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgAllowance), { decimals: 0 })}</SourceAnnotation>
+                    >{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation> · Avg for {toSentenceTypeName(selectedCouncil.type_name)}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgAllowance), { decimals: 0 })}</SourceAnnotation>
                   </p>
                 )}
               </div>

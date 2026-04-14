@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui/popover';
-import { formatCurrency, getCouncilByName, getCouncilSlug, councils, type Council } from '@/data/councils';
+import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceTypeName, type Council } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
@@ -106,9 +106,11 @@ const YourBillCard = ({
           <span className="type-caption text-muted-foreground">/year</span>
         </div>
 
-        {/* Year-on-year change */}
+        {/* Year-on-year change — show cash-terms change with inflation context so
+            users can distinguish council decisions from general price rises.
+            UK CPI for Apr 2024 → Mar 2025 averaged ~2.8% (ONS). */}
         {taxChange !== null && (
-          <div className="mt-2">
+          <div className="mt-2 space-y-0.5">
             <div className="flex items-center gap-1.5">
               {taxChange > 0 ? (
                 <TrendingUp className="h-3.5 w-3.5 text-negative" aria-hidden="true" />
@@ -124,9 +126,51 @@ const YourBillCard = ({
                 )}
               </span>
             </div>
+            {taxChange > 0 && (
+              <p className="type-caption text-muted-foreground pl-5">
+                UK inflation was ~2.8% over the same period (CPI), so the bill rose about {Math.max(0, taxChange - 2.8).toFixed(1)}% in real terms.
+              </p>
+            )}
           </div>
         )}
       </div>
+
+      {/* Two-tier explainer — district residents also pay county council tax,
+          and vice versa. Without this, users see their small council budget
+          next to a large bill total and assume the mismatch is an error. */}
+      {(() => {
+        if (!detailed?.precepts || detailed.precepts.length === 0 || !thisCouncilBandD || !detailed.total_band_d) return null;
+        // Find the "other tier" precept (county for districts, or the district share for counties)
+        const countyPrecept = selectedCouncil.type === 'SD'
+          ? detailed.precepts.find(p => p.authority.toLowerCase().includes('county'))
+          : null;
+        // For counties, don't show this callout (districts vary — we can't pick one)
+        if (!countyPrecept) return null;
+        const linked = findLinkedCouncil(countyPrecept.authority);
+        const remainder = detailed.total_band_d - thisCouncilBandD;
+        const countyShareLabel = `£${Math.round(countyPrecept.band_d).toLocaleString('en-GB')}`;
+        const remainderLabel = `£${Math.round(remainder).toLocaleString('en-GB')}`;
+        const content = (
+          <>
+            <p className="type-body-sm">
+              <span className="font-semibold">{selectedCouncil.name} is a district council.</span>{' '}
+              About <span className="font-semibold tabular-nums">£{Math.round(thisCouncilBandD).toLocaleString('en-GB')}</span> of your Band D bill goes to {selectedCouncil.name} for bins, planning and housing. The remaining <span className="font-semibold tabular-nums">{remainderLabel}</span> goes to <span className="font-semibold">{countyPrecept.authority.replace(' Council', '')}</span> ({countyShareLabel}), police and fire — see the breakdown below.
+            </p>
+          </>
+        );
+        return (
+          <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/40">
+            {linked ? (
+              <Link href={`/council/${linked.slug}`} className="group cursor-pointer block hover:opacity-80 transition-opacity">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">{content}</div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" aria-hidden="true" />
+                </div>
+              </Link>
+            ) : content}
+          </div>
+        );
+      })()}
 
       {/* Full bill breakdown with visual bar */}
       {detailed?.precepts && detailed.precepts.length > 0 && detailed.total_band_d && (
@@ -256,7 +300,7 @@ const YourBillCard = ({
         <div className="mt-5 p-3 rounded-lg bg-muted/30">
           <div className="flex items-center justify-between">
             <span className="type-caption text-muted-foreground">
-              Compared to average {selectedCouncil.type_name.toLowerCase()}
+              Compared to average {toSentenceTypeName(selectedCouncil.type_name)}
             </span>
             <SourceAnnotation provenance={getProvenance('vs_average')}>
               <span className={`type-body-sm font-semibold tabular-nums ${vsAverage > 0 ? 'text-negative' : vsAverage < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
