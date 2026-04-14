@@ -28,8 +28,8 @@ export const COVERAGE_STATS: Record<string, { label: string; present: number; to
 };
 
 export const VALIDATION_SUMMARY = {
-  errors: 1,
-  warnings: 557,
+  errors: 0,
+  warnings: 558,
   info: 15,
   regressions: 0,
   totalChecks: 32872,

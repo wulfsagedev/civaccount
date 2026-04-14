@@ -14,7 +14,8 @@
     "checksum:update": "node scripts/validate/update-checksums.mjs",
     "sync:band-d": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
     "generate:coverage": "node scripts/generate-coverage-stats.mjs",
-    "generate:provenance": "node scripts/generate-provenance.mjs"
+    "generate:provenance": "node scripts/generate-provenance.mjs",
+    "audit:data": "node scripts/data-audit-log.mjs"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.8",

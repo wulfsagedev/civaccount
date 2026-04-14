@@ -30,6 +30,33 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
 
+      # ─── Step 0: Auto-sync GOV.UK Band D live table ───
+      # The Band_D ODS at the well-known live-tables URL is the canonical source
+      # of truth for council tax. We fetch it monthly and re-sync any drift.
+      - name: Sync Band D from GOV.UK live tables
+        id: sync_band_d
+        continue-on-error: true
+        run: |
+          set -e
+          SRC_URL="https://assets.publishing.service.gov.uk/media/69c280bb13101e9908704b78/Band_D_2026-27.ods"
+          DEST="src/data/councils/pdfs/gov-uk-bulk-data/Band_D_2026-27.ods"
+          echo "Downloading latest Band D ODS..."
+          curl -sSfL -o "$DEST.new" "$SRC_URL" || { echo "Download failed — keeping existing file"; exit 0; }
+          # Compare hashes to skip needless syncs
+          OLD_HASH=$(shasum -a 256 "$DEST" 2>/dev/null | awk '{print $1}' || echo "")
+          NEW_HASH=$(shasum -a 256 "$DEST.new" | awk '{print $1}')
+          if [ "$OLD_HASH" = "$NEW_HASH" ]; then
+            rm "$DEST.new"
+            echo "Band D ODS unchanged ($NEW_HASH)"
+            echo "synced=false" >> $GITHUB_OUTPUT
+          else
+            mv "$DEST.new" "$DEST"
+            echo "Band D ODS updated (was $OLD_HASH, now $NEW_HASH)"
+            echo "synced=true" >> $GITHUB_OUTPUT
+            # Re-parse + re-sync TS files
+            npm run sync:band-d || echo "sync script failed — will be flagged in validation"
+          fi
+
       # ─── Step 1: Check for stale data sources ───
       - name: Check source staleness
         id: staleness
@@ -95,7 +122,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add src/data/coverage-stats.ts
+          git add src/data/coverage-stats.ts \
+                  src/data/councils/pdfs/gov-uk-bulk-data/Band_D_2026-27.ods \
+                  src/data/councils/pdfs/gov-uk-bulk-data/parsed-area-band-d.csv \
+                  src/data/councils/county-councils.ts \
+                  src/data/councils/metropolitan.ts \
+                  src/data/councils/london-boroughs.ts \
+                  src/data/councils/unitary.ts \
+                  src/data/councils/districts.ts 2>/dev/null || true
           git commit -m "chore: regenerate coverage stats (automated monthly)
 
           Updated by data-freshness.yml workflow.
@@ -111,11 +145,13 @@ jobs:
 
           ### What changed
           - Regenerated `src/data/coverage-stats.ts` from latest validation report
+          - Band D auto-sync: ${{ steps.sync_band_d.outputs.synced == 'true' && 'Updated from GOV.UK live tables' || 'Already current' }}
 
           ### Validation status
           - Checksums: ${{ steps.checksums.outcome }}
           - Validation: ${{ steps.validate.outcome }}
           - Staleness: ${{ steps.staleness.outcome }}
+          - Band D sync: ${{ steps.sync_band_d.outcome }}
 
           ### Review checklist
           - [ ] Coverage numbers look reasonable
