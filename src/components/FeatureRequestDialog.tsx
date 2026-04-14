@@ -7,6 +7,17 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2, CheckCircle, X } from 'lucide-react';
 
+// Detail payload accepted by the open-feedback CustomEvent. All optional —
+// when omitted, the dialog acts as the original generic feedback form.
+export interface FeedbackEventDetail {
+  /** Pre-fill the message body (e.g. for "Report incorrect data") */
+  prefillMessage?: string;
+  /** Override the dialog title */
+  title?: string;
+  /** Override the dialog subtitle */
+  subtitle?: string;
+}
+
 // This component renders only the modal overlay
 // It listens for a custom 'open-feedback' event to open
 export default function FeedbackModal() {
@@ -18,6 +29,8 @@ export default function FeedbackModal() {
     email: '',
     message: '',
   });
+  const [dialogTitle, setDialogTitle] = useState('Send Feedback');
+  const [dialogSubtitle, setDialogSubtitle] = useState('Feature request or bug report');
   const triggerRef = useRef<Element | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -26,16 +39,25 @@ export default function FeedbackModal() {
     if (isSuccess) {
       setIsSuccess(false);
     }
+    // Reset to defaults for the next open
+    setDialogTitle('Send Feedback');
+    setDialogSubtitle('Feature request or bug report');
     // Restore focus to the element that triggered the dialog
     if (triggerRef.current && triggerRef.current instanceof HTMLElement) {
       triggerRef.current.focus();
     }
   }, [isSuccess]);
 
-  // Listen for custom event to open the dialog
+  // Listen for custom event to open the dialog (with optional prefill detail)
   useEffect(() => {
-    const handleOpenFeedback = () => {
+    const handleOpenFeedback = (e: Event) => {
       triggerRef.current = document.activeElement;
+      const detail = (e as CustomEvent<FeedbackEventDetail | undefined>).detail;
+      if (detail?.prefillMessage) {
+        setFormData((prev) => ({ ...prev, message: detail.prefillMessage! }));
+      }
+      if (detail?.title) setDialogTitle(detail.title);
+      if (detail?.subtitle) setDialogSubtitle(detail.subtitle);
       setOpen(true);
     };
     document.addEventListener('open-feedback', handleOpenFeedback);
@@ -140,8 +162,8 @@ export default function FeedbackModal() {
               {/* Header */}
               <div className="flex items-center justify-between border-b px-4 py-3">
                 <div>
-                  <h2 id="feedback-title" className="font-semibold text-base">Send Feedback</h2>
-                  <p className="type-body-sm text-muted-foreground">Feature request or bug report</p>
+                  <h2 id="feedback-title" className="font-semibold text-base">{dialogTitle}</h2>
+                  <p className="type-body-sm text-muted-foreground">{dialogSubtitle}</p>
                 </div>
                 <Button
                   variant="ghost"

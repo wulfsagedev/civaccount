@@ -20,7 +20,32 @@ interface SourceAnnotationProps {
   };
 }
 
-const GITHUB_REPO = 'wulfsagedev/civaccount';
+/**
+ * Open the in-app feedback modal with a pre-filled message describing the
+ * data point being reported. Uses the same `open-feedback` CustomEvent that
+ * the header/footer "Feedback" buttons use, so the user stays in-app and
+ * doesn't need a GitHub account.
+ */
+function openReportFeedback(ctx: { council: string; field: string; value: string | number }, prov?: DataProvenance) {
+  const lines = [
+    `Council: ${ctx.council}`,
+    `Field: ${ctx.field}`,
+    `Current value shown: ${ctx.value}`,
+  ];
+  if (prov?.source_title) lines.push(`Listed source: ${prov.source_title}`);
+  if (prov?.source_url) lines.push(`Source URL: ${prov.source_url}`);
+  if (prov?.data_year) lines.push(`Data year: ${prov.data_year}`);
+  lines.push('', "What's the correct value? (please include a link to the source where you saw it)");
+  lines.push('');
+
+  const detail = {
+    title: 'Report incorrect data',
+    subtitle: `${ctx.council} — ${ctx.field}`,
+    prefillMessage: lines.join('\n'),
+  };
+
+  document.dispatchEvent(new CustomEvent('open-feedback', { detail }));
+}
 
 /**
  * Compute staleness from a data_year string.
@@ -58,32 +83,6 @@ function computeStaleness(dataYear: string | undefined): { months: number; isSta
     isStale: monthsElapsed > 18,        // >18 months = stale
     isCritical: monthsElapsed > 30,      // >30 months = critically stale
   };
-}
-
-function buildReportUrl(ctx: { council: string; field: string; value: string | number }, prov?: DataProvenance): string {
-  const title = `Data correction: ${ctx.council} — ${ctx.field}`;
-  const body = `**Council**: ${ctx.council}
-**Field**: ${ctx.field}
-**Current value**: ${ctx.value}
-${prov?.source_title ? `**Listed source**: ${prov.source_title}` : ''}
-${prov?.source_url ? `**Source URL**: ${prov.source_url}` : ''}
-${prov?.data_year ? `**Data year**: ${prov.data_year}` : ''}
-
-**What's wrong?**
-<!-- Describe the issue with this data -->
-
-**Correct value (with source)**
-<!-- Provide the correct value and a link to the source document -->
-
----
-*Reported via CivAccount in-app feedback*`;
-
-  const params = new URLSearchParams({
-    title,
-    body,
-    labels: 'data-correction,user-reported',
-  });
-  return `https://github.com/${GITHUB_REPO}/issues/new?${params.toString()}`;
 }
 
 const LABEL_CONFIG: Record<string, { text: string; className: string }> = {
@@ -126,7 +125,6 @@ export default function SourceAnnotation({
   if (!provenance) return <>{children}</>;
 
   const config = LABEL_CONFIG[provenance.label] || LABEL_CONFIG.published;
-  const reportUrl = reportContext ? buildReportUrl(reportContext, provenance) : null;
   const staleness = computeStaleness(provenance.data_year);
 
   return (
@@ -212,18 +210,19 @@ export default function SourceAnnotation({
             </p>
           )}
 
-          {reportUrl && (
+          {reportContext && (
             <div className="pt-2 mt-1 border-t border-border/50">
-              <a
-                href={reportUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors"
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openReportFeedback(reportContext, provenance);
+                }}
+                className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <Flag className="h-3 w-3 shrink-0" aria-hidden="true" />
                 Report incorrect data
-                <span className="sr-only"> (opens new tab)</span>
-              </a>
+              </button>
             </div>
           )}
         </div>
