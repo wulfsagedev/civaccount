@@ -132,7 +132,10 @@ export default function Page() {
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
             How we got this: total remuneration is salary plus published
             employer pension contribution and benefits. Where a council only
-            publishes base salary, that figure is used.
+            publishes base salary, that figure is used. Isles of Scilly is the
+            only English council without a disclosed figure — given its size
+            ({'<'}2,500 residents, {'<'}100 staff) it cannot materially affect
+            either end of the league.
           </p>
         </section>
       </InsightHero>

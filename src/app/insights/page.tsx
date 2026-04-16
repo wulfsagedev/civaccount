@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Fragment } from 'react';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageShareButton } from '@/components/ui/page-share-button';
 import { InsightCard } from '@/components/insights/InsightCard';
@@ -11,14 +10,20 @@ import {
 } from '@/data/insights';
 import {
   getAverageTaxRise,
+  getBigFiveOutsourcers,
   getBiggestTaxRises,
+  getCapEveryYear,
   getCeoPayStats,
   getClosestToBankruptcy,
   getCouncilsAtOrOverCap,
   getHeadlineExtremes,
+  getHundredKClub,
   getNationalSpendStats,
   getSocialCareSqueeze,
+  getTaxCapBreakers,
+  getThreeYearSqueeze,
   getTopSuppliersNational,
+  getWhereEveryPoundGoes,
 } from '@/lib/insights-stats';
 import { formatCurrency, getCouncilDisplayName } from '@/data/councils';
 import {
@@ -64,10 +69,19 @@ function buildTileStats(): Record<
   const bankruptcy = getClosestToBankruptcy(1);
   const ceo = getCeoPayStats(1);
   const care = getSocialCareSqueeze(1);
+  const pound = getWhereEveryPoundGoes();
+  const bigFive = getBigFiveOutsourcers();
+  const hundredK = getHundredKClub(1);
+  const capBreakers = getTaxCapBreakers(4.99);
+  const threeYear = getThreeYearSqueeze(1);
+  const capEvery = getCapEveryYear(4.99);
 
   const cheapestBandD = lottery.cheapest.council_tax!.band_d_2025;
   const priciestBandD = lottery.mostExpensive.council_tax!.band_d_2025;
   const gap = priciestBandD - cheapestBandD;
+
+  const topService = pound[0];
+  const secondService = pound[1];
 
   return {
     'postcode-lottery': {
@@ -78,6 +92,14 @@ function buildTileStats(): Record<
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
       explainer: `${getCouncilDisplayName(rises[0].council)} raised Band D the most. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
     },
+    'three-year-squeeze': {
+      hero: `+${threeYear.top[0].changePct.toFixed(1)}%`,
+      explainer: `Compound Band D rise over 2 years for ${getCouncilDisplayName(threeYear.top[0].council)} — the national median is +${threeYear.medianPct.toFixed(1)}%. Compounded, not added.`,
+    },
+    'where-every-pound-goes': {
+      hero: `${topService.pence.toFixed(0)}p`,
+      explainer: `Of every £1, this much goes on ${topService.name.toLowerCase()} — the single biggest item. ${secondService.name} takes ${secondService.pence.toFixed(0)}p.`,
+    },
     'social-care-squeeze': {
       hero: `${care.nationalPct.toFixed(0)}p`,
       explainer: `Of every £1 councils spend, this much goes on adult and children's care. ${care.over60pct} councils spend over 60% of their budget on care.`,
@@ -86,13 +108,29 @@ function buildTileStats(): Record<
       hero: formatShort(suppliers.totalAggregateSpend),
       explainer: `Aggregate annual spend with the top 10 private suppliers to English councils — ${suppliers.top[0]?.name} leads the list.`,
     },
+    'big-five-outsourcers': {
+      hero: `${bigFive.sharePct.toFixed(0)}%`,
+      explainer: `Share of top-supplier spend going to Capita, Serco, Veolia, Biffa and Amey combined — about ${formatShort(bigFive.combinedSpend)} disclosed.`,
+    },
     'ceo-pay-league': {
       hero: formatCurrency(ceo.highestPaid.total, { decimals: 0 }),
       explainer: `Highest total remuneration for a council CEO — ${getCouncilDisplayName(ceo.highestPaid.council)}. National median: ${formatCurrency(ceo.median, { decimals: 0 })}.`,
     },
+    'hundred-k-club': {
+      hero: hundredK.totalStaff.toLocaleString('en-GB'),
+      explainer: `Council staff earning £100,000 or more across ${hundredK.councilsWithAny} of ${hundredK.councilsDisclosing} disclosing councils. Median per council: ${hundredK.medianPerCouncil}.`,
+    },
     'closest-to-bankruptcy': {
       hero: formatShort(bankruptcy.top[0]?.gapPounds ?? 0),
       explainer: `Biggest budget gap in pounds — ${getCouncilDisplayName(bankruptcy.top[0].council)}. ${bankruptcy.over10pct} councils have a gap of 10% or more of their net budget.`,
+    },
+    'tax-cap-breakers': {
+      hero: `${capBreakers.atOrOverCap.length}`,
+      explainer: `Councils that raised Band D by 4.99% or more in 2025-26. ${capBreakers.overCap.length} exceeded the cap with special government permission.`,
+    },
+    'cap-every-year': {
+      hero: `${capEvery.bothYearsAtCap.length}`,
+      explainer: `Councils that pushed Band D to 4.99% or above in BOTH 2024-25 and 2025-26 — persistent cap pressure. ${capEvery.bothYearsOverCap.length} strictly exceeded the cap in both years.`,
     },
   };
 }
@@ -172,38 +210,44 @@ export default function InsightsPage() {
           </p>
         </section>
 
-        {/* Section-grouped card grid */}
-        {activeSections.map((sectionKey) => {
-          const section = INSIGHT_SECTIONS[sectionKey];
-          const cards: InsightCardEntry[] = getCardsForSection(sectionKey);
-          if (cards.length === 0) return null;
-          return (
-            <Fragment key={sectionKey}>
-              <div className="flex items-baseline justify-between mb-4 mt-10 first:mt-0">
+        {/* Continuous 2-col card grid with full-width section headers */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {activeSections.flatMap((sectionKey) => {
+            const section = INSIGHT_SECTIONS[sectionKey];
+            const cards: InsightCardEntry[] = getCardsForSection(sectionKey);
+            if (cards.length === 0) return [];
+            return [
+              <div
+                key={`header-${sectionKey}`}
+                className="sm:col-span-2 flex items-baseline justify-between mt-6 first:mt-0"
+              >
                 <h2 className="type-title-2 font-semibold">{section.label}</h2>
                 <p className="type-body-sm text-muted-foreground">
                   {section.description}
                 </p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
-                {cards.map((card) => {
-                  const stats = tileStats[card.slug];
-                  return (
-                    <InsightCard
-                      key={card.slug}
-                      slug={card.slug}
-                      title={card.title}
-                      subtitle={card.subtitle}
-                      hero={stats?.hero ?? '—'}
-                      explainer={stats?.explainer ?? card.metaDescription}
-                      shareText={card.shareText}
-                    />
-                  );
-                })}
-              </div>
-            </Fragment>
-          );
-        })}
+              </div>,
+              ...cards.map((card, i) => {
+                const stats = tileStats[card.slug];
+                // When a section has an odd number of cards, stretch the final
+                // card to span both columns so the row fills — no dangling gap.
+                const isOddTail =
+                  cards.length % 2 === 1 && i === cards.length - 1;
+                return (
+                  <InsightCard
+                    key={card.slug}
+                    slug={card.slug}
+                    title={card.title}
+                    subtitle={card.subtitle}
+                    hero={stats?.hero ?? '—'}
+                    explainer={stats?.explainer ?? card.metaDescription}
+                    shareText={card.shareText}
+                    className={isOddTail ? 'sm:col-span-2' : undefined}
+                  />
+                );
+              }),
+            ];
+          })}
+        </div>
 
         {/* Methodology + sources footer */}
         <section className="card-elevated p-5 sm:p-6 mt-12">

@@ -262,10 +262,13 @@ export function getAverageTaxRise(): number {
 export function getCouncilsAtOrOverCap(capPct = 4.99): number {
   return councils.filter((c) => {
     if (!c.council_tax?.band_d_2025 || !c.council_tax?.band_d_2024) return false;
-    const pct =
+    // Round to 2dp so pound-level rounding can't push a council targeting
+    // exactly 4.99% out of this bucket (matches getTaxCapBreakers).
+    const raw =
       ((c.council_tax.band_d_2025 - c.council_tax.band_d_2024) /
         c.council_tax.band_d_2024) *
       100;
+    const pct = Math.round(raw * 100) / 100;
     return pct >= capPct;
   }).length;
 }
@@ -578,6 +581,333 @@ export function getClosestToBankruptcy(limit = 10): BankruptcyRiskStats {
     councilsWithData: entries.length,
   };
   return { ..._bankruptcyRisk, top: _bankruptcyRisk.top.slice(0, limit) };
+}
+
+// ── Big 5 outsourcers (card 3.2) ──────────────────────────────────────────────
+
+/**
+ * The five outsourcers most commonly associated with English local government:
+ * Capita, Serco, Veolia, Biffa, Amey. We match any supplier whose normalised
+ * name begins with one of these brand keys.
+ */
+const BIG_FIVE_KEYS = ['capita', 'serco', 'veolia', 'biffa', 'amey'] as const;
+
+export interface BigFiveOutsourcer {
+  brand: string;
+  /** Total annual spend aggregated across councils, pounds. */
+  totalSpend: number;
+  /** Number of councils that list this brand in their top suppliers. */
+  councilCount: number;
+}
+
+export interface BigFiveStats {
+  brands: BigFiveOutsourcer[];
+  /** Combined spend across the Big 5, pounds. */
+  combinedSpend: number;
+  /** Share of all top-supplier spend going to the Big 5 (0–100). */
+  sharePct: number;
+  /** Total top-supplier spend nationally, pounds. */
+  nationalTopSupplierSpend: number;
+}
+
+let _bigFive: BigFiveStats | null = null;
+
+export function getBigFiveOutsourcers(): BigFiveStats {
+  if (_bigFive) return _bigFive;
+
+  const brandTotals = new Map<string, { totalSpend: number; councilCount: number }>();
+  for (const k of BIG_FIVE_KEYS) brandTotals.set(k, { totalSpend: 0, councilCount: 0 });
+
+  let nationalTopSupplierSpend = 0;
+
+  for (const c of councils) {
+    const suppliers = c.detailed?.top_suppliers;
+    if (!suppliers?.length) continue;
+
+    const hitBrands = new Set<string>();
+    for (const s of suppliers) {
+      if (!s.name || !s.annual_spend) continue;
+      nationalTopSupplierSpend += s.annual_spend;
+
+      const key = normaliseSupplierName(s.name);
+      for (const brand of BIG_FIVE_KEYS) {
+        if (key.startsWith(brand)) {
+          const entry = brandTotals.get(brand)!;
+          entry.totalSpend += s.annual_spend;
+          hitBrands.add(brand);
+          break;
+        }
+      }
+    }
+    for (const b of hitBrands) brandTotals.get(b)!.councilCount += 1;
+  }
+
+  const brands: BigFiveOutsourcer[] = BIG_FIVE_KEYS.map((k) => ({
+    brand: k[0].toUpperCase() + k.slice(1),
+    totalSpend: brandTotals.get(k)!.totalSpend,
+    councilCount: brandTotals.get(k)!.councilCount,
+  })).sort((a, b) => b.totalSpend - a.totalSpend);
+
+  const combinedSpend = brands.reduce((s, b) => s + b.totalSpend, 0);
+  const sharePct =
+    nationalTopSupplierSpend > 0
+      ? (combinedSpend / nationalTopSupplierSpend) * 100
+      : 0;
+
+  _bigFive = { brands, combinedSpend, sharePct, nationalTopSupplierSpend };
+  return _bigFive;
+}
+
+// ── The £100k club (card 4.4) ─────────────────────────────────────────────────
+
+export interface HundredKCouncil {
+  council: Council;
+  count: number;
+}
+
+export interface HundredKClubStats {
+  /** Total number of disclosed staff earning £100k+ across all councils. */
+  totalStaff: number;
+  /** Councils with at least one staff member in this bracket. */
+  councilsWithAny: number;
+  /** Total disclosing councils (publish salary bands at all). */
+  councilsDisclosing: number;
+  /** Median number of £100k+ staff per disclosing council. */
+  medianPerCouncil: number;
+  /** Councils ranked by total £100k+ staff count. */
+  top: HundredKCouncil[];
+}
+
+let _hundredK: HundredKClubStats | null = null;
+
+function parseBandMin(band: string): number | null {
+  // Salary bands come in four shapes: "£50,000 - £54,999", "£50k-£55k",
+  // "£50k–£55k" (en-dash), and "£100k+". Grab the first number and its k-suffix.
+  const match = band.match(/£?([\d,]+)(k)?/i);
+  if (!match) return null;
+  const num = Number(match[1].replace(/,/g, ''));
+  if (!Number.isFinite(num)) return null;
+  return match[2] ? num * 1000 : num;
+}
+
+export function getHundredKClub(limit = 10): HundredKClubStats {
+  if (_hundredK) return { ..._hundredK, top: _hundredK.top.slice(0, limit) };
+
+  const entries: HundredKCouncil[] = [];
+  let totalStaff = 0;
+  let councilsDisclosing = 0;
+  let councilsWithAny = 0;
+
+  for (const c of councils) {
+    const bands = c.detailed?.salary_bands;
+    if (!bands?.length) continue;
+    councilsDisclosing++;
+
+    let count = 0;
+    for (const b of bands) {
+      const min = parseBandMin(b.band);
+      if (min !== null && min >= 100_000 && typeof b.count === 'number') {
+        count += b.count;
+      }
+    }
+
+    if (count > 0) {
+      councilsWithAny++;
+      entries.push({ council: c, count });
+      totalStaff += count;
+    }
+  }
+
+  entries.sort((a, b) => b.count - a.count);
+
+  const sortedCounts = entries.map((e) => e.count).sort((a, b) => a - b);
+  const medianPerCouncil =
+    sortedCounts.length > 0 ? sortedCounts[Math.floor(sortedCounts.length / 2)] : 0;
+
+  _hundredK = {
+    totalStaff,
+    councilsWithAny,
+    councilsDisclosing,
+    medianPerCouncil,
+    top: entries,
+  };
+  return { ..._hundredK, top: _hundredK.top.slice(0, limit) };
+}
+
+// ── Tax cap breakers (card 6.2) ───────────────────────────────────────────────
+
+export interface TaxCapBreakerEntry {
+  council: Council;
+  from: number;
+  to: number;
+  risePct: number;
+}
+
+export interface TaxCapBreakersStats {
+  /** Councils whose Band D rise was ≥ 4.99% — the referendum cap. */
+  atOrOverCap: TaxCapBreakerEntry[];
+  /** Councils whose rise exceeded the cap (special permission required). */
+  overCap: TaxCapBreakerEntry[];
+  /** Number of councils with data. */
+  councilsWithData: number;
+}
+
+let _capBreakers: TaxCapBreakersStats | null = null;
+
+export function getTaxCapBreakers(capPct = 4.99): TaxCapBreakersStats {
+  if (_capBreakers) return _capBreakers;
+
+  const entries: TaxCapBreakerEntry[] = [];
+
+  for (const c of councils) {
+    const to = c.council_tax?.band_d_2025;
+    const from = c.council_tax?.band_d_2024;
+    if (!to || !from) continue;
+    // Councils set and publish their rise to 2dp — compare on the same
+    // rounded value so floating-point noise doesn't push a council targeting
+    // exactly 4.99% into the "exceeds cap" bucket.
+    const rawRise = ((to - from) / from) * 100;
+    const risePct = Math.round(rawRise * 100) / 100;
+    entries.push({ council: c, from, to, risePct });
+  }
+
+  entries.sort((a, b) => b.risePct - a.risePct);
+
+  _capBreakers = {
+    atOrOverCap: entries.filter((e) => e.risePct >= capPct),
+    overCap: entries.filter((e) => e.risePct > capPct),
+    councilsWithData: entries.length,
+  };
+  return _capBreakers;
+}
+
+// ── Three-year Band D squeeze (card 1.4) ──────────────────────────────────────
+
+export interface ThreeYearSqueezeEntry {
+  council: Council;
+  /** 2023-24 Band D rate, pounds. */
+  from: number;
+  /** 2025-26 Band D rate, pounds. */
+  to: number;
+  /** Absolute pound increase over the 2-year window. */
+  changeAbs: number;
+  /** Compound percentage rise 2023 → 2025. */
+  changePct: number;
+}
+
+export interface ThreeYearSqueezeStats {
+  /** Councils ranked by compound rise, descending. 100% parity (317/317). */
+  top: ThreeYearSqueezeEntry[];
+  /** National median compound rise over the 2-year window. */
+  medianPct: number;
+  /** National mean compound rise. */
+  meanPct: number;
+  /** Councils included (those with both 2023 and 2025 Band D rates). */
+  councilsWithData: number;
+}
+
+let _threeYear: ThreeYearSqueezeStats | null = null;
+
+/**
+ * Compound Band D rise from 2023-24 to 2025-26. Uses ct_2023 + ct_2025 because
+ * both hit 100% parity across all 317 English councils — safe for ranking.
+ * Exposes the compounding effect that single-year rise cards miss.
+ */
+export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
+  if (_threeYear) {
+    return { ..._threeYear, top: _threeYear.top.slice(0, limit) };
+  }
+
+  const entries: ThreeYearSqueezeEntry[] = [];
+  for (const c of councils) {
+    const from = c.council_tax?.band_d_2023;
+    const to = c.council_tax?.band_d_2025;
+    if (!from || !to) continue;
+    entries.push({
+      council: c,
+      from,
+      to,
+      changeAbs: to - from,
+      changePct: (to / from - 1) * 100,
+    });
+  }
+
+  entries.sort((a, b) => b.changePct - a.changePct);
+  const sortedPcts = entries.map((e) => e.changePct).sort((a, b) => a - b);
+  const medianPct =
+    sortedPcts.length > 0 ? sortedPcts[Math.floor(sortedPcts.length / 2)] : 0;
+  const meanPct =
+    sortedPcts.length > 0
+      ? sortedPcts.reduce((s, v) => s + v, 0) / sortedPcts.length
+      : 0;
+
+  _threeYear = {
+    top: entries,
+    medianPct,
+    meanPct,
+    councilsWithData: entries.length,
+  };
+  return { ..._threeYear, top: _threeYear.top.slice(0, limit) };
+}
+
+// ── Cap every year (card 6.3) ─────────────────────────────────────────────────
+
+export interface CapEveryYearEntry {
+  council: Council;
+  /** 2024-25 rise over 2023-24 (percentage, rounded to 2dp). */
+  rise2024: number;
+  /** 2025-26 rise over 2024-25 (percentage, rounded to 2dp). */
+  rise2025: number;
+  /** Compound 2-year rise 2023 → 2025 (percentage). */
+  compoundPct: number;
+}
+
+export interface CapEveryYearStats {
+  /** Councils at or above the 4.99% cap in BOTH 2024 AND 2025. */
+  bothYearsAtCap: CapEveryYearEntry[];
+  /** Councils that STRICTLY exceeded 4.99% in both years (needed permission). */
+  bothYearsOverCap: CapEveryYearEntry[];
+  /** Number of councils with data for all three years (2023/2024/2025). */
+  councilsWithData: number;
+}
+
+let _capEvery: CapEveryYearStats | null = null;
+
+/**
+ * Councils that have hit the 4.99% referendum cap consistently — at or above
+ * in BOTH 2024-25 and 2025-26. Uses ct_2023/2024/2025 (100% parity). Reveals
+ * persistent cap-pressure, which single-year cards miss.
+ */
+export function getCapEveryYear(capPct = 4.99): CapEveryYearStats {
+  if (_capEvery) return _capEvery;
+
+  const entries: CapEveryYearEntry[] = [];
+  for (const c of councils) {
+    const y23 = c.council_tax?.band_d_2023;
+    const y24 = c.council_tax?.band_d_2024;
+    const y25 = c.council_tax?.band_d_2025;
+    if (!y23 || !y24 || !y25) continue;
+
+    // Match the rounding used by other cap-related cards so the same council
+    // lands in the same bucket everywhere.
+    const rise2024 = Math.round(((y24 - y23) / y23) * 10000) / 100;
+    const rise2025 = Math.round(((y25 - y24) / y24) * 10000) / 100;
+    const compoundPct = (y25 / y23 - 1) * 100;
+    entries.push({ council: c, rise2024, rise2025, compoundPct });
+  }
+
+  entries.sort((a, b) => b.compoundPct - a.compoundPct);
+
+  _capEvery = {
+    bothYearsAtCap: entries.filter(
+      (e) => e.rise2024 >= capPct && e.rise2025 >= capPct,
+    ),
+    bothYearsOverCap: entries.filter(
+      (e) => e.rise2024 > capPct && e.rise2025 > capPct,
+    ),
+    councilsWithData: entries.length,
+  };
+  return _capEvery;
 }
 
 // ── Social care squeeze (card 2.2) ────────────────────────────────────────────

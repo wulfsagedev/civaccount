@@ -12,6 +12,8 @@ interface InsightCardProps {
   explainer: string;
   /** Optional share text; defaults to title. */
   shareText?: string;
+  /** Additional classes on the root tile — e.g. `sm:col-span-2` to fill a row. */
+  className?: string;
 }
 
 /**
@@ -27,12 +29,15 @@ export function InsightCard({
   hero,
   explainer,
   shareText,
+  className,
 }: InsightCardProps) {
   const href = `/insights/${slug}`;
   const imageUrl = `${href}/opengraph-image`;
 
   return (
-    <div className="card-elevated p-5 sm:p-6 flex flex-col gap-4 relative group">
+    <div
+      className={`card-elevated p-5 sm:p-6 flex flex-col gap-4 relative group${className ? ` ${className}` : ''}`}
+    >
       <Link
         href={href}
         className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
