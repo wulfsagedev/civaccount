@@ -2,17 +2,30 @@
 
 import { Landmark } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
+import { useCouncil } from '@/context/CouncilContext';
 
 export default function Footer() {
+  const { setSelectedCouncil } = useCouncil();
+  const router = useRouter();
+
+  // Clear the saved council before navigating so the homepage redirect
+  // effect sees no selection and stays on `/` — same pattern as Header.
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSelectedCouncil(null);
+    router.push('/');
+  };
+
   return (
     <footer className="border-t bg-muted/20" aria-label="Site footer">
       <div className="container mx-auto px-4 py-6 sm:px-6 max-w-5xl">
         {/* Brand + links */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
-            <Link href="/" className="inline-flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+            <Link href="/" onClick={handleLogoClick} className="inline-flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center">
                 <Landmark className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
               </div>

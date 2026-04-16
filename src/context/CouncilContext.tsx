@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { Council, getCouncilByCode } from '@/data/councils';
 
 interface CouncilContextType {
@@ -27,14 +27,16 @@ export function CouncilProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const handleSetCouncil = (council: Council | null) => {
+  // Stable reference so effects that depend on it (e.g. the council page's
+  // URL→context sync) don't re-fire every render and fight with logo clicks.
+  const handleSetCouncil = useCallback((council: Council | null) => {
     setSelectedCouncil(council);
     if (council) {
       localStorage.setItem('selectedCouncilCode', council.ons_code);
     } else {
       localStorage.removeItem('selectedCouncilCode');
     }
-  };
+  }, []);
 
   return (
     <CouncilContext.Provider value={{

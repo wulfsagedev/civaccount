@@ -34,11 +34,11 @@ export default function Header() {
   const handleLogoClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    // Navigate first, then clear council to avoid race conditions
-    // with council page trying to set council from URL
+    // Clear selection first so the homepage redirect effect sees null and
+    // stays on `/`. With setSelectedCouncil stabilised in CouncilContext,
+    // the council page's URL→context effect no longer re-fires on clear.
+    setSelectedCouncil(null);
     router.push('/');
-    // Small delay to ensure navigation starts before clearing
-    setTimeout(() => setSelectedCouncil(null), 10);
   }, [router, setSelectedCouncil]);
 
   const closeMobileMenu = () => {
