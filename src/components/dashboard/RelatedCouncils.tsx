@@ -44,15 +44,15 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
           const relatedBandD = c.council_tax!.band_d_2025;
 
           return (
-            <div key={c.ons_code} className="flex items-baseline justify-between py-2">
+            <div key={c.ons_code} className="flex items-baseline justify-between gap-3 py-2">
               <Link
                 href={`/council/${relatedSlug}`}
-                className="type-body-sm font-medium hover:text-foreground transition-colors"
+                className="type-body-sm font-medium hover:text-foreground transition-colors min-w-0 truncate"
               >
                 {name}
               </Link>
-              <div className="flex items-baseline gap-3">
-                <span className="type-body-sm font-semibold tabular-nums">
+              <div className="flex items-baseline gap-3 shrink-0">
+                <span className="type-body-sm font-semibold tabular-nums whitespace-nowrap">
                   <SourceAnnotation
                     provenance={getProvenance('council_tax.band_d_2025', c)}
                     reportContext={{

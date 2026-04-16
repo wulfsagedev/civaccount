@@ -141,22 +141,38 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
         </>
       )}
 
-      {/* Salary band chart */}
+      {/* Salary band chart — heading/subtitle describe what's actually in the
+          data. Most councils publish bands from £50k upwards (senior staff
+          disclosure). Some publish from £20k upwards. We read the lowest band
+          label and use the right wording so the header never contradicts the
+          chart (old bug: heading said "over £50k" while bars started at £20k). */}
       {detailed.salary_bands && detailed.salary_bands.length > 0 && (() => {
         const maxCount = Math.max(...detailed.salary_bands!.map(b => b.count)) || 1;
         const totalStaff = detailed.salary_bands!.reduce((sum, b) => sum + b.count, 0);
+        // Extract the numeric lower bound of the first band label, e.g.
+        // "£20k–£25k" → 20, "£50k+" → 50. Fallback to 50 if we can't parse.
+        const firstBandLabel = detailed.salary_bands![0]?.band ?? '';
+        const lowerBoundMatch = firstBandLabel.match(/£(\d+)k/);
+        const lowerK = lowerBoundMatch ? parseInt(lowerBoundMatch[1], 10) : 50;
+        const threshold = `£${lowerK.toLocaleString('en-GB')},000`;
+        const heading = lowerK >= 50
+          ? `Staff earning ${threshold} or more`
+          : `Staff pay breakdown`;
+        const subtitleSuffix = lowerK >= 50
+          ? ` staff earn ${threshold} or more`
+          : ` staff are in these pay bands`;
         return (
           <div className={detailed?.councillor_allowances_detail?.length ? "mt-6 pt-5 border-t border-border/50" : ""}>
-            <p className="type-body-sm font-semibold mb-1">Staff earning over £50,000</p>
+            <p className="type-body-sm font-semibold mb-1">{heading}</p>
             <p className="type-body-sm text-muted-foreground mb-4">
               <SourceAnnotation
                 provenance={getProvenance('detailed.salary_bands', selectedCouncil)}
                 reportContext={{
                   council: selectedCouncil.name,
-                  field: 'Total staff over £50,000',
+                  field: `Total staff in published salary bands (from ${threshold})`,
                   value: totalStaff.toLocaleString('en-GB'),
                 }}
-              >{totalStaff.toLocaleString('en-GB')}</SourceAnnotation> staff in salary bands above £50k
+              >{totalStaff.toLocaleString('en-GB')}</SourceAnnotation>{subtitleSuffix}
             </p>
             <div className="space-y-2.5">
               {detailed.salary_bands!.map((band, idx) => (

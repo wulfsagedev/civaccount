@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui/popover';
-import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceTypeName, type Council } from '@/data/councils';
+import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceTypeName, getTotalBandD, type Council } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
@@ -57,6 +57,11 @@ const YourBillCard = ({
 }: YourBillCardProps) => {
   const councilTax = selectedCouncil.council_tax;
   const detailed = selectedCouncil.detailed;
+  // True total bill across all precepting authorities. We compute it here
+  // rather than reading detailed.total_band_d directly because several data
+  // entries (particularly county councils) have total_band_d wrongly set to
+  // just this council's own share.
+  const totalBill = getTotalBandD(selectedCouncil);
 
   return (
     <section id="your-bill" className="card-elevated p-5 sm:p-6">
@@ -81,7 +86,7 @@ const YourBillCard = ({
                 <p className="type-caption font-semibold text-foreground">What is Band D?</p>
                 <p className="type-caption text-muted-foreground leading-relaxed">
                   Band D is the reference property band used to report council tax.
-                  Your actual bill depends on your property's band, parish, and any discounts (single person, students, etc.).
+                  Your actual bill depends on your property&apos;s band, parish, and any discounts (single person, students, etc.).
                 </p>
                 <p className="type-caption text-muted-foreground leading-relaxed">
                   <span className="font-medium text-foreground">Bands at a glance:</span>{' '}
@@ -114,16 +119,19 @@ const YourBillCard = ({
             src/lib/inflation-context.ts for the sources. */}
         {taxChange !== null && (
           <div className="mt-2 space-y-0.5">
+            {/* Neutral framing: arrow icon carries direction, colour is reserved
+                for genuine concern (ie. this is transparency, not a warning). */}
             <div className="flex items-center gap-1.5">
               {taxChange > 0 ? (
-                <TrendingUp className="h-3.5 w-3.5 text-negative" aria-hidden="true" />
+                <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
               ) : (
-                <TrendingDown className="h-3.5 w-3.5 text-positive" aria-hidden="true" />
+                <TrendingDown className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
               )}
-              <span className={`type-body-sm ${taxChange > 0 ? 'text-negative' : 'text-positive'}`}>
-                {taxChange > 0 ? 'Up' : 'Down'} {Math.abs(taxChange).toFixed(1)}% from last year
+              <span className="type-body-sm text-foreground">
+                <span className="font-semibold">{taxChange > 0 ? 'Up' : 'Down'} {Math.abs(taxChange).toFixed(1)}%</span>
+                {' from last year'}
                 {taxChangeAmount !== null && (
-                  <span className="text-muted-foreground ml-1">
+                  <span className="text-muted-foreground ml-1 whitespace-nowrap">
                     ({taxChangeAmount > 0 ? '+' : ''}{formatCurrency(taxChangeAmount, { decimals: 2 })})
                   </span>
                 )}
@@ -140,7 +148,7 @@ const YourBillCard = ({
           and vice versa. Without this, users see their small council budget
           next to a large bill total and assume the mismatch is an error. */}
       {(() => {
-        if (!detailed?.precepts || detailed.precepts.length === 0 || !thisCouncilBandD || !detailed.total_band_d) return null;
+        if (!detailed?.precepts || detailed.precepts.length === 0 || !thisCouncilBandD || !totalBill) return null;
         // Find the "other tier" precept (county for districts, or the district share for counties)
         const countyPrecept = selectedCouncil.type === 'SD'
           ? detailed.precepts.find(p => p.authority.toLowerCase().includes('county'))
@@ -148,7 +156,7 @@ const YourBillCard = ({
         // For counties, don't show this callout (districts vary — we can't pick one)
         if (!countyPrecept) return null;
         const linked = findLinkedCouncil(countyPrecept.authority);
-        const remainder = detailed.total_band_d - thisCouncilBandD;
+        const remainder = totalBill - thisCouncilBandD;
         const countyShareLabel = `£${Math.round(countyPrecept.band_d).toLocaleString('en-GB')}`;
         const remainderLabel = `£${Math.round(remainder).toLocaleString('en-GB')}`;
         const content = (
@@ -174,7 +182,7 @@ const YourBillCard = ({
       })()}
 
       {/* Full bill breakdown with visual bar */}
-      {detailed?.precepts && detailed.precepts.length > 0 && detailed.total_band_d && (
+      {detailed?.precepts && detailed.precepts.length > 0 && totalBill && (
         <div className="pt-5 border-t border-border/50">
           <p className="type-body-sm font-semibold mb-1">Typical Band D bill</p>
           <p className="type-caption text-muted-foreground mb-4">Average across {selectedCouncil.name}. Actual bills vary by band, parish and discounts.</p>
@@ -183,7 +191,7 @@ const YourBillCard = ({
           <div className="mb-4">
             <div className="h-2 rounded-full overflow-hidden flex bg-muted">
               {detailed.precepts.map((precept, index) => {
-                const percentage = (precept.band_d / detailed.total_band_d!) * 100;
+                const percentage = (precept.band_d / totalBill) * 100;
                 const isThisCouncil = precept.authority.toLowerCase().includes(selectedCouncil.name.toLowerCase().split(' ')[0]);
                 return (
                   <div
@@ -270,8 +278,8 @@ const YourBillCard = ({
                 <p className="type-caption text-muted-foreground">{formatCurrency(totalDailyCost, { decimals: 2 })} per day</p>
               )}
             </div>
-            <span className="type-metric tabular-nums">
-              {formatCurrency(detailed.total_band_d, { decimals: 2 })}
+            <span className="type-metric tabular-nums whitespace-nowrap">
+              {formatCurrency(totalBill, { decimals: 2 })}
             </span>
           </div>
 
@@ -296,15 +304,17 @@ const YourBillCard = ({
         </div>
       )}
 
-      {/* Comparison callout */}
+      {/* Comparison callout — neutral framing. Direction is clear from the
+          sign; colouring it green/amber implies judgement ("you're overpaying")
+          which isn't the job of this app. */}
       {vsAverage !== null && (
         <div className="mt-5 p-3 rounded-lg bg-muted/30">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <span className="type-caption text-muted-foreground">
               Compared to average {toSentenceTypeName(selectedCouncil.type_name)}
             </span>
             <SourceAnnotation provenance={getProvenance('vs_average')}>
-              <span className={`type-body-sm font-semibold tabular-nums ${vsAverage > 0 ? 'text-negative' : vsAverage < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
+              <span className="type-body-sm font-semibold tabular-nums whitespace-nowrap shrink-0 text-foreground">
                 {vsAverage > 0 ? '+' : ''}{formatCurrency(vsAverage, { decimals: 2 })}
               </span>
             </SourceAnnotation>

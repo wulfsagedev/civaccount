@@ -33,15 +33,18 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
         councilName={selectedCouncil.name}
       />
 
-      {/* All leaders in consistent grid */}
+      {/* All leaders in consistent grid — cards are uniform height, role/portfolio
+          clamped to 2 lines so e.g. "Department of Local Government Efficiency"
+          wraps rather than truncating mid-word. CEO pay sits in its own row below
+          so the people cards stay visually balanced. */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {leader && (
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 min-h-[72px]">
             <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
               <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="type-body-sm font-semibold leading-none truncate">
+              <p className="type-body-sm font-semibold leading-tight line-clamp-2">
                 <SourceAnnotation
                   provenance={getProvenance('detailed.cabinet', selectedCouncil)}
                   reportContext={{
@@ -51,18 +54,18 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                   }}
                 >{leader.name}</SourceAnnotation>
               </p>
-              <p className="type-caption leading-none text-muted-foreground">Council Leader</p>
+              <p className="type-caption leading-tight text-muted-foreground">Council Leader</p>
             </div>
           </div>
         )}
 
         {detailed.chief_executive && (
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 min-h-[72px]">
             <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
               <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="type-body-sm font-semibold leading-none truncate">
+              <p className="type-body-sm font-semibold leading-tight line-clamp-2">
                 <SourceAnnotation
                   provenance={getProvenance('detailed.chief_executive', selectedCouncil)}
                   reportContext={{
@@ -72,51 +75,19 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                   }}
                 >{detailed.chief_executive}</SourceAnnotation>
               </p>
-              <p className="type-caption leading-none text-muted-foreground">Chief Executive</p>
-              {detailed.chief_executive_salary && (() => {
-                const avgCeo = getTypeAverages(selectedCouncil.type).ceoSalary;
-                return (
-                  <div className="space-y-0.5">
-                    <p className="type-caption leading-none text-muted-foreground">
-                      Salary: <SourceAnnotation
-                        provenance={getProvenance('detailed.chief_executive_salary', selectedCouncil)}
-                        reportContext={{
-                          council: selectedCouncil.name,
-                          field: 'Chief Executive salary',
-                          value: formatCurrency(detailed.chief_executive_salary!, { decimals: 0 }),
-                        }}
-                      >{formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}</SourceAnnotation>/year
-                      {detailed.chief_executive_total_remuneration && (
-                        <span> · <SourceAnnotation
-                          provenance={getProvenance('detailed.chief_executive_total_remuneration', selectedCouncil)}
-                          reportContext={{
-                            council: selectedCouncil.name,
-                            field: 'Chief Executive total remuneration',
-                            value: formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 }),
-                          }}
-                        >{formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })}</SourceAnnotation> total package</span>
-                      )}
-                    </p>
-                    {avgCeo > 0 && (
-                      <p className="type-caption leading-none text-muted-foreground">
-                        Avg for {toSentenceTypeName(selectedCouncil.type_name)}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgCeo), { decimals: 0 })}</SourceAnnotation>
-                      </p>
-                    )}
-                  </div>
-                );
-              })()}
+              <p className="type-caption leading-tight text-muted-foreground">Chief Executive</p>
             </div>
           </div>
         )}
 
         {/* Cabinet members in same grid */}
         {visibleMembers.map((member, index) => (
-          <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+          <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 min-h-[72px]">
             <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
               <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="type-body-sm font-semibold leading-none truncate">
+              <p className="type-body-sm font-semibold leading-tight line-clamp-2" title={member.name}>
                 <SourceAnnotation
                   provenance={getProvenance('detailed.cabinet', selectedCouncil)}
                   reportContext={{
@@ -126,7 +97,7 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                   }}
                 >{member.name}</SourceAnnotation>
               </p>
-              <p className="type-caption leading-none text-muted-foreground truncate">
+              <p className="type-caption leading-tight text-muted-foreground line-clamp-2" title={member.portfolio}>
                 <SourceAnnotation
                   provenance={getProvenance('detailed.cabinet', selectedCouncil)}
                   reportContext={{
@@ -140,6 +111,52 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
           </div>
         ))}
       </div>
+
+      {/* CEO pay — sits below the people cards so the grid stays balanced.
+          Copy is deliberately neutral ("earns", not "is paid") and gives a
+          peer comparison so a teenager sees the full context in one glance. */}
+      {detailed.chief_executive && detailed.chief_executive_salary && (() => {
+        const avgCeo = getTypeAverages(selectedCouncil.type).ceoSalary;
+        return (
+          <div className="mt-3 p-3 rounded-lg bg-muted/30">
+            <p className="type-body-sm">
+              <span className="font-semibold">{detailed.chief_executive}</span>
+              {' earns '}
+              <SourceAnnotation
+                provenance={getProvenance('detailed.chief_executive_salary', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: 'Chief Executive salary',
+                  value: formatCurrency(detailed.chief_executive_salary!, { decimals: 0 }),
+                }}
+              ><span className="font-semibold tabular-nums whitespace-nowrap">{formatCurrency(detailed.chief_executive_salary!, { decimals: 0 })}</span></SourceAnnotation>
+              {' a year'}
+              {detailed.chief_executive_total_remuneration && (
+                <>
+                  {' ('}
+                  <SourceAnnotation
+                    provenance={getProvenance('detailed.chief_executive_total_remuneration', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Chief Executive total remuneration',
+                      value: formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 }),
+                    }}
+                  ><span className="tabular-nums whitespace-nowrap">{formatCurrency(detailed.chief_executive_total_remuneration, { decimals: 0 })}</span></SourceAnnotation>
+                  {' total package)'}
+                </>
+              )}
+              {'.'}
+            </p>
+            {avgCeo > 0 && (
+              <p className="type-caption text-muted-foreground mt-1">
+                {'Typical pay for a '}{toSentenceTypeName(selectedCouncil.type_name)}{' chief executive is about '}
+                <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}><span className="tabular-nums whitespace-nowrap">{formatCurrency(Math.round(avgCeo), { decimals: 0 })}</span></SourceAnnotation>
+                {'.'}
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Show all cabinet button */}
       {otherMembers.length > 4 && (

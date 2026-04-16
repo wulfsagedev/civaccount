@@ -551,6 +551,41 @@ export function getCouncilSlug(council: Council): string {
   return generateSlug(council.name);
 }
 
+/**
+ * Return the correct TOTAL Band D bill for a council (sum of all precepting
+ * authorities). Falls back sensibly when data is partial.
+ *
+ * Why this exists: several data entries (especially county councils) have
+ * `detailed.total_band_d` set to just the council's own share, not the real
+ * total that includes police + fire + combined-authority precepts. Computing
+ * from `precepts[]` is the source of truth when available.
+ */
+export function getTotalBandD(council: Council | null | undefined): number | null {
+  if (!council) return null;
+  const detailed = council.detailed;
+  const ownShare = council.council_tax?.band_d_2025 ?? null;
+  const preceptSum = detailed?.precepts && detailed.precepts.length > 0
+    ? detailed.precepts.reduce((s, p) => s + (p.band_d || 0), 0)
+    : 0;
+  const declaredTotal = detailed?.total_band_d ?? 0;
+
+  // Pick whichever value is the largest honest total, with these rules:
+  //  - If `declaredTotal` is larger than the sum of listed precepts AND larger
+  //    than the council's own share, the precepts array is just incomplete
+  //    (e.g. Birmingham omits police/fire precepts but total_band_d is correct).
+  //  - If `preceptSum` > `declaredTotal`, the declared total is stale/wrong
+  //    (Kent's bug: total == own share, precepts sum higher).
+  //  - Guard against the "declaredTotal == ownShare" bug: only trust declared
+  //    total when it's strictly greater than own share.
+  const candidates = [
+    preceptSum > 0 ? preceptSum : 0,
+    declaredTotal > (ownShare ?? 0) ? declaredTotal : 0,
+    ownShare ?? 0,
+  ];
+  const total = Math.max(...candidates);
+  return total > 0 ? total : ownShare;
+}
+
 // Get average Band D by council type
 export function getAverageBandDByType(type: string): number {
   const typeCouncils = councils.filter(c => c.type === type && c.council_tax?.band_d_2025);

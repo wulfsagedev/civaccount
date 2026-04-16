@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD } from '@/data/councils';
 import { buildFAQPageSchema } from '@/lib/structured-data';
 
 
@@ -100,11 +100,15 @@ export default async function CouncilLayout({ params, children }: Props) {
   // Build FAQ pairs for schema
   const faqs: Array<{ question: string; answer: string }> = [];
 
-  if (detailed?.total_band_d && bandD) {
-    const pct = ((bandD / detailed.total_band_d) * 100).toFixed(0);
+  const totalBill = getTotalBandD(council);
+  if (totalBill && bandD) {
+    const pct = Math.round((bandD / totalBill) * 100);
+    const isSoleAuthority = pct >= 100 || (detailed?.precepts?.length ?? 0) < 2;
     faqs.push({
       question: `What percentage of my bill goes to ${council.name}?`,
-      answer: `${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(detailed.total_band_d, { decimals: 2 })}).`,
+      answer: isSoleAuthority
+        ? `All of your council tax (${formatCurrency(bandD, { decimals: 2 })}) goes to ${council.name}.`
+        : `${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(totalBill, { decimals: 2 })}).`,
     });
   }
 

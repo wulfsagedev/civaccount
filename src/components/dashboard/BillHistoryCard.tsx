@@ -124,11 +124,12 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
         </div>
       </div>
 
-      {/* 5-year change callout */}
+      {/* 5-year change callout — neutral framing. Most councils' bills have
+          risen over 5 years; colouring that amber everywhere reads as alarm. */}
       <div className="mt-5 p-3 rounded-lg bg-muted/30">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <span className="type-caption text-muted-foreground">Change over 5 years</span>
-          <span className={`type-body-sm font-semibold tabular-nums ${fiveYearChange > 0 ? 'text-negative' : 'text-positive'}`}>
+          <span className="type-body-sm font-semibold tabular-nums whitespace-nowrap shrink-0 text-foreground">
             <SourceAnnotation
               provenance={getProvenance('bill_history', selectedCouncil)}
               reportContext={{

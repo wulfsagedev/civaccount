@@ -56,15 +56,18 @@ const TaxBandsCard = ({
         councilName={selectedCouncil.name}
       />
 
-      {/* Band selector - horizontal grid that always fits */}
-      <div role="radiogroup" aria-label="Select council tax band" className="grid grid-cols-8 gap-1 sm:gap-1.5 mb-5">
+      {/* Band selector — 4×2 on mobile, 8×1 from sm up. Eight pills in one
+          row on a 320–375px viewport forced each 44px-min tap target to
+          overlap its neighbour by ~10px; two rows keeps chunky-finger
+          targets AND clean gaps. */}
+      <div role="radiogroup" aria-label="Select council tax band" className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 mb-5">
         {Object.keys(allBands).map((band) => (
           <button
             key={band}
             role="radio"
             aria-checked={selectedBand === band}
             onClick={() => setSelectedBand(band)}
-            className={`py-2.5 sm:py-3 rounded-lg type-body-sm font-semibold transition-all cursor-pointer ${
+            className={`py-2.5 sm:py-3 rounded-lg type-body-sm font-semibold transition-colors cursor-pointer ${
               selectedBand === band
                 ? 'bg-foreground text-background'
                 : 'bg-muted hover:bg-muted/80'

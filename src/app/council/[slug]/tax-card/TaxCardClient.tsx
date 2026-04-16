@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, calculateBands, getCouncilSlug, toSentenceTypeName } from '@/data/councils';
+import { formatCurrency, calculateBands, getCouncilSlug, toSentenceTypeName, getTotalBandD } from '@/data/councils';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { getTypeAverages } from '@/lib/council-averages';
 import ShareButton from '@/components/proposals/ShareButton';
@@ -82,7 +82,9 @@ export default function TaxCardClient() {
   const bandDPrev = councilTax.band_d_2024;
   const allBands = calculateBands(bandD);
   const precepts = council.detailed?.precepts;
-  const totalBandD = council.detailed?.total_band_d;
+  // Prefer the derived total (sum of precepts) — the raw data field is wrong
+  // for many county councils where it equals only the council's own share.
+  const totalBandD = getTotalBandD(council);
   const budget = council.budget;
 
   // Calculate amounts for selected band

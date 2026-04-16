@@ -336,7 +336,9 @@ const SpendingCard = ({
               {diff !== null && (
                 <p className="type-caption text-muted-foreground">
                   Compared to average {toSentenceTypeName(selectedCouncil.type_name)}:{' '}
-                  <span className={`font-semibold ${diff > 0 ? 'text-negative' : diff < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
+                  {/* Neutral: higher/lower per-resident spend isn't inherently
+                      good or bad (could be efficiency, could be reduced service). */}
+                  <span className="font-semibold whitespace-nowrap text-foreground">
                     <SourceAnnotation provenance={getProvenance('per_capita_spend', selectedCouncil)}>{diff > 0 ? '+' : ''}{formatCurrency(diff, { decimals: 0 })}</SourceAnnotation>
                   </span>
                   {' '}per resident

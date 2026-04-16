@@ -334,10 +334,71 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
 };
 
 /**
+ * URL-routing rules: map field paths to the council-owned URL field that
+ * should be preferred over a generic GOV.UK citation. Applied as a fallback
+ * when `field_sources` doesn't cover the path.
+ *
+ * Data published BY the council (budgets, reserves, suppliers, cabinet) should
+ * link to that council's own page. Data published BY the state (council tax
+ * levels, DEFRA waste stats, Ofsted ratings) should keep their GOV.UK source —
+ * those paths are intentionally excluded here.
+ */
+const URL_ROUTING: Array<{
+  match: (path: string) => boolean;
+  urlField: 'budget_url' | 'accounts_url' | 'transparency_url' | 'councillors_url';
+  titleSuffix: string;
+}> = [
+  // Budget breakdowns, service spending, capital programme → council budget page
+  {
+    match: (p) =>
+      p.startsWith('budget.') ||
+      p === 'detailed.service_spending' ||
+      p === 'detailed.capital_programme' ||
+      p === 'detailed.budget_gap' ||
+      p === 'detailed.savings_target',
+    urlField: 'budget_url',
+    titleSuffix: 'budget',
+  },
+  // Reserves, salary bands → Statement of Accounts
+  {
+    match: (p) => p === 'detailed.reserves' || p === 'detailed.salary_bands',
+    urlField: 'accounts_url',
+    titleSuffix: 'Statement of Accounts',
+  },
+  // Suppliers, grants, workforce, CEO pay → transparency page
+  {
+    match: (p) =>
+      p.startsWith('detailed.top_suppliers') ||
+      p === 'detailed.grant_payments' ||
+      p === 'detailed.staff_fte' ||
+      p === 'detailed.chief_executive_salary' ||
+      p === 'detailed.chief_executive_total_remuneration',
+    urlField: 'transparency_url',
+    titleSuffix: 'transparency data',
+  },
+  // Cabinet, leader, councillor allowances → councillors page
+  {
+    match: (p) =>
+      p === 'detailed.cabinet' ||
+      p === 'detailed.council_leader' ||
+      p === 'detailed.chief_executive' ||
+      p.startsWith('detailed.councillor_') ||
+      p === 'detailed.total_allowances_cost',
+    urlField: 'councillors_url',
+    titleSuffix: 'councillors',
+  },
+];
+
+/**
  * Look up provenance for a field path.
- * Tries exact match first, then prefix match (e.g., "budget.education" → "budget").
- * For per-council sources (CEO salary, allowances), falls back to the council's
- * sources[] array to find a matching URL.
+ *
+ * Priority:
+ *   1. `council.detailed.field_sources[path]` — exact per-field URL override
+ *   2. URL routing — if the path represents council-published data and the
+ *      council has the relevant top-level URL field (budget_url, etc.), use that
+ *   3. Global `FIELD_PROVENANCE` (for truly national sources — GOV.UK bulk data,
+ *      ONS population, DEFRA/DfT/Ofsted statistics, calculated metrics)
+ *   4. Prefix match on `FIELD_PROVENANCE` (e.g., "budget.education" → "budget")
  */
 export function getProvenance(
   fieldPath: string,
@@ -366,7 +427,26 @@ export function getProvenance(
     }
   }
 
-  // 2. Global FIELD_PROVENANCE (for GOV.UK bulk data fields)
+  // 2. URL routing — council-owned data paths prefer the council's own URL
+  //    over generic GOV.UK citations. Keeps label/data_year from the global
+  //    table for consistency ("Published data", "Data year: 2025-26").
+  if (council?.detailed) {
+    for (const rule of URL_ROUTING) {
+      if (!rule.match(fieldPath)) continue;
+      const url = council.detailed[rule.urlField];
+      if (!url) continue;
+      const global = FIELD_PROVENANCE[fieldPath] || FIELD_PROVENANCE[fieldPath.split('.')[0]];
+      return {
+        label: 'official',
+        source_url: url,
+        source_title: `${council.name} ${rule.titleSuffix}`,
+        data_year: global?.data_year,
+        methodology: global?.methodology,
+      };
+    }
+  }
+
+  // 3. Global FIELD_PROVENANCE (for GOV.UK bulk data fields)
   if (FIELD_PROVENANCE[fieldPath]) {
     const prov = { ...FIELD_PROVENANCE[fieldPath] };
 
@@ -385,7 +465,7 @@ export function getProvenance(
     return prov;
   }
 
-  // 3. Prefix match: "budget.education" → "budget"
+  // 4. Prefix match: "budget.education" → "budget"
   const prefix = fieldPath.split('.')[0];
   if (FIELD_PROVENANCE[prefix]) {
     return { ...FIELD_PROVENANCE[prefix] };
