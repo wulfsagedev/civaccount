@@ -3,8 +3,6 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Most Expensive Council Tax in England 2025-26',
@@ -66,8 +64,7 @@ export default function MostExpensiveCouncilTaxPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -144,7 +141,6 @@ export default function MostExpensiveCouncilTaxPage() {
           </ul>
         </nav>
       </main>
-      <Footer />
-    </div>
+      </>
   );
 }

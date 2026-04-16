@@ -5,8 +5,6 @@ import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageShareButton } from '@/components/ui/page-share-button';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Council Leaderboards — Rankings for all 317 English Councils',
@@ -154,8 +152,7 @@ export default function LeaderboardsPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
+      <>
         <main id="main-content" className="flex-1">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <Breadcrumb items={[
@@ -215,8 +212,7 @@ export default function LeaderboardsPage() {
           </section>
         </div>
         </main>
-        <Footer />
-      </div>
+        </>
     </>
   );
 }

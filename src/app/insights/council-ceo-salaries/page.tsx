@@ -3,8 +3,6 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: "Council CEO Salaries — England's Highest-Paid Executives",
@@ -64,8 +62,7 @@ export default function CouncilCeoSalariesPage() {
   const topCouncils = councilsWithSalary.slice(0, 50);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -87,7 +84,7 @@ export default function CouncilCeoSalariesPage() {
           <h2 className="type-title-2 mb-1">Highest-paid chief executives</h2>
           <p className="type-body-sm text-muted-foreground mb-6">Top 50 council CEO salaries in England</p>
 
-          <div className="space-y-5">
+          <div className="">
             {topCouncils.map((council, index) => {
               const salary = council.detailed!.chief_executive_salary!;
               const ceoName = council.detailed!.chief_executive!;
@@ -96,7 +93,7 @@ export default function CouncilCeoSalariesPage() {
               const barWidth = maxSalary > 0 ? (salary / maxSalary) * 100 : 0;
 
               return (
-                <div key={council.ons_code}>
+                <div key={council.ons_code} className="py-4 border-b border-border/30 last:border-b-0 first:pt-0 last:pb-0">
                   <div className="flex items-baseline justify-between mb-1">
                     <Link
                       href={`/council/${slug}`}
@@ -143,7 +140,6 @@ export default function CouncilCeoSalariesPage() {
           </ul>
         </nav>
       </main>
-      <Footer />
-    </div>
+      </>
   );
 }

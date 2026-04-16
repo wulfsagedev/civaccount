@@ -3,8 +3,6 @@ import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Council Tax Increases 2025-26 — Year-on-Year Changes',
@@ -77,8 +75,7 @@ export default function CouncilTaxIncreasesPage() {
   const maxIncrease = biggestIncreases[0].changePercent;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -186,7 +183,6 @@ export default function CouncilTaxIncreasesPage() {
           </ul>
         </nav>
       </main>
-      <Footer />
-    </div>
+      </>
   );
 }
