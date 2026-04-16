@@ -1042,7 +1042,7 @@ Kent County Council is the gold-standard council entry at line ~3052 of `county-
 | `src/data/councils/unitary.ts` | 63 | ~19,500 | 77.7% |
 | `src/data/councils/london-boroughs.ts` | 33 | ~9,600 | 78.3% |
 
-**Overall average parity: 76.0%** (run `python3 audit-kent-parity.py` for live data)
+**Overall average parity: 99.9%** (run `python3 scripts/audit-kent-parity.py` for live data)
 
 ### Kent's 47 Field Groups
 
@@ -1083,7 +1083,7 @@ Kent County Council is the gold-standard council entry at line ~3052 of `county-
 | `service_spending` | 309/317 (97%) | ✅ Near-complete |
 | `budget_gap` | 301/317 (95%) | ✅ Near-complete |
 | `top_suppliers` | 301/317 (95%) | ✅ Near-complete |
-| `grant_payments` | 85/317 (27%) | 232 missing — MANUAL research |
+| `grant_payments` | 309/317 (97%) | 8 remaining — no public recipient data on .gov.uk |
 | `councillor_allowances_detail` | 229/317 (72%) | 88 missing — IN PROGRESS |
 
 ### Data Value Conventions
