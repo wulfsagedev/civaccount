@@ -4,8 +4,8 @@ import { getThreeYearSqueeze } from '@/lib/insights-stats';
 import { getCouncilDisplayName } from '@/data/councils';
 
 export function renderThreeYearSqueeze(): ReactElement {
-  const { top, medianPct } = getThreeYearSqueeze(5);
-  const max = top[0]?.changePct ?? 1;
+  const { top, medianAbs } = getThreeYearSqueeze(5);
+  const max = top[0]?.changeAbs ?? 1;
 
   return ogWrap(
     <div
@@ -27,7 +27,7 @@ export function renderThreeYearSqueeze(): ReactElement {
               letterSpacing: '0.08em',
             }}
           >
-            Compound Band D rise · 2023-24 → 2025-26
+            Band D · £ more per year than 2023-24
           </span>
           <span
             style={{
@@ -38,14 +38,14 @@ export function renderThreeYearSqueeze(): ReactElement {
               lineHeight: 1.05,
             }}
           >
-            National median: +{medianPct.toFixed(1)}% in 2 years
+            Typical council: +£{Math.round(medianAbs)} a year
           </span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
           {top.map((r, i) => {
             const name = getCouncilDisplayName(r.council);
-            const pct = (r.changePct / max) * 100;
+            const pct = (r.changeAbs / max) * 100;
             return (
               <div
                 key={r.council.ons_code}
@@ -64,7 +64,7 @@ export function renderThreeYearSqueeze(): ReactElement {
                   <span
                     style={{ fontSize: '42px', fontWeight: 700, color: OG.negative }}
                   >
-                    +{r.changePct.toFixed(1)}%
+                    +£{Math.round(r.changeAbs)}
                   </span>
                 </div>
                 <div

@@ -3,7 +3,11 @@ import Link from 'next/link';
 import { InsightHero } from '@/components/insights/InsightHero';
 import { getInsightCard } from '@/data/insights';
 import { getThreeYearSqueeze } from '@/lib/insights-stats';
-import { getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import {
+  formatCurrency,
+  getCouncilDisplayName,
+  getCouncilSlug,
+} from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 const card = getInsightCard('three-year-squeeze')!;
@@ -21,8 +25,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const { top, medianPct, meanPct, councilsWithData } = getThreeYearSqueeze(20);
-  const max = top[0]?.changePct ?? 1;
+  const { top, medianAbs, meanAbs, councilsWithData } = getThreeYearSqueeze(20);
+  const max = top[0]?.changeAbs ?? 1;
+  const topCouncilName = top[0] ? getCouncilDisplayName(top[0].council) : '';
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -50,55 +55,69 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              National median Band D rise over 2 years (compounded)
+              Typical extra on a Band D bill vs 2023-24
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
-              +{medianPct.toFixed(1)}%
+              +{formatCurrency(Math.round(medianAbs), { decimals: 0 })} a year
             </p>
             <p className="type-body-sm text-muted-foreground">
-              Across all {councilsWithData} English councils with 2023-24 and
-              2025-26 rates on record. Mean: +{meanPct.toFixed(1)}%. The top of
-              the league has compounded past +{top[0].changePct.toFixed(0)}%.
+              The median English council — across all {councilsWithData} with
+              2023-24 and 2025-26 rates on record. Mean: +
+              {formatCurrency(Math.round(meanAbs), { decimals: 0 })}. The
+              biggest rise is {topCouncilName}, where Band D is now +
+              {formatCurrency(Math.round(top[0].changeAbs), { decimals: 0 })} a
+              year.
             </p>
           </div>
         }
       >
         <section className="card-elevated p-5 sm:p-6">
-          <h2 className="type-title-2 mb-1">Biggest 2-year rises</h2>
+          <h2 className="type-title-2 mb-1">Biggest 2-year rises, in pounds</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Ranked by compound Band D rise from 2023-24 to 2025-26. Adding the
-            two yearly percentages understates the real increase — these are
-            multiplied, not summed.
+            Ranked by how much more a Band D household pays per year now than
+            in 2023-24. Councils with higher starting bills tend to rise by
+            more in pounds, even if the percentage is similar.
           </p>
 
-          <div className="space-y-4">
+          <div>
             {top.map((r, i) => {
               const name = getCouncilDisplayName(r.council);
               const slug = getCouncilSlug(r.council);
-              const widthPct = (r.changePct / max) * 100;
+              const widthPct = (r.changeAbs / max) * 100;
               return (
-                <div key={r.council.ons_code}>
-                  <div className="flex items-baseline justify-between mb-1.5">
+                <div
+                  key={r.council.ons_code}
+                  className="py-4 first:pt-0 last:pb-0 border-t border-border/40 first:border-t-0"
+                >
+                  {/* Row 1: Council + £ amount (both bold) */}
+                  <div className="flex items-baseline justify-between mb-1">
                     <Link
                       href={`/council/${slug}`}
-                      className="type-body-sm font-medium hover:underline"
+                      className="type-body font-semibold! leading-tight! min-h-0! min-w-0! hover:underline"
                     >
                       {i + 1}. {name}
                     </Link>
-                    <span className="type-body-sm font-semibold tabular-nums">
-                      +{r.changePct.toFixed(1)}%
+                    <span className="type-body font-semibold! leading-tight! tabular-nums">
+                      +{formatCurrency(Math.round(r.changeAbs), { decimals: 0 })}
                     </span>
                   </div>
+                  {/* Row 2: Range + % (both muted) */}
+                  <div className="flex items-baseline justify-between mb-1">
+                    <p className="type-caption text-muted-foreground tabular-nums">
+                      {formatCurrency(r.from, { decimals: 0 })} →{' '}
+                      {formatCurrency(r.to, { decimals: 0 })} a year
+                    </p>
+                    <span className="type-caption text-muted-foreground tabular-nums">
+                      up {r.changePct.toFixed(1)}%
+                    </span>
+                  </div>
+                  {/* Row 3: Bar */}
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div
                       className="h-full rounded-full bg-foreground"
                       style={{ width: `${widthPct}%` }}
                     />
                   </div>
-                  <p className="type-caption text-muted-foreground tabular-nums mt-1.5">
-                    £{r.from.toFixed(0)} → £{r.to.toFixed(0)} · +£
-                    {r.changeAbs.toFixed(0)} a year
-                  </p>
                 </div>
               );
             })}
@@ -106,10 +125,10 @@ export default function Page() {
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
             How we got this: we read each council&rsquo;s 2023-24 and 2025-26
-            Band D rate from GOV.UK and compute the compound rise as
-            (rate<sub>2025</sub> ÷ rate<sub>2023</sub>) − 1. All 317 English
-            councils are in the league — both rates are on the record for every
-            one.
+            headline Band D rate from GOV.UK and subtract one from the other.
+            All 317 English councils are in the league — both rates are on the
+            public record for every one. Councils that start from a higher base
+            naturally show bigger £ rises even at similar percentages.
           </p>
         </section>
       </InsightHero>

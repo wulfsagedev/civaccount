@@ -93,8 +93,8 @@ function buildTileStats(): Record<
       explainer: `${getCouncilDisplayName(rises[0].council)} raised Band D the most. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
     },
     'three-year-squeeze': {
-      hero: `+${threeYear.top[0].changePct.toFixed(1)}%`,
-      explainer: `Compound Band D rise over 2 years for ${getCouncilDisplayName(threeYear.top[0].council)} — the national median is +${threeYear.medianPct.toFixed(1)}%. Compounded, not added.`,
+      hero: `+${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })}`,
+      explainer: `A Band D household in ${getCouncilDisplayName(threeYear.top[0].council)} now pays ${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })} more per year than in 2023-24 — the biggest jump. Typical English council: ${formatCurrency(Math.round(threeYear.medianAbs), { decimals: 0 })} more per year.`,
     },
     'where-every-pound-goes': {
       hero: `${topService.pence.toFixed(0)}p`,

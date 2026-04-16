@@ -123,31 +123,31 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   {
     slug: 'three-year-squeeze',
     section: 'bill',
-    title: 'The 3-year squeeze',
-    subtitle: 'Compound Band D rises 2023-24 → 2025-26',
+    title: 'Bigger bills, 2 years on',
+    subtitle: 'How much more Band D costs than in 2023-24',
     metaDescription:
-      'Compounded Band D council tax rises over the last two years across every English council — the numbers most people add instead of multiplying.',
+      'The Band D council tax rise from 2023-24 to 2025-26 for every English council — in pounds, not percentages. Shows how much more a typical household pays each year now than two years ago.',
     shareText:
-      'The compound Band D rise over 2 years — the number most people get wrong by adding instead of multiplying',
+      "How much more Band D costs per year than 2 years ago — ranked across all 317 English councils",
     longformCopy: [
-      "Councils publish Band D rises one year at a time. A 5% rise followed by another 5% rise isn't a 10% rise — it's 10.25%. Over two or three years the gap between adding and compounding grows quickly.",
-      "This card ranks every English council by the compound rise from 2023-24 to 2025-26. The top of the league is pushing 17% in two years, while the national median sits around 10%. All 317 councils are included — both Band D rates are on the record for every one.",
+      'Every spring, councils announce their new Band D rate and the percentage rise. Two years of rises compound quickly — the council that raised by 5% then 5% is now charging 10.25% more, not 10%.',
+      "This card shows the story in pounds: how many more pounds a Band D household pays per year now compared with 2023-24. The biggest rises are over £300 more per year. The national median is around £160. All 317 English councils are included — Band D rates for both years are on the public record.",
     ],
     faq: [
       {
-        question: 'Why show a compound rise instead of a simple total?',
+        question: 'How much has my Band D bill gone up in the last 2 years?',
         answer:
-          "Each year's rise is applied on top of the previous year's higher rate, not the original rate. Adding the two yearly percentages understates the real increase — only compounding matches the bill you actually pay.",
+          "Find your council on the ranked list to see the exact figure. Across England, the typical council has added around £160 to a Band D bill since 2023-24. The biggest rises are more than double that.",
       },
       {
-        question: 'Which English council has raised Band D the most over two years?',
+        question: 'Why is the rise bigger than if you add the two percentages?',
         answer:
-          'The top of the league is shown on this page. Councils in severe financial difficulty often raise by the maximum permitted each year, which compounds into the biggest two-year increases.',
+          'Each yearly rise is calculated on top of the previous higher bill, not the original. A 5% rise followed by another 5% is actually 10.25%, not 10%. Over two years, most councils are up around 10% — worth around £160 on a typical Band D bill.',
       },
       {
         question: 'Where does this data come from?',
         answer:
-          "Band D council tax rates for 2023-24 and 2025-26 are published by the Ministry of Housing, Communities and Local Government. We read each council's headline figure directly from GOV.UK.",
+          "Band D council tax rates for 2023-24 and 2025-26 are published by the Ministry of Housing, Communities and Local Government. We read each council's headline figure directly from GOV.UK and subtract one from the other.",
       },
     ],
     sources: [

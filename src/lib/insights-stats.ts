@@ -796,11 +796,15 @@ export interface ThreeYearSqueezeEntry {
 }
 
 export interface ThreeYearSqueezeStats {
-  /** Councils ranked by compound rise, descending. 100% parity (317/317). */
+  /** Councils ranked by absolute £ rise, descending. 100% parity (317/317). */
   top: ThreeYearSqueezeEntry[];
-  /** National median compound rise over the 2-year window. */
+  /** National median absolute £ rise over the 2-year window. */
+  medianAbs: number;
+  /** National mean absolute £ rise. */
+  meanAbs: number;
+  /** National median compound % rise. */
   medianPct: number;
-  /** National mean compound rise. */
+  /** National mean compound % rise. */
   meanPct: number;
   /** Councils included (those with both 2023 and 2025 Band D rates). */
   councilsWithData: number;
@@ -832,8 +836,18 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
     });
   }
 
-  entries.sort((a, b) => b.changePct - a.changePct);
+  // Rank by absolute £ rise — the hero figure. Councils paying more per
+  // household over the 2-year window tell a more concrete story than %s.
+  entries.sort((a, b) => b.changeAbs - a.changeAbs);
+
+  const sortedAbs = entries.map((e) => e.changeAbs).sort((a, b) => a - b);
   const sortedPcts = entries.map((e) => e.changePct).sort((a, b) => a - b);
+  const medianAbs =
+    sortedAbs.length > 0 ? sortedAbs[Math.floor(sortedAbs.length / 2)] : 0;
+  const meanAbs =
+    sortedAbs.length > 0
+      ? sortedAbs.reduce((s, v) => s + v, 0) / sortedAbs.length
+      : 0;
   const medianPct =
     sortedPcts.length > 0 ? sortedPcts[Math.floor(sortedPcts.length / 2)] : 0;
   const meanPct =
@@ -843,6 +857,8 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
 
   _threeYear = {
     top: entries,
+    medianAbs,
+    meanAbs,
     medianPct,
     meanPct,
     councilsWithData: entries.length,
