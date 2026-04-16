@@ -193,8 +193,8 @@ export default function InsightsPage() {
           </div>
         </div>
         <p className="type-body-sm text-muted-foreground mb-8">
-          National insights across 317 English councils. Every card has a share
-          button and a method line — no cherry-picking, no sensationalism.
+          National insights across all 317 English councils. Each card shows
+          the full ranking and the method behind it.
         </p>
 
         {/* Hero — national total spend */}
