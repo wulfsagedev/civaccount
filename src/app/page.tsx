@@ -1,14 +1,15 @@
 'use client';
 
-import { Suspense, memo } from 'react';
+import { memo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCouncil } from '@/context/CouncilContext';
 import CouncilSelector from '@/components/CouncilSelector';
-import CouncilDashboard from '@/components/CouncilDashboard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { DataFlowAnimation } from '@/components/ui/data-flow-animation';
 import Link from 'next/link';
 import { ChevronRight, Vote, GitCompareArrows } from 'lucide-react';
+import { getCouncilSlug } from '@/data/councils';
 
 // Memoized homepage content to prevent re-renders
 const HomepageContent = memo(function HomepageContent() {
@@ -89,20 +90,20 @@ function LoadingSkeleton() {
 
 export default function HomePage() {
   const { selectedCouncil, isLoading } = useCouncil();
+  const router = useRouter();
 
-  if (isLoading) {
+  // Returning visitors with a saved council get redirected to the canonical
+  // /council/[slug] URL. Keeps `/` as the shareable homepage for everyone,
+  // and ensures every council has a single, unique, crawlable URL.
+  useEffect(() => {
+    if (!isLoading && selectedCouncil) {
+      router.replace(`/council/${getCouncilSlug(selectedCouncil)}`);
+    }
+  }, [isLoading, selectedCouncil, router]);
+
+  if (isLoading || selectedCouncil) {
     return <LoadingSkeleton />;
   }
 
-  // Homepage - centered search (no council selected)
-  if (!selectedCouncil) {
-    return <HomepageContent />;
-  }
-
-  // Dashboard view - when council is selected
-  return (
-    <Suspense fallback={<LoadingSkeleton />}>
-      <CouncilDashboard />
-    </Suspense>
-  );
+  return <HomepageContent />;
 }
