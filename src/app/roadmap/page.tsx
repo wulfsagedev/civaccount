@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle, Circle } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { PageContainer } from '@/components/ui/page-container';
 
 interface RoadmapSection {
   title: string;
@@ -64,8 +65,7 @@ export default function RoadmapPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main id="main-content" className="flex-1">
-        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-5xl">
+      <PageContainer className="py-8 sm:py-12">
           {/* Back link */}
           <div className="mb-8">
             <Link href="/">
@@ -135,8 +135,7 @@ export default function RoadmapPage() {
               Send feedback
             </Button>
           </section>
-        </div>
-      </main>
+      </PageContainer>
 
       <Footer />
     </div>

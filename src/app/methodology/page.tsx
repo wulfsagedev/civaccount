@@ -20,6 +20,7 @@ import {
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { PageContainer } from '@/components/ui/page-container';
 import { COVERAGE_STATS, VALIDATION_SUMMARY } from '@/data/coverage-stats';
 import { DATA_YEARS } from '@/lib/data-years';
 
@@ -32,9 +33,7 @@ export default function MethodologyPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main id="main-content" className="flex-1">
-        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-5xl">
-          <div className="max-w-3xl mx-auto">
+      <PageContainer className="py-8 sm:py-12">
             <div className="mb-8">
               <Link href="/">
                 <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
@@ -536,9 +535,7 @@ export default function MethodologyPage() {
                 </a>
               </div>
             </div>
-          </div>
-        </div>
-      </main>
+      </PageContainer>
 
       <Footer />
     </div>

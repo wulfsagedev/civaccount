@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import { PageContainer } from '@/components/ui/page-container';
 import { PageShareButton } from '@/components/ui/page-share-button';
 import { InsightCard } from '@/components/insights/InsightCard';
 import {
@@ -173,10 +174,7 @@ export default function InsightsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main
-        id="main-content"
-        className="flex-1 container mx-auto px-4 max-w-5xl py-8"
-      >
+      <PageContainer>
         <Breadcrumb
           items={[{ label: 'Home', href: '/' }, { label: 'Insights' }]}
         />
@@ -295,7 +293,7 @@ export default function InsightsPage() {
             </li>
           </ul>
         </section>
-      </main>
+      </PageContainer>
     </>
   );
 }

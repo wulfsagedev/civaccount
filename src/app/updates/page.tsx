@@ -7,6 +7,7 @@ import { History, Sparkles, CheckCircle, ArrowLeft, Info } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { PageContainer } from '@/components/ui/page-container';
 
 const VERSION = "3.0";
 
@@ -124,9 +125,7 @@ export default function UpdatesPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main id="main-content" className="flex-1">
-        <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 max-w-5xl">
-          <div className="max-w-4xl mx-auto">
+      <PageContainer className="py-8 sm:py-12">
           <div className="mb-8">
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
@@ -224,9 +223,7 @@ export default function UpdatesPage() {
               </div>
             </div>
           </div>
-          </div>
-        </div>
-      </main>
+      </PageContainer>
 
       <Footer />
     </div>

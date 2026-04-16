@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
 import { X, Plus, ArrowUpDown, ChevronRight, Vote } from 'lucide-react';
+import { PageContainer } from '@/components/ui/page-container';
 import { PageShareButton } from '@/components/ui/page-share-button';
 import Link from 'next/link';
 
@@ -54,7 +55,7 @@ export default function CompareClient() {
   return (
     <>
       <Header />
-      <main id="main-content" className="container mx-auto px-4 py-6 max-w-5xl">
+      <PageContainer>
         <div className="flex items-start justify-between gap-2 mb-6">
           <div>
             <h1 className="type-title-1 mb-1">Compare councils</h1>
@@ -385,7 +386,7 @@ export default function CompareClient() {
             </Link>
           </div>
         )}
-      </main>
+      </PageContainer>
       <Footer />
     </>
   );
