@@ -176,7 +176,7 @@ const SpendingCard = ({
                     id={categoryId}
                     role="region"
                     aria-label={`${category.name} spending details`}
-                    className="mt-3 rounded-lg bg-muted/20 p-4"
+                    className="mt-3 rounded-lg bg-muted/20 p-4 animate-in fade-in slide-in-from-top-1 duration-180 ease-out-snap motion-reduce:animate-none"
                   >
                     {/* No amounts indicator */}
                     {spending.services.every(s => !s.amount) && (

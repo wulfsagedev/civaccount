@@ -79,7 +79,10 @@ const TaxBandsCard = ({
       </div>
 
       {/* Selected band details - show total bill as primary when available */}
-      <div className="p-4 sm:p-5 rounded-lg bg-muted/30">
+      <div
+        key={selectedBand}
+        className="p-4 sm:p-5 rounded-lg bg-muted/30 animate-in fade-in duration-180 ease-out-snap motion-reduce:animate-none"
+      >
         <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]}</p>
         <p className="type-metric mb-4">
           <SourceAnnotation

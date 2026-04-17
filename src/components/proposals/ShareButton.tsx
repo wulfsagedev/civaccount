@@ -170,7 +170,10 @@ function SharePreviewModal({
             style={{ backgroundColor: 'var(--share-accent-bg)', color: 'var(--share-accent)' }}
           >
             {state === 'success' ? (
-              <span className="type-body-sm font-semibold text-positive">{feedback}</span>
+              <span className="type-body-sm font-semibold text-positive inline-flex items-center gap-1.5 animate-in zoom-in-95 fade-in duration-180 ease-out-snap motion-reduce:animate-none">
+                <Check className="h-4 w-4" aria-hidden="true" />
+                {feedback}
+              </span>
             ) : (
               <span className="type-body-sm font-semibold">
                 {hasNativeShare ? 'Share' : 'Copy link'}

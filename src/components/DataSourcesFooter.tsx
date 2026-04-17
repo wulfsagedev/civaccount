@@ -132,7 +132,7 @@ export default function DataSourcesFooter() {
 
         {/* Expanded: all sources grouped */}
         {expanded && (
-          <div className="mt-4 pt-4 border-t border-border/30 space-y-4">
+          <div className="mt-4 pt-4 border-t border-border/30 space-y-4 animate-in fade-in slide-in-from-top-1 duration-180 ease-out-snap motion-reduce:animate-none">
             {/* Group allLinks by group */}
             {(() => {
               const groups = new Map<string, typeof allLinks>();

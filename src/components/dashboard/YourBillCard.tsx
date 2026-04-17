@@ -289,7 +289,7 @@ const YourBillCard = ({
               href={detailed.council_tax_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted transition-colors group cursor-pointer"
+              className="cta-card mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted group cursor-pointer"
             >
               <div className="leading-tight">
                 <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
@@ -298,7 +298,7 @@ const YourBillCard = ({
                 </p>
                 <p className="type-caption text-muted-foreground">Band, parish, and discounts make your bill different from the average</p>
               </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
+              <ExternalLink className="cta-chevron h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
             </a>
           )}
         </div>
@@ -325,7 +325,7 @@ const YourBillCard = ({
       {/* Compare CTA */}
       <Link
         href="/compare"
-        className="mt-4 flex items-center justify-between p-3 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+        className="cta-card mt-4 flex items-center justify-between p-3 rounded-xl border border-border/40 bg-card hover:bg-muted/50 group cursor-pointer"
       >
         <div className="leading-tight">
           <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
@@ -335,13 +335,13 @@ const YourBillCard = ({
             See how {selectedCouncil.name} compares side by side
           </p>
         </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+        <ChevronRight className="cta-chevron h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
       </Link>
 
       {/* Get your tax card */}
       <Link
         href={`/council/${getCouncilSlug(selectedCouncil)}/tax-card`}
-        className="mt-4 flex items-center justify-between p-3 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+        className="cta-card mt-4 flex items-center justify-between p-3 rounded-xl border border-border/40 bg-card hover:bg-muted/50 group cursor-pointer"
       >
         <div className="leading-tight">
           <p className="type-body-sm font-semibold group-hover:text-foreground transition-colors">
@@ -351,7 +351,7 @@ const YourBillCard = ({
             A personalised receipt showing where your money goes
           </p>
         </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+        <ChevronRight className="cta-chevron h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
       </Link>
 
       {/* Share your council tax card */}

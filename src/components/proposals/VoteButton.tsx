@@ -124,11 +124,14 @@ export default function VoteButton({
       >
         <ChevronUp className={isVertical ? 'h-5 w-5' : 'h-4 w-4'} />
       </button>
-      <span className={cn(
-        'font-semibold tabular-nums text-center',
-        isVertical ? 'type-body min-w-[2ch]' : 'type-body-sm min-w-[2ch] px-1',
-        score > 0 ? 'text-positive' : score < 0 ? 'text-negative' : 'text-muted-foreground'
-      )}>
+      <span
+        key={score}
+        className={cn(
+          'font-semibold tabular-nums text-center animate-in zoom-in-95 fade-in duration-180 ease-out-snap motion-reduce:animate-none',
+          isVertical ? 'type-body min-w-[2ch]' : 'type-body-sm min-w-[2ch] px-1',
+          score > 0 ? 'text-positive' : score < 0 ? 'text-negative' : 'text-muted-foreground'
+        )}
+      >
         {score}
       </span>
       <button

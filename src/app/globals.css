@@ -302,6 +302,68 @@
   }
 }
 
+/* ============================================
+   PRESS FEEDBACK — Universal "click felt" rule
+   ============================================
+   Every button, role=button, and clickable card surface gets a subtle
+   scale-down on :active. This is the single biggest "feels premium"
+   affordance — without it, clicks feel either instant (acknowledgment-free)
+   or slow (waiting for the next page with no in-between state).
+
+   Opt-out: add `data-no-press` attribute to any button that shouldn't scale
+   (e.g., toggle switches, segmented controls, header pill items where scale
+   would distort the morph animation).
+*/
+
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active,
+/* Anchors that contain block-level children = card/CTA-style links, NOT inline
+   text links inside paragraphs (those wrap text only). The :has() check makes
+   the rule self-scoping — opt-in by structure, not class. */
+a:has(> div, > p, > section, > article, > h1, > h2, > h3, > h4):active {
+  transform: scale(0.97);
+  transition: transform var(--duration-fast) var(--ease-out-snap);
+}
+
+button[data-no-press]:active,
+[role="button"][data-no-press]:active,
+a[data-no-press]:active {
+  transform: none;
+}
+
+/* Reduced motion: no scale (already handled globally, but explicit) */
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active,
+  a:has(> div, > p, > section, > article, > h1, > h2, > h3, > h4):active {
+    transform: none;
+  }
+}
+
+/* CTA card pattern — Link cards with the standard "title + subtitle + chevron"
+   pattern (Compare with other councils, Get your tax card, Check your bill, etc).
+   Adds hover-lift + chevron nudge on hover. The chevron uses
+   .cta-chevron inside. */
+.cta-card {
+  transition:
+    background-color var(--duration-base) var(--ease-out-snap),
+    border-color var(--duration-base) var(--ease-out-snap),
+    transform var(--duration-base) var(--ease-out-snap);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cta-card:hover {
+    transform: translateY(-1px);
+  }
+  .cta-card:hover .cta-chevron {
+    transform: translateX(2px);
+  }
+}
+
+.cta-chevron {
+  transition: transform var(--duration-base) var(--ease-out-snap);
+}
+
 /* Touch hitbox — Emil Kowalski's pattern. Lets a small inline trigger
    (e.g. an info icon next to label text) keep its visual size while still
    exposing a 44×44 tap target via a transparent ::before. Use on tiny
@@ -369,7 +431,7 @@
 }
 
 .card-elevated-interactive:active {
-  transform: translateY(0);
+  transform: scale(0.985) translateY(0);
   transition-duration: var(--duration-fast);
 }
 

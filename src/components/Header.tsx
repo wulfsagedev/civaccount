@@ -172,7 +172,7 @@ export default function Header() {
 
           {/* Mobile Menu Dropdown — simplified hierarchy */}
           {mobileMenuOpen && (
-            <div className="lg:hidden mt-4 pt-4 border-t">
+            <div className="lg:hidden mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-180 ease-out-snap motion-reduce:animate-none">
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 {/* Primary: core features */}
                 <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} onClick={closeMobileMenu} className={mobileNavLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
@@ -351,7 +351,7 @@ export default function Header() {
 
           {/* Mobile menu dropdown - attached to sticky nav */}
           {mobileMenuOpen && isScrolled && (
-            <div className="lg:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3">
+            <div className="lg:hidden bg-background/95 backdrop-blur-xl border border-t-0 border-border/40 rounded-b-2xl shadow-lg p-3 animate-in fade-in slide-in-from-top-2 duration-180 ease-out-snap motion-reduce:animate-none">
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} onClick={closeMobileMenu} className={mobileNavLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
                   <Vote className="h-4 w-4" aria-hidden="true" />
