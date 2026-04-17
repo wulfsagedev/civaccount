@@ -12,6 +12,7 @@ import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import DataGapNotice from '@/components/ui/data-gap-notice';
 
 // Service descriptions with examples
 const SERVICE_DETAILS: Record<string, { description: string; examples: string[] }> = {
@@ -373,6 +374,20 @@ const SpendingCard = ({
             </a>
           )}
         </p>
+
+        {/* Structural gap notice for district councils — they don't deliver
+            education, adult social care, public health or transport, so the
+            service_spending table naturally has fewer categories than a
+            county council or unitary. Telling readers this up front prevents
+            the "why isn't education here?" confusion. */}
+        {selectedCouncil.type === "SD" && (
+          <div className="mt-6 pt-5 border-t border-border/50">
+            <DataGapNotice
+              gapKey="service_spending.district_structural"
+              council={selectedCouncil}
+            />
+          </div>
+        )}
       </section>
 
       {/* Have your say CTA */}

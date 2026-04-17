@@ -11,6 +11,7 @@ import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import DataGapNotice from '@/components/ui/data-gap-notice';
 
 interface LeadershipCardProps {
   selectedCouncil: Council;
@@ -271,6 +272,18 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
             </div>
             <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 ml-3" aria-hidden="true" />
           </a>
+        </div>
+      )}
+
+      {/* Thin-cabinet notice — when fewer than 5 cabinet members are listed
+          for a council that should have at least 6 (Kent baseline). */}
+      {(detailed.cabinet?.length ?? 0) > 0 && (detailed.cabinet?.length ?? 0) < 5 && (
+        <div className="mt-6 pt-5 border-t border-border/50">
+          <DataGapNotice
+            gapKey="cabinet.thin"
+            council={selectedCouncil}
+            extra={`${detailed.cabinet!.length} member${detailed.cabinet!.length === 1 ? "" : "s"} captured.`}
+          />
         </div>
       )}
     </section>

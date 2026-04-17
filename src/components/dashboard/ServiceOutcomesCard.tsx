@@ -15,6 +15,7 @@ import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import { DATA_YEARS } from '@/lib/data-years';
+import DataGapNotice from '@/components/ui/data-gap-notice';
 
 interface ServiceOutcomesCardProps {
   selectedCouncil: Council;
@@ -408,6 +409,33 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
               </div>
             </div>
           )}
+
+          {/* KPI gap notices — honest about missing/thin published indicators. */}
+          {(() => {
+            const kpiCount = detailed.performance_kpis?.length ?? 0;
+            if (kpiCount === 0) {
+              return (
+                <div className="mt-6 pt-5 border-t border-border/50">
+                  <DataGapNotice
+                    gapKey="performance_kpis.absent"
+                    council={selectedCouncil}
+                  />
+                </div>
+              );
+            }
+            if (kpiCount < 4) {
+              return (
+                <div className="mt-6 pt-5 border-t border-border/50">
+                  <DataGapNotice
+                    gapKey="performance_kpis.thin"
+                    council={selectedCouncil}
+                    extra={`${kpiCount} KPI${kpiCount === 1 ? "" : "s"} published.`}
+                  />
+                </div>
+              );
+            }
+            return null;
+          })()}
         </section>
       )}
     </>

@@ -9,6 +9,7 @@ import { formatCurrency, formatBudget, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import DataGapNotice from '@/components/ui/data-gap-notice';
 
 interface SuppliersGrantsCardProps {
   selectedCouncil: Council;
@@ -312,6 +313,20 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Thin-list notice for top_suppliers — when the council has a list but
+          it's well below the depth we'd show for a comparable council. We
+          don't render this on the "absent" path because the existing grants
+          block (above) already renders its own notice. */}
+      {detailed?.top_suppliers && detailed.top_suppliers.length > 0 && detailed.top_suppliers.length < 10 && (
+        <div className="mt-6 pt-5 border-t border-border/50">
+          <DataGapNotice
+            gapKey="top_suppliers.thin"
+            council={selectedCouncil}
+            extra={`${detailed.top_suppliers.length} supplier${detailed.top_suppliers.length === 1 ? "" : "s"} published.`}
+          />
         </div>
       )}
     </section>

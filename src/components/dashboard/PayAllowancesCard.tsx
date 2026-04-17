@@ -10,6 +10,7 @@ import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import DataGapNotice from '@/components/ui/data-gap-notice';
 
 interface PayAllowancesCardProps {
   selectedCouncil: Council;
@@ -228,6 +229,64 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
           </div>
         </div>
       )}
+
+      {/* Honest gap notices — tell readers when our per-councillor allowance
+          table is partial (only top earners published) or absent, and why.
+          Rendered at card bottom so it doesn't interrupt the hook stat. */}
+      {(() => {
+        const detailCount = detailed.councillor_allowances_detail?.length ?? 0;
+        const totalCouncillors = detailed.total_councillors ?? 0;
+        if (!detailCount) {
+          return (
+            <div className="mt-6 pt-5 border-t border-border/50">
+              <DataGapNotice
+                gapKey="councillor_allowances_detail.absent"
+                council={selectedCouncil}
+              />
+            </div>
+          );
+        }
+        // Threshold: 90% of councillors. Below that = thin.
+        if (totalCouncillors > 0 && detailCount < totalCouncillors * 0.9) {
+          return (
+            <div className="mt-6 pt-5 border-t border-border/50">
+              <DataGapNotice
+                gapKey="councillor_allowances_detail.thin"
+                council={selectedCouncil}
+                extra={`We have ${detailCount} of ${totalCouncillors} councillors.`}
+              />
+            </div>
+          );
+        }
+        return null;
+      })()}
+
+      {(() => {
+        const bandCount = detailed.salary_bands?.length ?? 0;
+        if (!bandCount) {
+          return (
+            <div className="mt-6 pt-5 border-t border-border/50">
+              <DataGapNotice
+                gapKey="salary_bands.absent"
+                council={selectedCouncil}
+              />
+            </div>
+          );
+        }
+        // Thin only for medium+ councils that really should have 6+ bands.
+        if (bandCount < 4 && (detailed.staff_fte ?? 0) > 500) {
+          return (
+            <div className="mt-6 pt-5 border-t border-border/50">
+              <DataGapNotice
+                gapKey="salary_bands.thin"
+                council={selectedCouncil}
+                extra={`${bandCount} band${bandCount === 1 ? "" : "s"} published.`}
+              />
+            </div>
+          );
+        }
+        return null;
+      })()}
     </section>
   );
 };
