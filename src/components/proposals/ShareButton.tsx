@@ -304,7 +304,7 @@ function SharePreviewModal({
           </>
         ) : (
           <EmbedTabBody
-            previewImageUrl={imageUrl}
+            previewImageUrl={imageUrl ? `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}cb=${Date.now()}` : undefined}
             iframeSnippet={iframeSnippet}
             imageSnippet={imageSnippet}
             size={size}
