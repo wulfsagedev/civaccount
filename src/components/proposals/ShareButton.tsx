@@ -304,7 +304,7 @@ function SharePreviewModal({
           </>
         ) : (
           <EmbedTabBody
-            embedUrl={finalEmbedUrl}
+            previewImageUrl={imageUrl}
             iframeSnippet={iframeSnippet}
             imageSnippet={imageSnippet}
             size={size}
@@ -324,7 +324,7 @@ function SharePreviewModal({
 }
 
 function EmbedTabBody({
-  embedUrl,
+  previewImageUrl,
   iframeSnippet,
   imageSnippet,
   size,
@@ -337,7 +337,7 @@ function EmbedTabBody({
   copiedKey,
   onCopyText,
 }: {
-  embedUrl: string;
+  previewImageUrl?: string;
   iframeSnippet: string;
   imageSnippet: string;
   size: EmbedSize;
@@ -350,18 +350,36 @@ function EmbedTabBody({
   copiedKey: string | null;
   onCopyText: (text: string, key: string) => void;
 }) {
+  const [previewLoaded, setPreviewLoaded] = useState(false);
+
   return (
     <div className="flex flex-col gap-4">
-      {/* Live preview iframe */}
-      <div className="rounded-lg overflow-hidden border border-border/40 bg-muted/20">
-        <iframe
-          src={embedUrl}
-          title="Embed preview"
-          className="w-full bg-background"
-          style={{ height: 380, border: 0 }}
-          loading="lazy"
-          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
-        />
+      {/* Preview — OG card image. Fast, reliable, matches what social + image
+          embeds render. The live iframe snippet they copy updates with theme
+          and size; the preview conveys layout and data. */}
+      <div className="relative rounded-lg overflow-hidden border border-border/40 bg-muted/30 aspect-[1200/630]">
+        {previewImageUrl ? (
+          <>
+            {!previewLoaded && (
+              <div className="absolute inset-0 animate-pulse bg-muted flex items-center justify-center">
+                <span className="type-caption text-muted-foreground">Loading preview</span>
+              </div>
+            )}
+            <img
+              src={previewImageUrl}
+              alt="Embed preview"
+              className={`w-full h-full object-cover ${previewLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setPreviewLoaded(true)}
+            />
+            <span className="absolute top-2 left-2 type-caption font-semibold px-2 py-0.5 rounded-md bg-background/80 backdrop-blur-sm text-foreground">
+              Preview
+            </span>
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="type-caption text-muted-foreground">No preview available</span>
+          </div>
+        )}
       </div>
 
       {/* Size toggle */}
