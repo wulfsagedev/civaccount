@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
@@ -49,11 +50,11 @@ export default function CouncilTaxIncreasesPage() {
   const faqs = [
     {
       question: 'How much did council tax go up on average in 2025-26?',
-      answer: `Council tax increased by an average of ${avgChange.toFixed(1)}% in 2025-26 across English councils.`,
+      answer: `Council tax went up by an average of ${avgChange.toFixed(1)}% in 2025-26 across English councils.`,
     },
     {
-      question: 'Which council had the biggest council tax increase in 2025-26?',
-      answer: `${biggestName} had the biggest increase at ${biggestIncreases[0].changePercent.toFixed(1)}% (${formatCurrency(biggestIncreases[0].changeAmount, { decimals: 2 })} more than last year).`,
+      question: 'Which council had the biggest council tax rise in 2025-26?',
+      answer: `${biggestName} had the biggest rise — ${biggestIncreases[0].changePercent.toFixed(1)}% (${formatCurrency(biggestIncreases[0].changeAmount, { decimals: 2 })} more than last year).`,
     },
   ];
 
@@ -90,87 +91,51 @@ export default function CouncilTaxIncreasesPage() {
         <h1 className="type-title-1 mb-2">Council Tax Increases 2025-26</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
           Council tax in England rose by an average of {avgChange.toFixed(1)}% in 2025-26.
-          The biggest increase was {biggestName} at {biggestIncreases[0].changePercent.toFixed(1)}%,
-          while {getCouncilDisplayName(smallestIncreases[0].council)} had the smallest change at {smallestIncreases[0].changePercent.toFixed(1)}%.
+          The biggest rise was {biggestName} at {biggestIncreases[0].changePercent.toFixed(1)}%.
+          The smallest change was {getCouncilDisplayName(smallestIncreases[0].council)} at {smallestIncreases[0].changePercent.toFixed(1)}%.
         </p>
 
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Biggest increases</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the largest year-on-year rises</p>
+          <h2 className="type-title-2 mb-1">Biggest rises</h2>
+          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the largest rises since last year</p>
 
-          <div className="space-y-4">
-            {biggestIncreases.map((item, index) => {
-              const name = getCouncilDisplayName(item.council);
-              const slug = getCouncilSlug(item.council);
-              const barWidth = maxIncrease > 0 ? (item.changePercent / maxIncrease) * 100 : 0;
-
-              return (
-                <div key={item.council.ons_code}>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <Link
-                      href={`/council/${slug}`}
-                      className="type-body-sm font-medium hover:text-foreground transition-colors"
-                    >
-                      {index + 1}. {name}
-                    </Link>
-                    <span className="type-body-sm font-semibold tabular-nums text-negative">
-                      +{item.changePercent.toFixed(1)}%
-                    </span>
-                  </div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="type-caption text-muted-foreground">
-                      {formatCurrency(item.council.council_tax!.band_d_2024!, { decimals: 2 })} → {formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })}
-                    </span>
-                    <span className="type-caption text-muted-foreground tabular-nums">
-                      +{formatCurrency(item.changeAmount, { decimals: 2 })}
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground"
-                      style={{ width: `${barWidth}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RankedBarList>
+            {biggestIncreases.map((item, index) => (
+              <RankedBarRow
+                key={item.council.ons_code}
+                rank={index + 1}
+                title={getCouncilDisplayName(item.council)}
+                href={`/council/${getCouncilSlug(item.council)}`}
+                value={`+${item.changePercent.toFixed(1)}%`}
+                subLeft={`${formatCurrency(item.council.council_tax!.band_d_2024!, { decimals: 2 })} → ${formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })}`}
+                subRight={`+${formatCurrency(item.changeAmount, { decimals: 2 })}`}
+                fillPct={maxIncrease > 0 ? (item.changePercent / maxIncrease) * 100 : 0}
+              />
+            ))}
+          </RankedBarList>
         </section>
 
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Smallest increases</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the smallest year-on-year changes</p>
+          <h2 className="type-title-2 mb-1">Smallest changes</h2>
+          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the smallest changes since last year</p>
 
-          <div className="space-y-4">
-            {smallestIncreases.map((item, index) => {
-              const name = getCouncilDisplayName(item.council);
-              const slug = getCouncilSlug(item.council);
-
-              return (
-                <div key={item.council.ons_code}>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <Link
-                      href={`/council/${slug}`}
-                      className="type-body-sm font-medium hover:text-foreground transition-colors"
-                    >
-                      {index + 1}. {name}
-                    </Link>
-                    <span className={`type-body-sm font-semibold tabular-nums ${item.changePercent <= 0 ? 'text-positive' : 'text-negative'}`}>
-                      {item.changePercent > 0 ? '+' : ''}{item.changePercent.toFixed(1)}%
-                    </span>
-                  </div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="type-caption text-muted-foreground">
-                      {formatCurrency(item.council.council_tax!.band_d_2024!, { decimals: 2 })} → {formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })}
-                    </span>
-                    <span className="type-caption text-muted-foreground tabular-nums">
-                      {item.changeAmount >= 0 ? '+' : ''}{formatCurrency(item.changeAmount, { decimals: 2 })}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RankedBarList>
+            {smallestIncreases.map((item, index) => (
+              <RankedBarRow
+                key={item.council.ons_code}
+                rank={index + 1}
+                title={getCouncilDisplayName(item.council)}
+                href={`/council/${getCouncilSlug(item.council)}`}
+                value={
+                  <span className={item.changePercent <= 0 ? 'text-positive' : 'text-negative'}>
+                    {item.changePercent > 0 ? '+' : ''}{item.changePercent.toFixed(1)}%
+                  </span>
+                }
+                subLeft={`${formatCurrency(item.council.council_tax!.band_d_2024!, { decimals: 2 })} → ${formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })}`}
+                subRight={`${item.changeAmount >= 0 ? '+' : ''}${formatCurrency(item.changeAmount, { decimals: 2 })}`}
+              />
+            ))}
+          </RankedBarList>
         </section>
 
         <nav className="mt-8 space-y-2">

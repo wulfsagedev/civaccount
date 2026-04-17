@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { InsightHero } from '@/components/insights/InsightHero';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import { getExtremesByGroup, getHeadlineExtremes } from '@/lib/insights-stats';
 import {
@@ -87,8 +88,8 @@ export default function Page() {
               </p>
             </div>
             <p className="type-body-sm text-muted-foreground sm:col-span-2">
-              A Band D gap of {formatCurrency(gap, { decimals: 0 })} between the
-              cheapest and most expensive all-in-one councils in 2025-26.
+              A {formatCurrency(gap, { decimals: 0 })} gap on a Band D bill between the
+              cheapest and most expensive councils that run all services, for 2025-26.
             </p>
           </div>
         }
@@ -113,38 +114,21 @@ export default function Page() {
           const Row = ({
             council,
             rank,
-            variant,
           }: {
             council: (typeof groupCouncils)[number];
             rank: number;
             variant: 'cheap' | 'pricey';
           }) => {
             const bandD = council.council_tax!.band_d_2025;
-            const barWidth = (bandD / maxBandD) * 100;
-            const slug = getCouncilSlug(council);
-            const name = getCouncilDisplayName(council);
             return (
-              <div>
-                <div className="flex items-baseline justify-between mb-1.5">
-                  <Link
-                    href={`/council/${slug}`}
-                    className="type-body-sm font-medium hover:text-foreground transition-colors"
-                  >
-                    {rank}. {name}
-                  </Link>
-                  <span className="type-body-sm font-semibold tabular-nums">
-                    {formatCurrency(bandD, { decimals: 2 })}
-                  </span>
-                </div>
-                <div className="h-2 rounded-full bg-muted overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${
-                      variant === 'cheap' ? 'bg-foreground' : 'bg-foreground'
-                    }`}
-                    style={{ width: `${barWidth}%` }}
-                  />
-                </div>
-              </div>
+              <RankedBarRow
+                rank={rank}
+                title={getCouncilDisplayName(council)}
+                href={`/council/${getCouncilSlug(council)}`}
+                value={formatCurrency(bandD, { decimals: 2 })}
+                subLeft={council.type_name}
+                fillPct={(bandD / maxBandD) * 100}
+              />
             );
           };
 
@@ -160,7 +144,7 @@ export default function Page() {
                   <p className="type-caption text-muted-foreground font-semibold uppercase mb-3">
                     Cheapest 5
                   </p>
-                  <div className="space-y-4">
+                  <RankedBarList>
                     {cheapestRows.map((c, i) => (
                       <Row
                         key={c.ons_code}
@@ -169,13 +153,13 @@ export default function Page() {
                         variant="cheap"
                       />
                     ))}
-                  </div>
+                  </RankedBarList>
                 </div>
                 <div>
                   <p className="type-caption text-muted-foreground font-semibold uppercase mb-3">
                     Most expensive 5
                   </p>
-                  <div className="space-y-4">
+                  <RankedBarList>
                     {priciestRows.map((c, i) => (
                       <Row
                         key={c.ons_code}
@@ -184,7 +168,7 @@ export default function Page() {
                         variant="pricey"
                       />
                     ))}
-                  </div>
+                  </RankedBarList>
                 </div>
               </div>
             </section>

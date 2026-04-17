@@ -13,6 +13,7 @@ import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import DataGapNotice from '@/components/ui/data-gap-notice';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 
 // Service descriptions with examples
 const SERVICE_DETAILS: Record<string, { description: string; examples: string[] }> = {
@@ -95,91 +96,78 @@ const SpendingCard = ({
           councilName={selectedCouncil.name}
         />
 
-        {/* Service breakdown - Monzo/Apple style with optional drill-down */}
-        <div className="space-y-4">
+        {/* Service breakdown - uses shared RankedBarRow for consistent spacing/typography */}
+        <RankedBarList>
           {spendingCategories.map((category) => {
             const details = SERVICE_DETAILS[category.key];
             const spending = serviceSpendingMap.get(category.key);
             const isExpanded = expandedCategory === category.key;
             const hasDrillDown = !!spending;
             const categoryId = `spending-${category.key}`;
+            const shareValue = category.yourShare
+              ? formatCurrency(category.yourShare, { decimals: 0 })
+              : '';
+            const pctText = `${category.percentage.toFixed(0)}%`;
+
+            const row = hasDrillDown ? (
+              <RankedBarRow
+                title={
+                  <span className="flex items-center gap-1.5">
+                    {category.name}
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                      aria-hidden="true"
+                    />
+                  </span>
+                }
+                value={shareValue}
+                subLeft={details?.description || ''}
+                subRight={pctText}
+                fillPct={category.percentage}
+              />
+            ) : (
+              <RankedBarRow
+                title={category.name}
+                value={
+                  category.yourShare ? (
+                    <SourceAnnotation
+                      provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `${category.name} budget (your share)`,
+                        value: shareValue,
+                      }}
+                    >{shareValue}</SourceAnnotation>
+                  ) : ''
+                }
+                subLeft={details?.description || ''}
+                subRight={
+                  <SourceAnnotation
+                    provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `${category.name} budget share (%)`,
+                      value: pctText,
+                    }}
+                  >{pctText}</SourceAnnotation>
+                }
+                fillPct={category.percentage}
+              />
+            );
 
             return (
               <div key={category.key}>
-                {/* Header row: service name + amount — tappable if drill-down data exists */}
                 {hasDrillDown ? (
                   <button
                     onClick={() => setExpandedCategory(isExpanded ? null : category.key)}
-                    className="w-[calc(100%+2.5rem)] -ml-5 sm:w-[calc(100%+3rem)] sm:-ml-6 text-left min-h-[44px] cursor-pointer py-3 px-5 sm:px-6 hover:bg-muted transition-colors"
+                    className="block w-[calc(100%+2.5rem)] -ml-5 sm:w-[calc(100%+3rem)] sm:-ml-6 text-left min-h-[44px] cursor-pointer py-3 px-5 sm:px-6 hover:bg-muted transition-colors"
                     aria-expanded={isExpanded}
                     aria-controls={categoryId}
                   >
-                    <div className="flex items-baseline justify-between mb-1">
-                      <span className="type-body font-semibold flex items-center gap-1.5">
-                        {category.name}
-                        <ChevronDown
-                          className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                          aria-hidden="true"
-                        />
-                      </span>
-                      <span className="type-body font-semibold tabular-nums">
-                        {category.yourShare ? formatCurrency(category.yourShare, { decimals: 0 }) : ''}
-                      </span>
-                    </div>
-                    <div className="flex items-baseline justify-between mb-2">
-                      <p className="type-caption text-muted-foreground pr-4">
-                        {details?.description || ''}
-                      </p>
-                      <span className="type-caption text-muted-foreground tabular-nums shrink-0">
-                        {category.percentage.toFixed(0)}%
-                      </span>
-                    </div>
-                    <div className="h-2 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-foreground"
-                        style={{ width: `${category.percentage}%` }}
-                      />
-                    </div>
+                    {row}
                   </button>
                 ) : (
-                  <div>
-                    <div className="flex items-baseline justify-between mb-1">
-                      <span className="type-body font-semibold">{category.name}</span>
-                      <span className="type-body font-semibold tabular-nums">
-                        {category.yourShare ? (
-                          <SourceAnnotation
-                            provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
-                            reportContext={{
-                              council: selectedCouncil.name,
-                              field: `${category.name} budget (your share)`,
-                              value: formatCurrency(category.yourShare, { decimals: 0 }),
-                            }}
-                          >{formatCurrency(category.yourShare, { decimals: 0 })}</SourceAnnotation>
-                        ) : ''}
-                      </span>
-                    </div>
-                    <div className="flex items-baseline justify-between mb-2">
-                      <p className="type-caption text-muted-foreground pr-4">
-                        {details?.description || ''}
-                      </p>
-                      <span className="type-caption text-muted-foreground tabular-nums shrink-0">
-                        <SourceAnnotation
-                          provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
-                          reportContext={{
-                            council: selectedCouncil.name,
-                            field: `${category.name} budget share (%)`,
-                            value: `${category.percentage.toFixed(0)}%`,
-                          }}
-                        >{category.percentage.toFixed(0)}%</SourceAnnotation>
-                      </span>
-                    </div>
-                    <div className="h-2 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-foreground"
-                        style={{ width: `${category.percentage}%` }}
-                      />
-                    </div>
-                  </div>
+                  row
                 )}
 
                 {/* Expanded drill-down content */}
@@ -301,7 +289,7 @@ const SpendingCard = ({
               </div>
             );
           })}
-        </div>
+        </RankedBarList>
 
         {/* Context footer */}
         {totalBudget && (() => {

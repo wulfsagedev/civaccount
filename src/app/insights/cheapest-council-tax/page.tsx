@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
@@ -44,8 +45,8 @@ export default function CheapestCouncilTaxPage() {
       answer: `${cheapestName} has the cheapest Band D council tax in England for 2025-26 at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.`,
     },
     {
-      question: 'How is council tax compared fairly between different council types?',
-      answer: 'Council tax rates are only fairly comparable within the same type. Unitary authorities, metropolitan districts, and London boroughs provide all services. District councils and county councils split services between them, so their individual rates appear lower.',
+      question: 'How are council tax rates compared fairly between different council types?',
+      answer: 'You can only fairly compare councils of the same type. Unitary authorities, metropolitan districts and London boroughs run all services in one council. District and county councils share services between them, so their bills look lower on their own.',
     },
   ];
 
@@ -80,7 +81,7 @@ export default function CheapestCouncilTaxPage() {
         <h1 className="type-title-1 mb-2">Cheapest Council Tax in England</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
           The cheapest Band D council tax in England for 2025-26 is {cheapestName} at {formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.
-          Rates are grouped by council type for fair comparison.
+          Rates are grouped by council type, so you compare like with like.
         </p>
 
         {GROUPS.map((group) => {
@@ -98,36 +99,22 @@ export default function CheapestCouncilTaxPage() {
               <h2 className="type-title-2 mb-1">{group.label}</h2>
               <p className="type-body-sm text-muted-foreground mb-6">{group.subtitle}</p>
 
-              <div className="space-y-4">
+              <RankedBarList>
                 {groupCouncils.map((council, index) => {
                   const bandD = council.council_tax!.band_d_2025;
-                  const slug = getCouncilSlug(council);
-                  const name = getCouncilDisplayName(council);
-                  const barWidth = maxBandD > 0 ? (bandD / maxBandD) * 100 : 0;
-
                   return (
-                    <div key={council.ons_code}>
-                      <div className="flex items-baseline justify-between mb-1.5">
-                        <Link
-                          href={`/council/${slug}`}
-                          className="type-body-sm font-medium hover:text-foreground transition-colors"
-                        >
-                          {index + 1}. {name}
-                        </Link>
-                        <span className="type-body-sm font-semibold tabular-nums">
-                          {formatCurrency(bandD, { decimals: 2 })}
-                        </span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-foreground"
-                          style={{ width: `${barWidth}%` }}
-                        />
-                      </div>
-                    </div>
+                    <RankedBarRow
+                      key={council.ons_code}
+                      rank={index + 1}
+                      title={getCouncilDisplayName(council)}
+                      href={`/council/${getCouncilSlug(council)}`}
+                      value={formatCurrency(bandD, { decimals: 2 })}
+                      subLeft={council.type_name}
+                      fillPct={maxBandD > 0 ? (bandD / maxBandD) * 100 : 0}
+                    />
                   );
                 })}
-              </div>
+              </RankedBarList>
             </section>
           );
         })}

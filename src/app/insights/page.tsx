@@ -33,20 +33,20 @@ import {
 } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: "The state of English local government · CivAccount",
+  title: "How English councils spend your money · CivAccount",
   description:
-    "Where £X billion of English council spending goes each year, who gets it, and which councils are closest to financial trouble. Data on all 317 English councils, from GOV.UK.",
+    "Where English council spending goes each year, who gets it, and which councils are under the most financial pressure. Data on all 317 English councils, from GOV.UK.",
   alternates: { canonical: '/insights' },
   openGraph: {
-    title: 'The state of English local government',
+    title: 'How English councils spend your money',
     description:
-      'National insights across 317 English councils: the bill, the spend, the suppliers, the red flags.',
+      "All 317 English councils, in plain English: the bill, where it goes, who is paid, and where money is tight.",
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The state of English local government',
+    title: 'How English councils spend your money',
     description:
-      'National insights across 317 English councils — bills, spending, suppliers, red flags.',
+      "All 317 English councils, in plain English: the bill, where it goes, who is paid, and where money is tight.",
   },
 };
 
@@ -87,7 +87,7 @@ function buildTileStats(): Record<
   return {
     'postcode-lottery': {
       hero: `${formatCurrency(gap, { decimals: 0 })}`,
-      explainer: `The gap between England's cheapest and most expensive Band D council tax bill in 2025-26.`,
+      explainer: `The gap between England's cheapest and most expensive Band D council tax bill for 2025-26.`,
     },
     'biggest-tax-rises': {
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
@@ -95,31 +95,31 @@ function buildTileStats(): Record<
     },
     'three-year-squeeze': {
       hero: `+${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })}`,
-      explainer: `A Band D household in ${getCouncilDisplayName(threeYear.top[0].council)} now pays ${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })} more per year than in 2023-24 — the biggest jump. Typical English council: ${formatCurrency(Math.round(threeYear.medianAbs), { decimals: 0 })} more per year.`,
+      explainer: `A Band D household in ${getCouncilDisplayName(threeYear.top[0].council)} now pays ${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })} more per year than in 2023-24 — the biggest rise. Middle (median) English council: ${formatCurrency(Math.round(threeYear.medianAbs), { decimals: 0 })} more per year.`,
     },
     'where-every-pound-goes': {
       hero: `${topService.pence.toFixed(0)}p`,
-      explainer: `Of every £1, this much goes on ${topService.name.toLowerCase()} — the single biggest item. ${secondService.name} takes ${secondService.pence.toFixed(0)}p.`,
+      explainer: `Of every £1, this much goes on ${topService.name.toLowerCase()} — the biggest single item. ${secondService.name} takes ${secondService.pence.toFixed(0)}p.`,
     },
     'social-care-squeeze': {
       hero: `${care.nationalPct.toFixed(0)}p`,
-      explainer: `Of every £1 councils spend, this much goes on adult and children's care. ${care.over60pct} councils spend over 60% of their budget on care.`,
+      explainer: `Of every £1 councils spend, this much goes on adult and children's care. ${care.over60pct} councils spend more than 60% of their budget on care.`,
     },
     'top-suppliers': {
       hero: formatShort(suppliers.totalAggregateSpend),
-      explainer: `Aggregate annual spend with the top 10 private suppliers to English councils — ${suppliers.top[0]?.name} leads the list.`,
+      explainer: `Total yearly spend with the top 10 private companies paid by English councils — ${suppliers.top[0]?.name} is at the top.`,
     },
     'big-five-outsourcers': {
       hero: `${bigFive.sharePct.toFixed(0)}%`,
-      explainer: `Share of top-supplier spend going to Capita, Serco, Veolia, Biffa and Amey combined — about ${formatShort(bigFive.combinedSpend)} disclosed.`,
+      explainer: `Share of published top-supplier spend going to Capita, Serco, Veolia, Biffa and Amey combined — about ${formatShort(bigFive.combinedSpend)}.`,
     },
     'ceo-pay-league': {
       hero: formatCurrency(ceo.highestPaid.total, { decimals: 0 }),
-      explainer: `Highest total remuneration for a council CEO — ${getCouncilDisplayName(ceo.highestPaid.council)}. National median: ${formatCurrency(ceo.median, { decimals: 0 })}.`,
+      explainer: `Highest total pay for a council CEO — ${getCouncilDisplayName(ceo.highestPaid.council)}. Middle (median) figure for England: ${formatCurrency(ceo.median, { decimals: 0 })}.`,
     },
     'hundred-k-club': {
       hero: hundredK.totalStaff.toLocaleString('en-GB'),
-      explainer: `Council staff earning £100,000 or more across ${hundredK.councilsWithAny} of ${hundredK.councilsDisclosing} disclosing councils. Median per council: ${hundredK.medianPerCouncil}.`,
+      explainer: `Council staff paid £100,000 or more, across ${hundredK.councilsWithAny} of the ${hundredK.councilsDisclosing} councils that publish a salary list. Middle (median) per council: ${hundredK.medianPerCouncil}.`,
     },
     'closest-to-bankruptcy': {
       hero: formatShort(bankruptcy.top[0]?.gapPounds ?? 0),
@@ -127,11 +127,11 @@ function buildTileStats(): Record<
     },
     'tax-cap-breakers': {
       hero: `${capBreakers.atOrOverCap.length}`,
-      explainer: `Councils that raised Band D by 4.99% or more in 2025-26. ${capBreakers.overCap.length} exceeded the cap with special government permission.`,
+      explainer: `Councils that raised Band D by 4.99% or more in 2025-26. ${capBreakers.overCap.length} went above the cap, with special permission from government.`,
     },
     'cap-every-year': {
       hero: `${capEvery.bothYearsAtCap.length}`,
-      explainer: `Councils that pushed Band D to 4.99% or above in BOTH 2024-25 and 2025-26 — persistent cap pressure. ${capEvery.bothYearsOverCap.length} strictly exceeded the cap in both years.`,
+      explainer: `Councils that pushed Band D to 4.99% or more in BOTH 2024-25 and 2025-26 — a longer-term sign of pressure. ${capEvery.bothYearsOverCap.length} went above the cap in both years.`,
     },
   };
 }
@@ -145,15 +145,15 @@ export default function InsightsPage() {
   const faqs = [
     {
       question: 'How much do English councils spend in total?',
-      answer: `English councils together plan to spend about ${formatShort(spend.totalSpend)} on services in 2025-26 — roughly ${formatShort(spend.spendPerPerson)} per resident.`,
+      answer: `English councils together plan to spend about ${formatShort(spend.totalSpend)} on services in 2025-26 — about ${formatShort(spend.spendPerPerson)} per resident.`,
     },
     {
-      question: 'Who are the biggest private suppliers to English councils?',
-      answer: 'CivAccount aggregates each council\'s published top supplier list to show the largest private contractors nationally. See the "Who really gets your council tax" card.',
+      question: 'Which private companies are paid the most by English councils?',
+      answer: "We add up each council's published top supplier list to show the biggest private companies paid by councils across England. See the 'Biggest companies paid by councils' card.",
     },
     {
       question: 'Which councils are closest to bankruptcy?',
-      answer: 'Councils with the largest budget gaps as a share of their net service spend are ranked on the "Closest to bankruptcy" card. A budget gap is not the same as insolvency.',
+      answer: "The councils with the biggest budget gaps are ranked on the 'Closest to bankruptcy' card. A budget gap is not the same as the council going bust — most councils close their gap each year.",
     },
   ];
 
@@ -181,18 +181,18 @@ export default function InsightsPage() {
 
         <div className="flex items-start justify-between gap-4 mb-2">
           <h1 className="type-title-1 font-semibold">
-            The state of English local government
+            How English councils spend your money
           </h1>
           <div className="shrink-0 pt-1">
             <PageShareButton
-              title="The state of English local government — CivAccount"
-              description={`£${(spend.totalSpend / 1_000_000_000).toFixed(1)} billion — what English councils will spend this year`}
+              title="How English councils spend your money — CivAccount"
+              description={`£${(spend.totalSpend / 1_000_000_000).toFixed(1)} billion — what English councils plan to spend this year`}
             />
           </div>
         </div>
         <p className="type-body-sm text-muted-foreground mb-8">
-          National insights across all 317 English councils. Each card shows
-          the full ranking and the method behind it.
+          One card per question. All 317 English councils. Every number comes
+          from GOV.UK or the council&rsquo;s own website.
         </p>
 
         {/* Hero — national total spend */}
@@ -204,7 +204,7 @@ export default function InsightsPage() {
             {formatShort(spend.totalSpend)}
           </p>
           <p className="type-body-sm text-muted-foreground">
-            Across {spend.councilCount} councils — about {formatShort(spend.spendPerPerson)} per resident. Everything below breaks that down.
+            Across {spend.councilCount} councils — about {formatShort(spend.spendPerPerson)} per resident. The cards below show what it pays for.
           </p>
         </section>
 
@@ -251,11 +251,11 @@ export default function InsightsPage() {
         <section className="card-elevated p-5 sm:p-6 mt-12">
           <h2 className="type-title-2 mb-1">How we built this</h2>
           <p className="type-body-sm text-muted-foreground mb-4">
-            Every number comes from a .gov.uk source — either central GOV.UK
-            datasets or each council&rsquo;s own website. Cards show both ends of
-            every league plus the national median so you see the spread, not
-            just the extremes. Every sub-page explains exactly how we got the
-            number.
+            Every number comes from a .gov.uk source — either a national GOV.UK
+            dataset or each council&rsquo;s own website. Each card shows both ends
+            of the ranking and the middle (median) figure for England, so you
+            can see the full spread — not just the extremes. Every sub-page
+            shows exactly how we got the number.
           </p>
           <ul className="space-y-2 type-body-sm">
             <li>

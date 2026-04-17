@@ -16,6 +16,7 @@ import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import { DATA_YEARS } from '@/lib/data-years';
 import DataGapNotice from '@/components/ui/data-gap-notice';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 
 interface ServiceOutcomesCardProps {
   selectedCouncil: Council;
@@ -333,25 +334,17 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                 <p className="type-body-sm text-muted-foreground mb-4">
                   {detailed.waste_destinations!.reduce((sum, w) => sum + w.tonnage, 0).toLocaleString('en-GB')} tonnes total (2023-24)
                 </p>
-                <div className="space-y-3">
+                <RankedBarList>
                   {detailed.waste_destinations!.map((dest, idx) => (
-                    <div key={idx}>
-                      <div className="flex items-baseline justify-between mb-1">
-                        <span className="type-body-sm font-medium">{dest.type}</span>
-                        <span className="type-body-sm font-semibold tabular-nums">{dest.percentage}%</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-foreground"
-                          style={{ width: `${(dest.percentage / maxPct) * 100}%` }}
-                        />
-                      </div>
-                      <p className="type-body-sm text-muted-foreground mt-0.5">
-                        {dest.tonnage.toLocaleString('en-GB')} tonnes
-                      </p>
-                    </div>
+                    <RankedBarRow
+                      key={idx}
+                      title={dest.type}
+                      value={`${dest.percentage}%`}
+                      subLeft={`${dest.tonnage.toLocaleString('en-GB')} tonnes`}
+                      fillPct={(dest.percentage / maxPct) * 100}
+                    />
                   ))}
-                </div>
+                </RankedBarList>
               </div>
             );
           })()}

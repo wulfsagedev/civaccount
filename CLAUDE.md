@@ -169,40 +169,39 @@ PATTERN C: Bar chart row
 - Between list items: `py-3` (12px each side) or `space-y-4` (16px)
 - Section to section: `mt-6 pt-4 border-t` (24px margin + 16px padding + divider)
 
-### 4. Bar Chart Pattern (Standard Implementation)
+### 4. Bar Chart Pattern — `RankedBarRow` (MANDATORY)
 
-Horizontal bar charts follow this exact structure:
+> **There is exactly one way to render a bar-row anywhere in this app: the shared `RankedBarRow` component at [src/components/insights/RankedBarRow.tsx](src/components/insights/RankedBarRow.tsx). Hand-coding a bar row is a bug — if you find yourself writing `h-2 rounded-full bg-muted`, stop and use the component.**
 
 ```tsx
-{/* Horizontal bar chart - industry standard */}
-<div className="space-y-4">
-  {items.map((item) => (
-    <div key={item.key}>
-      {/* Label row: name left, value right */}
-      <div className="flex items-baseline justify-between mb-1.5">
-        <span className="type-body-sm font-medium">{item.name}</span>
-        <span className="type-body-sm font-semibold tabular-nums">
-          {formatCurrency(item.value, { decimals: 0 })}
-        </span>
-      </div>
-      {/* Bar */}
-      <div className="h-2 rounded-full bg-muted overflow-hidden">
-        <div
-          className="h-full rounded-full bg-foreground"
-          style={{ width: `${item.percentage}%` }}
-        />
-      </div>
-    </div>
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
+
+<RankedBarList>
+  {items.map((item, i) => (
+    <RankedBarRow
+      key={item.id}
+      rank={i + 1}                      // optional — omit for unranked breakdowns
+      title={item.name}                 // string | ReactNode (for inline icons)
+      href={`/council/${item.slug}`}    // optional — renders <Link>, else <span>
+      value={formatCurrency(item.value, { decimals: 0 })}
+      subLeft={item.description}        // optional
+      subRight={`${item.pct.toFixed(0)}%`} // optional
+      fillPct={(item.value / max) * 100}   // 0–100. Omit to hide the bar entirely.
+    />
   ))}
-</div>
+</RankedBarList>
 ```
 
-**Bar rules**:
-- Height: `h-2` (8px) - visible but not dominant
-- Background: `bg-muted` (empty portion)
-- Fill: `bg-foreground` (single color, no gradients)
-- Radius: `rounded-full` (pill shape)
-- Width: True percentage (not relative to max)
+**Why a component:** every bar row in the app must look identical — same 8px rhythm, same typography, same fill colour, same dark-mode behaviour. Hand-coding drifts instantly (linked titles get a 44px tap-target pop, `type-body` overrides `font-semibold`, line-height 1.6 inflates gaps). The component encapsulates every one of those fixes.
+
+**If the component doesn't fit, extend the component — don't hand-roll.** Props are deliberately broad (`title`/`value`/`subLeft`/`subRight` are all `ReactNode`) so you can pass `<SourceAnnotation>`, inline `ChevronDown` adornments, semantic-coloured JSX, etc. Wrap the whole row in a `<button>`, `<a>`, or animated container if you need interaction — keep the *inside* of the row canonical.
+
+**Visual contract (don't fight it):**
+- Title row: `type-body !font-semibold leading-none`, rank prefix when `rank` is set
+- Subline: `type-caption text-muted-foreground tabular-nums leading-none`, `mt-2` (8px) from title
+- Bar: `h-2 rounded-full bg-muted` track, `bg-muted-foreground` fill (dark gray, adapts in dark mode — never `bg-foreground`), `mt-2` (8px) from whatever's above it
+- List container `RankedBarList`: `space-y-5` (20px between rows)
+- Width: `fillPct` is literal percentage (0–100), clamped internally
 
 ### 5. Card Anatomy (Required Structure)
 
@@ -242,7 +241,8 @@ Before committing any data display code, verify:
 | ☐ | Two elements use `type-display` in same card | Demote one to `type-metric` or lower |
 | ☐ | Numbers in a list have different decimal places | Standardize to 0 decimals for lists |
 | ☐ | Label uses `type-body` (same as value) | Demote label to `type-body-sm` |
-| ☐ | Bar chart uses multiple colors | Use single `bg-foreground` for all bars |
+| ☐ | Bar row hand-coded with `h-2 rounded-full bg-muted` | Use `<RankedBarRow>` — no exceptions |
+| ☐ | Bar fill uses `bg-foreground` (pure black) | Component owns this; it's `bg-muted-foreground` — don't override |
 | ☐ | Icons appear next to every list item | Remove icons, names are sufficient |
 | ☐ | Description text under each list row | Remove, keep list scannable |
 | ☐ | Percentage AND absolute value shown | Pick one (prefer absolute for money) |
@@ -394,6 +394,51 @@ Before committing, verify:
 | ☐ | Using colour for decoration | Remove - use for meaning only |
 | ☐ | Using `bg-accent` for navigation hovers | Replace with `bg-muted` (grayscale only) |
 
+### Motion System (Premium feel — restrained, fast)
+
+Based on Emil Kowalski's animations.dev course. See [globals.css](src/app/globals.css) for the tokens.
+
+**The four rules** (apply in this order):
+
+1. **Entering or exiting?** → `ease-out-snap` (or `ease-out-strong` for snappier popovers/tooltips)
+2. **Already on screen, moving/morphing?** → `ease-in-out-strong`
+3. **Hover or color shift?** → default (`transition-colors`, picks up `--default-transition-timing-function`)
+4. **User does it 100+ times a day?** → don't animate (search keystrokes, keyboard nav, focus moves)
+
+**Tokens** (in `:root` and `@theme inline`):
+
+| Token | Value | Use for |
+|-------|-------|---------|
+| `--duration-fast` / `duration-120` | 120ms | Button press, color shift, focus |
+| `--duration-base` / `duration-180` | 180ms | Dropdowns, popovers, tooltips, default UI |
+| `--duration-slow` / `duration-240` | 240ms | Modals, sheets, drawers |
+| `--ease-out-snap` / `ease-out-snap` | cubic-bezier(0.215, 0.61, 0.355, 1) | Default — most things |
+| `--ease-out-strong` / `ease-out-strong` | cubic-bezier(0.19, 1, 0.22, 1) | Tooltips, fast popovers |
+| `--ease-in-out-strong` / `ease-in-out-strong` | cubic-bezier(0.645, 0.045, 0.355, 1) | On-screen morph |
+
+**Hard rules** (lifted directly from the skill):
+
+- Animate **only `transform` and `opacity`** — they skip layout & paint, run on the GPU.
+- Never `transition-all` — list specific properties: `transition-[color,background-color,border-color,box-shadow,transform]`.
+- Press feedback on every button: `active:scale-[0.97] active:duration-75`.
+- Never animate from `scale(0)` — start at `scale(0.95)` (already what `zoom-in-95` does).
+- Popover/dropdown content: `origin-(--radix-*-content-transform-origin)` so it scales from the trigger, not centre.
+- Hover effects gated on real pointers: use Tailwind's `hover:` (auto-gated in v4) or `@media (hover: hover) and (pointer: fine)`.
+- Reduced-motion: every animated element needs `motion-reduce:transition-none` (or rely on the global `prefers-reduced-motion` reset in globals.css).
+- Exit animations ~30% faster than entrance (e.g. open 240ms → close 180ms).
+
+**Patterns already built into shared classes/components:**
+
+- `.card-elevated-interactive` — hover-lift (`translateY(-1px)` + shadow), gated to `hover: hover` devices, with `:active` press flatten. Use this on any clickable card surface.
+- `Button` (button.tsx) — has press feedback baked in. Use `<Button>` instead of bare `<button>` so you inherit it.
+- `Popover`, `AlertDialog` — use Radix data-state animations with token easing & origin-aware scale. Don't override.
+
+**Don't animate:**
+- Search command typing, keyboard nav between results
+- Council selector arrow-key navigation
+- Tab/focus movement
+- Hero/decorative keyframes are fine (orbs, mesh, breathe) — already on long-running ambient loops gated by reduced-motion.
+
 ### Spacing Scale (8pt system)
 
 | Class | Size | Usage |
@@ -491,6 +536,24 @@ import { CouncilResultItem } from '@/components/ui/council-result-item';
   variant="search"   // or "homepage" or "dashboard"
   showBadge={true}   // show Band D badge
 />
+```
+
+#### RankedBarRow + RankedBarList
+For any horizontal-bar row anywhere in the app — ranked leaderboards, unranked breakdowns, drill-down cards, comparison tables. **Never hand-code a bar row.** See Section 4 of the Data Design System for the full visual contract.
+```typescript
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
+
+<RankedBarList>
+  <RankedBarRow
+    rank={1}                    // optional
+    title="Blackpool Council"   // string | ReactNode (for inline icons)
+    href="/council/blackpool"   // optional — renders <Link>, else <span>
+    value="51%"                 // ReactNode (supports <SourceAnnotation>, semantic colours)
+    subLeft="Care spend £143.9m of £280.2m"  // optional
+    subRight="Savings target £520.7m"        // optional
+    fillPct={100}               // 0–100. Omit to hide the bar entirely.
+  />
+</RankedBarList>
 ```
 
 ### Constants (use instead of magic numbers)
@@ -812,54 +875,15 @@ For contextual notes and data explanations:
 </section>
 ```
 
-### Bar Chart Pattern (Monzo/Apple Style) - RIGID
+### Bar Chart Pattern — `RankedBarRow` (MANDATORY)
 
-For all data breakdowns with percentage bars. This is the ONLY bar chart pattern to use:
+See Section 4 of the Data Design System above for the canonical API.
 
-```tsx
-{/* Data breakdown - Monzo/Apple style */}
-<div className="space-y-5">
-  {items.map((item) => (
-    <div key={item.key}>
-      {/* Row 1: Label + Amount (both bold, justified) */}
-      <div className="flex items-baseline justify-between mb-1">
-        <span className="type-body font-semibold">{item.name}</span>
-        <span className="type-body font-semibold tabular-nums">
-          {formatCurrency(item.value, { decimals: 0 })}
-        </span>
-      </div>
-      {/* Row 2: Description + Percentage (both muted, justified) */}
-      <div className="flex items-baseline justify-between mb-2">
-        <p className="type-caption text-muted-foreground">
-          {item.description}
-        </p>
-        <span className="type-caption text-muted-foreground tabular-nums">
-          {item.percentage.toFixed(0)}%
-        </span>
-      </div>
-      {/* Row 3: Bar - visual reinforcement */}
-      <div className="h-2 rounded-full bg-muted overflow-hidden">
-        <div
-          className="h-full rounded-full bg-foreground"
-          style={{ width: `${item.percentage}%` }}
-        />
-      </div>
-    </div>
-  ))}
-</div>
-```
+**Never hand-code a bar row.** Use [`RankedBarRow`](src/components/insights/RankedBarRow.tsx). Ranked leaderboards, unranked breakdowns, drill-down cards, comparison views — all use the same component. If you need interaction (click-to-expand, hover states, navigation), wrap `RankedBarRow` in a `<button>`, `<Link>`, or container; keep the row itself canonical.
 
-**Rules**:
-- Container: `space-y-5` (20px between items)
-- Row 1: `type-body font-semibold` for both label and value
-- Row 2: `type-caption text-muted-foreground` for both description and percentage
-- Row 1→2 gap: `mb-1` (4px)
-- Row 2→bar gap: `mb-2` (8px)
-- Bar: `h-2 rounded-full bg-muted overflow-hidden`
-- Bar fill: `bg-foreground` (single color, no gradients)
-- For historical data, use `bg-muted-foreground/40` for past years
-- Always use `tabular-nums` on numeric values
-- Use `items-baseline` not `items-center` for text alignment
+The component owns every spacing, typography, and colour decision — including the `leading-none`/`min-h-0` fixes that prevent the title row from ballooning to the global 44px tap-target minimum, and the `!font-semibold` override that beats `.type-body`'s hard-coded `font-weight: 400`. Hand-rolling guarantees at least one of these bugs.
+
+Historical-data variant (faded bars for past years) is not supported by the shared component yet — if you need it, extend the component, don't fork.
 
 ---
 
@@ -1012,6 +1036,7 @@ All OG images are generated with `next/og` (Satori) using **inline styles only**
 - Hardcode result limits - use `SEARCH_RESULT_LIMIT` or `SELECTOR_RESULT_LIMIT`
 - Duplicate pulsing dot animation - use `<PulsingDot />`
 - Duplicate council result rendering - use `<CouncilResultItem />`
+- Hand-code bar rows with `h-2 rounded-full bg-muted` — use `<RankedBarRow />` everywhere, no exceptions
 - Add sidebar components (project doesn't use sidebars)
 - Use collapsible/accordion UI patterns - keep content flat and scannable (exception: spending category drill-downs and DataSourcesFooter where progressive disclosure is needed to avoid overwhelming the primary view)
 - Add dropdowns for progressive disclosure - use tabs or separate sections instead

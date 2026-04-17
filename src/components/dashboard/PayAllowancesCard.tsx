@@ -11,6 +11,7 @@ import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import DataGapNotice from '@/components/ui/data-gap-notice';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 
 interface PayAllowancesCardProps {
   selectedCouncil: Council;
@@ -175,31 +176,25 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                 }}
               >{totalStaff.toLocaleString('en-GB')}</SourceAnnotation>{subtitleSuffix}
             </p>
-            <div className="space-y-2.5">
+            <RankedBarList>
               {detailed.salary_bands!.map((band, idx) => (
-                <div key={idx}>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <span className="type-body-sm text-muted-foreground">{band.band}</span>
-                    <span className="type-body-sm font-medium tabular-nums">
-                      <SourceAnnotation
-                        provenance={getProvenance('detailed.salary_bands', selectedCouncil)}
-                        reportContext={{
-                          council: selectedCouncil.name,
-                          field: `Salary band ${band.band} staff count`,
-                          value: String(band.count),
-                        }}
-                      >{band.count}</SourceAnnotation>
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground"
-                      style={{ width: `${(band.count / maxCount) * 100}%` }}
-                    />
-                  </div>
-                </div>
+                <RankedBarRow
+                  key={idx}
+                  title={band.band}
+                  value={
+                    <SourceAnnotation
+                      provenance={getProvenance('detailed.salary_bands', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `Salary band ${band.band} staff count`,
+                        value: String(band.count),
+                      }}
+                    >{band.count}</SourceAnnotation>
+                  }
+                  fillPct={(band.count / maxCount) * 100}
+                />
               ))}
-            </div>
+            </RankedBarList>
           </div>
         );
       })()}

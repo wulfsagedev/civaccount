@@ -68,17 +68,17 @@ const YourBillCard = ({
       {/* Primary amount - This council's share */}
       <div className="mb-6">
         <div className="flex items-center gap-1.5 mb-1">
-          <p className="type-caption text-muted-foreground">
+          <span className="type-caption text-muted-foreground">
             Typical Band D share for this council
-          </p>
+          </span>
           <Popover>
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="touch-hitbox inline-flex items-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 aria-label="What is Band D?"
               >
-                <Info className="h-3 w-3" aria-hidden="true" />
+                <Info className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-72 p-3" side="top" align="start" sideOffset={4}>

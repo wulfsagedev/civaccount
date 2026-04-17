@@ -36,7 +36,7 @@ export function InsightCard({
 
   return (
     <div
-      className={`card-elevated p-5 sm:p-6 flex flex-col gap-4 relative group${className ? ` ${className}` : ''}`}
+      className={`card-elevated-interactive p-5 sm:p-6 flex flex-col gap-4 relative group${className ? ` ${className}` : ''}`}
     >
       <Link
         href={href}
@@ -46,8 +46,8 @@ export function InsightCard({
 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="type-caption text-muted-foreground mb-1">{subtitle}</p>
-          <h2 className="type-title-3 font-semibold">{title}</h2>
+          <h2 className="type-title-3 font-semibold mb-1">{title}</h2>
+          <p className="type-caption text-muted-foreground">{subtitle}</p>
         </div>
         <div className="relative z-10 shrink-0">
           <ShareButton
@@ -64,9 +64,12 @@ export function InsightCard({
 
       <p className="type-body-sm text-muted-foreground">{explainer}</p>
 
-      <div className="flex items-center gap-1 type-body-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+      <div className="flex items-center gap-1 type-body-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-150 ease-out-snap">
         <span>Read more</span>
-        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        <ArrowRight
+          className="h-4 w-4 transition-transform duration-180 ease-out-snap group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+          aria-hidden="true"
+        />
       </div>
     </div>
   );

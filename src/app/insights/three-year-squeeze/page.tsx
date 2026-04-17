@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { InsightHero } from '@/components/insights/InsightHero';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import { getThreeYearSqueeze } from '@/lib/insights-stats';
 import {
@@ -55,16 +55,16 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              Typical extra on a Band D bill vs 2023-24
+              Typical extra on a Band D bill compared with 2023-24
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
               +{formatCurrency(Math.round(medianAbs), { decimals: 0 })} a year
             </p>
             <p className="type-body-sm text-muted-foreground">
-              The median English council — across all {councilsWithData} with
-              2023-24 and 2025-26 rates on record. Mean: +
+              The middle (median) English council — across all {councilsWithData} with
+              2023-24 and 2025-26 rates on record. Average (mean): +
               {formatCurrency(Math.round(meanAbs), { decimals: 0 })}. The
-              biggest rise is {topCouncilName}, where Band D is now +
+              biggest rise is in {topCouncilName}, where Band D is now +
               {formatCurrency(Math.round(top[0].changeAbs), { decimals: 0 })} a
               year.
             </p>
@@ -74,61 +74,32 @@ export default function Page() {
         <section className="card-elevated p-5 sm:p-6">
           <h2 className="type-title-2 mb-1">Biggest 2-year rises, in pounds</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Ranked by how much more a Band D household pays per year now than
-            in 2023-24. Councils with higher starting bills tend to rise by
-            more in pounds, even if the percentage is similar.
+            Ranked by how much more a Band D household pays each year now than
+            in 2023-24. Councils that started from a higher bill tend to rise
+            by more in pounds, even when the percentage is similar.
           </p>
 
-          <div>
-            {top.map((r, i) => {
-              const name = getCouncilDisplayName(r.council);
-              const slug = getCouncilSlug(r.council);
-              const widthPct = (r.changeAbs / max) * 100;
-              return (
-                <div
-                  key={r.council.ons_code}
-                  className="py-4 first:pt-0 last:pb-0 border-t border-border/40 first:border-t-0"
-                >
-                  {/* Row 1: Council + £ amount (both bold) */}
-                  <div className="flex items-baseline justify-between mb-1">
-                    <Link
-                      href={`/council/${slug}`}
-                      className="type-body font-semibold! leading-tight! min-h-0! min-w-0! hover:underline"
-                    >
-                      {i + 1}. {name}
-                    </Link>
-                    <span className="type-body font-semibold! leading-tight! tabular-nums">
-                      +{formatCurrency(Math.round(r.changeAbs), { decimals: 0 })}
-                    </span>
-                  </div>
-                  {/* Row 2: Range + % (both muted) */}
-                  <div className="flex items-baseline justify-between mb-1">
-                    <p className="type-caption text-muted-foreground tabular-nums">
-                      {formatCurrency(r.from, { decimals: 0 })} →{' '}
-                      {formatCurrency(r.to, { decimals: 0 })} a year
-                    </p>
-                    <span className="type-caption text-muted-foreground tabular-nums">
-                      up {r.changePct.toFixed(1)}%
-                    </span>
-                  </div>
-                  {/* Row 3: Bar */}
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground"
-                      style={{ width: `${widthPct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RankedBarList>
+            {top.map((r, i) => (
+              <RankedBarRow
+                key={r.council.ons_code}
+                rank={i + 1}
+                title={getCouncilDisplayName(r.council)}
+                href={`/council/${getCouncilSlug(r.council)}`}
+                value={`+${formatCurrency(Math.round(r.changeAbs), { decimals: 0 })}`}
+                subLeft={`${formatCurrency(r.from, { decimals: 0 })} → ${formatCurrency(r.to, { decimals: 0 })} a year`}
+                subRight={`up ${r.changePct.toFixed(1)}%`}
+                fillPct={(r.changeAbs / max) * 100}
+              />
+            ))}
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: we read each council&rsquo;s 2023-24 and 2025-26
+            How we got this: we take each council&rsquo;s 2023-24 and 2025-26
             headline Band D rate from GOV.UK and subtract one from the other.
-            All 317 English councils are in the league — both rates are on the
-            public record for every one. Councils that start from a higher base
-            naturally show bigger £ rises even at similar percentages.
+            All 317 English councils are in the ranking — both rates are on the
+            public record for every one. Councils that started from a higher
+            bill show bigger rises in pounds, even at similar percentages.
           </p>
         </section>
       </InsightHero>

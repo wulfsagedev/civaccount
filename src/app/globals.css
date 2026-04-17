@@ -53,6 +53,33 @@
   --radius-xl: 1rem;      /* 16px - large cards, modals */
   --radius-2xl: 1.25rem;  /* 20px - featured elements */
   --radius-full: 9999px;  /* pills, avatars */
+
+  /* ============================================
+     MOTION SYSTEM — Premium, restrained, fast
+     ============================================
+     Based on Emil Kowalski's animations.dev course.
+     - Use ease-out-snap for entrance/exit (most things)
+     - Use ease-out-strong for snappy popovers/tooltips
+     - Use ease-in-out-strong for on-screen movement/morph
+     - Keep UI animations under 300ms (Emil's rule)
+     - Don't animate keyboard interactions or 100+/day actions
+     ============================================ */
+
+  /* Defaults applied to bare `transition` utility (Tailwind v4 picks these up) */
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* Easing utilities — register as ease-out-snap, ease-out-strong, ease-in-out-strong */
+  --ease-out-snap: cubic-bezier(0.215, 0.61, 0.355, 1);     /* enter/exit — default */
+  --ease-out-strong: cubic-bezier(0.19, 1, 0.22, 1);        /* tooltips, fast popovers */
+  --ease-in-out-strong: cubic-bezier(0.645, 0.045, 0.355, 1); /* on-screen morph */
+}
+
+:root {
+  /* Raw motion tokens for direct use in CSS — match @theme above */
+  --duration-fast: 120ms;   /* micro-interactions: button press, color shift */
+  --duration-base: 180ms;   /* default UI: dropdowns, popovers, tooltips */
+  --duration-slow: 240ms;   /* modals, sheets, drawers */
 }
 
 :root {
@@ -275,6 +302,29 @@
   }
 }
 
+/* Touch hitbox — Emil Kowalski's pattern. Lets a small inline trigger
+   (e.g. an info icon next to label text) keep its visual size while still
+   exposing a 44×44 tap target via a transparent ::before. Use on tiny
+   inline buttons that would otherwise blow out the row height. */
+.touch-hitbox {
+  position: relative;
+  min-height: auto;
+  min-width: auto;
+}
+
+.touch-hitbox::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 /* ============================================
    MODERN CARD SYSTEM - Stripe/Linear inspired
    ============================================ */
@@ -297,18 +347,30 @@
 
 /* Hover state for interactive cards */
 .card-elevated-interactive {
-  @apply bg-card rounded-xl transition-all duration-200;
+  @apply bg-card rounded-xl;
   border: 1px solid oklch(0 0 0 / 6%);
   box-shadow:
     0 1px 2px oklch(0 0 0 / 4%),
     0 4px 12px oklch(0 0 0 / 3%);
+  transition:
+    box-shadow var(--duration-base) var(--ease-out-snap),
+    transform var(--duration-base) var(--ease-out-snap),
+    border-color var(--duration-base) var(--ease-out-snap);
 }
 
-.card-elevated-interactive:hover {
-  box-shadow:
-    0 2px 4px oklch(0 0 0 / 5%),
-    0 8px 24px oklch(0 0 0 / 6%);
-  transform: translateY(-1px);
+/* Hover only on devices with true hover (Tailwind v4 / Emil's rule) */
+@media (hover: hover) and (pointer: fine) {
+  .card-elevated-interactive:hover {
+    box-shadow:
+      0 2px 4px oklch(0 0 0 / 5%),
+      0 8px 24px oklch(0 0 0 / 6%);
+    transform: translateY(-1px);
+  }
+}
+
+.card-elevated-interactive:active {
+  transform: translateY(0);
+  transition-duration: var(--duration-fast);
 }
 
 .dark .card-elevated-interactive:hover {
@@ -703,7 +765,7 @@
   font-weight: 600;
   border-radius: 0.5rem;
   z-index: 9999;
-  transition: top 0.2s ease;
+  transition: top var(--duration-base) var(--ease-out-snap);
 }
 
 .skip-link:focus {

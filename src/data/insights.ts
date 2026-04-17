@@ -12,12 +12,12 @@
 export const INSIGHT_SECTIONS = {
   bill: { label: 'The bill', description: 'Where the money comes from' },
   spend: { label: 'The spend', description: 'Where it goes' },
-  suppliers: { label: 'The suppliers', description: 'Who actually receives it' },
+  suppliers: { label: 'The suppliers', description: 'Who is paid' },
   workforce: { label: 'The workforce', description: 'Staff and senior pay' },
   politicians: { label: 'The politicians', description: 'Who runs England' },
-  redflags: { label: 'The red flags', description: 'Financial warning signs' },
-  outcomes: { label: 'The outcomes', description: 'Service quality' },
-  build: { label: 'The big build', description: 'Capital projects' },
+  redflags: { label: 'Money pressure', description: 'Signs of financial strain' },
+  outcomes: { label: 'The outcomes', description: 'How services perform' },
+  build: { label: 'Building work', description: 'Big capital projects' },
 } as const;
 
 export type InsightSectionKey = keyof typeof INSIGHT_SECTIONS;
@@ -59,25 +59,25 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'postcode-lottery',
     section: 'bill',
     title: "England's postcode lottery",
-    subtitle: 'Band D bills at either end of the scale',
+    subtitle: 'The cheapest and priciest Band D bills',
     metaDescription:
-      'The cheapest and most expensive Band D council tax bills in England for 2025-26, compared fairly across council types.',
+      'The cheapest and most expensive Band D council tax bills in England for 2025-26, compared fairly between councils that do the same jobs.',
     shareText:
-      "England's council tax postcode lottery — the gap between cheapest and priciest Band D bill",
+      "The gap between England's cheapest and priciest Band D council tax bill",
     longformCopy: [
-      'Council tax rates vary a lot across England. This card puts the cheapest and most expensive councils side by side so you can see the real spread.',
-      "We group councils before comparing, because different types do different jobs. A district council and a unitary authority aren't directly comparable — one handles bins, the other handles everything.",
+      'Council tax rates are very different from one part of England to another. This card puts the cheapest and most expensive councils side by side so you can see the gap.',
+      "We group councils before comparing them, because different types do different jobs. A district council looks after bins and planning. A unitary authority does all of that plus schools, roads and care. Comparing the two without grouping is not a fair comparison.",
     ],
     faq: [
       {
         question: 'Which council has the cheapest council tax in England?',
         answer:
-          'The cheapest Band D council for 2025-26 is shown on this page. Rates are grouped by council type so the comparison is fair.',
+          'The cheapest Band D council for 2025-26 is shown at the top of this page. Rates are grouped by council type so you compare like with like.',
       },
       {
         question: 'Why group councils before comparing?',
         answer:
-          'Residents in a two-tier area pay both a district bill and a county bill. Comparing a district rate to a unitary rate without grouping makes the district look artificially cheap.',
+          "Households in a two-tier area pay two bills — one to their district and one to their county. If you compare a district bill on its own to a unitary bill, the district looks much cheaper than it really is.",
       },
     ],
     sources: [
@@ -93,23 +93,23 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     title: 'Biggest tax rises this year',
     subtitle: 'Councils that put Band D up the most in 2025-26',
     metaDescription:
-      'The English councils that raised council tax the most in 2025-26, ranked by percentage increase compared to 2024-25.',
+      "The English councils that raised council tax the most in 2025-26, ranked by how much Band D went up compared with 2024-25.",
     shareText:
       'The English councils that raised council tax the most this year',
     longformCopy: [
-      "Every year most councils put their Band D rate up by a small amount. A few go higher — sometimes because they have a special government agreement.",
-      "This card ranks councils by how much their Band D bill changed from last year. It's a simple like-for-like comparison of the same number in two years.",
+      "Every year most councils put their Band D rate up. Some go up by more than others — a few with special permission from government.",
+      "This card ranks councils by how much their Band D bill changed from last year. It is a like-for-like comparison of the same number in two years.",
     ],
     faq: [
       {
         question: 'Which councils raised council tax the most in 2025-26?',
         answer:
-          'The top councils by percentage rise are shown on this page, along with the national average rise for context.',
+          'The councils with the biggest rises are listed on this page, alongside the national average for context.',
       },
       {
         question: 'Why can some councils raise council tax by more than others?',
         answer:
-          'Councils usually have a cap on how much they can put bills up without a referendum. Some councils in financial difficulty get special permission from central government to exceed the cap.',
+          'There is usually a limit on how much councils can put bills up without holding a local vote. Councils in financial difficulty can ask central government for permission to go above this limit.',
       },
     ],
     sources: [
@@ -126,28 +126,28 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     title: 'Bigger bills, 2 years on',
     subtitle: 'How much more Band D costs than in 2023-24',
     metaDescription:
-      'The Band D council tax rise from 2023-24 to 2025-26 for every English council — in pounds, not percentages. Shows how much more a typical household pays each year now than two years ago.',
+      'The rise in Band D council tax from 2023-24 to 2025-26 for every English council — in pounds, not percentages. Shows how much more a typical household now pays each year.',
     shareText:
-      "How much more Band D costs per year than 2 years ago — ranked across all 317 English councils",
+      "How much more Band D costs per year than 2 years ago — every English council ranked",
     longformCopy: [
-      'Every spring, councils announce their new Band D rate and the percentage rise. Two years of rises compound quickly — the council that raised by 5% then 5% is now charging 10.25% more, not 10%.',
-      "This card shows the story in pounds: how many more pounds a Band D household pays per year now compared with 2023-24. The biggest rises are over £300 more per year. The national median is around £160. All 317 English councils are included — Band D rates for both years are on the public record.",
+      'Each spring, councils tell people their new Band D rate and the percentage rise. Two years of rises add up fast — a council that raised by 5% then 5% is now charging 10.25% more, not 10%.',
+      "This card shows the story in pounds: how much more a Band D household pays each year now than in 2023-24. The biggest rises are over £300 more per year. The middle (median) is around £160. All 317 English councils are included — both years' rates are on the public record.",
     ],
     faq: [
       {
         question: 'How much has my Band D bill gone up in the last 2 years?',
         answer:
-          "Find your council on the ranked list to see the exact figure. Across England, the typical council has added around £160 to a Band D bill since 2023-24. The biggest rises are more than double that.",
+          "Find your council in the ranked list to see the exact figure. Across England, the middle (median) council has added around £160 to a Band D bill since 2023-24. The biggest rises are more than double that.",
       },
       {
-        question: 'Why is the rise bigger than if you add the two percentages?',
+        question: 'Why is the total rise more than the two percentages added together?',
         answer:
-          'Each yearly rise is calculated on top of the previous higher bill, not the original. A 5% rise followed by another 5% is actually 10.25%, not 10%. Over two years, most councils are up around 10% — worth around £160 on a typical Band D bill.',
+          "Each year's rise is added on top of the new, higher bill — not the original. So a 5% rise followed by another 5% works out at 10.25%, not 10%. Across two years, most councils are up around 10% — about £160 on a typical Band D bill.",
       },
       {
         question: 'Where does this data come from?',
         answer:
-          "Band D council tax rates for 2023-24 and 2025-26 are published by the Ministry of Housing, Communities and Local Government. We read each council's headline figure directly from GOV.UK and subtract one from the other.",
+          "Band D council tax rates for 2023-24 and 2025-26 are published by the Ministry of Housing, Communities and Local Government. We take each council's headline figure straight from GOV.UK and subtract one from the other.",
       },
     ],
     sources: [
@@ -163,25 +163,25 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'social-care-squeeze',
     section: 'spend',
     title: 'The social care squeeze',
-    subtitle: 'How much of every council budget is locked in care',
+    subtitle: 'Share of every council budget that goes on care',
     metaDescription:
-      "Adult and children's social care together take more than 60p of every £1 in many English council budgets. Here's the national share, and which councils are most squeezed.",
+      "In many English council budgets, adult and children's care together take more than 60p of every £1. Here is the national share, and the councils with the biggest share.",
     shareText:
-      "The social care squeeze — how much of every council budget goes on adult and children's care",
+      "How much of every council budget goes on adult and children's care",
     longformCopy: [
-      "Adult social care and children's services are the biggest things most councils spend on. In some councils they take more than 70p of every £1 — leaving less for everything else.",
-      "This card shows the national share first, then ranks councils by how squeezed their budget is. Only councils that provide both services are included — district councils don't, so they're excluded from the league.",
+      "Adult social care and children's services are the biggest things most councils spend on. In some councils they take more than 70p of every £1.",
+      "This card shows the national share first, then ranks councils by how big the care share is in each one. Only councils that run both services are included. District councils do not, so they are not in the league.",
     ],
     faq: [
       {
-        question: 'Why is social care so much of council spending?',
+        question: 'Why is social care such a big share of council spending?',
         answer:
-          'Councils are legally required to look after vulnerable adults and children. That bill has grown faster than funding, so it now dominates most council budgets.',
+          'By law, councils have to look after vulnerable adults and children. The cost of doing this has gone up faster than the money councils get from government, so it now takes up most of many council budgets.',
       },
       {
-        question: 'Which councils spend most of their budget on care?',
+        question: 'Which councils spend the biggest share of their budget on care?',
         answer:
-          'The councils with the highest share are listed on this page. Unitary authorities, metropolitan districts, London boroughs and county councils all deliver both care services.',
+          'The councils with the highest care share are listed on this page. Unitary authorities, metropolitan districts, London boroughs and county councils all run both care services.',
       },
     ],
     sources: [
@@ -196,25 +196,25 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'where-every-pound-goes',
     section: 'spend',
     title: 'Where every £1 goes',
-    subtitle: 'National breakdown of council spending by service',
+    subtitle: 'How council spending splits between services',
     metaDescription:
-      "How 100p of every £1 English councils spend is split across care, schools, bins, roads and everything else — aggregated across all 317 councils.",
+      "How every £1 English councils spend is split between care, schools, bins, roads and everything else — added up across all 317 councils.",
     shareText:
-      "Where every £1 of English council spending actually goes — 10 services, one chart",
+      "Where every £1 of English council spending goes — 10 services, one chart",
     longformCopy: [
       "Councils spend public money on about ten big service areas. This card adds up every council's spending, then shows what share goes on each service.",
-      "It's the single clearest view of what councils are actually for. Two services — adult care and children's services — dominate most of the pound. Everything else splits what's left.",
+      "Most of every £1 goes on two services: adult care and children's services. Everything else shares what is left.",
     ],
     faq: [
       {
         question: 'What do English councils spend money on?',
         answer:
-          "Councils fund adult social care, children's services, schools, roads, bins, planning, housing, culture and the cost of running the council. Shares vary by council type.",
+          "Councils pay for adult social care, children's services, schools, roads, bins, planning, housing, culture and the cost of running the council itself. The shares are different from one council type to another.",
       },
       {
         question: 'Where does this data come from?',
         answer:
-          "Each council's planned budget for 2025-26, published on its own website and collated into a standard service taxonomy. Values are net service spend in pounds.",
+          "Each council's planned budget for 2025-26, published on its own website. We sort each council's spending into the same set of service categories so we can add them up. Values are net spend on services, in pounds.",
       },
     ],
     sources: [
@@ -229,31 +229,31 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   {
     slug: 'top-suppliers',
     section: 'suppliers',
-    title: 'Who really gets your council tax',
+    title: 'Biggest companies paid by councils',
     subtitle: 'The biggest private companies paid by English councils',
     metaDescription:
-      'The private contractors that receive the most council money across England — aggregated from every council that publishes its top suppliers.',
+      "The private contractors that get the most money from English councils — added up from every council that publishes its top supplier list.",
     shareText:
-      'The private companies that receive the most council tax money in England',
+      'The private companies paid the most by English councils',
     longformCopy: [
-      'Councils publish a list of their biggest suppliers every year. This card adds them up across every council to show the companies that receive the most public money nationally.',
-      'Only councils that publish supplier data are included. Some contracts run over several years, so the annual figures shown are the most recent disclosed amounts per council.',
+      'Each year, councils publish a list of their biggest suppliers. This card adds those lists up across every council to show the companies that get the most public money in total.',
+      "Only councils that publish their list are included. Some contracts run for several years, so the yearly figure for each council is the most recent one it has published.",
     ],
     faq: [
       {
-        question: 'Which companies get the most council tax money?',
+        question: 'Which companies get the most money from councils?',
         answer:
-          'The top aggregated suppliers across all English councils that publish supplier lists are shown on this page. Names are normalised so "Capita plc" and "Capita Ltd" aggregate together.',
+          'The biggest companies across all English councils that publish a supplier list are shown on this page. Names are tidied up so that "Capita plc" and "Capita Ltd" are counted as the same company.',
       },
       {
         question: 'Where does this data come from?',
         answer:
-          'Each council publishes invoices over £250 and a top suppliers list under the Local Government Transparency Code. We aggregate the per-council figures to a national total.',
+          "Under the Local Government Transparency Code, each council publishes invoices over £250 and a list of its biggest suppliers. We add these council-level figures up to get a national total.",
       },
       {
-        question: 'Why is the total different from total council spend?',
+        question: 'Why is this total different from total council spend?',
         answer:
-          "Not every council publishes a top suppliers list, and councils only list their biggest suppliers — not every payment. So the total here is a floor, not the full picture.",
+          "Not every council publishes a top supplier list, and the lists only include each council's biggest suppliers — not every single payment. So the figure here is the minimum we can see, not the full picture.",
       },
     ],
     sources: [
@@ -268,25 +268,25 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'big-five-outsourcers',
     section: 'suppliers',
     title: 'The Big Five outsourcers',
-    subtitle: 'How much of top-supplier spend goes to Capita, Serco, Veolia, Biffa and Amey',
+    subtitle: 'Share of top-supplier spend going to Capita, Serco, Veolia, Biffa and Amey',
     metaDescription:
-      "The combined share of top-supplier spend that English councils direct to the five best-known outsourcers — Capita, Serco, Veolia, Biffa and Amey.",
+      "The combined share of published top-supplier spend that English councils pay to five well-known outsourcers — Capita, Serco, Veolia, Biffa and Amey.",
     shareText:
       "How much English council supplier spend goes to just five outsourcing companies",
     longformCopy: [
-      "A lot of public services are delivered by the same handful of private companies. This card aggregates top-supplier disclosures across English councils and shows how much of that spend lands with just five of the best-known outsourcers.",
-      "Only spend reported in each council's published top suppliers list is counted. The wider outsourcing picture is bigger — councils have thousands of contracts that don't make the top list.",
+      "Many public services are run by the same group of private companies. This card adds up each council's top supplier list, then shows what share of that spend goes to five well-known outsourcers.",
+      "Only spend that appears in each council's published top supplier list is counted. The full outsourcing picture is bigger — councils have thousands of contracts that do not make the top list.",
     ],
     faq: [
       {
         question: 'Why just these five companies?',
         answer:
-          "Capita, Serco, Veolia, Biffa and Amey are the five suppliers most commonly associated with English local-government outsourcing — running back-office, waste, highways and facilities contracts. The card gives a like-for-like share across a familiar set.",
+          "Capita, Serco, Veolia, Biffa and Amey are the five private suppliers most often named when people talk about English council outsourcing. They run back-office, waste, roads and building contracts for many councils. Picking the same five for every council gives a fair, like-for-like share.",
       },
       {
         question: 'Is this all the money councils spend with these companies?',
         answer:
-          'No. Councils only publish their biggest suppliers — the true total is higher. This card shows the minimum disclosed spend.',
+          'No. Councils only publish their biggest suppliers, so the real total is higher. This card shows the minimum that has been published.',
       },
     ],
     sources: [
@@ -302,30 +302,30 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'ceo-pay-league',
     section: 'workforce',
     title: 'Highest-paid council CEOs',
-    subtitle: 'Total remuneration of chief executives across England',
+    subtitle: 'Total pay of chief executives across England',
     metaDescription:
-      'The highest and lowest paid council chief executives in England, based on total disclosed remuneration for 2025-26.',
+      'The highest and lowest paid council chief executives in England, based on total pay (salary plus pension and benefits, where listed) for 2025-26.',
     shareText:
       "The highest-paid council chief executives in England — and the lowest",
     longformCopy: [
-      "Every council has a chief executive — the most senior paid officer who runs the organisation day to day. Their salary and total remuneration are published in each council's pay policy statement.",
-      'This card shows the highest and lowest paid CEOs alongside the national median. Total remuneration includes salary plus any published pension contribution and benefits, where disclosed — otherwise the base salary.',
+      "Every council has a chief executive — the most senior paid officer, who runs the council day to day. Each council publishes their pay in a yearly pay policy statement.",
+      'This card shows the highest and lowest paid CEOs, plus the middle (median) figure for England. Total pay is salary plus any pension contribution and benefits the council has listed. If only the basic salary is listed, we use that.',
     ],
     faq: [
       {
         question: 'How much does a council chief executive earn?',
         answer:
-          'Salaries vary a lot by council size. The national median and both extremes are shown on this page.',
+          "Pay is very different from one council to another, mostly because of size. The middle (median) figure and both ends of the range are on this page.",
       },
       {
-        question: 'What is included in total remuneration?',
+        question: 'What does "total pay" mean here?',
         answer:
-          'Total remuneration is salary plus published employer pension contribution and any disclosed benefits. Where total remuneration is not separately disclosed, base salary is used.',
+          "Total pay is salary plus the employer's pension contribution and any benefits the council has listed. If we cannot find a total, we use the basic salary.",
       },
       {
         question: 'Where does this information come from?',
         answer:
-          "Every council publishes a pay policy statement each year. We read each statement directly from the council's own website.",
+          "Each year, every council publishes a pay policy statement. We read each statement straight from the council's own website.",
       },
     ],
     sources: [
@@ -340,25 +340,25 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'hundred-k-club',
     section: 'workforce',
     title: "The £100k club",
-    subtitle: 'Senior council staff earning £100,000 or more, disclosed band-by-band',
+    subtitle: "Senior council staff paid £100,000 or more, taken from each council's published list",
     metaDescription:
-      'How many senior staff earn £100,000 or more at each English council, based on published salary band disclosures.',
+      "How many senior staff earn £100,000 or more at each English council, based on each council's published list of salary bands.",
     shareText:
-      "The number of council staff earning £100,000 or more — council by council",
+      "How many council staff are paid £100,000 or more — council by council",
     longformCopy: [
-      "Every council is required to publish how many of its staff earn £50,000 or more, in £5,000 bands. This card adds up the bands at or above £100,000 to give a per-council count of senior staff.",
-      "Only councils that publish a complete salary-band table are included. Council size matters a lot — a big unitary with tens of thousands of staff will have more £100k roles than a small district.",
+      "By law, every council has to publish how many of its staff earn £50,000 or more, in £5,000 bands. This card adds up all the bands that start at £100,000 or higher to give a count of senior staff for each council.",
+      "Only councils that publish a full salary list are included. Size matters a lot — a big unitary with tens of thousands of staff will have more £100k roles than a small district.",
     ],
     faq: [
       {
         question: 'Does everyone in this group earn £100,000 or more?',
         answer:
-          'Yes. The figure counts staff whose disclosed salary band starts at £100,000 or higher. It excludes pension contributions and benefits.',
+          "Yes. The count includes any member of staff whose published salary band starts at £100,000 or higher. It does not include pension contributions or benefits.",
       },
       {
         question: 'Why do some councils not appear?',
         answer:
-          'Not every council has published its salary bands in a machine-readable form yet. Coverage is noted on the page. Some councils also have no staff in the £100k+ bracket.',
+          "Not every council has published a salary list we can read yet. The page shows how many are included. Some councils that do publish a list have no staff in the £100,000-and-above bands.",
       },
     ],
     sources: [
@@ -376,28 +376,28 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     title: 'Closest to bankruptcy',
     subtitle: 'Councils with the biggest gap between spending and funding',
     metaDescription:
-      'The English councils with the biggest budget gaps — the shortfall between what they plan to spend and the funding they have in place.',
+      "The English councils with the biggest budget gaps — the shortfall between what they plan to spend and the funding they have in place.",
     shareText:
       'The English councils with the biggest budget gaps this year',
     longformCopy: [
-      "A budget gap is the difference between what a council plans to spend and the funding it has lined up. Councils close the gap through savings, cuts or using reserves. When they can't, they issue a Section 114 notice — an effective bankruptcy declaration.",
-      "This card ranks councils by the size of their budget gap in pounds. Some councils publish a single-year gap; others publish the cumulative shortfall they expect across their Medium Term Financial Strategy (typically 3–5 years). Both are shown here — a bigger number means more financial work to do, not certainty of failure.",
+      "A budget gap is the difference between what a council plans to spend and the funding it has lined up. Councils close the gap by saving money, cutting services or using reserves. If they cannot, they issue a Section 114 notice — which works in practice like declaring bankruptcy.",
+      "This card ranks councils by the size of their budget gap in pounds. Some councils publish their gap for one year. Others publish the total gap they expect over the next 3 to 5 years (their Medium Term Financial Strategy). Both are shown here. A bigger number means more financial work to do — not that the council is about to fail.",
     ],
     faq: [
       {
         question: 'What is a Section 114 notice?',
         answer:
-          "Section 114 of the Local Government Finance Act 1988 requires a council's finance officer to issue a notice when the council cannot balance its budget. New spending is frozen until a recovery plan is agreed.",
+          "Under Section 114 of the Local Government Finance Act 1988, a council's finance officer must issue a notice when the council cannot balance its budget. New spending is frozen until a recovery plan is agreed.",
       },
       {
-        question: 'Does a big budget gap mean a council is going bust?',
+        question: 'Does a big budget gap mean a council is about to go bust?',
         answer:
-          'No. Most councils close their gaps each year through savings, cuts or drawing down reserves. A big gap signals pressure, not certainty of failure.',
+          "No. Most councils close their gap each year by saving money, cutting services or using reserves. A big gap is a sign of pressure, not a sign that the council is about to fail.",
       },
       {
         question: 'Where does the budget gap figure come from?',
         answer:
-          "Each council publishes its budget and Medium Term Financial Strategy. We read the budget gap directly from those documents.",
+          "Each council publishes its budget and Medium Term Financial Strategy. We take the budget gap straight from those documents.",
       },
     ],
     sources: [
@@ -411,30 +411,30 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     slug: 'cap-every-year',
     section: 'redflags',
     title: 'Cap every year',
-    subtitle: 'Councils at the 4.99% cap in both 2024 and 2025',
+    subtitle: 'Councils that hit the 4.99% cap in both 2024 and 2025',
     metaDescription:
-      'The English councils that pushed Band D to — or past — the 4.99% referendum cap in two consecutive years. A signal of persistent financial pressure, not a one-off.',
+      'The English councils that pushed Band D to — or past — the 4.99% cap in two years in a row. A pattern of ongoing financial pressure, not a one-off rise.',
     shareText:
       'The councils that hit the 4.99% council tax cap two years running',
     longformCopy: [
-      "Most councils are limited to a Band D rise of 4.99% (2.99% core plus a 2% adult social care precept) before a referendum is required. A few councils in severe financial difficulty get special permission to exceed the cap.",
-      "This card shows the councils that raised Band D by 4.99% or more in both 2024-25 AND 2025-26. A one-off big rise can follow a restructure; two in a row is a sustained signal of financial stress — the kind of pattern only a year-by-year comparison across all 317 councils reveals.",
+      "Most councils are limited to a Band D rise of 4.99% (a 2.99% basic rise plus a 2% extra charge for adult social care). To go higher, they normally have to hold a local vote. A few councils in serious financial difficulty get special permission from government to go above this limit.",
+      "This card shows the councils that raised Band D by 4.99% or more in both 2024-25 AND 2025-26. One big rise can follow a one-off change. Two in a row is a longer-term sign of financial pressure — a pattern you only see by comparing all 317 councils year by year.",
     ],
     faq: [
       {
         question: 'Why does hitting the cap two years running matter?',
         answer:
-          'Every year most councils raise Band D by well under the cap. Hitting the maximum permitted rise in consecutive years shows the council has little financial headroom — each year\'s bill rise is compounding.',
+          "Most years, most councils raise Band D by well under the cap. Hitting the highest allowed rise in two years in a row shows the council has little room to manoeuvre — and that each year's rise is sitting on top of an already higher bill.",
       },
       {
-        question: 'Is this the same as the "Above the cap" card?',
+        question: 'How is this different from the "Above the cap" card?',
         answer:
-          "No. That card lists councils that went above 4.99% this year. This one narrows the list to councils that have pushed to or beyond the cap in BOTH 2024-25 and 2025-26 — a signal of sustained stress, not a single-year response.",
+          "The other card lists councils that went above 4.99% this year. This one narrows that list to councils that pushed to — or past — the cap in BOTH 2024-25 and 2025-26. That is a longer-term sign of pressure, not a one-year response.",
       },
       {
         question: 'Where does this data come from?',
         answer:
-          "Band D council tax rates for 2023-24, 2024-25 and 2025-26 are published on GOV.UK. We compute each year's rise and check which councils cleared 4.99% in both of the last two.",
+          "Band D council tax rates for 2023-24, 2024-25 and 2025-26 are published on GOV.UK. We work out each year's rise and pick out the councils that cleared 4.99% in both 2024-25 and 2025-26.",
       },
     ],
     sources: [
@@ -450,23 +450,23 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     title: 'Above the cap',
     subtitle: 'Councils that raised Band D by 4.99% or more this year',
     metaDescription:
-      'Which English councils pushed council tax to, or beyond, the 4.99% referendum cap in 2025-26 — and which needed government permission to exceed it.',
+      "The English councils that pushed council tax to — or above — the 4.99% cap in 2025-26, and the ones that needed government permission to go higher.",
     shareText:
       'The councils that raised Band D to — or above — the 4.99% cap this year',
     longformCopy: [
-      "Most councils are limited to a Band D rise of 4.99% (a 2.99% core increase plus a 2% social care precept) before a local referendum is required. A few councils in financial difficulty get special permission from government to go higher.",
-      "This card counts every council at or above the cap, shows the national average rise for context, and lists the councils that exceeded it — typically the clearest sign of financial stress.",
+      "Most councils are limited to a Band D rise of 4.99% (a 2.99% basic rise plus a 2% extra charge for adult social care). To go higher, they normally have to hold a local vote. A few councils in financial difficulty get special permission from government to go above this limit.",
+      "This card counts every council at or above the cap, shows the national average rise for context, and lists the councils that went above it. Going above the cap is one of the clearer signs of financial pressure.",
     ],
     faq: [
       {
         question: 'What is the council tax cap?',
         answer:
-          'Ministers set an annual cap on how much councils can raise Band D without holding a local referendum. For 2025-26 the core cap is 2.99% plus a 2% adult social care precept — 4.99% combined for upper-tier councils.',
+          "Each year, government sets a cap on how much councils can raise Band D without holding a local vote. For 2025-26 the basic cap is 2.99%, plus a 2% extra charge for adult social care — 4.99% in total for councils that run social care.",
       },
       {
-        question: 'Why can some councils exceed the cap?',
+        question: 'Why can some councils go above the cap?',
         answer:
-          "Councils in severe financial difficulty can apply to the Ministry of Housing, Communities and Local Government for an 'exceptional financial support' package. One condition of that support is often a council-tax rise above the standard cap.",
+          "Councils in serious financial difficulty can apply to the Ministry of Housing, Communities and Local Government for an 'exceptional financial support' package. One condition of that support is often a council tax rise above the normal cap.",
       },
     ],
     sources: [

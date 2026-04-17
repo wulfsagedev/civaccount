@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
@@ -44,7 +45,7 @@ export default function MostExpensiveCouncilTaxPage() {
     },
     {
       question: 'Why do some councils charge more than others?',
-      answer: 'Council tax rates depend on factors including the range of services provided, local spending priorities, government funding levels, and the size of the council tax base. Councils with fewer properties or higher service demands tend to charge more per household.',
+      answer: "Council tax rates depend on a few things: the range of services the council runs, where the council chooses to spend its money, how much funding it gets from government, and how many homes share the bill. Councils with fewer homes, or with higher demand for services, tend to charge more per household.",
     },
   ];
 
@@ -79,7 +80,7 @@ export default function MostExpensiveCouncilTaxPage() {
         <h1 className="type-title-1 mb-2">Most Expensive Council Tax in England</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
           The most expensive Band D council tax in England for 2025-26 is {expensiveName} at {formatCurrency(mostExpensive.council_tax!.band_d_2025, { decimals: 2 })}.
-          Rates are grouped by council type for fair comparison.
+          Rates are grouped by council type, so you compare like with like.
         </p>
 
         {GROUPS.map((group) => {
@@ -97,36 +98,22 @@ export default function MostExpensiveCouncilTaxPage() {
               <h2 className="type-title-2 mb-1">{group.label}</h2>
               <p className="type-body-sm text-muted-foreground mb-6">{group.subtitle}</p>
 
-              <div className="space-y-4">
+              <RankedBarList>
                 {groupCouncils.map((council, index) => {
                   const bandD = council.council_tax!.band_d_2025;
-                  const slug = getCouncilSlug(council);
-                  const name = getCouncilDisplayName(council);
-                  const barWidth = maxBandD > 0 ? (bandD / maxBandD) * 100 : 0;
-
                   return (
-                    <div key={council.ons_code}>
-                      <div className="flex items-baseline justify-between mb-1.5">
-                        <Link
-                          href={`/council/${slug}`}
-                          className="type-body-sm font-medium hover:text-foreground transition-colors"
-                        >
-                          {index + 1}. {name}
-                        </Link>
-                        <span className="type-body-sm font-semibold tabular-nums">
-                          {formatCurrency(bandD, { decimals: 2 })}
-                        </span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-foreground"
-                          style={{ width: `${barWidth}%` }}
-                        />
-                      </div>
-                    </div>
+                    <RankedBarRow
+                      key={council.ons_code}
+                      rank={index + 1}
+                      title={getCouncilDisplayName(council)}
+                      href={`/council/${getCouncilSlug(council)}`}
+                      value={formatCurrency(bandD, { decimals: 2 })}
+                      subLeft={council.type_name}
+                      fillPct={maxBandD > 0 ? (bandD / maxBandD) * 100 : 0}
+                    />
                   );
                 })}
-              </div>
+              </RankedBarList>
             </section>
           );
         })}

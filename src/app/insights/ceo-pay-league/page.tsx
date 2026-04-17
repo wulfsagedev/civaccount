@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { InsightHero } from '@/components/insights/InsightHero';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import { getCeoPayStats } from '@/lib/insights-stats';
 import {
@@ -51,32 +51,16 @@ export default function Page() {
   }: {
     entry: Entry;
     rank: number;
-  }) => {
-    const name = getCouncilDisplayName(entry.council);
-    const slug = getCouncilSlug(entry.council);
-    const pct = max > 0 ? (entry.total / max) * 100 : 0;
-    return (
-      <div className="py-4 border-b border-border/30 last:border-b-0 first:pt-0 last:pb-0">
-        <div className="flex items-baseline justify-between mb-2">
-          <Link
-            href={`/council/${slug}`}
-            className="type-body font-semibold hover:underline"
-          >
-            {rank}. {name}
-          </Link>
-          <span className="type-body font-semibold tabular-nums">
-            {formatCurrency(entry.total, { decimals: 0 })}
-          </span>
-        </div>
-        <div className="h-2 rounded-full bg-muted overflow-hidden">
-          <div
-            className="h-full rounded-full bg-foreground"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
-    );
-  };
+  }) => (
+    <RankedBarRow
+      rank={rank}
+      title={getCouncilDisplayName(entry.council)}
+      href={`/council/${getCouncilSlug(entry.council)}`}
+      value={formatCurrency(entry.total, { decimals: 0 })}
+      subLeft={entry.council.type_name}
+      fillPct={max > 0 ? (entry.total / max) * 100 : 0}
+    />
+  );
 
   return (
     <>
@@ -89,14 +73,14 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              National median CEO total remuneration
+              Middle (median) total pay for a council CEO in England
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
               {formatCurrency(median, { decimals: 0 })}
             </p>
             <p className="type-body-sm text-muted-foreground">
-              Across {count} councils with published pay. {over200k} pay their
-              CEO over £200,000.
+              Across {count} councils that publish their pay. {over200k} pay their
+              CEO more than £200,000.
             </p>
           </div>
         }
@@ -104,22 +88,22 @@ export default function Page() {
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Top 10 highest paid</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Ranked by total disclosed remuneration (salary plus pension and
-            benefits, where published).
+            Ranked by total pay (salary plus pension and benefits, where the
+            council has published them).
           </p>
-          <div>
+          <RankedBarList>
             {top.map((entry, i) => (
               <Row key={entry.council.ons_code} entry={entry} rank={i + 1} />
             ))}
-          </div>
+          </RankedBarList>
         </section>
 
         <section className="card-elevated p-5 sm:p-6">
-          <h2 className="type-title-2 mb-1">Bottom 10 — lowest paid</h2>
+          <h2 className="type-title-2 mb-1">10 lowest-paid</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Shown for context alongside the highest paid.
+            Shown for balance, alongside the highest paid.
           </p>
-          <div>
+          <RankedBarList>
             {bottom.map((entry, i) => (
               <Row
                 key={entry.council.ons_code}
@@ -127,15 +111,15 @@ export default function Page() {
                 rank={count - i}
               />
             ))}
-          </div>
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: total remuneration is salary plus published
-            employer pension contribution and benefits. Where a council only
-            publishes base salary, that figure is used. Isles of Scilly is the
-            only English council without a disclosed figure — given its size
-            ({'<'}2,500 residents, {'<'}100 staff) it cannot materially affect
-            either end of the league.
+            How we got this: total pay is salary plus the employer&rsquo;s
+            pension contribution and any benefits the council has published.
+            If a council only publishes the basic salary, we use that. The
+            Isles of Scilly is the only English council without a published
+            figure — with under 2,500 residents and under 100 staff, it is too
+            small to change the top or bottom of the list.
           </p>
         </section>
       </InsightHero>

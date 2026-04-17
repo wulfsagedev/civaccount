@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { councils, getCouncilDisplayName, getCouncilPopulation, formatCurrency, formatBudget, getCouncilSlug, type Council } from '@/data/councils';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { CARD_STYLES } from '@/lib/utils';
 import Header from '@/components/Header';
@@ -185,7 +186,7 @@ export default function CompareClient() {
             <div className={`${CARD_STYLES} p-5 sm:p-6 mb-4`}>
               <h2 className="type-title-2 mb-1">Council Tax (Band D)</h2>
               <p className="type-body-sm text-muted-foreground mb-5">2025-26 Band D rates</p>
-              <div className="space-y-4">
+              <RankedBarList>
                 {sorted.map((c) => {
                   const bandD = c.council_tax?.band_d_2025;
                   const maxBandD = Math.max(...selected.map(s => s.council_tax?.band_d_2025 ?? 0));
@@ -195,56 +196,47 @@ export default function CompareClient() {
                     : null;
 
                   return (
-                    <div key={c.ons_code}>
-                      <div className="flex items-baseline justify-between mb-1">
-                        <Link href={`/council/${getCouncilSlug(c)}`} className="type-body font-semibold hover:text-navy-600 transition-colors cursor-pointer">
-                          {getCouncilDisplayName(c)}
-                        </Link>
-                        <div className="flex items-center gap-2">
+                    <RankedBarRow
+                      key={c.ons_code}
+                      title={getCouncilDisplayName(c)}
+                      href={`/council/${getCouncilSlug(c)}`}
+                      value={
+                        <span className="inline-flex items-center gap-2">
                           {change !== null && (
                             <span className={`type-caption ${change > 0 ? 'text-negative' : 'text-positive'}`}>
                               {change > 0 ? '+' : ''}{change.toFixed(1)}%
                             </span>
                           )}
-                          <span className="type-body font-semibold tabular-nums">
-                            {bandD ? formatCurrency(bandD, { decimals: 2 }) : '—'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full bg-foreground" style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
+                          <span>{bandD ? formatCurrency(bandD, { decimals: 2 }) : '—'}</span>
+                        </span>
+                      }
+                      fillPct={pct}
+                    />
                   );
                 })}
-              </div>
+              </RankedBarList>
             </div>
 
             {/* Budget comparison */}
             <div className={`${CARD_STYLES} p-5 sm:p-6 mb-4`}>
               <h2 className="type-title-2 mb-1">Total Service Budget</h2>
               <p className="type-body-sm text-muted-foreground mb-5">Net service expenditure (in thousands)</p>
-              <div className="space-y-4">
+              <RankedBarList>
                 {sorted.map((c) => {
                   const total = c.budget?.total_service;
                   const maxTotal = Math.max(...selected.map(s => s.budget?.total_service ?? 0));
                   const pct = total && maxTotal ? (total / maxTotal) * 100 : 0;
 
                   return (
-                    <div key={c.ons_code}>
-                      <div className="flex items-baseline justify-between mb-1">
-                        <span className="type-body font-semibold">{getCouncilDisplayName(c)}</span>
-                        <span className="type-body font-semibold tabular-nums">
-                          {total ? formatBudget(total) : '—'}
-                        </span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full bg-foreground" style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
+                    <RankedBarRow
+                      key={c.ons_code}
+                      title={getCouncilDisplayName(c)}
+                      value={total ? formatBudget(total) : '—'}
+                      fillPct={pct}
+                    />
                   );
                 })}
-              </div>
+              </RankedBarList>
             </div>
 
             {/* Per-capita spending comparison */}
@@ -266,31 +258,22 @@ export default function CompareClient() {
                 <div className={`${CARD_STYLES} p-5 sm:p-6 mb-4`}>
                   <h2 className="type-title-2 mb-1">Spending per person</h2>
                   <p className="type-body-sm text-muted-foreground mb-5">Total service budget divided by population</p>
-                  <div className="space-y-4">
+                  <RankedBarList>
                     {perCapitaData
                       .sort((a, b) => b.perCapita - a.perCapita)
                       .map(({ council: c, perCapita, population }) => {
                         const pct = (perCapita / maxPerCapita) * 100;
                         return (
-                          <div key={c.ons_code}>
-                            <div className="flex items-baseline justify-between mb-1">
-                              <span className="type-body font-semibold">{getCouncilDisplayName(c)}</span>
-                              <span className="type-body font-semibold tabular-nums">
-                                {formatCurrency(perCapita, { decimals: 0 })}/person
-                              </span>
-                            </div>
-                            <div className="flex items-baseline justify-between mb-2">
-                              <span className="type-caption text-muted-foreground">
-                                Population: {population.toLocaleString('en-GB')}
-                              </span>
-                            </div>
-                            <div className="h-2 rounded-full bg-muted overflow-hidden">
-                              <div className="h-full rounded-full bg-foreground" style={{ width: `${pct}%` }} />
-                            </div>
-                          </div>
+                          <RankedBarRow
+                            key={c.ons_code}
+                            title={getCouncilDisplayName(c)}
+                            value={`${formatCurrency(perCapita, { decimals: 0 })}/person`}
+                            subLeft={`Population: ${population.toLocaleString('en-GB')}`}
+                            fillPct={pct}
+                          />
                         );
                       })}
-                  </div>
+                  </RankedBarList>
                   <p className="type-caption text-muted-foreground mt-5 pt-3 border-t border-border/30">
                     Source: ONS Mid-2024 Population Estimates, GOV.UK Revenue Expenditure
                   </p>

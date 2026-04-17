@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatBudget, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
@@ -135,28 +136,21 @@ export default function CouncilSpendingGuidePage() {
           <h2 className="type-title-2 mb-1">National spending breakdown</h2>
           <p className="type-body-sm text-muted-foreground mb-6">How {formatBudget(totalNationalBudget)} is split across services</p>
 
-          <div className="space-y-5">
+          <RankedBarList>
             {categoryTotals.map((cat) => {
               const barWidth = maxCatTotal > 0 ? (cat.total / maxCatTotal) * 100 : 0;
               return (
-                <div key={cat.key}>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <span className="type-body font-semibold">{cat.name}</span>
-                    <span className="type-body font-semibold tabular-nums">{formatBudget(cat.total)}</span>
-                  </div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="type-caption text-muted-foreground">
-                      {cat.statutory ? 'Statutory' : 'Discretionary'}
-                    </span>
-                    <span className="type-caption text-muted-foreground tabular-nums">{cat.pct.toFixed(0)}%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-foreground" style={{ width: `${barWidth}%` }} />
-                  </div>
-                </div>
+                <RankedBarRow
+                  key={cat.key}
+                  title={cat.name}
+                  value={formatBudget(cat.total)}
+                  subLeft={cat.statutory ? 'Statutory' : 'Discretionary'}
+                  subRight={`${cat.pct.toFixed(0)}%`}
+                  fillPct={barWidth}
+                />
               );
             })}
-          </div>
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
             Source: GOV.UK Revenue Expenditure (RO returns) 2025-26. Net service expenditure.

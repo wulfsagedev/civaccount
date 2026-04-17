@@ -81,10 +81,10 @@ function rankCouncils(types: readonly string[], metric: Metric): RankedCouncil[]
 }
 
 const METRICS: { key: Metric; label: string; description: string }[] = [
-  { key: 'bandD', label: 'Council Tax (Band D)', description: 'Lowest to highest Band D rate for 2025-26' },
-  { key: 'spendingPerResident', label: 'Spending per Resident', description: 'Total service budget divided by population' },
-  { key: 'ceoSalary', label: 'CEO Salary', description: 'Chief executive salary from published pay policy' },
-  { key: 'yoyChange', label: 'Year-on-Year Change', description: 'Percentage change in Band D from 2024-25 to 2025-26' },
+  { key: 'bandD', label: 'Council Tax (Band D)', description: 'Cheapest to most expensive Band D rate for 2025-26' },
+  { key: 'spendingPerResident', label: 'Spending per Resident', description: 'Total service budget divided by the local population' },
+  { key: 'ceoSalary', label: 'CEO Salary', description: 'Chief executive salary, from each council’s published pay policy' },
+  { key: 'yoyChange', label: 'Change since last year', description: 'Change in Band D from 2024-25 to 2025-26, as a percentage' },
 ];
 
 function LeaderboardTable({ ranked, metric }: { ranked: RankedCouncil[]; metric: Metric }) {
@@ -130,11 +130,11 @@ export default function LeaderboardsPage() {
   const faqs = [
     {
       question: 'How are councils compared fairly?',
-      answer: 'Councils are ranked within comparable groups. All-in-one councils (unitary, metropolitan, London boroughs) provide all services and are directly comparable. District and county councils are ranked separately because they split services between them.',
+      answer: 'Councils are ranked inside groups of councils that do the same jobs. All-in-one councils (unitary, metropolitan, London boroughs) run all services, so they are ranked together. District and county councils are ranked on their own, because they share services between them.',
     },
     {
       question: 'What does spending per resident mean?',
-      answer: 'Total service budget divided by the population the council serves. This normalises for council size so you can fairly compare a large city council with a smaller rural one.',
+      answer: 'The total service budget divided by the number of people the council looks after. This evens things out for council size, so you can fairly compare a large city council with a smaller rural one.',
     },
   ];
 
@@ -165,7 +165,7 @@ export default function LeaderboardsPage() {
             <div>
               <h1 className="type-title-1 mb-2">Council Leaderboards</h1>
               <p className="type-body-sm text-muted-foreground">
-                See where every council ranks. Grouped by council type for fair comparison.
+                See where every council ranks. Grouped by council type, so you compare like with like.
               </p>
             </div>
             <PageShareButton

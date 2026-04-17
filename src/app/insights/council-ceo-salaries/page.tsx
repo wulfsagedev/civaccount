@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
@@ -35,11 +36,11 @@ export default function CouncilCeoSalariesPage() {
   const faqs = [
     {
       question: 'Who is the highest-paid council chief executive in England?',
-      answer: `${highest.detailed!.chief_executive} at ${highestName} is the highest-paid council chief executive, earning ${formatCurrency(maxSalary, { decimals: 0 })} per year.`,
+      answer: `${highest.detailed!.chief_executive} at ${highestName} is the highest-paid council chief executive, earning ${formatCurrency(maxSalary, { decimals: 0 })} a year.`,
     },
     {
       question: 'What is the average council CEO salary in England?',
-      answer: `The average council chief executive salary across English councils is ${formatCurrency(avgSalary, { decimals: 0 })}.`,
+      answer: `The average council chief executive salary across English councils is ${formatCurrency(avgSalary, { decimals: 0 })} a year.`,
     },
   ];
 
@@ -84,49 +85,28 @@ export default function CouncilCeoSalariesPage() {
           <h2 className="type-title-2 mb-1">Highest-paid chief executives</h2>
           <p className="type-body-sm text-muted-foreground mb-6">Top 50 council CEO salaries in England</p>
 
-          <div className="">
+          <RankedBarList>
             {topCouncils.map((council, index) => {
               const salary = council.detailed!.chief_executive_salary!;
               const ceoName = council.detailed!.chief_executive!;
-              const name = getCouncilDisplayName(council);
-              const slug = getCouncilSlug(council);
-              const barWidth = maxSalary > 0 ? (salary / maxSalary) * 100 : 0;
-
               return (
-                <div key={council.ons_code} className="py-4 border-b border-border/30 last:border-b-0 first:pt-0 last:pb-0">
-                  <div className="flex items-baseline justify-between mb-1">
-                    <Link
-                      href={`/council/${slug}`}
-                      className="type-body font-semibold hover:text-foreground transition-colors"
-                    >
-                      {index + 1}. {name}
-                    </Link>
-                    <span className="type-body font-semibold tabular-nums">
-                      {formatCurrency(salary, { decimals: 0 })}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="type-caption text-muted-foreground">
-                      {ceoName}
-                    </span>
-                    <span className="type-caption text-muted-foreground">
-                      {council.type_name}
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground"
-                      style={{ width: `${barWidth}%` }}
-                    />
-                  </div>
-                </div>
+                <RankedBarRow
+                  key={council.ons_code}
+                  rank={index + 1}
+                  title={getCouncilDisplayName(council)}
+                  href={`/council/${getCouncilSlug(council)}`}
+                  value={formatCurrency(salary, { decimals: 0 })}
+                  subLeft={`${ceoName} · ${council.type_name}`}
+                  fillPct={maxSalary > 0 ? (salary / maxSalary) * 100 : 0}
+                />
               );
             })}
-          </div>
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            Salary data from council pay policy statements published on .gov.uk websites.
-            Showing basic salary only — total remuneration including pension contributions may be higher.
+            Salary data is taken from council pay policy statements on each council&rsquo;s
+            .gov.uk website. We show basic salary only — total pay including pension
+            contributions and benefits may be higher.
           </p>
         </section>
 

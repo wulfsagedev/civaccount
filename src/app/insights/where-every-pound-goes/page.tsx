@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { InsightHero } from '@/components/insights/InsightHero';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import { getWhereEveryPoundGoes, getNationalSpendStats } from '@/lib/insights-stats';
 import { formatCurrency } from '@/data/councils';
@@ -55,13 +56,13 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              Of every £1 English councils spend, this goes on the biggest item
+              Of every £1 English councils spend, this much goes on the biggest item
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
               {services[0]?.pence.toFixed(0)}p
             </p>
             <p className="type-body-sm text-muted-foreground">
-              Aggregated from the planned 2025-26 budgets of {councilCount} English councils — about {formatShort(totalSpend)} in total net service spend.
+              Added up from the planned 2025-26 budgets of {councilCount} English councils — about {formatShort(totalSpend)} in total net spend on services.
             </p>
           </div>
         }
@@ -69,39 +70,27 @@ export default function Page() {
         <section className="card-elevated p-5 sm:p-6">
           <h2 className="type-title-2 mb-1">The full breakdown</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Share of every £1 going on each of ten service categories, ranked
+            Share of every £1 going on each of ten service areas, ranked from
             largest to smallest.
           </p>
 
-          <div className="space-y-4">
+          <RankedBarList>
             {services.map((s) => (
-              <div key={s.key}>
-                <div className="flex items-baseline justify-between mb-1">
-                  <span className="type-body font-semibold">{s.name}</span>
-                  <span className="type-body font-semibold tabular-nums">
-                    {s.pence.toFixed(1)}p
-                  </span>
-                </div>
-                <div className="flex items-baseline justify-between mb-2">
-                  <span className="type-caption text-muted-foreground tabular-nums">
-                    {formatShort(s.total)} nationally
-                  </span>
-                </div>
-                <div className="h-2 rounded-full bg-muted overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-foreground"
-                    style={{ width: `${s.pence}%` }}
-                  />
-                </div>
-              </div>
+              <RankedBarRow
+                key={s.key}
+                title={s.name}
+                value={`${s.pence.toFixed(1)}p`}
+                subLeft={`${formatShort(s.total)} nationally`}
+                fillPct={s.pence}
+              />
             ))}
-          </div>
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
             How we got this: each council&rsquo;s planned net spend per service
-            category, summed nationally, divided by the national total.
-            District councils don&rsquo;t deliver care or schools — those shares
-            are weighted down accordingly.
+            area, added up across England, divided by the national total.
+            District councils don&rsquo;t run care or schools, so those shares
+            sit lower in the mix.
           </p>
         </section>
       </InsightHero>

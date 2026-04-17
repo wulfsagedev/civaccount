@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { InsightHero } from '@/components/insights/InsightHero';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import { getBigFiveOutsourcers } from '@/lib/insights-stats';
 import { formatCurrency } from '@/data/councils';
@@ -61,54 +62,38 @@ export default function Page() {
               {sharePct.toFixed(1)}%
             </p>
             <p className="type-body-sm text-muted-foreground">
-              About {formatShort(combinedSpend)} disclosed across councils&rsquo;
-              top suppliers — out of {formatShort(nationalTopSupplierSpend)} in
-              total top-supplier spend.
+              About {formatShort(combinedSpend)} on these five companies, out of
+              {' '}{formatShort(nationalTopSupplierSpend)} in total top-supplier
+              spend that councils have published.
             </p>
           </div>
         }
       >
         <section className="card-elevated p-5 sm:p-6">
-          <h2 className="type-title-2 mb-1">Brand by brand</h2>
+          <h2 className="type-title-2 mb-1">Company by company</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Spend and council count for each of the Big Five, aggregated from
-            published top-supplier lists.
+            Spend and number of councils for each of the Big Five, added up
+            from published top supplier lists.
           </p>
 
-          <div className="space-y-5">
-            {brands.map((b) => {
-              const pct =
-                combinedSpend > 0 ? (b.totalSpend / combinedSpend) * 100 : 0;
-              return (
-                <div key={b.brand}>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <span className="type-body font-semibold">{b.brand}</span>
-                    <span className="type-body font-semibold tabular-nums">
-                      {formatShort(b.totalSpend)}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="type-caption text-muted-foreground">
-                      Listed by {b.councilCount} council{b.councilCount === 1 ? '' : 's'}
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RankedBarList>
+            {brands.map((b) => (
+              <RankedBarRow
+                key={b.brand}
+                title={b.brand}
+                value={formatShort(b.totalSpend)}
+                subLeft={`Listed by ${b.councilCount} council${b.councilCount === 1 ? '' : 's'}`}
+                fillPct={combinedSpend > 0 ? (b.totalSpend / combinedSpend) * 100 : 0}
+              />
+            ))}
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: we aggregate each council&rsquo;s published top
-            suppliers list, then match names starting with each Big Five brand
-            (after stripping common suffixes like &ldquo;Ltd&rdquo; or
-            &ldquo;plc&rdquo;). Only disclosed top-supplier spend is included —
-            the wider contracting picture is bigger.
+            How we got this: we add up each council&rsquo;s published top
+            supplier list, then match names that start with one of the Big
+            Five (after taking off common endings like &ldquo;Ltd&rdquo; or
+            &ldquo;plc&rdquo;). Only spend that has been published is included
+            — the full contracting picture is bigger.
           </p>
         </section>
       </InsightHero>

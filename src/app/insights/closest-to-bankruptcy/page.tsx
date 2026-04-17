@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { InsightHero } from '@/components/insights/InsightHero';
+import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import { getClosestToBankruptcy } from '@/lib/insights-stats';
 import {
@@ -67,9 +67,9 @@ export default function Page() {
               {formatShort(totalGap)}
             </p>
             <p className="type-body-sm text-muted-foreground">
-              Across {councilsWithData} councils that publish a gap figure.{' '}
+              Across the {councilsWithData} councils that publish a gap figure.{' '}
               {over10pct} have a gap of 10% or more of their net budget
-              {' '}({over5pct - over10pct} more are at 5–10%).
+              {' '}({over5pct - over10pct} more are between 5% and 10%).
             </p>
           </div>
         }
@@ -77,54 +77,30 @@ export default function Page() {
         <section className="card-elevated p-5 sm:p-6">
           <h2 className="type-title-2 mb-1">Top 10 biggest gaps</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Ranked by budget gap size in pounds.
+            Ranked by the size of the budget gap, in pounds.
           </p>
 
-          <div>
-            {top.map((r, i) => {
-              const name = getCouncilDisplayName(r.council);
-              const slug = getCouncilSlug(r.council);
-              const barPct = (r.gapPounds / maxGap) * 100;
-              return (
-                <div key={r.council.ons_code} className="py-4 border-b border-border/30 last:border-b-0 first:pt-0 last:pb-0">
-                  <div className="flex items-baseline justify-between mb-1">
-                    <Link
-                      href={`/council/${slug}`}
-                      className="type-body font-semibold hover:underline"
-                    >
-                      {i + 1}. {name}
-                    </Link>
-                    <span className="type-body font-semibold tabular-nums text-negative">
-                      {formatShort(r.gapPounds)}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="type-caption text-muted-foreground tabular-nums">
-                      {r.gapPct.toFixed(0)}% of {formatShort(r.netBudgetPounds)} net budget
-                    </span>
-                    {r.savingsTargetPounds ? (
-                      <span className="type-caption text-muted-foreground tabular-nums">
-                        Savings target {formatShort(r.savingsTargetPounds)}
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground"
-                      style={{ width: `${barPct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RankedBarList>
+            {top.map((r, i) => (
+              <RankedBarRow
+                key={r.council.ons_code}
+                rank={i + 1}
+                title={getCouncilDisplayName(r.council)}
+                href={`/council/${getCouncilSlug(r.council)}`}
+                value={formatShort(r.gapPounds)}
+                subLeft={`${r.gapPct.toFixed(0)}% of ${formatShort(r.netBudgetPounds)} net budget`}
+                subRight={r.savingsTargetPounds ? `Savings target ${formatShort(r.savingsTargetPounds)}` : undefined}
+                fillPct={(r.gapPounds / maxGap) * 100}
+              />
+            ))}
+          </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: gap in pounds is read directly from each
+            How we got this: we take the gap in pounds straight from each
             council&rsquo;s published budget or Medium Term Financial Strategy.
-            Some councils publish a single-year gap; others publish a cumulative
-            3–5 year figure from their MTFS — so this is a rough indicator of
-            financial pressure, not an exact benchmark.
+            Some councils publish a one-year gap; others publish the total they
+            expect over 3 to 5 years. So this is a rough guide to financial
+            pressure, not an exact like-for-like comparison.
           </p>
         </section>
       </InsightHero>
