@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/popover';
 import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceTypeName, getTotalBandD, type Council } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
+import { useIsEmbed } from '@/lib/embed-context';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import { INFLATION_CONTEXT } from '@/lib/inflation-context';
@@ -55,6 +56,7 @@ const YourBillCard = ({
   vsAverage,
   totalDailyCost,
 }: YourBillCardProps) => {
+  const isEmbed = useIsEmbed();
   const councilTax = selectedCouncil.council_tax;
   const detailed = selectedCouncil.detailed;
   // True total bill across all precepting authorities. We compute it here
@@ -355,15 +357,17 @@ const YourBillCard = ({
       </Link>
 
       {/* Share your council tax card */}
-      <div className="mt-4">
-        <ShareButton
-          title={`${selectedCouncil.name} council tax`}
-          text={`I pay ${thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}/year to ${selectedCouncil.name}. See where your council tax goes.`}
-          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/council/${getCouncilSlug(selectedCouncil)}/card/your-bill`}
-          imageUrl={`/api/share/${getCouncilSlug(selectedCouncil)}/your-bill?format=story`}
-          variant="hero"
-        />
-      </div>
+      {!isEmbed && (
+        <div className="mt-4">
+          <ShareButton
+            title={`${selectedCouncil.name} council tax`}
+            text={`I pay ${thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}/year to ${selectedCouncil.name}. See where your council tax goes.`}
+            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/council/${getCouncilSlug(selectedCouncil)}/card/your-bill`}
+            imageUrl={`/api/share/${getCouncilSlug(selectedCouncil)}/your-bill?format=story`}
+            variant="hero"
+          />
+        </div>
+      )}
     </section>
   );
 };

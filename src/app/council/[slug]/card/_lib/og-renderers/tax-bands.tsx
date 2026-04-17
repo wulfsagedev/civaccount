@@ -20,28 +20,34 @@ export function renderTaxBands(council: Council, councilName: string): ReactElem
           This council&apos;s portion only, 2025-26
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
-          {bandEntries.map(([band, amount]) => {
-            const isD = band === 'D';
-            return (
-              <div
-                key={band}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '32px 40px',
-                  borderRadius: '24px',
-                  backgroundColor: isD ? OG.accent : OG.surface,
-                  width: '230px',
-                }}
-              >
-                <span style={{ fontSize: '36px', fontWeight: 600, color: isD ? '#fafafa' : OG.secondary }}>Band {band}</span>
-                <span style={{ fontSize: '56px', fontWeight: 700, color: isD ? '#fafafa' : OG.text }}>{formatCurrencyOG(amount, 2)}</span>
-              </div>
-            );
-          })}
+        {/* 4×2 grid — readable numbers, plenty of breathing room */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {[bandEntries.slice(0, 4), bandEntries.slice(4)].map((row, rowIdx) => (
+            <div key={rowIdx} style={{ display: 'flex', gap: '24px' }}>
+              {row.map(([band, amount]) => {
+                const isD = band === 'D';
+                return (
+                  <div
+                    key={band}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      justifyContent: 'center',
+                      gap: '12px',
+                      padding: '32px 36px',
+                      borderRadius: '28px',
+                      backgroundColor: isD ? OG.accent : OG.surface,
+                      flex: 1,
+                    }}
+                  >
+                    <span style={{ fontSize: '36px', fontWeight: 600, color: isD ? '#fafafa' : OG.secondary }}>Band {band}</span>
+                    <span style={{ fontSize: '56px', fontWeight: 700, color: isD ? '#fafafa' : OG.text }}>{formatCurrencyOG(amount, 2)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
 

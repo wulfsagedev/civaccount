@@ -38,9 +38,44 @@ interface ShareButtonProps {
   text: string;
   url?: string;
   imageUrl?: string;
+  /** Optional embed URL. When present, a second "Embed" tab appears in the modal. */
+  embedUrl?: string;
+  /** Card type slug — used to label the embed snippet. */
+  cardType?: string;
   variant?: 'icon' | 'full' | 'hero';
   label?: string;
   showPreview?: boolean;
+}
+
+type EmbedSize = 'small' | 'medium' | 'full';
+type EmbedTheme = 'auto' | 'light' | 'dark';
+
+const EMBED_WIDTHS: Record<EmbedSize, string> = {
+  small: '360px',
+  medium: '540px',
+  full: '100%',
+};
+const EMBED_HEIGHTS: Record<EmbedSize, number> = {
+  small: 520,
+  medium: 640,
+  full: 720,
+};
+
+function buildEmbedUrl(baseUrl: string, theme: EmbedTheme, pinVersion: string | null): string {
+  const url = new URL(baseUrl);
+  if (theme !== 'auto') url.searchParams.set('theme', theme);
+  if (pinVersion) url.searchParams.set('v', pinVersion);
+  return url.toString();
+}
+
+function buildIframeSnippet(src: string, width: string, height: number): string {
+  const widthAttr = width === '100%' ? 'width="100%"' : `width="${parseInt(width)}"`;
+  return `<iframe src="${src}" ${widthAttr} height="${height}" style="border:0;max-width:100%;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>`;
+}
+
+function buildImageSnippet(imageUrl: string, pageUrl: string, title: string): string {
+  const absUrl = imageUrl.startsWith('http') ? imageUrl : `https://www.civaccount.co.uk${imageUrl}`;
+  return `<a href="${pageUrl}" target="_blank" rel="noopener"><img src="${absUrl}" alt="${title}" style="max-width:100%;height:auto;"/></a>`;
 }
 
 function SharePreviewModal({
@@ -53,6 +88,9 @@ function SharePreviewModal({
   imageUrl,
   text,
   shareUrl,
+  embedUrl,
+  cardType,
+  title,
   state,
   feedback,
   triggerRef,
@@ -66,11 +104,42 @@ function SharePreviewModal({
   imageUrl?: string;
   text: string;
   shareUrl: string;
+  embedUrl?: string;
+  cardType?: string;
+  title: string;
   state: 'idle' | 'loading' | 'success';
   feedback: string;
   triggerRef?: React.RefObject<Element | null>;
 }) {
+  const [tab, setTab] = useState<'share' | 'embed'>('share');
+  const [size, setSize] = useState<EmbedSize>('medium');
+  const [theme, setTheme] = useState<EmbedTheme>('auto');
+  const [pinData, setPinData] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const dataYearToPin = '2025-26';
+  const finalEmbedUrl = embedUrl
+    ? buildEmbedUrl(embedUrl, theme, pinData ? dataYearToPin : null)
+    : '';
+  const iframeSnippet = finalEmbedUrl
+    ? buildIframeSnippet(finalEmbedUrl, EMBED_WIDTHS[size], EMBED_HEIGHTS[size])
+    : '';
+  const imageSnippet = imageUrl && cardType
+    ? buildImageSnippet(imageUrl.replace('?format=story', '?format=og'), shareUrl, title)
+    : '';
+
+  const copyTo = async (text: string, key: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 1500);
+    } catch {
+      /* ignore */
+    }
+  };
+
   const dialogRef = useRef<HTMLDivElement>(null);
+  const hasEmbed = Boolean(embedUrl);
 
   // Close on escape
   useEffect(() => {
@@ -144,8 +213,8 @@ function SharePreviewModal({
         data-state={dataState}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="type-title-2">Share</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="type-title-2">{tab === 'embed' ? 'Embed' : 'Share'}</h3>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors cursor-pointer"
@@ -155,74 +224,293 @@ function SharePreviewModal({
           </button>
         </div>
 
-        {/* OG image preview with skeleton loading */}
-        {imageUrl && (
-          <OGImagePreview src={imageUrl} />
+        {/* Tab switcher (only when embed available) */}
+        {hasEmbed && (
+          <div className="flex gap-1 mb-5 p-1 rounded-lg bg-muted/50" role="tablist">
+            <button
+              role="tab"
+              aria-selected={tab === 'share'}
+              onClick={() => setTab('share')}
+              className={`flex-1 py-2 rounded-md type-body-sm font-semibold transition-colors cursor-pointer ${tab === 'share' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Share
+            </button>
+            <button
+              role="tab"
+              aria-selected={tab === 'embed'}
+              onClick={() => setTab('embed')}
+              className={`flex-1 py-2 rounded-md type-body-sm font-semibold transition-colors cursor-pointer ${tab === 'embed' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Embed
+            </button>
+          </div>
         )}
 
-        {/* Share text preview */}
-        <div className="p-3 rounded-lg bg-muted/30 mb-5">
-          <p className="type-body-sm text-muted-foreground break-words">{text}</p>
-          <p className="type-caption text-muted-foreground mt-1 truncate opacity-60">{shareUrl}</p>
-        </div>
+        {tab === 'share' ? (
+          <>
+            {imageUrl && <OGImagePreview src={imageUrl} />}
 
-        {/* Actions — adapt to platform */}
-        <div className="flex flex-col gap-2">
-          {/* Primary: native share on mobile, copy link on desktop */}
-          <button
-            onClick={onShare}
-            disabled={state === 'loading'}
-            className="w-full flex items-center justify-center p-3 rounded-lg transition-colors cursor-pointer min-h-[44px] disabled:opacity-60"
-            style={{ backgroundColor: 'var(--share-accent-bg)', color: 'var(--share-accent)' }}
-          >
-            {state === 'success' ? (
-              <span className="type-body-sm font-semibold text-positive inline-flex items-center gap-1.5 animate-in zoom-in-95 fade-in duration-180 ease-out-snap motion-reduce:animate-none">
-                <Check className="h-4 w-4" aria-hidden="true" />
-                {feedback}
-              </span>
-            ) : (
-              <span className="type-body-sm font-semibold">
-                {hasNativeShare ? 'Share' : 'Copy link'}
-              </span>
-            )}
-          </button>
+            <div className="p-3 rounded-lg bg-muted/30 mb-5">
+              <p className="type-body-sm text-muted-foreground break-words">{text}</p>
+              <p className="type-caption text-muted-foreground mt-1 truncate opacity-60">{shareUrl}</p>
+            </div>
 
-          {/* Secondary row — platform-aware to avoid duplicates */}
-          {(hasNativeShare || onDownload) && (
-            <div className="flex gap-2">
-              {/* Copy link: only on mobile (desktop primary already copies) */}
-              {hasNativeShare && (
-                <button
-                  onClick={onCopy}
-                  disabled={state === 'loading'}
-                  className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
-                >
-                  <span className="type-caption font-medium text-muted-foreground">Copy link</span>
-                </button>
-              )}
-              {/* Download image: both platforms */}
-              {onDownload && (
-                <button
-                  onClick={onDownload}
-                  disabled={state === 'loading'}
-                  className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
-                >
-                  {state === 'loading' ? (
-                    <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
-                  ) : (
-                    <span className="type-caption font-medium text-muted-foreground">Download image</span>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={onShare}
+                disabled={state === 'loading'}
+                className="w-full flex items-center justify-center p-3 rounded-lg transition-colors cursor-pointer min-h-[44px] disabled:opacity-60"
+                style={{ backgroundColor: 'var(--share-accent-bg)', color: 'var(--share-accent)' }}
+              >
+                {state === 'success' ? (
+                  <span className="type-body-sm font-semibold text-positive inline-flex items-center gap-1.5 animate-in zoom-in-95 fade-in duration-180 ease-out-snap motion-reduce:animate-none">
+                    <Check className="h-4 w-4" aria-hidden="true" />
+                    {feedback}
+                  </span>
+                ) : (
+                  <span className="type-body-sm font-semibold">
+                    {hasNativeShare ? 'Share' : 'Copy link'}
+                  </span>
+                )}
+              </button>
+
+              {(hasNativeShare || onDownload) && (
+                <div className="flex gap-2">
+                  {hasNativeShare && (
+                    <button
+                      onClick={onCopy}
+                      disabled={state === 'loading'}
+                      className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
+                    >
+                      <span className="type-caption font-medium text-muted-foreground">Copy link</span>
+                    </button>
                   )}
-                </button>
+                  {onDownload && (
+                    <button
+                      onClick={onDownload}
+                      disabled={state === 'loading'}
+                      className="flex-1 flex items-center justify-center p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer min-h-[44px]"
+                    >
+                      {state === 'loading' ? (
+                        <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
+                      ) : (
+                        <span className="type-caption font-medium text-muted-foreground">Download image</span>
+                      )}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <EmbedTabBody
+            embedUrl={finalEmbedUrl}
+            iframeSnippet={iframeSnippet}
+            imageSnippet={imageSnippet}
+            size={size}
+            setSize={setSize}
+            theme={theme}
+            setTheme={setTheme}
+            pinData={pinData}
+            setPinData={setPinData}
+            dataYearToPin={dataYearToPin}
+            copiedKey={copiedKey}
+            onCopyText={copyTo}
+          />
+        )}
       </div>
     </div>
   );
 }
 
-export default function ShareButton({ title, text, url, imageUrl, variant = 'icon', label }: ShareButtonProps) {
+function EmbedTabBody({
+  embedUrl,
+  iframeSnippet,
+  imageSnippet,
+  size,
+  setSize,
+  theme,
+  setTheme,
+  pinData,
+  setPinData,
+  dataYearToPin,
+  copiedKey,
+  onCopyText,
+}: {
+  embedUrl: string;
+  iframeSnippet: string;
+  imageSnippet: string;
+  size: EmbedSize;
+  setSize: (s: EmbedSize) => void;
+  theme: EmbedTheme;
+  setTheme: (t: EmbedTheme) => void;
+  pinData: boolean;
+  setPinData: (p: boolean) => void;
+  dataYearToPin: string;
+  copiedKey: string | null;
+  onCopyText: (text: string, key: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Live preview iframe */}
+      <div className="rounded-lg overflow-hidden border border-border/40 bg-muted/20">
+        <iframe
+          src={embedUrl}
+          title="Embed preview"
+          className="w-full bg-background"
+          style={{ height: 380, border: 0 }}
+          loading="lazy"
+          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+        />
+      </div>
+
+      {/* Size toggle */}
+      <SegmentedGroup
+        label="Size"
+        options={[
+          { value: 'small', label: 'Small' },
+          { value: 'medium', label: 'Medium' },
+          { value: 'full', label: 'Full' },
+        ]}
+        value={size}
+        onChange={(v) => setSize(v as EmbedSize)}
+      />
+
+      {/* Theme toggle */}
+      <SegmentedGroup
+        label="Theme"
+        options={[
+          { value: 'auto', label: 'Auto' },
+          { value: 'light', label: 'Light' },
+          { value: 'dark', label: 'Dark' },
+        ]}
+        value={theme}
+        onChange={(v) => setTheme(v as EmbedTheme)}
+      />
+
+      {/* Data pin toggle */}
+      <label className="flex items-center justify-between p-3 rounded-lg bg-muted/30 cursor-pointer select-none">
+        <div className="pr-3">
+          <p className="type-body-sm font-semibold">Data</p>
+          <p className="type-caption text-muted-foreground">
+            {pinData ? `Pinned to ${dataYearToPin}` : 'Always current'}
+          </p>
+        </div>
+        <span
+          role="switch"
+          aria-checked={pinData}
+          aria-label={pinData ? 'Unpin data year' : `Pin to ${dataYearToPin}`}
+          tabIndex={0}
+          onClick={() => setPinData(!pinData)}
+          onKeyDown={(e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              e.preventDefault();
+              setPinData(!pinData);
+            }
+          }}
+          className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${pinData ? 'bg-foreground' : 'bg-muted-foreground/30'}`}
+          style={{ minHeight: 0, minWidth: 0 }}
+        >
+          <span
+            aria-hidden="true"
+            className={`inline-block h-6 w-6 transform rounded-full bg-background shadow-sm transition-transform ${pinData ? 'translate-x-[22px]' : 'translate-x-0.5'}`}
+          />
+        </span>
+      </label>
+
+      {/* Copy snippets */}
+      <div className="flex flex-col gap-2">
+        <CopyRow
+          label="Copy embed code"
+          sublabel="Interactive iframe, updates automatically"
+          value={iframeSnippet}
+          copyKey="iframe"
+          copiedKey={copiedKey}
+          onCopy={onCopyText}
+        />
+        {imageSnippet && (
+          <CopyRow
+            label="Copy as image"
+            sublabel="Static PNG with link — works in emails"
+            value={imageSnippet}
+            copyKey="image"
+            copiedKey={copiedKey}
+            onCopy={onCopyText}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SegmentedGroup({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="type-body-sm font-semibold w-16 shrink-0">{label}</span>
+      <div className="flex gap-1 p-1 rounded-lg bg-muted/50 flex-1">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => onChange(opt.value)}
+            className={`flex-1 py-1.5 rounded-md type-caption font-semibold transition-colors cursor-pointer ${value === opt.value ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CopyRow({
+  label,
+  sublabel,
+  value,
+  copyKey,
+  copiedKey,
+  onCopy,
+}: {
+  label: string;
+  sublabel: string;
+  value: string;
+  copyKey: string;
+  copiedKey: string | null;
+  onCopy: (text: string, key: string) => void;
+}) {
+  const isCopied = copiedKey === copyKey;
+  return (
+    <button
+      type="button"
+      onClick={() => onCopy(value, copyKey)}
+      className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer text-left min-h-[44px]"
+    >
+      <div className="min-w-0 pr-3">
+        <p className="type-body-sm font-semibold">{label}</p>
+        <p className="type-caption text-muted-foreground truncate">{sublabel}</p>
+      </div>
+      {isCopied ? (
+        <span className="type-caption font-semibold text-positive inline-flex items-center gap-1.5 shrink-0">
+          <Check className="h-4 w-4" aria-hidden="true" />
+          Copied
+        </span>
+      ) : (
+        <span className="type-caption font-semibold shrink-0" style={{ color: 'var(--share-accent)' }}>Copy</span>
+      )}
+    </button>
+  );
+}
+
+export default function ShareButton({ title, text, url, imageUrl, embedUrl, cardType, variant = 'icon', label }: ShareButtonProps) {
   const [state, setState] = useState<'idle' | 'loading' | 'success'>('idle');
   const [feedback, setFeedback] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -315,6 +603,9 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           imageUrl={previewImageUrl}
           text={text}
           shareUrl={shareUrl}
+          embedUrl={embedUrl}
+          cardType={cardType}
+          title={title}
           state={state}
           feedback={feedback}
           hasNativeShare={hasNativeShare}
@@ -345,6 +636,9 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
           imageUrl={previewImageUrl}
           text={text}
           shareUrl={shareUrl}
+          embedUrl={embedUrl}
+          cardType={cardType}
+          title={title}
           state={state}
           feedback={feedback}
           hasNativeShare={hasNativeShare}
@@ -374,6 +668,9 @@ export default function ShareButton({ title, text, url, imageUrl, variant = 'ico
         imageUrl={previewImageUrl}
         text={text}
         shareUrl={shareUrl}
+        embedUrl={embedUrl}
+        cardType={cardType}
+        title={title}
         state={state}
         feedback={feedback}
         hasNativeShare={hasNativeShare}

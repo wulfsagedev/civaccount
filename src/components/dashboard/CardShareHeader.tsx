@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilSlug } from '@/data/councils';
+import { useIsEmbed } from '@/lib/embed-context';
 import ShareButton from '@/components/proposals/ShareButton';
 
 interface CardShareHeaderProps {
@@ -29,11 +30,13 @@ export default function CardShareHeader({
   // Get slug from URL params OR from CouncilContext (homepage renders dashboard without URL slug)
   const params = useParams<{ slug: string }>();
   const { selectedCouncil } = useCouncil();
+  const isEmbed = useIsEmbed();
   const slug = params?.slug || (selectedCouncil ? getCouncilSlug(selectedCouncil) : undefined);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const shareUrl = slug ? `${origin}/council/${slug}/card/${cardType}` : undefined;
   const imageUrl = slug ? `/api/share/${slug}/${cardType}?format=story` : undefined;
+  const embedUrl = slug ? `${origin}/embed/council/${slug}/${cardType}` : undefined;
 
   return (
     <div>
@@ -44,12 +47,14 @@ export default function CardShareHeader({
             <span className="type-caption text-muted-foreground whitespace-nowrap">{dataYear} data</span>
           )}
         </div>
-        {show && shareUrl && (
+        {show && shareUrl && !isEmbed && (
           <ShareButton
             title={`${title} — ${councilName}`}
             text={`${title} — ${councilName} on CivAccount`}
             url={shareUrl}
             imageUrl={imageUrl}
+            embedUrl={embedUrl}
+            cardType={cardType}
             variant="icon"
           />
         )}
