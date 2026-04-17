@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2, CheckCircle, X } from 'lucide-react';
+import { useAnimatedModal } from '@/lib/use-animated-modal';
 
 // Detail payload accepted by the open-feedback CustomEvent. All optional —
 // when omitted, the dialog acts as the original generic feedback form.
@@ -136,19 +137,24 @@ export default function FeedbackModal() {
     }
   };
 
-  if (!open) return null;
+  const { shouldRender, dataState } = useAnimatedModal(open);
+  if (!shouldRender) return null;
 
   return (
-    <div ref={dialogRef} className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
+    <div ref={dialogRef} className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="feedback-title" data-state={dataState}>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+        className="absolute inset-0 modal-overlay ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-180 motion-reduce:animate-none"
+        data-state={dataState}
         onClick={handleClose}
       />
 
       {/* Feedback dialog */}
       <div className="fixed left-1/2 top-[20%] -translate-x-1/2 w-full max-w-md px-4">
-        <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
+        <div
+          className="modal-content overflow-hidden ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:duration-180 motion-reduce:animate-none"
+          data-state={dataState}
+        >
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-12 gap-4">
               <CheckCircle className="h-12 w-12 text-positive" />

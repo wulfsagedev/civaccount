@@ -364,6 +364,31 @@ a[data-no-press]:active {
   transition: transform var(--duration-base) var(--ease-out-snap);
 }
 
+/* MODAL SYSTEM — one scrim, one surface, app-wide. Pair with tw-animate-css
+   data-state classes; drive custom modals with useAnimatedModal hook. */
+.modal-overlay {
+  /* Visual only — caller positions it (e.g. `fixed inset-0`). Background +
+     blur gives a single, neutral scrim that works in light and dark. */
+  @apply backdrop-blur-md;
+  background-color: oklch(0 0 0 / 40%);
+}
+
+.modal-content {
+  background: var(--card);
+  border: 1px solid oklch(0 0 0 / 8%);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 8px 32px oklch(0 0 0 / 12%),
+    0 2px 8px oklch(0 0 0 / 8%);
+}
+
+.dark .modal-content {
+  border-color: oklch(1 0 0 / 12%);
+  box-shadow:
+    0 8px 32px oklch(0 0 0 / 40%),
+    0 2px 8px oklch(0 0 0 / 30%);
+}
+
 /* Touch hitbox — Emil Kowalski's pattern. Lets a small inline trigger
    (e.g. an info icon next to label text) keep its visual size while still
    exposing a 44×44 tap target via a transparent ::before. Use on tiny

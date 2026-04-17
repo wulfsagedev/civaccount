@@ -8,6 +8,7 @@ import { Council, getCouncilSlug, councils as allCouncilsList } from '@/data/cou
 import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 import { searchCouncilsFast, getDefaultCouncils } from '@/lib/search-index';
+import { useAnimatedModal } from '@/lib/use-animated-modal';
 
 const POSTCODE_REGEX = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d?[A-Z]{0,2}$/i;
 function isPostcode(query: string): boolean {
@@ -59,6 +60,7 @@ const defaultCouncils = getDefaultCouncils(SEARCH_RESULT_LIMIT);
 
 export default function SearchCommand({ forceDesktopStyle = false }: SearchCommandProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { shouldRender: shouldRenderOverlay, dataState: overlayState } = useAnimatedModal(isOpen);
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [postcodeResults, setPostcodeResults] = useState<Council[]>([]);
@@ -309,14 +311,18 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
       )}
 
       {/* Search overlay - only render from the main instance (not forceDesktopStyle) */}
-      {!forceDesktopStyle && isOpen && (
-        <div ref={dialogRef} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Search councils">
+      {!forceDesktopStyle && shouldRenderOverlay && (
+        <div ref={dialogRef} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Search councils" data-state={overlayState}>
           <div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+            className="absolute inset-0 modal-overlay ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-180 motion-reduce:animate-none"
+            data-state={overlayState}
             onClick={closeSearch}
           />
           <div className="fixed left-1/2 -translate-x-1/2 w-full max-w-lg px-4 top-28 sm:top-[20%]">
-            <div className="bg-card border rounded-2xl shadow-lg overflow-hidden">
+            <div
+              className="modal-content overflow-hidden ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:duration-180 motion-reduce:animate-none"
+              data-state={overlayState}
+            >
               <div className="p-3 pb-0">
                 <div className="relative shadow-sm rounded-xl">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground z-10" aria-hidden="true" />

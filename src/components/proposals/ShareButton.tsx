@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Check, Loader2, Download, X } from 'lucide-react';
+import { useAnimatedModal } from '@/lib/use-animated-modal';
 
 /** OG image with skeleton loader — handles loading state properly */
 function OGImagePreview({ src }: { src: string }) {
@@ -125,17 +126,22 @@ function SharePreviewModal({
     };
   }, [open, triggerRef]);
 
-  if (!open) return null;
+  const { shouldRender, dataState } = useAnimatedModal(open);
+  if (!shouldRender) return null;
 
   return (
-    <div ref={dialogRef} className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Share proposal" onClick={onClose}>
+    <div ref={dialogRef} className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Share proposal" onClick={onClose} data-state={dataState}>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      <div
+        className="absolute inset-0 modal-overlay ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-180 motion-reduce:animate-none"
+        data-state={dataState}
+      />
 
       {/* Modal — matches card-elevated design */}
       <div
-        className="relative w-full max-w-md card-elevated p-5 sm:p-6"
+        className="relative w-full max-w-md modal-content p-5 sm:p-6 ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:duration-180 motion-reduce:animate-none"
         onClick={(e) => e.stopPropagation()}
+        data-state={dataState}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-5">

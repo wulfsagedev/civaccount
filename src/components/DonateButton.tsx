@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Heart, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAnimatedModal } from '@/lib/use-animated-modal';
 
 const DONATION_AMOUNTS = [
   { value: 3, label: '£3', description: 'Small' },
@@ -132,20 +133,73 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
         Donate
       </button>
 
-      {/* Modal - rendered via portal to ensure it's above all other content */}
-      {mounted && isOpen && createPortal(
+      <DonateModal
+        mounted={mounted}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        dialogRef={dialogRef}
+        selectedAmount={selectedAmount}
+        setSelectedAmount={setSelectedAmount}
+        customAmount={customAmount}
+        setCustomAmount={setCustomAmount}
+        isLoading={isLoading}
+        error={error}
+        setError={setError}
+        handleDonate={handleDonate}
+      />
+    </>
+  );
+}
+
+function DonateModal({
+  mounted,
+  isOpen,
+  closeModal,
+  dialogRef,
+  selectedAmount,
+  setSelectedAmount,
+  customAmount,
+  setCustomAmount,
+  isLoading,
+  error,
+  setError,
+  handleDonate,
+}: {
+  mounted: boolean;
+  isOpen: boolean;
+  closeModal: () => void;
+  dialogRef: React.RefObject<HTMLDivElement | null>;
+  selectedAmount: number;
+  setSelectedAmount: (n: number) => void;
+  customAmount: string;
+  setCustomAmount: (s: string) => void;
+  isLoading: boolean;
+  error: string;
+  setError: (s: string) => void;
+  handleDonate: () => void;
+}) {
+  const { shouldRender, dataState } = useAnimatedModal(isOpen);
+  if (!mounted || !shouldRender) return null;
+
+  return createPortal(
         <div
           ref={dialogRef}
-          className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="donate-title"
           onClick={closeModal}
+          data-state={dataState}
         >
+          <div
+            className="absolute inset-0 modal-overlay ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-180 motion-reduce:animate-none"
+            data-state={dataState}
+          />
           {/* Modal content */}
           <div
-            className="w-full max-w-md bg-background rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md modal-content overflow-hidden ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:duration-180 motion-reduce:animate-none"
             onClick={(e) => e.stopPropagation()}
+            data-state={dataState}
           >
             {/* Header */}
             <div className="p-6 pb-4 border-b border-border/50">
@@ -249,8 +303,6 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
             </div>
           </div>
         </div>,
-        document.body
-      )}
-    </>
+    document.body
   );
 }
