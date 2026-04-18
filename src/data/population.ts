@@ -28,7 +28,7 @@ export const populationData: Record<string, number> = {
   "Bromsgrove": 100400,
   "Broxbourne": 98100,
   "Broxtowe": 114400,
-  "Burnley": 88800,
+  "Burnley": 99200,
   "Cambridge": 145700,
   "Cannock Chase": 101500,
   "Canterbury": 170400,
@@ -77,7 +77,7 @@ export const populationData: Record<string, number> = {
   "Guildford": 150300,
   "Hambleton": 91900,
   "Harborough": 97400,
-  "Harlow": 87200,
+  "Harlow": 98200,
   "Harrogate": 163500,
   "Hart": 99200,
   "Hastings": 91200,
@@ -314,12 +314,12 @@ export const populationData: Record<string, number> = {
 
   // Inner London Boroughs (ILB)
   "Camden": 218400,
-  "City of London": 8900,
+  "City of London": 15100,
   "Greenwich": 291700,
   "Hackney": 269900,
   "Hammersmith and Fulham": 188700,
   "Haringey": 263400,
-  "Islington": 247900,
+  "Islington": 223000,
   "Kensington and Chelsea": 143300,
   "Lambeth": 323500,
   "Lewisham": 306900,
@@ -327,7 +327,7 @@ export const populationData: Record<string, number> = {
   "Southwark": 318200,
   "Tower Hamlets": 331100,
   "Wandsworth": 335100,
-  "Westminster": 269500,
+  "Westminster": 210000,
 
   // Outer London Boroughs (OLB)
   "Barking and Dagenham": 218900,
