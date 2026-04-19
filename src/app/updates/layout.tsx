@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Updates — What\'s New',
@@ -17,10 +18,33 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'CivAccount Updates — Changelog',
+      'Latest updates, data refreshes, and new features added to CivAccount.',
+      '/updates',
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'Updates' }],
+      '/updates',
+    ),
+  ],
+};
+
 export default function UpdatesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

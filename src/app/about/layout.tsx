@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'About — Why We Built This',
@@ -17,10 +18,34 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'About CivAccount — Why We Built This',
+      'CivAccount is an independent UK council budget transparency project. We turn official .gov.uk and ONS data into clear, comparable views for citizens.',
+      '/about',
+      { type: 'AboutPage' },
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'About' }],
+      '/about',
+    ),
+  ],
+};
+
 export default function AboutLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

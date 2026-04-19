@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Methodology — How We Source Our Data',
@@ -17,10 +18,33 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'CivAccount Methodology — How We Source Our Data',
+      'Step-by-step explanation of how CivAccount collects, verifies, and updates council budget and tax data. Every figure is traceable to a .gov.uk or ONS source.',
+      '/methodology',
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'Methodology' }],
+      '/methodology',
+    ),
+  ],
+};
+
 export default function MethodologyLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

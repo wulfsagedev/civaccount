@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageShareButton } from '@/components/ui/page-share-button';
 import type { InsightCardEntry } from '@/data/insights';
+import { buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 
 interface InsightHeroProps {
   entry: InsightCardEntry;
@@ -21,10 +22,40 @@ interface InsightHeroProps {
  *
  * Each card's `/insights/<slug>/page.tsx` passes its registry entry + a hero
  * node. Body content is optional — simple cards may just need the hero.
+ *
+ * SEO/GEO: this component owns the WebPage + Article JSON-LD for every
+ * insight sub-page. The page itself remains responsible for FAQPage and
+ * BreadcrumbList JSON-LD (which include page-specific values not on the
+ * registry entry).
  */
 export function InsightHero({ entry, hero, children }: InsightHeroProps) {
+  const url = `/insights/${entry.slug}`;
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      buildWebPageSchema(entry.title, entry.metaDescription, url),
+      buildArticleSchema({
+        headline: entry.title,
+        description: entry.metaDescription,
+        url,
+        about: 'UK local government finance',
+        keywords: [
+          'council tax',
+          'council spending',
+          'UK councils',
+          'local government finance',
+          'council budgets',
+        ],
+      }),
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb
           items={[

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
-import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
 export const metadata: Metadata = {
@@ -52,6 +52,18 @@ export default function MostExpensiveCouncilTaxPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      buildWebPageSchema(
+        'Most Expensive Council Tax in England 2025-26',
+        'The highest Band D council tax rates in England for 2025-26, grouped by council type for fair comparison.',
+        '/insights/most-expensive-council-tax',
+      ),
+      buildArticleSchema({
+        headline: 'Most Expensive Council Tax in England 2025-26',
+        description: `The most expensive Band D council tax in England for 2025-26 is ${expensiveName} at ${formatCurrency(mostExpensive.council_tax!.band_d_2025, { decimals: 2 })}. Full ranking by council type.`,
+        url: '/insights/most-expensive-council-tax',
+        about: 'Council tax in England',
+        keywords: ['most expensive council tax', 'highest Band D', 'council tax 2025-26', 'England council tax rankings'],
+      }),
       buildFAQPageSchema(faqs, '/insights/most-expensive-council-tax'),
       buildBreadcrumbSchema(
         [

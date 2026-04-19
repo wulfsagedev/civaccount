@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -17,10 +18,33 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'CivAccount Privacy Policy',
+      'CivAccount privacy policy: essential cookies only, no tracking, no ads, no data selling.',
+      '/privacy',
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'Privacy' }],
+      '/privacy',
+    ),
+  ],
+};
+
 export default function PrivacyLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, formatBudget, getCouncilDisplayName, getCouncilSlug, getCouncilPopulation } from '@/data/councils';
-import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageShareButton } from '@/components/ui/page-share-button';
@@ -141,6 +141,19 @@ export default function LeaderboardsPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      buildWebPageSchema(
+        'Council Leaderboards — Rankings for all 317 English Councils',
+        'Where every English council ranks for council tax, spending per resident, CEO salary, and year-on-year tax change.',
+        '/insights/leaderboards',
+        { type: 'CollectionPage' },
+      ),
+      buildArticleSchema({
+        headline: 'Council Leaderboards — Rankings for all 317 English Councils',
+        description: 'Rankings for council tax, spending per resident, CEO salary, and year-on-year change across every English council, grouped by type for fair comparison.',
+        url: '/insights/leaderboards',
+        about: 'UK local government rankings',
+        keywords: ['council leaderboard', 'council rankings', 'council tax ranking', 'council comparison'],
+      }),
       buildFAQPageSchema(faqs, '/insights/leaderboards'),
       buildBreadcrumbSchema(
         [{ name: 'Home', url: '/' }, { name: 'Insights', url: '/insights' }, { name: 'Leaderboards' }],

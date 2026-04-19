@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
@@ -17,10 +18,33 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'CivAccount Terms of Use',
+      'Terms of use for CivAccount. Data is sourced from official UK government publications and provided for informational purposes only.',
+      '/terms',
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'Terms' }],
+      '/terms',
+    ),
+  ],
+};
+
 export default function TermsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

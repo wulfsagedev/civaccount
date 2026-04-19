@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
-import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
 export const metadata: Metadata = {
@@ -47,6 +47,18 @@ export default function CouncilCeoSalariesPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      buildWebPageSchema(
+        "Council CEO Salaries — England's Highest-Paid Executives",
+        'Full ranking of council chief executive salaries across all 317 English councils.',
+        '/insights/council-ceo-salaries',
+      ),
+      buildArticleSchema({
+        headline: "Council CEO Salaries — England's Highest-Paid Executives",
+        description: `${highest.detailed!.chief_executive} at ${highestName} is the highest-paid council chief executive at ${formatCurrency(maxSalary, { decimals: 0 })}. Average across England: ${formatCurrency(avgSalary, { decimals: 0 })}.`,
+        url: '/insights/council-ceo-salaries',
+        about: 'Council chief executive pay in England',
+        keywords: ['council CEO salary', 'chief executive pay', 'council senior pay', 'local government salaries'],
+      }),
       buildFAQPageSchema(faqs, '/insights/council-ceo-salaries'),
       buildBreadcrumbSchema(
         [

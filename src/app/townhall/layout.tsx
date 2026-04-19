@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Town Hall — Have Your Say',
@@ -19,6 +20,30 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'Town Hall — Have Your Say on Council Spending',
+      'Vote on resident-submitted budget proposals and suggest changes for any of England\'s 317 councils.',
+      '/townhall',
+      { type: 'CollectionPage' },
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'Town Hall' }],
+      '/townhall',
+    ),
+  ],
+};
+
 export default function TownHallLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

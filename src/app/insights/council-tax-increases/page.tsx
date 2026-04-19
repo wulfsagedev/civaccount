@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
-import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
 export const metadata: Metadata = {
@@ -61,6 +61,18 @@ export default function CouncilTaxIncreasesPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      buildWebPageSchema(
+        'Council Tax Increases 2025-26 — Year-on-Year Changes',
+        'Year-on-year Band D council tax changes for every English council in 2025-26.',
+        '/insights/council-tax-increases',
+      ),
+      buildArticleSchema({
+        headline: 'Council Tax Increases 2025-26 — Year-on-Year Changes',
+        description: `Council tax went up by an average of ${avgChange.toFixed(1)}% in 2025-26. ${biggestName} had the biggest rise at ${biggestIncreases[0].changePercent.toFixed(1)}%.`,
+        url: '/insights/council-tax-increases',
+        about: 'Council tax increases in England',
+        keywords: ['council tax increase', 'Band D rise', 'council tax 2025-26', 'year-on-year change'],
+      }),
       buildFAQPageSchema(faqs, '/insights/council-tax-increases'),
       buildBreadcrumbSchema(
         [

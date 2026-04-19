@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
-import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
 export const metadata: Metadata = {
@@ -53,6 +53,18 @@ export default function CheapestCouncilTaxPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      buildWebPageSchema(
+        'Cheapest Council Tax in England 2025-26',
+        'The cheapest Band D council tax rates in England for 2025-26, grouped by council type for fair comparison.',
+        '/insights/cheapest-council-tax',
+      ),
+      buildArticleSchema({
+        headline: 'Cheapest Council Tax in England 2025-26',
+        description: `The cheapest Band D council tax in England for 2025-26 is ${cheapestName} at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. Full ranking by council type.`,
+        url: '/insights/cheapest-council-tax',
+        about: 'Council tax in England',
+        keywords: ['cheapest council tax', 'lowest Band D', 'council tax 2025-26', 'England council tax rankings'],
+      }),
       buildFAQPageSchema(faqs, '/insights/cheapest-council-tax'),
       buildBreadcrumbSchema(
         [
