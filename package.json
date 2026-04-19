@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/generate-coverage-stats.mjs",
+    "prebuild": "node scripts/fetch-private-data.mjs && node scripts/generate-coverage-stats.mjs",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
@@ -15,7 +15,14 @@
     "sync:band-d": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
     "generate:coverage": "node scripts/generate-coverage-stats.mjs",
     "generate:provenance": "node scripts/generate-provenance.mjs",
-    "audit:data": "node scripts/data-audit-log.mjs"
+    "audit:data": "node scripts/data-audit-log.mjs",
+    "indexnow:ping": "node scripts/indexnow-ping.mjs",
+    "indexnow:ping-all": "node scripts/indexnow-ping.mjs --all",
+    "sitemap:ping": "node scripts/sitemap-ping.mjs",
+    "seo:citations": "node scripts/seo-citation-monitor.mjs",
+    "seo:rank": "node scripts/openpagerank-check.mjs",
+    "seo:rank-csv": "node scripts/openpagerank-check.mjs --csv",
+    "postbuild": "if [ \"$VERCEL_ENV\" = \"production\" ]; then node scripts/sitemap-ping.mjs --indexnow-only || true; else echo 'sitemap-ping: skipped (only runs on Vercel production builds)'; fi"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.8",

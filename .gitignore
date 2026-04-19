@@ -52,6 +52,7 @@ scripts/*
 !scripts/generate-provenance.mjs
 !scripts/data-audit-log.mjs
 !scripts/requirements.txt
+!scripts/fetch-private-data.mjs
 scripts/validate/reports/*.json
 council_pdfs/
 pdf_downloads/
@@ -59,10 +60,11 @@ pdf_extracts/
 temp_images/
 .gstack/
 
-# Private data (Phase 1 cutover — see /DATA-ACCESS-POLICY.md).
-# After cutover, src/data/councils/ becomes a private Git submodule.
-# Fixtures at src/data/councils-fixtures/ remain tracked (committed to public).
-# These patterns prevent accidental re-commits of raw artefacts.
-/src/data/councils/pdfs/
-/src/data/councils/_private/
+# Private data — see /DATA-ACCESS-POLICY.md.
+# The entire src/data/councils/ folder is fetched at build time from the
+# private civaccount-data repo using CIVACCOUNT_DATA_TOKEN (see
+# scripts/fetch-private-data.mjs). Nothing at that path is ever tracked here.
+# Fixtures at src/data/councils-fixtures/ remain tracked and serve as the
+# fallback when the token is absent or the fetch fails.
+/src/data/councils/
 /scripts/data-scripts/
