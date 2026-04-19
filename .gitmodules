@@ -1,0 +1,3 @@
+[submodule "src/data/councils"]
+	path = src/data/councils
+	url = https://github.com/wulfsagedev/civaccount-data.git
