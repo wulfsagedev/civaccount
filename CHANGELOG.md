@@ -2,7 +2,7 @@
 
 ## April 2026 — Moat infrastructure
 
-Ships every technical piece from [MOAT.md](MOAT.md) — four new public routes designed to turn first-mover advantage into a compounding moat through distribution, data-change signalling and coverage expansion.
+Ships the technical infrastructure for distribution, data-change signalling, and coverage expansion — four new public routes designed to turn first-mover advantage into durable reach.
 
 ### New pages
 - **[/developers](https://www.civaccount.co.uk/developers)** — public API docs + one-line iframe embed snippets. Copy-paste code blocks for any of 317 councils, full or single-card variants. Positions CivAccount as infrastructure estate agents, local papers and mortgage tools can integrate free forever.
