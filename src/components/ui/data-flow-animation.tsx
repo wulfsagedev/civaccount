@@ -46,8 +46,8 @@ const DataFlowAnimation = memo(function DataFlowAnimation() {
       className="flex items-center justify-center w-full max-w-[480px] mx-auto pointer-events-none select-none"
       aria-hidden="true"
     >
-      {/* Left card — faded, slightly smaller, overlaps center */}
-      <div className="w-[140px] sm:w-[160px] shrink-0 opacity-[0.15] -mr-3 sm:-mr-4">
+      {/* Left card — faded, 25% smaller than center, overlaps center */}
+      <div className="w-[140px] sm:w-[160px] shrink-0 opacity-[0.15] -mr-3 sm:-mr-4 scale-75 origin-right">
         <MiniCard
           amount="£487.00"
           label="You pay this council"
@@ -72,8 +72,8 @@ const DataFlowAnimation = memo(function DataFlowAnimation() {
         />
       </div>
 
-      {/* Right card — faded, slightly smaller, overlaps center */}
-      <div className="w-[140px] sm:w-[160px] shrink-0 opacity-[0.15] -ml-3 sm:-ml-4">
+      {/* Right card — faded, 25% smaller than center, overlaps center */}
+      <div className="w-[140px] sm:w-[160px] shrink-0 opacity-[0.15] -ml-3 sm:-ml-4 scale-75 origin-left">
         <MiniCard
           amount="£1,891.00"
           label="You pay this council"
