@@ -12,6 +12,10 @@ Not affiliated with any UK council or government body. This is an independent pr
 
 ## V3 — What's new (April 2026)
 
+- **[Developers page](https://www.civaccount.co.uk/developers)** — public JSON API + one-line iframe embeds for any council. No key, 100 req/min, £0 forever.
+- **[Change log](https://www.civaccount.co.uk/changelog)** — live feed of every council data change with source + date
+- **[FOI archive](https://www.civaccount.co.uk/foi)** — Freedom of Information responses published in full
+- **[Parish councils](https://www.civaccount.co.uk/parish)** — scaffold for the ~10,000 parish/town councils tier (pilot coverage coming)
 - **Head-to-head comparisons** — Compare any two councils side by side on tax, budget, spending, and leadership
 - **Insight rankings** — Cheapest and most expensive council tax, biggest increases, CEO salary league table
 - **Open data downloads** — Full dataset for all 317 councils in CSV and JSON
@@ -19,6 +23,7 @@ Not affiliated with any UK council or government body. This is an independent pr
 - **Town Hall** — Vote on how your council should spend money, propose ideas, reach milestones
 - **Embeddable widgets** — Council tax cards for external sites
 - **SEO infrastructure** — FAQPage, Article, Dataset, and BreadcrumbList schema across all pages
+- **100% Kent-parity** across all 317 English councils (up from 99.9%)
 
 ## Features
 

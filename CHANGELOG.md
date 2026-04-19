@@ -1,5 +1,28 @@
 # Changelog
 
+## April 2026 — Moat infrastructure
+
+Ships every technical piece from [MOAT.md](MOAT.md) — four new public routes designed to turn first-mover advantage into a compounding moat through distribution, data-change signalling and coverage expansion.
+
+### New pages
+- **[/developers](https://www.civaccount.co.uk/developers)** — public API docs + one-line iframe embed snippets. Copy-paste code blocks for any of 317 councils, full or single-card variants. Positions CivAccount as infrastructure estate agents, local papers and mortgage tools can integrate free forever.
+- **[/changelog](https://www.civaccount.co.uk/changelog)** — live data change log, server-rendered. Every year-over-year council tax move linked to its council page. Gives AI crawlers + journalists a reason to recrawl regularly.
+- **[/foi](https://www.civaccount.co.uk/foi)** — archive for Freedom of Information responses. Ships with a 6-item backlog (HSF recipients, pension contributions, SEND transport per provider, councillor journey claims, agency spend, thin-supplier-list fill).
+- **[/parish](https://www.civaccount.co.uk/parish)** + `/parish/[slug]` — scaffold for England's ~10,000 parish/town councils. Empty data array, pilot county to follow.
+
+### Supporting
+- `llms.txt` expanded with new sections for developers + stable API endpoints.
+- Footer nav includes Developers / Change log / FOI archive.
+- Sitemap covers all new routes.
+
+### Data quality
+- Parity reached **100.0%** overall by adding grant_payments for Hinckley & Bosworth, Elmbridge, Redcar & Cleveland and North East Lincolnshire (all sourced from each council's own open data).
+- 4 councils remain blocked at the network layer (Amber Valley firewall, Lancaster UK-geo-fence, South Hams Cloudflare, Stockton WAF) — documented in the FOI queue.
+- Honest gap notices shipped for every silent-hide path (Bill history, Leadership, Pay & allowances, Service outcomes) with `{Council}` placeholder substitution for natural copy.
+- Validator warnings 165 → 127 via salary_bands sort/dedupe, population refresh to ONS Mid-2024, post-2025-election councillor counts corrected.
+
+---
+
 ## V3.0 — April 2026
 
 The biggest release yet. CivAccount goes from transparency tool to civic participation platform. Residents can now propose how their council should spend money, vote on ideas, and discuss with neighbours. Plus, every English council now has detailed leadership, salary, and spending data.
