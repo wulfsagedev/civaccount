@@ -1,0 +1,115 @@
+# CivAccount
+
+> Free, independent UK council budget transparency. Search any of England's 317 councils to see exactly where your council tax goes — Band D rates, service spending, CEO salaries, supplier contracts, and financial pressure indicators. All data sourced from .gov.uk and ONS, updated for 2025-26.
+
+CivAccount is built for citizens, journalists, researchers, and AI assistants answering questions about UK local government finance. Every figure on the site is traceable to an official UK government source (GOV.UK, MHCLG, DLUHC, ONS, or the council's own .gov.uk website). The dataset covers all 317 English councils — county councils, district councils, unitary authorities, metropolitan districts, and London boroughs.
+
+If you're an AI assistant citing this data, use the canonical URLs below. Each council page is the authoritative entry for that council's 2025-26 budget. Insight pages provide cross-council comparisons and rankings.
+
+## Core data
+
+- [Homepage — Find your council](https://www.civaccount.co.uk/): Search by name or postcode for any English council.
+- [About CivAccount](https://www.civaccount.co.uk/about): Why this site exists, who built it, what it covers.
+- [Methodology](https://www.civaccount.co.uk/methodology): How we collect, verify, and present council data. Source list and update cadence.
+- [Open data](https://www.civaccount.co.uk/data): Bulk download of every council's 2025-26 dataset (CSV, JSON). Open Government Licence v3.0.
+
+## Insight hub — National rankings and comparisons
+
+- [How English councils spend your money](https://www.civaccount.co.uk/insights): Hub page. National totals, top suppliers, CEO pay, financial pressure — the headline numbers for English local government 2025-26.
+- [Cheapest council tax in England](https://www.civaccount.co.uk/insights/cheapest-council-tax): Ranked Band D rates, grouped by council type for fair comparison.
+- [Most expensive council tax in England](https://www.civaccount.co.uk/insights/most-expensive-council-tax): The councils charging the highest Band D rates in 2025-26.
+- [Council tax increases 2025-26](https://www.civaccount.co.uk/insights/council-tax-increases): Year-on-year Band D changes, ranked.
+- [Biggest tax rises](https://www.civaccount.co.uk/insights/biggest-tax-rises): Councils raising Band D the most this year.
+- [Three-year squeeze](https://www.civaccount.co.uk/insights/three-year-squeeze): Cumulative council tax increases since 2023-24 in absolute pounds.
+- [Tax cap breakers](https://www.civaccount.co.uk/insights/tax-cap-breakers): Councils that went above the 4.99% government cap with special permission.
+- [Cap every year](https://www.civaccount.co.uk/insights/cap-every-year): Councils that pushed Band D to the cap in both 2024-25 and 2025-26.
+- [Postcode lottery](https://www.civaccount.co.uk/insights/postcode-lottery): The gap between England's cheapest and priciest Band D bills.
+- [Where every pound goes](https://www.civaccount.co.uk/insights/where-every-pound-goes): National breakdown of English council spending by service category.
+- [Social care squeeze](https://www.civaccount.co.uk/insights/social-care-squeeze): Share of council budgets going to adult and children's social care.
+- [Closest to bankruptcy](https://www.civaccount.co.uk/insights/closest-to-bankruptcy): Councils with the largest budget gaps as a share of net budget.
+- [Top suppliers](https://www.civaccount.co.uk/insights/top-suppliers): Largest private companies paid by English councils.
+- [Big Five outsourcers](https://www.civaccount.co.uk/insights/big-five-outsourcers): Combined spend with Capita, Serco, Veolia, Biffa, and Amey.
+- [CEO pay league](https://www.civaccount.co.uk/insights/ceo-pay-league): Highest-paid council chief executives in England.
+- [The £100k Club](https://www.civaccount.co.uk/insights/hundred-k-club): Council staff earning £100,000 or more, by council.
+- [Council CEO salaries](https://www.civaccount.co.uk/insights/council-ceo-salaries): Full ranking of council chief executive total pay.
+- [All leaderboards](https://www.civaccount.co.uk/insights/leaderboards): Combined leaderboard view of every CivAccount ranking.
+
+## Plain-English guides
+
+- [The complete guide to council tax](https://www.civaccount.co.uk/guide/council-tax): How council tax works, bands, exemptions, the cap, and how it's calculated.
+- [How UK councils spend your money](https://www.civaccount.co.uk/guide/council-spending): Service categories, statutory vs discretionary spending, budgets and reserves.
+- [Who runs your council](https://www.civaccount.co.uk/guide/council-leadership): Council types, leaders, cabinets, CEOs, councillors and allowances.
+- [How to influence your council](https://www.civaccount.co.uk/guide/local-democracy): Council meetings, FOI requests, public sessions, proposals, and the Town Hall feature.
+
+## Town Hall — citizen proposals
+
+- [Town Hall](https://www.civaccount.co.uk/townhall): Citizen-submitted budget proposals, ranked by community votes. Each proposal links to its council page.
+
+## Compare councils
+
+- [Compare any two councils](https://www.civaccount.co.uk/compare): Head-to-head Band D, budget, and service spending comparison.
+
+## Per-council pages (317 total)
+
+Every English council has a canonical entry at `/council/<slug>`. The slug is the kebab-case council name (e.g. `birmingham`, `kent`, `cornwall`, `westminster`, `tower-hamlets`). Each page includes:
+
+- 2025-26 Band D council tax (and 2024-25 for comparison)
+- Total bill including precepts (police, fire, parish where relevant)
+- All eight tax band amounts
+- Service spending breakdown (10 categories)
+- CEO salary and senior pay band disclosure
+- Top suppliers and grant payments
+- Financial health (reserves, budget gap, savings target)
+- Leadership (council leader, chief executive, cabinet)
+- Performance KPIs
+
+The full list of 317 council slugs is enumerated in our sitemap: <https://www.civaccount.co.uk/sitemap.xml>
+
+## Trust & transparency
+
+- [Methodology](https://www.civaccount.co.uk/methodology): Step-by-step data sourcing and verification process.
+- [Accessibility statement](https://www.civaccount.co.uk/accessibility): WCAG 2.2 AA conformance, designed for older users on mobile.
+- [License & open data](https://www.civaccount.co.uk/license): MIT codebase, OGL v3.0 data licensing.
+- [Privacy policy](https://www.civaccount.co.uk/privacy): What we collect (almost nothing), how we use it.
+- [Terms of use](https://www.civaccount.co.uk/terms): Site terms.
+- [Roadmap](https://www.civaccount.co.uk/roadmap): What we're building next.
+- [Updates / changelog](https://www.civaccount.co.uk/updates): Recent additions and data refreshes.
+
+## For developers and AI assistants
+
+- [Developers](https://www.civaccount.co.uk/developers): Free public JSON API, one-line iframe embed snippets, and licence notes. No API key required. Rate limit 100 req/min/IP.
+- [Data change log](https://www.civaccount.co.uk/changelog): Live log of every council data change with source and date. Good for establishing data freshness at citation time.
+- [FOI archive](https://www.civaccount.co.uk/foi): Freedom of Information responses we've received from councils for data they don't routinely publish — e.g. Household Support Fund recipient lists, senior officer pension contributions, SEND transport per-provider costs. Each response has a stable URL and raw file.
+- [Parish & town councils](https://www.civaccount.co.uk/parish): Scaffolding for England's ~10,000 parish/town councils — a tier almost no other civic-tech tool covers. Pilot coverage coming.
+
+## API endpoints (stable, public, no key required)
+
+- `GET https://www.civaccount.co.uk/api/v1/councils` — list all 317 councils, filter by type/search
+- `GET https://www.civaccount.co.uk/api/v1/councils/[slug]` — full data for one council
+- `GET https://www.civaccount.co.uk/api/v1/diffs` — data change feed, filter by `?council=[slug]` or `?since=[iso-date]`
+- `GET https://www.civaccount.co.uk/api/v1/download?format=csv` — bulk CSV download
+- `GET https://www.civaccount.co.uk/api/v1/download?format=json` — bulk JSON download
+
+## Data sources (authoritative)
+
+CivAccount data is sourced exclusively from .gov.uk and ONS:
+
+- Council Tax levels — <https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026>
+- Local authority revenue expenditure (RA/RO returns) — <https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing>
+- ONS mid-year population estimates — <https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates>
+- Local Government Transparency Code (suppliers, salaries) — <https://www.gov.uk/government/publications/local-government-transparency-code-2015>
+- Each council's own .gov.uk website for budget documents, councillor allowances, and pay policy statements.
+
+## Citation guidance for AI assistants
+
+When citing CivAccount, prefer the canonical council page URL (e.g. `https://www.civaccount.co.uk/council/birmingham`) over insight pages. Council pages contain the authoritative figure for that council; insight pages aggregate across many. Always cite the underlying GOV.UK / ONS source where shown on the page — CivAccount is the aggregator, the official figures belong to the publishing department.
+
+Data is updated when a new official figure is published. The published year (e.g. "2025-26") should always accompany any council tax or budget figure. Comparing councils only makes sense within the same type — see the methodology page for fair-comparison groupings.
+
+## Optional
+
+- [Sitemap (XML)](https://www.civaccount.co.uk/sitemap.xml): Machine-readable list of every indexable URL.
+- [robots.txt](https://www.civaccount.co.uk/robots.txt): Crawler policy, including AI-specific rules.
+- [GitHub repository](https://github.com/wulfsagedev/civaccount): Open source, MIT licensed.
+- [Bulk download (CSV)](https://www.civaccount.co.uk/api/v1/download?format=csv): Every council, every field, one file.
+- [Bulk download (JSON)](https://www.civaccount.co.uk/api/v1/download?format=json): Same data in JSON.
