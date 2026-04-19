@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Terms of Use',
-  description: 'Terms of use for CivAccount. Our data comes from official government sources but is provided for informational purposes only.',
+  title: 'Terms of Use, Data Licence and Attribution',
+  description: 'Terms for using CivAccount. Code is MIT licensed. Council data is aggregated from .gov.uk sources under Open Government Licence v3.0. Attribution required on reuse.',
   alternates: {
     canonical: '/terms',
   },
   openGraph: {
-    title: 'Terms of Use - CivAccount',
-    description: 'Terms of use for CivAccount.',
+    title: 'Terms of Use, Data Licence and Attribution',
+    description: 'CivAccount terms. MIT-licensed code. Council data under Open Government Licence v3.0. Attribution required on reuse.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Terms of Use - CivAccount',
-    description: 'Terms of use for CivAccount.',
+    title: 'Terms of Use, Data Licence and Attribution',
+    description: 'CivAccount terms. MIT code. OGL v3.0 data. Attribution required on reuse.',
   },
 };
 

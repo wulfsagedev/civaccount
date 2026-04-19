@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { DataFlowAnimation } from '@/components/ui/data-flow-animation';
 import Link from 'next/link';
-import { ChevronRight, Vote, GitCompareArrows } from 'lucide-react';
+import { ChevronRight, Vote, GitCompareArrows, BarChart3, BookOpen } from 'lucide-react';
 import { getCouncilSlug } from '@/data/councils';
 
 // Memoized homepage content to prevent re-renders
@@ -68,6 +68,36 @@ const HomepageContent = memo(function HomepageContent() {
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
             </Link>
+            <Link
+              href="/insights"
+              className="flex items-center justify-between p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                </div>
+                <div className="leading-tight">
+                  <p className="type-body-sm font-semibold">National insights</p>
+                  <p className="type-caption text-muted-foreground">Rankings, trends and comparisons across all 317 councils</p>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+            </Link>
+            <Link
+              href="/guide/council-tax"
+              className="flex items-center justify-between p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <BookOpen className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                </div>
+                <div className="leading-tight">
+                  <p className="type-body-sm font-semibold">How council tax works</p>
+                  <p className="type-caption text-muted-foreground">Plain-English guide: bands, caps, exemptions, calculations</p>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+            </Link>
           </div>
         </div>
       </main>
@@ -101,7 +131,10 @@ export default function HomePage() {
     }
   }, [isLoading, selectedCouncil, router]);
 
-  if (isLoading || selectedCouncil) {
+  // SSR renders HomepageContent unconditionally so crawlers (Googlebot,
+  // OAI-SearchBot, Claude-SearchBot, PerplexityBot) see the H1, internal
+  // links, and body copy. Client-side, redirect runs in the effect above.
+  if (selectedCouncil && !isLoading) {
     return <LoadingSkeleton />;
   }
 

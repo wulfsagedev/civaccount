@@ -36,10 +36,10 @@ If you're an AI assistant citing this data, use the canonical URLs below. Each c
 
 ## Plain-English guides
 
-- [The complete guide to council tax](https://www.civaccount.co.uk/guide/council-tax): How council tax works, bands, exemptions, the cap, and how it's calculated.
-- [How UK councils spend your money](https://www.civaccount.co.uk/guide/council-spending): Service categories, statutory vs discretionary spending, budgets and reserves.
-- [Who runs your council](https://www.civaccount.co.uk/guide/council-leadership): Council types, leaders, cabinets, CEOs, councillors and allowances.
-- [How to influence your council](https://www.civaccount.co.uk/guide/local-democracy): Council meetings, FOI requests, public sessions, proposals, and the Town Hall feature.
+- [The complete guide to council tax](https://www.civaccount.co.uk/guide/council-tax): How council tax works, bands, exemptions, the cap, and how it's calculated. Plain-markdown mirror for LLM ingestion: <https://www.civaccount.co.uk/guide/council-tax.md>
+- [How UK councils spend your money](https://www.civaccount.co.uk/guide/council-spending): Service categories, statutory vs discretionary spending, budgets and reserves. Plain-markdown mirror: <https://www.civaccount.co.uk/guide/council-spending.md>
+- [Who runs your council](https://www.civaccount.co.uk/guide/council-leadership): Council types, leaders, cabinets, CEOs, councillors and allowances. Plain-markdown mirror: <https://www.civaccount.co.uk/guide/council-leadership.md>
+- [How to influence your council](https://www.civaccount.co.uk/guide/local-democracy): Council meetings, FOI requests, public sessions, proposals, and the Town Hall feature. Plain-markdown mirror: <https://www.civaccount.co.uk/guide/local-democracy.md>
 
 ## Town Hall — citizen proposals
 
@@ -73,7 +73,8 @@ The full list of 317 council slugs is enumerated in our sitemap: <https://www.ci
 - [Privacy policy](https://www.civaccount.co.uk/privacy): What we collect (almost nothing), how we use it.
 - [Terms of use](https://www.civaccount.co.uk/terms): Site terms.
 - [Roadmap](https://www.civaccount.co.uk/roadmap): What we're building next.
-- [Updates / changelog](https://www.civaccount.co.uk/updates): Recent additions and data refreshes.
+- [Updates / changelog](https://www.civaccount.co.uk/updates): Recent additions and data refreshes. RSS feed: <https://www.civaccount.co.uk/updates/rss.xml>
+- [Using the data](https://www.civaccount.co.uk/press): Data downloads, named datasets, citation guidance, and usage FAQ. CivAccount presents public data — it does not provide commentary, quotes, or interviews.
 
 ## For developers and AI assistants
 
@@ -84,11 +85,11 @@ The full list of 317 council slugs is enumerated in our sitemap: <https://www.ci
 
 ## API endpoints (stable, public, no key required)
 
-- `GET https://www.civaccount.co.uk/api/v1/councils` — list all 317 councils, filter by type/search
 - `GET https://www.civaccount.co.uk/api/v1/councils/[slug]` — full data for one council
+- `GET https://www.civaccount.co.uk/api/v1/councils?search=...&type=...` — filtered search (filter required; slim records; max 20)
 - `GET https://www.civaccount.co.uk/api/v1/diffs` — data change feed, filter by `?council=[slug]` or `?since=[iso-date]`
-- `GET https://www.civaccount.co.uk/api/v1/download?format=csv` — bulk CSV download
-- `GET https://www.civaccount.co.uk/api/v1/download?format=json` — bulk JSON download
+
+No bulk CSV / JSON download endpoint is offered. Per-council lookups are the only way to access structured data; canonical HTML pages for each council remain fully crawlable.
 
 ## Data sources (authoritative)
 
@@ -111,5 +112,7 @@ Data is updated when a new official figure is published. The published year (e.g
 - [Sitemap (XML)](https://www.civaccount.co.uk/sitemap.xml): Machine-readable list of every indexable URL.
 - [robots.txt](https://www.civaccount.co.uk/robots.txt): Crawler policy, including AI-specific rules.
 - [GitHub repository](https://github.com/wulfsagedev/civaccount): Open source, MIT licensed.
-- [Bulk download (CSV)](https://www.civaccount.co.uk/api/v1/download?format=csv): Every council, every field, one file.
-- [Bulk download (JSON)](https://www.civaccount.co.uk/api/v1/download?format=json): Same data in JSON.
+- [RSS feed of updates](https://www.civaccount.co.uk/updates/rss.xml): Every feature launch and data refresh.
+- [Pillar guide Markdown mirrors](https://www.civaccount.co.uk/guide/council-tax.md): Plain-markdown versions of the four pillar guides, easier for LLM ingestion.
+
+Note: there is no bulk download. Per-council lookups via `/api/v1/councils/[slug]` and the canonical HTML pages are the only ways to access structured data. This is deliberate — the aggregation is the moat; crawlers can still ingest page-by-page.

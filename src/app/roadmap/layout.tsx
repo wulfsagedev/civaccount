@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Product Roadmap — What We\'re Building',
-  description: 'See what features we\'re working on next for CivAccount. Our focus is on data quality, verifiability, and making council information trustworthy.',
+  title: 'Roadmap — What We\'re Building This Year',
+  description: 'The CivAccount roadmap for 2026: data quality, parish and town councils, programmatic depth, API stability, and the civic tools we\'re shipping next.',
   alternates: {
     canonical: '/roadmap',
   },
   openGraph: {
-    title: 'Product Roadmap - What we\'re building',
-    description: 'See what features we\'re working on next for CivAccount.',
+    title: 'Roadmap — What We\'re Building This Year',
+    description: 'The CivAccount 2026 roadmap: data quality, parish councils, programmatic depth, API stability, and civic tools shipping next.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Product Roadmap - What we\'re building',
-    description: 'See what features we\'re working on next for CivAccount.',
+    title: 'Roadmap — What We\'re Building This Year',
+    description: 'CivAccount 2026 roadmap: data quality, parish councils, programmatic depth, API stability.',
   },
 };
 

@@ -53,7 +53,7 @@ export default function DevelopersPage() {
   title="Kent your bill"
   style="border:0;border-radius:12px"></iframe>`;
 
-  const apiListExample = `curl https://www.civaccount.co.uk/api/v1/councils?type=UA&limit=10`;
+  const apiListExample = `curl "https://www.civaccount.co.uk/api/v1/councils?search=kent"`;
 
   const apiCouncilExample = `curl https://www.civaccount.co.uk/api/v1/councils/kent`;
 
@@ -88,10 +88,6 @@ export default function DevelopersPage() {
 }`;
 
   const apiDiffsExample = `curl https://www.civaccount.co.uk/api/v1/diffs?since=2026-04-01`;
-
-  const apiDownloadExample = `# Bulk download — all 317 councils
-curl -o councils.csv https://www.civaccount.co.uk/api/v1/download?format=csv
-curl -o councils.json https://www.civaccount.co.uk/api/v1/download?format=json`;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -175,13 +171,12 @@ curl -o councils.json https://www.civaccount.co.uk/api/v1/download?format=json`;
           </p>
 
           {/* List councils */}
-          <h3 className="type-title-3 mb-2">List councils</h3>
+          <h3 className="type-title-3 mb-2">Search councils</h3>
           <p className="type-caption text-muted-foreground mb-2">
             <code className="px-1.5 py-0.5 rounded bg-muted">GET /api/v1/councils</code>
-            {' '}— query params: <code className="px-1.5 py-0.5 rounded bg-muted">type</code> (SC, SD, UA, MD, LB),{' '}
-            <code className="px-1.5 py-0.5 rounded bg-muted">search</code>,{' '}
-            <code className="px-1.5 py-0.5 rounded bg-muted">limit</code> (max 100),{' '}
-            <code className="px-1.5 py-0.5 rounded bg-muted">offset</code>
+            {' '}— requires <code className="px-1.5 py-0.5 rounded bg-muted">search</code> or <code className="px-1.5 py-0.5 rounded bg-muted">type</code> (SC, SD, UA, MD, LB). Max <code className="px-1.5 py-0.5 rounded bg-muted">limit</code> 20, slim records only.
+            <br />
+            Unfiltered enumeration is not offered — look up the councils you need individually using the endpoint below.
           </p>
           <CodeBlock code={apiListExample} language="bash" />
 
@@ -209,13 +204,14 @@ curl -o councils.json https://www.civaccount.co.uk/api/v1/download?format=json`;
           </p>
           <CodeBlock code={apiDiffsExample} language="bash" />
 
-          {/* Bulk download */}
-          <h3 className="type-title-3 mt-6 mb-2">Bulk download</h3>
-          <p className="type-caption text-muted-foreground mb-2">
-            <code className="px-1.5 py-0.5 rounded bg-muted">GET /api/v1/download</code>
-            {' '}— whole-dataset CSV or JSON. Good for one-off analysis; use the list endpoint for live apps.
-          </p>
-          <CodeBlock code={apiDownloadExample} language="bash" />
+          {/* No bulk */}
+          <div className="mt-6 p-4 rounded-lg bg-muted/30 border border-border/40">
+            <p className="type-body-sm font-semibold mb-1">No bulk export</p>
+            <p className="type-caption text-muted-foreground">
+              There is no whole-dataset CSV or JSON endpoint. Per-council lookups are the only way to pull structured
+              data. Slugs are listed in the <a href="/sitemap.xml" className="underline">sitemap</a>.
+            </p>
+          </div>
         </section>
 
         {/* Data provenance */}

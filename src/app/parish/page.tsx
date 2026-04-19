@@ -1,16 +1,45 @@
 import { Badge } from "@/components/ui/badge";
 import { Landmark } from 'lucide-react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { PageContainer } from '@/components/ui/page-container';
 import { PARISHES } from '@/data/parishes';
+import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Parish & Town Councils — The Missing Tier',
   description:
-    'England has ~10,000 parish and town councils — almost no one covers them. This is where CivAccount is expanding next.',
+    'England has around 10,000 parish and town councils — the tier below district and unitary. CivAccount is building coverage from AGAR returns, starting with one pilot county.',
   alternates: { canonical: '/parish' },
+  openGraph: {
+    title: 'Parish & Town Councils — The Missing Tier',
+    description: 'England has around 10,000 parish and town councils — the tier below district and unitary. CivAccount is building coverage from AGAR returns.',
+    type: 'website',
+    siteName: 'CivAccount',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Parish & Town Councils — The Missing Tier',
+    description: 'England has around 10,000 parish and town councils — the tier below district and unitary. CivAccount is building coverage.',
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageSchema(
+      'Parish & Town Councils — The Missing Tier',
+      'CivAccount coverage plan for England\'s ~10,000 parish and town councils: AGAR-sourced precept, income, expenditure, reserves and staff costs per parish.',
+      '/parish',
+      { type: 'CollectionPage' },
+    ),
+    buildBreadcrumbSchema(
+      [{ name: 'Home', url: '/' }, { name: 'Parish councils' }],
+      '/parish',
+    ),
+  ],
 };
 
 export default function ParishIndexPage() {
@@ -18,6 +47,10 @@ export default function ParishIndexPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
 
       <PageContainer className="py-8 sm:py-12">

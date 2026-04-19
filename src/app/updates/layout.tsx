@@ -2,19 +2,26 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Updates — What\'s New',
-  description: 'See the latest updates and improvements to CivAccount. We regularly add new councils, features, and data to help you understand your council tax.',
+  title: 'Updates — Changelog and Data Refreshes',
+  description: 'What\'s new on CivAccount: feature launches, data refreshes, coverage expansions, and fixes. Subscribe via RSS for every update. Updated every time we ship.',
   alternates: {
     canonical: '/updates',
+    types: {
+      'application/rss+xml': [
+        { url: '/updates/rss.xml', title: 'CivAccount updates' },
+      ],
+    },
   },
   openGraph: {
-    title: 'Updates - What\'s new in CivAccount',
-    description: 'See the latest updates and improvements to CivAccount.',
+    title: 'Updates — Changelog and Data Refreshes',
+    description: 'What\'s new on CivAccount: feature launches, data refreshes, coverage expansions, and fixes. Subscribe via RSS.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Updates - What\'s new in CivAccount',
-    description: 'See the latest updates and improvements to CivAccount.',
+    title: 'Updates — Changelog and Data Refreshes',
+    description: 'What\'s new on CivAccount: feature launches, data refreshes, coverage expansions.',
   },
 };
 

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, ChevronDown, Calendar, Shield } from 'lucide-react';
+import Link from 'next/link';
+import { ExternalLink, ChevronDown, Calendar, Shield, ListTree } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
-import { getCouncilDisplayName, councilStats } from '@/data/councils';
+import { getCouncilDisplayName, getCouncilSlug, councilStats } from '@/data/councils';
 
 function formatCheckedDate(isoDate: string): string {
   const date = new Date(isoDate);
@@ -187,9 +188,20 @@ export default function DataSourcesFooter() {
           </div>
         )}
 
+        {/* Full provenance link */}
+        <div className="flex items-center justify-center gap-2 mt-5 pt-4 border-t border-border/30">
+          <ListTree className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+          <Link
+            href={`/council/${getCouncilSlug(selectedCouncil)}/provenance`}
+            className="type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          >
+            See every data point&apos;s source &rarr;
+          </Link>
+        </div>
+
         {/* Last checked */}
         {lastChecked && (
-          <div className="flex items-center justify-center gap-2 mt-5 pt-4 border-t border-border/30">
+          <div className="flex items-center justify-center gap-2 mt-3">
             <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
             <p className="type-caption text-muted-foreground">
               Data last checked {formatCheckedDate(lastChecked)}

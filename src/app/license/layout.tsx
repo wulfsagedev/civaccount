@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Open Source License',
-  description: 'CivAccount is open source software. View our MIT license and contribute to making council data more accessible.',
+  title: 'MIT Code, OGL v3.0 Data — Licence and Reuse',
+  description: 'CivAccount licensing: MIT for the code, Open Government Licence v3.0 for the data. Open source, reusable, citable. Attribution and source links provided on every page.',
   alternates: {
     canonical: '/license',
   },
   openGraph: {
-    title: 'Open Source License - CivAccount',
-    description: 'CivAccount is open source software under the MIT license.',
+    title: 'MIT Code, OGL v3.0 Data — Licence and Reuse',
+    description: 'CivAccount licensing: MIT code, OGL v3.0 data. Open source, reusable, citable. Attribution links on every page.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Open Source License - CivAccount',
-    description: 'CivAccount is open source software under the MIT license.',
+    title: 'MIT Code, OGL v3.0 Data — Licence and Reuse',
+    description: 'CivAccount: MIT code, OGL v3.0 data. Open source, reusable, citable.',
   },
 };
 

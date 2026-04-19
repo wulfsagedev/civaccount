@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'About — Why We Built This',
-  description: 'Learn why we created CivAccount to make UK council budget data accessible to everyone. Our mission is transparency in local government spending.',
+  title: 'Why We Built CivAccount — An Open Civic Tool',
+  description: 'Why we built CivAccount — to turn scattered council budget data from 317 .gov.uk and ONS sources into one place everyone can read, compare and cite.',
   alternates: {
     canonical: '/about',
   },
   openGraph: {
-    title: 'About CivAccount - Why we built this',
-    description: 'Learn why we created CivAccount to make UK council budget data accessible to everyone.',
+    title: 'Why We Built CivAccount — An Open Civic Tool',
+    description: 'Why we built CivAccount — to turn scattered council budget data into one place everyone can read, compare and cite.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About CivAccount - Why we built this',
-    description: 'Learn why we created CivAccount to make UK council budget data accessible to everyone.',
+    title: 'Why We Built CivAccount — An Open Civic Tool',
+    description: 'Why we built CivAccount — to turn scattered council budget data into one place everyone can read, compare and cite.',
   },
 };
 

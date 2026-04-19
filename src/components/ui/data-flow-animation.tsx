@@ -14,17 +14,21 @@ function MiniCard({ amount, label, items, className }: {
   items: { name: string; value: string; width: string }[];
   className?: string;
 }) {
+  // This whole component is aria-hidden decorative preview UI, but Lighthouse's
+  // axe-core still flags low-contrast children. Use full-opacity muted text
+  // so the decoration passes 4.5:1 without losing the "preview" aesthetic
+  // (the side cards are still faded via their container's opacity-0.15).
   return (
     <div className={`rounded-lg border border-border/40 bg-card shadow-sm p-3 text-left ${className || ''}`}>
-      <p className="type-overline text-muted-foreground/70 mb-0.5">{label}</p>
+      <p className="type-overline text-muted-foreground mb-0.5">{label}</p>
       <p className="type-body-lg font-bold tabular-nums leading-tight">{amount}<span className="type-overline font-normal text-muted-foreground ml-0.5">/yr</span></p>
       <div className="h-px bg-border/30 my-2" />
       <div className="space-y-1.5">
         {items.map((item) => (
           <div key={item.name}>
             <div className="flex justify-between">
-              <span className="text-[9px] text-muted-foreground">{item.name}</span>
-              <span className="text-[9px] text-muted-foreground tabular-nums">{item.value}</span>
+              <span className="text-[11px] text-muted-foreground">{item.name}</span>
+              <span className="text-[11px] text-muted-foreground tabular-nums">{item.value}</span>
             </div>
             <div className="h-[3px] rounded-full bg-muted overflow-hidden">
               <div className="h-full rounded-full bg-foreground/60" style={{ width: item.width }} />

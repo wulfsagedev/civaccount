@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Accessibility',
-  description: 'CivAccount is designed to be accessible to everyone. We follow WCAG 2.2 AA guidelines with high contrast, keyboard navigation, and screen reader support.',
+  title: 'Accessibility — WCAG 2.2 AA and Plain English',
+  description: 'CivAccount conformance with WCAG 2.2 AA: high contrast, 44px tap targets, keyboard navigation, screen readers, and plain-English copy aimed at 70+ users on mobile.',
   alternates: {
     canonical: '/accessibility',
   },
   openGraph: {
-    title: 'Accessibility - CivAccount',
-    description: 'CivAccount is designed to be accessible to everyone.',
+    title: 'Accessibility — WCAG 2.2 AA and Plain English',
+    description: 'CivAccount conformance with WCAG 2.2 AA: high contrast, 44px tap targets, keyboard navigation, screen readers, plain-English copy.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Accessibility - CivAccount',
-    description: 'CivAccount is designed to be accessible to everyone.',
+    title: 'Accessibility — WCAG 2.2 AA and Plain English',
+    description: 'CivAccount conformance with WCAG 2.2 AA: high contrast, tap targets, keyboard, screen readers, plain English.',
   },
 };
 

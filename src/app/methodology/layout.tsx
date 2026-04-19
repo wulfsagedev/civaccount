@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Methodology — How We Source Our Data',
-  description: 'How CivAccount collects, verifies, and presents council budget data. All data comes from official UK government sources.',
+  title: 'Data Methodology — How We Source and Verify',
+  description: 'Step-by-step: how CivAccount collects, verifies, triangulates and publishes council data. Every figure traces to a .gov.uk or ONS source. Updated when officials publish.',
   alternates: {
     canonical: '/methodology',
   },
   openGraph: {
-    title: 'Methodology - How we source our data',
-    description: 'How CivAccount collects, verifies, and presents council budget data.',
+    title: 'Data Methodology — How We Source and Verify',
+    description: 'How CivAccount collects, verifies and triangulates council data. Every figure traces to a .gov.uk or ONS source.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Methodology - How we source our data',
-    description: 'How CivAccount collects, verifies, and presents council budget data.',
+    title: 'Data Methodology — How We Source and Verify',
+    description: 'How CivAccount collects and verifies council data. Every figure traces to a .gov.uk or ONS source.',
   },
 };
 

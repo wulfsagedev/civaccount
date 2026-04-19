@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageShareButton } from '@/components/ui/page-share-button';
@@ -246,6 +247,44 @@ export default function InsightsPage() {
             ];
           })}
         </div>
+
+        {/* Related pillar guides — topical-authority internal links */}
+        <section className="mt-12">
+          <h2 className="type-title-2 font-semibold mb-1">Plain-English guides</h2>
+          <p className="type-body-sm text-muted-foreground mb-5">
+            Background reading on how council finances actually work.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              href="/guide/council-tax"
+              className="card-elevated p-4 hover:bg-muted/30 transition-colors cursor-pointer"
+            >
+              <p className="type-body-sm font-semibold mb-1">The complete guide to council tax</p>
+              <p className="type-caption text-muted-foreground">Bands, caps, exemptions, and how the bill is set.</p>
+            </Link>
+            <Link
+              href="/guide/council-spending"
+              className="card-elevated p-4 hover:bg-muted/30 transition-colors cursor-pointer"
+            >
+              <p className="type-body-sm font-semibold mb-1">How UK councils spend your money</p>
+              <p className="type-caption text-muted-foreground">Service categories, statutory vs discretionary, reserves.</p>
+            </Link>
+            <Link
+              href="/guide/council-leadership"
+              className="card-elevated p-4 hover:bg-muted/30 transition-colors cursor-pointer"
+            >
+              <p className="type-body-sm font-semibold mb-1">Who runs your council</p>
+              <p className="type-caption text-muted-foreground">Council types, leaders, cabinets, CEOs, allowances.</p>
+            </Link>
+            <Link
+              href="/guide/local-democracy"
+              className="card-elevated p-4 hover:bg-muted/30 transition-colors cursor-pointer"
+            >
+              <p className="type-body-sm font-semibold mb-1">How to influence your council</p>
+              <p className="type-caption text-muted-foreground">Meetings, FOI, proposals, voting, and Town Hall.</p>
+            </Link>
+          </div>
+        </section>
 
         {/* Methodology + sources footer */}
         <section className="card-elevated p-5 sm:p-6 mt-12">

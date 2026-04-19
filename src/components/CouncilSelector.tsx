@@ -252,10 +252,11 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
     setSearchQuery(e.target.value);
   }, []);
 
-  // Selected council header (dashboard only)
+  // Selected council header (dashboard only).
+  // NOTE: The H1 is rendered by CouncilDashboard so it can SSR using the
+  // `initialCouncil` prop even before CouncilContext hydrates. This block
+  // only renders the badges; H1 lives in CouncilDashboard.
   if (selectedCouncil && variant === 'dashboard') {
-    const displayName = getCouncilDisplayName(selectedCouncil);
-
     return (
       <div className="w-full">
         <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -266,9 +267,6 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
             2025-26
           </Badge>
         </div>
-        <h1 className="type-title-1 font-bold text-foreground leading-tight">
-          {displayName}
-        </h1>
       </div>
     );
   }
@@ -298,7 +296,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
           {/* Results — dropdown overlay, no layout shift */}
           {searchQuery.trim() && (
-            <div ref={listRef} role="listbox" className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border/40 bg-card shadow-lg z-20 overflow-hidden max-h-[280px] overflow-y-auto">
+            <div ref={listRef} role="listbox" aria-label="Council search results" className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border/40 bg-card shadow-lg z-20 overflow-hidden max-h-[280px] overflow-y-auto">
               {postcodeLoading && isPostcodeQuery ? (
                 <p className="text-center type-body-sm text-muted-foreground py-4">
                   Looking up postcode...
@@ -356,7 +354,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
             />
           </div>
 
-          <div ref={listRef} role="listbox" className="h-[220px] overflow-y-auto scrollbar-hide">
+          <div ref={listRef} role="listbox" aria-label="English councils" className="h-[220px] overflow-y-auto scrollbar-hide">
             {postcodeLoading && isPostcodeQuery ? (
               <p className="text-center type-body-sm text-muted-foreground py-4">
                 Looking up postcode...
@@ -418,7 +416,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               />
             </div>
 
-            <div ref={listRef} role="listbox" className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
+            <div ref={listRef} role="listbox" aria-label="English councils" className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
               {filteredCouncils.length === 0 ? (
                 <p className="text-center type-body-sm text-muted-foreground py-6">
                   No councils found. Try a different spelling.

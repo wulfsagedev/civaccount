@@ -2,19 +2,21 @@ import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'CivAccount privacy policy. We respect your privacy and only use essential cookies. No tracking, no ads, no data selling.',
+  title: 'Privacy — What We Collect and How We Use It',
+  description: 'CivAccount\'s privacy policy in plain English. No tracking, no ads, no cookies beyond what\'s essential. We don\'t store personal data about visitors to the site.',
   alternates: {
     canonical: '/privacy',
   },
   openGraph: {
-    title: 'Privacy Policy - CivAccount',
-    description: 'CivAccount privacy policy. We respect your privacy.',
+    title: 'Privacy — What We Collect and How We Use It',
+    description: 'CivAccount privacy policy in plain English. No tracking, no ads, no cookies beyond what\'s essential. We don\'t store personal data.',
+    type: 'website',
+    siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Privacy Policy - CivAccount',
-    description: 'CivAccount privacy policy. We respect your privacy.',
+    title: 'Privacy — What We Collect and How We Use It',
+    description: 'CivAccount privacy policy in plain English. No tracking, no ads, no personal data.',
   },
 };
 

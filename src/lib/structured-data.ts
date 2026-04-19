@@ -11,6 +11,8 @@
 //   - WebPage / AboutPage on utility pages (basic semantic anchoring).
 //   - Dataset on council pages (downloadable data, AI authority signal).
 
+import { getDataLastVerified } from '@/lib/data-freshness';
+
 const BASE_URL = 'https://www.civaccount.co.uk';
 const ORG_ID = `${BASE_URL}/#organization`;
 const WEBSITE_ID = `${BASE_URL}/#website`;
@@ -90,7 +92,10 @@ export function buildArticleSchema(opts: {
   keywords?: string[];
   imageUrl?: string;
 }) {
-  const today = new Date().toISOString().slice(0, 10);
+  // `dateModified` defaults to the real max `last_verified` across the
+  // dataset — a genuine data-freshness signal. Never fake today's date;
+  // that actively harms trust in the sitemap + AI citation eligibility.
+  const dataLastVerified = getDataLastVerified();
   return {
     '@type': 'Article',
     '@id': `${BASE_URL}${opts.url}#article`,
@@ -99,7 +104,7 @@ export function buildArticleSchema(opts: {
     url: `${BASE_URL}${opts.url}`,
     mainEntityOfPage: { '@id': `${BASE_URL}${opts.url}#webpage` },
     datePublished: opts.datePublished ?? '2025-09-01',
-    dateModified: opts.dateModified ?? today,
+    dateModified: opts.dateModified ?? dataLastVerified,
     inLanguage: 'en-GB',
     isAccessibleForFree: true,
     isPartOf: { '@id': WEBSITE_ID },

@@ -10,10 +10,20 @@ import DataSourcesFooter from '@/components/DataSourcesFooter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
-import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, formatCurrency, formatBudget, toSentenceTypeName } from '@/data/councils';
+import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, formatCurrency, formatBudget, toSentenceTypeName, type Council } from '@/data/councils';
 
-export default function CouncilDashboard() {
-  const { selectedCouncil, isLoading } = useCouncil();
+interface CouncilDashboardProps {
+  // When the route knows the council from its slug (e.g. /council/[slug]),
+  // it should pass the council in directly. This lets the dashboard SSR
+  // with a real H1, breadcrumb and narrative — load-bearing for crawlers
+  // and AI engines, which won't see context values populated only by a
+  // client-side useEffect.
+  initialCouncil?: Council;
+}
+
+export default function CouncilDashboard({ initialCouncil }: CouncilDashboardProps = {}) {
+  const { selectedCouncil: contextCouncil } = useCouncil();
+  const selectedCouncil = contextCouncil ?? initialCouncil ?? null;
   const prevCouncilRef = useRef(selectedCouncil);
 
   // Scroll to top when council changes
@@ -24,7 +34,7 @@ export default function CouncilDashboard() {
     }
   }, [selectedCouncil]);
 
-  if (isLoading || !selectedCouncil) {
+  if (!selectedCouncil) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -100,10 +110,18 @@ export default function CouncilDashboard() {
 
       <main id="main-content" className="flex-1">
         <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8 max-w-3xl">
-          {/* Council Header with integrated SEO content */}
+          {/* Council Header with integrated SEO content.
+              The H1 is rendered here (not in CouncilSelector) so it can
+              SSR from the `initialCouncil` prop before CouncilContext has
+              hydrated on the client. This is load-bearing: Googlebot,
+              OAI-SearchBot, Claude-SearchBot, PerplexityBot and AI Overviews
+              treat the H1 as the page's canonical topic signal. */}
           <div className="mb-6">
             <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: displayName }]} />
             <CouncilSelector variant="dashboard" />
+            <h1 className="type-title-1 font-bold text-foreground leading-tight mt-2">
+              {displayName}
+            </h1>
             <p className="type-body-sm text-muted-foreground mt-2">{narrativeText}</p>
           </div>
 

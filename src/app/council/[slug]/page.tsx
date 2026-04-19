@@ -6,7 +6,7 @@ import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilBySlug } from '@/data/councils';
 import CouncilDashboard from '@/components/CouncilDashboard';
 
-// Lightweight loading skeleton
+// Lightweight loading skeleton (only rendered if slug lookup ever becomes async).
 function LoadingSkeleton() {
   return (
     <div className="min-h-screen bg-background">
@@ -25,9 +25,13 @@ function LoadingSkeleton() {
 export default function CouncilPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const { setSelectedCouncil, isLoading } = useCouncil();
+  const { setSelectedCouncil } = useCouncil();
 
-  // Memoize council lookup to avoid repeated searches
+  // Council lookup is synchronous — we derive it from the URL slug directly,
+  // so the dashboard can SSR with a fully-populated council object even
+  // before CouncilContext has hydrated from localStorage. This is load-bearing
+  // for SEO: crawlers (Googlebot, OAI-SearchBot, Claude-SearchBot,
+  // PerplexityBot) and AI engines need the H1 and narrative on first render.
   const council = useMemo(() => getCouncilBySlug(slug), [slug]);
 
   useEffect(() => {
@@ -36,18 +40,13 @@ export default function CouncilPage() {
     }
   }, [council, setSelectedCouncil]);
 
-  // Show skeleton during initial hydration
-  if (isLoading) {
-    return <LoadingSkeleton />;
-  }
-
   if (!council) {
     notFound();
   }
 
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-      <CouncilDashboard />
+      <CouncilDashboard initialCouncil={council} />
     </Suspense>
   );
 }

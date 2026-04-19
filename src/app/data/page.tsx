@@ -1,25 +1,26 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { councils, formatCurrency } from '@/data/councils';
-import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { councils } from '@/data/councils';
+import { buildFAQPageSchema, buildBreadcrumbSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Open Data — Download Council Tax & Budget Data',
-  description: 'Download council tax rates, budgets, and spending data for all 317 English councils in CSV or JSON format. Free, open data under the Open Government Licence.',
+  title: 'Data reference — field dictionary & usage',
+  description:
+    'Reference for the CivAccount council dataset: fields, units, coverage, and how to access it. All figures sourced from .gov.uk.',
   alternates: {
     canonical: '/data',
   },
   openGraph: {
-    title: 'Open Data — Council Tax & Budget Downloads',
-    description: 'Free council tax and budget data for all 317 English councils. Download as CSV or JSON.',
+    title: 'CivAccount data reference',
+    description: 'Field dictionary and usage reference for the council dataset.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Open Data — Council Tax & Budget Downloads',
-    description: 'Free council tax and budget data for all 317 English councils. Download as CSV or JSON.',
+    title: 'CivAccount data reference',
+    description: 'Field dictionary and usage reference for the council dataset.',
   },
 };
 
@@ -38,66 +39,44 @@ export default function DataPage() {
 
   const faqs = [
     {
-      question: 'What data is included in the download?',
-      answer: `The dataset covers all ${councilsWithTax.length} English councils with Band D council tax rates (2021-2025), service budgets across 10 categories, CEO salaries, and council leadership information.`,
+      question: 'What data does the dataset cover?',
+      answer: `All ${councilsWithTax.length} English councils with Band D council tax rates (2021-2025), service budgets across 10 categories, CEO salaries, and council leadership information.`,
     },
     {
       question: 'What licence is the data released under?',
-      answer: 'The data is released under the Open Government Licence v3.0. You are free to use, share, and adapt the data for any purpose, including commercial use.',
+      answer: 'Open Government Licence v3.0 (the underlying source data is already public under OGL). You are free to use, share, and adapt the data for any purpose, including commercial use.',
     },
     {
       question: 'Where does the data come from?',
-      answer: 'All data is sourced exclusively from GOV.UK, individual council .gov.uk websites, and ONS population estimates. No third-party sources are used.',
+      answer: 'Exclusively from GOV.UK, individual council .gov.uk websites, and ONS. No third-party aggregators.',
     },
     {
       question: 'How often is the data updated?',
-      answer: 'The dataset is updated annually when new council tax rates and budget figures are published, typically in February-April each year.',
+      answer: 'Council tax rates are refreshed within two weeks of each council setting its budget (Feb–Mar). Spending data follows the DLUHC publication cycle (typically Nov). Leadership and supplier data is updated throughout the year as councils publish.',
+    },
+    {
+      question: 'Is there a bulk download?',
+      answer: 'No. CivAccount does not offer a bulk CSV or JSON of the full dataset. Individual council records are available at /api/v1/councils/[slug] — look up the councils you need. The site itself is the canonical presentation.',
+    },
+    {
+      question: 'Can I embed a council widget on my site?',
+      answer: 'Yes. Free embeddable iframes are available at /embed/council/[slug]. See /developers for snippets.',
     },
   ];
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Dataset',
-        '@id': 'https://www.civaccount.co.uk/data#dataset',
-        name: 'English Council Tax & Budget Data 2025-26',
-        description: 'Council tax rates, service budgets, leadership, and spending data for all 317 English councils.',
-        license: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
-        temporalCoverage: '2021/2026',
-        spatialCoverage: {
-          '@type': 'Country',
-          name: 'England',
-        },
-        publisher: {
-          '@type': 'Organization',
-          '@id': 'https://www.civaccount.co.uk/#organization',
-          name: 'CivAccount',
-        },
-        distribution: [
-          {
-            '@type': 'DataDownload',
-            encodingFormat: 'text/csv',
-            contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=csv',
-            name: 'CSV download',
-          },
-          {
-            '@type': 'DataDownload',
-            encodingFormat: 'application/json',
-            contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=json',
-            name: 'JSON download',
-          },
-        ],
-        variableMeasured: [
-          { '@type': 'PropertyValue', name: 'Band D Council Tax', unitCode: 'GBP' },
-          { '@type': 'PropertyValue', name: 'Total Service Budget', unitCode: 'GBP' },
-          { '@type': 'PropertyValue', name: 'Chief Executive Salary', unitCode: 'GBP' },
-        ],
-      },
+      buildWebPageSchema(
+        'Data reference — field dictionary & usage',
+        metadata.description as string,
+        '/data',
+        { type: 'WebPage' },
+      ),
       buildFAQPageSchema(faqs, '/data'),
       buildBreadcrumbSchema(
-        [{ name: 'Home', url: '/' }, { name: 'Open Data' }],
-        '/data'
+        [{ name: 'Home', url: '/' }, { name: 'Data reference' }],
+        '/data',
       ),
     ],
   };
@@ -112,54 +91,16 @@ export default function DataPage() {
       <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
-          { label: 'Open Data' },
+          { label: 'Data reference' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Open Data</h1>
+        <h1 className="type-title-1 mb-2">Data reference</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
-          Download council tax rates, budgets, and spending data for all {councilsWithTax.length} English councils.
-          Free to use under the Open Government Licence v3.0.
+          Field dictionary, coverage, and lookup endpoints for the CivAccount dataset.
+          Individual council records available via per-council API. No bulk download.
         </p>
 
-        {/* Download buttons */}
-        <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Download the dataset</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">
-            All {councilsWithTax.length} councils with council tax, budgets, and leadership data for 2025-26
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
-            <a
-              href="/api/v1/download?format=csv"
-              download
-              className="flex-1 card-elevated p-4 text-center type-body-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
-            >
-              Download CSV
-            </a>
-            <a
-              href="/api/v1/download?format=json"
-              download
-              className="flex-1 card-elevated p-4 text-center type-body-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
-            >
-              Download JSON
-            </a>
-          </div>
-
-          <p className="type-caption text-muted-foreground">
-            Released under the{' '}
-            <a
-              href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
-            >
-              Open Government Licence v3.0
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
-          </p>
-        </section>
-
-        {/* Coverage stats */}
+        {/* Coverage */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Coverage</h2>
           <p className="type-body-sm text-muted-foreground mb-6">What the dataset includes</p>
@@ -183,7 +124,7 @@ export default function DataPage() {
         {/* Fields */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Data fields</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">30+ fields per council</p>
+          <p className="type-body-sm text-muted-foreground mb-6">Returned by the per-council endpoint</p>
 
           <div className="space-y-4">
             {fields.map((field) => (
@@ -193,38 +134,66 @@ export default function DataPage() {
               </div>
             ))}
           </div>
+
+          <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
+            Units: budget values in thousands of pounds (multiply by 1000 for absolute); council tax in pounds;
+            supplier spend in pounds.
+          </p>
         </section>
 
-        {/* API access */}
+        {/* API access — per-council only */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">API access</h2>
+          <h2 className="type-title-2 mb-1">How to access records</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Access council data programmatically via our REST API
+            Individual council lookups, not bulk export.
           </p>
 
           <div className="space-y-4">
             <div className="py-2">
-              <p className="type-body-sm font-semibold mb-1">List all councils</p>
+              <p className="type-body-sm font-semibold mb-1">Single council (full record)</p>
               <code className="type-caption text-muted-foreground bg-muted/30 px-2 py-1 rounded">
-                GET /api/v1/councils
+                GET /api/v1/councils/[slug]
               </code>
+              <p className="type-caption text-muted-foreground mt-2">
+                Example: <a href="/api/v1/councils/kent" className="font-mono hover:text-foreground transition-colors">/api/v1/councils/kent</a>
+              </p>
             </div>
             <div className="py-2">
-              <p className="type-body-sm font-semibold mb-1">Single council</p>
+              <p className="type-body-sm font-semibold mb-1">Search by name or type</p>
               <code className="type-caption text-muted-foreground bg-muted/30 px-2 py-1 rounded">
-                GET /api/v1/councils/kent
+                GET /api/v1/councils?search=kent
               </code>
+              <p className="type-caption text-muted-foreground mt-2">
+                A <code className="font-mono bg-muted px-1 py-0.5 rounded">search</code> or <code className="font-mono bg-muted px-1 py-0.5 rounded">type</code> parameter is required. Returns slim records.
+              </p>
             </div>
             <div className="py-2">
-              <p className="type-body-sm font-semibold mb-1">Download full dataset</p>
+              <p className="type-body-sm font-semibold mb-1">Change feed</p>
               <code className="type-caption text-muted-foreground bg-muted/30 px-2 py-1 rounded">
-                GET /api/v1/download?format=csv
+                GET /api/v1/diffs?since=2026-04-01
               </code>
             </div>
           </div>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            Rate limited to 100 requests per minute for list endpoints, 10 per minute for downloads.
+            Rate limit: 60 requests per minute per IP for list, 100 per minute for single-council lookups.
+            No API key. Full slug list in the <Link href="/sitemap.xml" className="hover:text-foreground transition-colors">sitemap</Link>.
+          </p>
+        </section>
+
+        {/* Embed */}
+        <section className="card-elevated p-5 sm:p-6 mb-5">
+          <h2 className="type-title-2 mb-1">Embed a council widget</h2>
+          <p className="type-body-sm text-muted-foreground mb-6">
+            Add a council tax card to your website. Replace &quot;kent&quot; with any council slug.
+          </p>
+
+          <code className="block type-caption text-muted-foreground bg-muted/30 px-3 py-2 rounded overflow-x-auto whitespace-pre">
+            {`<iframe src="https://www.civaccount.co.uk/embed/council/kent" width="432" height="300" frameborder="0" style="border:0;border-radius:12px"></iframe>`}
+          </code>
+
+          <p className="type-caption text-muted-foreground mt-4">
+            Free to use. Links back to the full dashboard on CivAccount.
           </p>
         </section>
 
@@ -241,22 +210,6 @@ export default function DataPage() {
               </div>
             ))}
           </div>
-        </section>
-
-        {/* Embeddable widget */}
-        <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Embed a council widget</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">
-            Add a council tax card to your website. Replace &quot;kent&quot; with any council slug.
-          </p>
-
-          <code className="block type-caption text-muted-foreground bg-muted/30 px-3 py-2 rounded overflow-x-auto whitespace-pre">
-            {`<iframe src="https://www.civaccount.co.uk/embed/council/kent" width="432" height="300" frameborder="0" style="border:0;border-radius:12px"></iframe>`}
-          </code>
-
-          <p className="type-caption text-muted-foreground mt-4">
-            Free to use. Links back to the full dashboard on CivAccount.
-          </p>
         </section>
 
         {/* Sources */}
@@ -278,6 +231,7 @@ export default function DataPage() {
             <li><Link href="/insights/cheapest-council-tax" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Cheapest council tax</Link></li>
             <li><Link href="/insights/council-ceo-salaries" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">CEO salary rankings</Link></li>
             <li><Link href="/compare" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Compare councils</Link></li>
+            <li><Link href="/developers" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Developer reference</Link></li>
           </ul>
         </nav>
       </main>
