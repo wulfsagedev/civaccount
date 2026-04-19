@@ -145,31 +145,18 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
         </>
       )}
 
-      {/* Grant payments — not published state */}
+      {/* Grant payments — not published state. Copy lives in the shared
+          GAP_EXPLANATIONS registry so tone stays consistent across cards. */}
       {(!detailed?.grant_payments || detailed.grant_payments.length === 0) && (
         <div className={detailed?.top_suppliers?.length ? "mt-8 pt-6 border-t border-border/50" : ""}>
           <div className="mb-4">
             <h3 className="type-title-3">Grants to local organisations</h3>
             <p className="type-body-sm text-muted-foreground mt-1">Money given to charities, community groups and local projects</p>
           </div>
-          <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
-            <p className="type-body-sm font-semibold mb-1">Not published in a format we can show here</p>
-            <p className="type-body-sm text-muted-foreground mb-3">
-              {selectedCouncil.name} does not publish a machine-readable grants register on a public page. Grant records may exist inside their monthly spending files or committee reports.
-            </p>
-            {detailed?.transparency_url && (
-              <a
-                href={detailed.transparency_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="type-body-sm underline hover:text-foreground transition-colors inline-flex items-center gap-1"
-              >
-                Check the council&apos;s transparency page
-                <ExternalLink className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
-                <span className="sr-only"> (opens in new tab)</span>
-              </a>
-            )}
-          </div>
+          <DataGapNotice
+            gapKey="grant_payments.absent"
+            council={selectedCouncil}
+          />
         </div>
       )}
 

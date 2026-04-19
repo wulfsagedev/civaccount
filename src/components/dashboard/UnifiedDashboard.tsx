@@ -15,7 +15,7 @@ import LeadershipCard from '@/components/dashboard/LeadershipCard';
 import PayAllowancesCard from '@/components/dashboard/PayAllowancesCard';
 import WhoToContactCard from '@/components/dashboard/WhoToContactCard';
 import ServiceOutcomesCard from '@/components/dashboard/ServiceOutcomesCard';
-import DataUnavailable from '@/components/ui/data-unavailable';
+import DataGapNotice from '@/components/ui/data-gap-notice';
 
 const UnifiedDashboard = () => {
   const { selectedCouncil } = useCouncil();
@@ -196,9 +196,16 @@ const UnifiedDashboard = () => {
         />
       )}
 
-      {/* SECTION 2.5: Bill History */}
-      {hasHistoricalData && (
+      {/* SECTION 2.5: Bill History — show card when we have ≥5y of data,
+          otherwise surface an honest gap notice so the reader knows why the
+          trend chart isn't there (usually unitary reorg / boundary changes). */}
+      {hasHistoricalData ? (
         <BillHistoryCard selectedCouncil={selectedCouncil} />
+      ) : (
+        <DataGapNotice
+          gapKey="bill_history.absent"
+          council={selectedCouncil}
+        />
       )}
 
       {/* SECTION 3 + 3a: Spending + Have Your Say */}
@@ -216,10 +223,9 @@ const UnifiedDashboard = () => {
       {hasSupplierOrGrantData ? (
         <SuppliersGrantsCard selectedCouncil={selectedCouncil} />
       ) : (
-        <DataUnavailable
-          sectionTitle="Suppliers and grants"
-          reason="Supplier data isn't available for this council yet"
-          councilUrl={detailed?.transparency_url || detailed?.website}
+        <DataGapNotice
+          gapKey="suppliers_grants.absent"
+          council={selectedCouncil}
         />
       )}
 
@@ -230,24 +236,35 @@ const UnifiedDashboard = () => {
           reservesInWeeks={reservesInWeeks}
         />
       ) : (
-        <DataUnavailable
-          sectionTitle="Council finances"
-          reason="Financial data isn't available for this council yet"
-          councilUrl={detailed?.accounts_url || detailed?.website}
+        <DataGapNotice
+          gapKey="finances.absent"
+          council={selectedCouncil}
         />
       )}
 
       {/* Contribute CTA */}
       <ContributeBanner />
 
-      {/* SECTION 8: Leadership */}
-      {hasLeadershipData && (
+      {/* SECTION 8: Leadership — fall back to an honest gap notice rather
+          than silently hiding when we have no cabinet/CE data. */}
+      {hasLeadershipData ? (
         <LeadershipCard selectedCouncil={selectedCouncil} />
+      ) : (
+        <DataGapNotice
+          gapKey="leadership.absent"
+          council={selectedCouncil}
+        />
       )}
 
-      {/* SECTION 8b: Pay & Allowances */}
-      {hasPayData && (
+      {/* SECTION 8b: Pay & Allowances — same pattern. If no salary bands or
+          per-councillor allowances are published, tell the reader why. */}
+      {hasPayData ? (
         <PayAllowancesCard selectedCouncil={selectedCouncil} />
+      ) : (
+        <DataGapNotice
+          gapKey="pay.absent"
+          council={selectedCouncil}
+        />
       )}
 
       {/* SECTION 8 contact + 8b districts: Who to Contact */}
@@ -255,9 +272,16 @@ const UnifiedDashboard = () => {
         <WhoToContactCard selectedCouncil={selectedCouncil} />
       )}
 
-      {/* SECTION 8a + 8a.2: Service Outcomes & Performance */}
-      {(hasServiceOutcomes || hasPerformanceData) && (
+      {/* SECTION 8a + 8a.2: Service Outcomes & Performance — notice when
+          absent so readers know to look upstream (e.g. county council for
+          district residents). */}
+      {(hasServiceOutcomes || hasPerformanceData) ? (
         <ServiceOutcomesCard selectedCouncil={selectedCouncil} />
+      ) : (
+        <DataGapNotice
+          gapKey="service_outcomes.absent"
+          council={selectedCouncil}
+        />
       )}
 
       {/* SECTION 8.5: Common Questions (FAQ) - kept inline */}

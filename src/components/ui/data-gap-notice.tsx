@@ -5,11 +5,15 @@ import type { Council } from "@/data/councils";
 import { GAP_EXPLANATIONS, type GapExplanation } from "@/data/data-gaps";
 
 /**
- * Honest "we don't have this" notice shown inside dashboard cards.
+ * Honest "we don't have this" notice shown inside dashboard cards — or
+ * wrapping a whole card when a major section is absent.
  *
  * Two forms:
  *   - Absent: field has no data at all (e.g. grants register not published)
  *   - Thin:  field has some data but less than the reference depth
+ *
+ * Reason strings may contain a `{Council}` placeholder; we substitute
+ * the council name at render time so copy stays in one place.
  *
  * Prefer this over silently hiding a section — the user should know the
  * information is missing, why, and where to go next.
@@ -46,9 +50,10 @@ export function DataGapNotice({
           "p-4 rounded-lg bg-muted/30 border border-border/40 " + (className ?? "")
         }
       >
-        <p className="type-body-sm font-semibold mb-1">Data not available</p>
+        <p className="type-body-sm font-semibold mb-1">Not published yet</p>
         <p className="type-body-sm text-muted-foreground">
-          This information isn&apos;t published in a format we can display.
+          {council.name} hasn&apos;t published this in a format we can display.
+          New data usually appears with quarterly transparency updates.
         </p>
       </div>
     );
@@ -59,6 +64,10 @@ export function DataGapNotice({
     : undefined;
 
   const Icon = ex.severity === "warning" ? AlertCircle : Info;
+
+  // Substitute {Council} placeholder with the actual council name so copy
+  // lives in one registry but reads naturally per page.
+  const reason = ex.reason.replace(/\{Council\}/g, council.name);
 
   return (
     <div
@@ -71,12 +80,10 @@ export function DataGapNotice({
           className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0"
           aria-hidden="true"
         />
-        <p className="type-body-sm font-semibold">
-          {label ?? ex.label}: limited data
-        </p>
+        <p className="type-body-sm font-semibold">{label ?? ex.label}</p>
       </div>
       <p className="type-body-sm text-muted-foreground mb-3 pl-6">
-        {ex.reason}
+        {reason}
         {extra ? ` ${extra}` : ""}
       </p>
       {ex.nextStepLabel && typeof ctaUrl === "string" && ctaUrl && (
