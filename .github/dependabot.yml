@@ -1,0 +1,50 @@
+# Dependabot — security-focused configuration for CivAccount.
+#
+# Security updates always open a PR immediately.  Version updates are grouped
+# weekly so the PR firehose stays manageable.  We pin all GitHub Actions to
+# full commit SHAs (see .github/workflows/*.yml) and Dependabot will keep
+# those SHAs current while preserving the version comments.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/London"
+    # Group non-security updates into a single PR per week so we don't drown
+    # in churn; security advisories still open their own PR immediately.
+    groups:
+      npm-weekly:
+        applies-to: version-updates
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    # Ignore major-version bumps for Next.js and React in the batched PR —
+    # those are breaking-change migrations that need conscious planning.
+    # Security advisories on Next.js still come through as separate PRs.
+    ignore:
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/London"
+    labels:
+      - "ci"
+      - "dependencies"
+    commit-message:
+      prefix: "chore(ci):"

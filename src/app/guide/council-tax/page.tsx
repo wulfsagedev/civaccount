@@ -5,6 +5,7 @@ import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'The Complete Guide to Council Tax in England',
@@ -126,7 +127,7 @@ export default function CouncilTaxGuidePage() {
       <Header />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[

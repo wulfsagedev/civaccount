@@ -6,13 +6,20 @@ on:
   pull_request:
     branches: [main]
 
+# Default to the lowest GITHUB_TOKEN permissions possible.  Individual jobs
+# can opt in to more if they actually need it — nothing in this workflow does.
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      # Actions pinned to a full commit SHA (not a tag) so an attacker who
+      # takes over the actions org cannot retroactively change what v4 means.
+      # Comments after the pin show the human-readable tag for reviewers.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           node-version: 20
           cache: npm
@@ -34,6 +41,50 @@ jobs:
       - name: Build
         run: npm run build
         env:
+          # These placeholders are intentionally non-functional — the build
+          # only needs them to exist so `process.env.X!` assertions don't
+          # blow up at module-init time.  Real values are injected at runtime
+          # from Vercel's env-var store, never from CI.
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder
           STRIPE_SECRET_KEY: sk_test_placeholder
+
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    # Duplicates the pre-commit hook's checks at the repo level so no commit
+    # that sneaks past a local hook survives a PR.  Runs on every push and PR.
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # Need full history so the scan sees every commit in this PR,
+          # not just the tip.  `fetch-depth: 0` is only required on PRs but
+          # is cheap enough to always request.
+          fetch-depth: 0
+
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@cb7149b9d92baec7d8d43c22ee51c038a0781c6f # v2.3.7
+        env:
+          # Gitleaks is free for public repos; no licence key required.
+          GITLEAKS_NOTIFY_USER_LIST: ''
+        with:
+          # Run in redact mode so any finding is shown without the raw
+          # value in the action log.
+          args: detect --redact --no-git -v --config=.github/gitleaks.toml
+
+  npm-audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    # Information-only — an advisory landing on main does not fail the build
+    # immediately.  A nightly run will fail if an advisory is outstanding for
+    # > 14 days (see separate workflow).
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Audit (production dependencies only)
+        run: npm audit --omit=dev --audit-level=high

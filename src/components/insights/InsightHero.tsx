@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageShareButton } from '@/components/ui/page-share-button';
 import type { InsightCardEntry } from '@/data/insights';
 import { buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 interface InsightHeroProps {
   entry: InsightCardEntry;
@@ -54,7 +55,7 @@ export function InsightHero({ entry, hero, children }: InsightHeroProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
       />
       <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb

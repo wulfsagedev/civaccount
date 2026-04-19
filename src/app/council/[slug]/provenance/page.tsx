@@ -16,6 +16,7 @@ import Footer from '@/components/Footer';
 import { PageContainer } from '@/components/ui/page-container';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, Calendar, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 const BASE_URL = 'https://www.civaccount.co.uk';
 
@@ -176,7 +177,7 @@ export default async function ProvenancePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
 
       <PageContainer className="py-8 sm:py-12">
         <Breadcrumb

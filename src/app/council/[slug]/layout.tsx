@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD } from '@/data/councils';
 import { buildFAQPageSchema } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 
 interface Props {
@@ -253,7 +254,7 @@ export default async function CouncilLayout({ params, children }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       {children}
     </>

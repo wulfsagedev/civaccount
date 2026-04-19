@@ -1,6 +1,7 @@
 import { councils, formatCurrency, getCouncilDisplayName } from '@/data/councils';
 import { buildBreadcrumbSchema } from '@/lib/structured-data';
 import CompareClient from './CompareClient';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export default function ComparePage() {
   const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025);
@@ -26,7 +27,7 @@ export default function ComparePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <CompareClient />
     </>

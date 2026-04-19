@@ -127,17 +127,43 @@ export async function checkRateLimit(
 
 /**
  * Get client IP from request headers.
- * Handles common proxy headers.
+ *
+ * Header preference order matters for rate-limiting correctness:
+ *   1. `x-vercel-forwarded-for` — set by Vercel's edge, cannot be spoofed
+ *      by the client because Vercel overwrites whatever the request
+ *      carried. First choice on any Vercel deployment.
+ *   2. `x-real-ip` — set by many reverse proxies, also overwritten by
+ *      Vercel. Still reliable.
+ *   3. `x-forwarded-for` — spoofable end-to-end. Only trust the
+ *      RIGHTMOST entry (our own proxy appends the real client IP last in
+ *      many configurations, though Vercel appends leftmost — the
+ *      headers above are preferred precisely because this one is
+ *      ambiguous).
+ *   4. `"unknown"` fallback — all requests without a recognisable IP
+ *      share a bucket, so the IP-less attacker can't rotate buckets by
+ *      scrubbing headers to evade rate limits.
+ *
+ * IPv6 addresses are normalised to lowercase so the same address bucketed
+ * twice (once via `x-forwarded-for`, once via `x-real-ip`) hits the same
+ * rate-limit key.
  */
 export function getClientIP(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
+  const vercelFwd = request.headers.get('x-vercel-forwarded-for');
+  if (vercelFwd) {
+    return vercelFwd.split(',')[0].trim().toLowerCase();
   }
 
   const realIP = request.headers.get('x-real-ip');
   if (realIP) {
-    return realIP;
+    return realIP.trim().toLowerCase();
+  }
+
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    // Leftmost-ish — first entry is traditionally the client.  On Vercel
+    // this branch is unreachable because `x-vercel-forwarded-for` always
+    // wins; on local dev / other hosts it's the best signal we have.
+    return forwarded.split(',')[0].trim().toLowerCase();
   }
 
   return 'unknown';

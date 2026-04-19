@@ -1,27 +1,81 @@
 #!/bin/sh
-# Pre-commit hook: block commits containing secrets
-# Install: git config core.hooksPath .githooks
+# Pre-commit hook: block commits containing secrets.
+#
+# Install locally: `git config core.hooksPath .githooks`
+#
+# CI runs the same scan (see .github/workflows/ci.yml → secret-scan job), so a
+# commit that sneaks past this hook still gets caught before it merges. The
+# hook is the fast-path for local feedback — the CI job is the gate.
 
-STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR -z | tr '\0' '\n')
 
 if [ -z "$STAGED" ]; then
   exit 0
 fi
 
-# Patterns that should never appear in committed code
-PATTERNS="sk_live_|sk_test_[a-zA-Z0-9]{20,}|AKIA[0-9A-Z]{16}|ghp_[a-zA-Z0-9]{36}|-----BEGIN (RSA |EC )?PRIVATE KEY"
+# ─── Patterns — ordered by confidence ─────────────────────────────────────
+# High-confidence (vendor-prefixed keys that don't naturally occur in prose):
+#   sk_live_, sk_test_ (Stripe)
+#   rk_live_, rk_test_ (Stripe restricted)
+#   whsec_             (Stripe webhook signing secret)
+#   pk_live_           (Stripe publishable LIVE — only safe if intentional)
+#   ghp_               (GitHub personal access token, classic)
+#   github_pat_        (GitHub fine-grained PAT)
+#   ghs_, gho_, ghu_, ghr_ (GitHub server / OAuth / user-to-server / refresh)
+#   AKIA               (AWS access key ID)
+#   ASIA               (AWS temporary session access key)
+#   -----BEGIN ... PRIVATE KEY   (any PEM private key)
+#   xoxb-, xoxp-, xoxa-  (Slack bot / user / app tokens)
+#   SG.                (SendGrid API key prefix)
+#   AIza               (Google API key prefix)
+#
+# Medium-confidence (prefixes that could false-positive but worth flagging):
+#   eyJ[A-Za-z0-9_=-]{10,} — JWT header; matches any JWT.  This is a soft
+#     warning rather than a hard block because JSON-LD examples can contain
+#     JWT-shaped strings legitimately.  We emit the warning and continue.
+PATTERNS_HARD='(sk|rk)_(live|test)_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{20,}|pk_live_[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}|gh[souru]_[A-Za-z0-9]{30,}|A(KIA|SIA)[0-9A-Z]{16}|xox[bpao]-[A-Za-z0-9-]{10,}|SG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{35}|-----BEGIN (RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY'
 
-FOUND=$(echo "$STAGED" | xargs grep -lE "$PATTERNS" 2>/dev/null | grep -v node_modules | grep -v ".env.example")
+# Files that are expected to contain example tokens (docs/runbooks/examples).
+# These are whitelisted from the HARD scan.  Keep this list tight.
+EXPECTED_FILES='^(\.env\.example$|SECURITY\.md$|ROTATION-RUNBOOK\.md$|CHANGELOG\.md$|\.githooks/pre-commit$|\.github/workflows/.*\.ya?ml$|docs/.*)$'
+
+FOUND=""
+for FILE in $STAGED; do
+  # Skip non-text files and deletions.
+  [ -f "$FILE" ] || continue
+
+  # Skip binary files (grep returns status 1 on binary; we mark them separately).
+  if file -b "$FILE" 2>/dev/null | grep -q "text\|JSON\|empty"; then
+    :
+  else
+    continue
+  fi
+
+  # Skip node_modules, lockfiles, and expected-example files.
+  case "$FILE" in
+    node_modules/*|*/node_modules/*|package-lock.json|pnpm-lock.yaml|yarn.lock)
+      continue ;;
+  esac
+
+  if echo "$FILE" | grep -qE "$EXPECTED_FILES"; then
+    continue
+  fi
+
+  if grep -IqE "$PATTERNS_HARD" "$FILE"; then
+    FOUND="$FOUND  $FILE\n"
+  fi
+done
 
 if [ -n "$FOUND" ]; then
   echo ""
-  echo "BLOCKED: Possible secrets detected in staged files:"
+  echo "BLOCKED: possible secrets detected in staged files:"
   echo ""
-  echo "$FOUND" | while read -r file; do
-    echo "  $file"
-  done
+  printf "$FOUND"
   echo ""
-  echo "If this is intentional, commit with --no-verify (not recommended)."
+  echo "If this is a false positive (e.g. a documentation example), add the file"
+  echo "to the EXPECTED_FILES allow-list in .githooks/pre-commit and retry."
+  echo ""
+  echo "To bypass once (STRONGLY DISCOURAGED): commit with --no-verify."
   echo ""
   exit 1
 fi

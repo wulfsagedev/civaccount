@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { checkOrigin } from '@/lib/security';
 
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xojjvzjl';
 
@@ -16,6 +17,15 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: NextRequest) {
   try {
+    // CSRF defence: reject cross-site POSTs before spending rate-limit budget.
+    const originCheck = checkOrigin(request);
+    if (!originCheck.ok) {
+      return NextResponse.json(
+        { error: 'Cross-site request rejected' },
+        { status: 403 }
+      );
+    }
+
     // Check rate limit
     const clientIP = getClientIP(request);
     const rateLimitResult = await checkRateLimit(`feedback:${clientIP}`, RATE_LIMIT);

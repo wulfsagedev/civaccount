@@ -13,6 +13,7 @@ import {
   getCouncilSlug,
 } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 const card = getInsightCard('biggest-tax-rises')!;
 
@@ -53,7 +54,7 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <InsightHero
         entry={card}

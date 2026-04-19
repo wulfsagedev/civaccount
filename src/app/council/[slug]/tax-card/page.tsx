@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getCouncilBySlug, getCouncilDisplayName, formatCurrency } from '@/data/councils';
 import { buildBreadcrumbSchema } from '@/lib/structured-data';
 import TaxCardClient from './TaxCardClient';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -52,7 +53,7 @@ export default async function TaxCardPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <TaxCardClient />
     </>
   );

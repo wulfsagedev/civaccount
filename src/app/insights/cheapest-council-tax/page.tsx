@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 const GROUPS = COMPARABLE_GROUPS.map(g => ({
   label: g.label,
@@ -81,7 +82,7 @@ export default function CheapestCouncilTaxPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
         <Breadcrumb items={[

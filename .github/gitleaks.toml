@@ -1,0 +1,31 @@
+# Gitleaks config — CivAccount
+#
+# We use gitleaks' default ruleset (vendor prefixes like sk_live_, ghp_, etc.)
+# and layer on a short allow-list for files that legitimately contain
+# example-shaped secrets (documentation, runbooks, the .env.example file).
+
+# Extend the built-in default ruleset rather than re-declaring every pattern.
+# Gitleaks supports this via the `[extend]` block as of v8.
+[extend]
+useDefault = true
+
+# ─── Allow-list ───────────────────────────────────────────────────────────
+# The allow-list is deliberately conservative.  Every path here must be one
+# the maintainer owns and reviews — do not allow-list upstream files.
+
+[allowlist]
+  description = "Docs, runbooks, and the .env.example template are allowed to contain example-shaped secrets."
+  paths = [
+    '''.env.example''',
+    '''SECURITY\.md''',
+    '''ROTATION-RUNBOOK\.md''',
+    '''CHANGELOG\.md''',
+    '''\.githooks/pre-commit''',
+    '''\.github/workflows/.*\.ya?ml''',
+    '''\.github/gitleaks\.toml''',
+    '''docs/.*''',
+  ]
+
+  # Regex examples we know we want to allow through.  Empty by default; add
+  # carefully with a comment explaining why.
+  regexes = []

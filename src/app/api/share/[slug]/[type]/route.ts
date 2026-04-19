@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
 import { getGeistFonts } from '@/app/council/[slug]/card/_lib/og-shared';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 import { renderYourBill } from '@/app/council/[slug]/card/_lib/og-renderers/your-bill';
 import { renderSpending } from '@/app/council/[slug]/card/_lib/og-renderers/spending';
 import { renderBillHistory } from '@/app/council/[slug]/card/_lib/og-renderers/bill-history';
@@ -47,12 +48,34 @@ const storyRenderers: Record<string, (council: Council, councilName: string) => 
   'tax-card': renderTaxCardStory,
 };
 
+// Rate limit: 60 card renders per minute per IP. CDN caching absorbs the
+// legitimate share-button traffic; this ceiling is only to block abuse loops.
+const RATE_LIMIT = { limit: 60, windowSeconds: 60 };
+
+// Accept only our known card types.  The route also guards against this via
+// the renderer map below, but rejecting early shortens the attack surface
+// (no Satori invocation, no font loading) for unknown values.
+const ALLOWED_FORMATS = new Set(['og', 'story']);
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string; type: string }> }
 ) {
+  const ip = getClientIP(request);
+  const { success: allowed } = await checkRateLimit(`share-card:${ip}`, RATE_LIMIT);
+  if (!allowed) {
+    return new Response('Rate limit exceeded', { status: 429 });
+  }
+
   const { slug, type } = await params;
-  const format = request.nextUrl.searchParams.get('format') || 'og';
+  const requestedFormat = request.nextUrl.searchParams.get('format') || 'og';
+  const format = ALLOWED_FORMATS.has(requestedFormat) ? requestedFormat : 'og';
+
+  // Slug + type come from URL path, so they're attacker-controlled.  Cap the
+  // length before any lookup to keep error messages predictable.
+  if (slug.length > 80 || type.length > 40) {
+    return new Response('Invalid card parameters', { status: 400 });
+  }
 
   const council = getCouncilBySlug(slug);
   if (!council) {

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Town Hall — Vote on Your Council\'s Spending',
@@ -41,7 +42,7 @@ export default function TownHallLayout({ children }: { children: React.ReactNode
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       {children}
     </>

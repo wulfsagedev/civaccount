@@ -5,6 +5,7 @@ import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWeb
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageShareButton } from '@/components/ui/page-share-button';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Council Leaderboards — Rankings for all 317 English Councils',
@@ -164,7 +165,7 @@ export default function LeaderboardsPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <>
         <main id="main-content" className="flex-1">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">

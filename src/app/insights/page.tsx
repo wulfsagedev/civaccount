@@ -32,6 +32,7 @@ import {
   buildFAQPageSchema,
   buildBreadcrumbSchema,
 } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: "How English councils spend your money · CivAccount",
@@ -173,7 +174,7 @@ export default function InsightsPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <PageContainer>
         <Breadcrumb

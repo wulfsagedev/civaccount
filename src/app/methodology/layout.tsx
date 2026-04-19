@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Data Methodology — How We Source and Verify',
@@ -44,7 +45,7 @@ export default function MethodologyLayout({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       {children}
     </>

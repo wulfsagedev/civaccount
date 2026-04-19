@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { PageContainer } from '@/components/ui/page-container';
 import { PARISHES } from '@/data/parishes';
 import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Parish & Town Councils — The Missing Tier',
@@ -49,7 +50,7 @@ export default function ParishIndexPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Header />
 
