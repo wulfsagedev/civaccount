@@ -1,119 +1,114 @@
+<div align="center">
+
 # CivAccount
 
-See exactly where your council tax goes — for all 317 English councils.
+**See exactly where your council tax goes — for all 317 English councils.**
 
-**[civaccount.co.uk](https://www.civaccount.co.uk)**
+[**civaccount.co.uk**](https://www.civaccount.co.uk) · Free · Independent · [.gov.uk](https://www.gov.uk) data only
 
-## What is CivAccount?
+[![Live](https://img.shields.io/website?url=https%3A%2F%2Fwww.civaccount.co.uk&style=flat-square&label=live&color=22c55e)](https://www.civaccount.co.uk) &nbsp; [![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg?style=flat-square)](LICENSE) &nbsp; [![Data licence](https://img.shields.io/badge/data-CivAccount%20Data%20License-orange?style=flat-square)](DATA-LICENSE) &nbsp; [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/) &nbsp; [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-CivAccount is a free tool that makes council budget data accessible and easy to understand. It shows how much you pay, where the money goes, who runs your council, and how they compare to others — all sourced from official .gov.uk data.
+</div>
 
-Not affiliated with any UK council or government body. This is an independent project using publicly available data.
+---
 
-## V3 — What's new (April 2026)
+## What it does
 
-- **[Developers page](https://www.civaccount.co.uk/developers)** — public JSON API + one-line iframe embeds for any council. No key, 100 req/min, £0 forever.
-- **[Change log](https://www.civaccount.co.uk/changelog)** — live feed of every council data change with source + date
-- **[FOI archive](https://www.civaccount.co.uk/foi)** — Freedom of Information responses published in full
-- **[Parish councils](https://www.civaccount.co.uk/parish)** — scaffold for the ~10,000 parish/town councils tier (pilot coverage coming)
-- **Head-to-head comparisons** — Compare any two councils side by side on tax, budget, spending, and leadership
-- **Insight rankings** — Cheapest and most expensive council tax, biggest increases, CEO salary league table
-- **Open data downloads** — Full dataset for all 317 councils in CSV and JSON
-- **4 plain-English guides** — Council tax, spending, leadership, and local democracy
-- **Town Hall** — Vote on how your council should spend money, propose ideas, reach milestones
-- **Embeddable widgets** — Council tax cards for external sites
-- **SEO infrastructure** — FAQPage, Article, Dataset, and BreadcrumbList schema across all pages
-- **100% Kent-parity** across all 317 English councils (up from 99.9%)
+CivAccount turns 15,000+ scattered data points across 317 English councils' budget documents into one clean, accessible website. Look up your council, see your tax bill, see where every pound goes, compare against neighbours. Every figure links back to its `.gov.uk` source.
 
-## Features
+Built for UK residents who pay council tax and want to know what happens to their money — especially on mobile, especially over 70.
 
-- Council tax by band (A-H) with 5-year history
-- Budget breakdown by 10 service categories
-- CEO salary, councillor allowances, and salary bands
-- Top 20 suppliers per council
-- Financial health (reserves, savings, budget gaps)
-- Performance KPIs and service outcomes
-- Cabinet members and leadership
-- National insights and comparisons
-- Related councils with compare links
-- Dark mode
-- WCAG 2.1 AA accessible
-- Designed for 70+ year olds on mobile (44px tap targets, plain English)
+## Highlights
 
-## Tech Stack
+- **317 council dashboards** — budget breakdown, tax bands, CEO salary, suppliers, financial health
+- **[Head-to-head compare](https://www.civaccount.co.uk/compare)** — any two councils, side by side
+- **[National insights](https://www.civaccount.co.uk/insights)** — rankings, league tables, postcode lottery data
+- **[4 plain-English guides](https://www.civaccount.co.uk/guide/council-tax)** — how council tax works, how spending is structured, who runs your council, how to influence decisions
+- **[Town Hall](https://www.civaccount.co.uk/townhall)** — residents propose and vote on how their council should spend money
+- **[Developer API](https://www.civaccount.co.uk/developers)** — free JSON per-council endpoints + embeddable iframe widgets, no key, 100 req/min
+- **[Data provenance](https://www.civaccount.co.uk/council/kent/provenance)** — per-field source URLs for every council (317 pages)
+- **WCAG 2.1 AA accessible**, designed for 44px tap targets + plain English
 
-- **Framework**: Next.js 16 (App Router, Turbopack)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS 4
-- **UI**: shadcn/ui + Radix UI
-- **Database**: Supabase (auth + civic participation)
-- **Deployment**: Vercel
-- **Charts**: Pure CSS (no charting library)
+## Tech stack
 
-## Getting Started
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui · Supabase (auth + Town Hall) · Vercel
+
+## Architecture
+
+The compiled dataset lives in a private repository that's fetched at build time using a token. This public repo contains the application code, a small fixture of 3 councils for local development, and automation scripts.
+
+```
+civaccount/                      # ← this repo (public, MIT code)
+├── src/
+│   ├── app/                     # Next.js App Router
+│   ├── components/              # UI + dashboard cards
+│   ├── data/
+│   │   ├── councils-fixtures/   # 3-council fixture for local dev
+│   │   └── councils/            # Private submodule (.gitignored)
+│   └── lib/
+├── scripts/                     # Build + validation scripts
+└── public/                      # Static assets, llms.txt, robots.txt
+```
+
+## Running locally
 
 ```bash
+git clone https://github.com/wulfsagedev/civaccount.git
+cd civaccount
 npm install
 npm run dev
 ```
 
+By default you'll see the site running against the 3-council fixture (Kent, Birmingham, Westminster). All pages work; non-fixture councils show 404 in dev.
+
 Open [http://localhost:3000](http://localhost:3000).
 
-## Project Structure
+## Data sources
 
-```
-src/
-├── app/                        # Next.js App Router
-│   ├── council/[slug]/         # 317 council dashboards
-│   ├── insights/               # National insights + sub-pages
-│   ├── compare/                # Multi-council + head-to-head comparisons
-│   ├── guide/                  # Pillar guide pages
-│   ├── data/                   # Open data downloads
-│   ├── townhall/               # Civic participation hub
-│   ├── embed/[slug]/           # Embeddable widgets
-│   └── api/v1/                 # REST API
-├── components/
-│   ├── dashboard/              # 10 dashboard card components
-│   ├── proposals/              # Town Hall components
-│   └── ui/                     # shadcn/ui primitives
-├── data/councils/              # Static data for 317 councils
-├── lib/                        # Utilities, structured data, comparisons
-└── context/                    # React Context (council, auth)
-```
+Everything comes from UK government sources — no third-party aggregators:
 
-## Data
+- [Council Tax 2025-26](https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026) (GOV.UK / MHCLG)
+- [Revenue Expenditure](https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing) (GOV.UK / MHCLG)
+- [ONS Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates) (Mid-2024)
+- Individual council `.gov.uk` websites (Pay Policy Statements, Members' Allowances schemes, budget documents)
+- [DEFRA Local Authority Waste Statistics](https://www.gov.uk/government/statistical-data-sets/env18-local-authority-collected-waste-annual-results-tables)
+- [Local Government Boundary Commission for England](https://www.lgbce.org.uk/)
 
-317 councils. 47 field groups each. 100% from .gov.uk sources.
-
-- [Council Tax 2025-26](https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026)
-- [Revenue Expenditure](https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing)
-- [ONS Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates)
-- Individual council .gov.uk websites
-
-Download the full dataset: [civaccount.co.uk/data](https://www.civaccount.co.uk/data)
+Full methodology: [civaccount.co.uk/methodology](https://www.civaccount.co.uk/methodology)
 
 ## API
 
+Free, public, no key required.
+
 ```
-GET /api/v1/councils              # List all councils
-GET /api/v1/councils/kent         # Single council
-GET /api/v1/download?format=csv   # Full dataset (CSV)
-GET /api/v1/download?format=json  # Full dataset (JSON)
+GET /api/v1/councils/[slug]        # Full record for one council
+GET /api/v1/councils?search=kent   # Filtered search (slim records, max 20)
+GET /api/v1/diffs?since=2026-04-01 # Data-change feed
 ```
 
-Rate limited: 100 req/min (list), 10 req/min (downloads).
+Full docs + embed snippets: [civaccount.co.uk/developers](https://www.civaccount.co.uk/developers)
 
-## License
+## Licence
 
-**Dual license:**
+Dual licence:
 
-- **Application code** — MIT License (use, modify, distribute freely)
-- **Compiled dataset** (`src/data/councils/`) — CivAccount Data License (view and reference with attribution; no bulk copying, redistribution, or competing products)
+- **Code** — [MIT](LICENSE). Use, modify, distribute.
+- **Compiled dataset** — [CivAccount Data Licence](DATA-LICENSE). View and cite individual figures with attribution. No bulk copying, redistribution, or competing products.
 
-See [LICENSE](LICENSE) and [DATA-LICENSE](DATA-LICENSE) for full terms.
+The underlying raw government data is Crown Copyright under the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/) and freely available from GOV.UK.
 
-The underlying raw government data is Crown Copyright under the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
+## Contributing
 
-## Author
+Bug reports and fixes to the application code are welcome — open an issue or pull request. For the data layer (adding councils, refreshing figures, enrichment), see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Made by [Owen Fisher](https://owenfisher.co)
+## Not affiliated
+
+CivAccount is an independent civic-tech project. Not affiliated with any UK council, government body, political party, or commercial data aggregator.
+
+---
+
+<div align="center">
+
+Made by [Owen Fisher](https://owenfisher.co) · [civaccount.co.uk](https://www.civaccount.co.uk)
+
+</div>
