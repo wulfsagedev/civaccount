@@ -114,6 +114,10 @@ function SharePreviewModal({
   const [tab, setTab] = useState<'share' | 'embed'>('share');
   const [size, setSize] = useState<EmbedSize>('medium');
   const [theme, setTheme] = useState<EmbedTheme>('auto');
+  // Stable cache-buster computed once when the modal mounts — prevents the
+  // preview URL changing on every render (which is what React's purity rule
+  // flagged). `Date.now()` still runs, just in an initialiser.
+  const [cacheBuster] = useState(() => Date.now());
   const [pinData, setPinData] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
@@ -304,7 +308,7 @@ function SharePreviewModal({
           </>
         ) : (
           <EmbedTabBody
-            previewImageUrl={imageUrl ? `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}cb=${Date.now()}` : undefined}
+            previewImageUrl={imageUrl ? `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}cb=${cacheBuster}` : undefined}
             iframeSnippet={iframeSnippet}
             imageSnippet={imageSnippet}
             size={size}

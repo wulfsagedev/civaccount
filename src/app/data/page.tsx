@@ -155,7 +155,9 @@ export default function DataPage() {
                 GET /api/v1/councils/[slug]
               </code>
               <p className="type-caption text-muted-foreground mt-2">
-                Example: <a href="/api/v1/councils/kent" className="font-mono hover:text-foreground transition-colors">/api/v1/councils/kent</a>
+                Example:{' '}
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- JSON API endpoint, not a page route */}
+                <a href="/api/v1/councils/kent" className="font-mono hover:text-foreground transition-colors">/api/v1/councils/kent</a>
               </p>
             </div>
             <div className="py-2">

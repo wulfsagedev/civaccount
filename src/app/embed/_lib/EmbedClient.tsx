@@ -161,6 +161,7 @@ export default function EmbedClient({
     return map;
   }, [detailed]);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- React Compiler can't statically analyze optional chains in deps; manual memoization is still correct
   const reservesInWeeks = useMemo(() => {
     if (!detailed?.reserves) return null;
     const annualBudget = detailed.revenue_budget || totalBudget;

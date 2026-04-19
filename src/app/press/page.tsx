@@ -405,6 +405,7 @@ export default function PressPage() {
             </div>
             <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
               <p className="type-caption text-muted-foreground mb-1">Example</p>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- this targets a JSON API endpoint, not a page route */}
               <a href="/api/v1/councils/kent" className="type-body-sm font-mono hover:text-muted-foreground transition-colors">
                 https://www.civaccount.co.uk/api/v1/councils/kent
               </a>
