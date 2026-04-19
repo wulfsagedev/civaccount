@@ -3,7 +3,10 @@
 // Last updated: January 2026
 
 import { populationData } from './population';
-import { allCouncils } from './councils/index';
+// Resolves to the real compiled dataset via the civaccount-data submodule,
+// OR to the committed 3-council fixture when the submodule is absent or
+// CIVACCOUNT_FIXTURES=1 is set. See next.config.ts + tsconfig paths.
+import { allCouncils } from '@council-data';
 
 export interface CouncilBudget {
   education: number | null;

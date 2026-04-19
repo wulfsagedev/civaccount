@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@council-data": [
+        "./src/data/councils-fixtures/index.ts"
       ]
     }
   },

@@ -612,6 +612,34 @@ When comparing council tax rates, group by service scope:
 
 This grouping is used in the Insights page to avoid misleading comparisons.
 
+## Repo architecture — data is split (Phase 1 cutover pending)
+
+CivAccount's compiled dataset is being decoupled from the public code repository.
+See [`/DATA-ACCESS-POLICY.md`](../DATA-ACCESS-POLICY.md) for the full plan and
+[`/MIGRATION-PHASE-1.md`](../MIGRATION-PHASE-1.md) for the cutover checklist.
+
+**Current state (pre-cutover):** compiled data lives at `src/data/councils/` in
+this public repo. Fixtures at `src/data/councils-fixtures/` already scaffolded.
+
+**Post-cutover state:** `src/data/councils/` is a private Git submodule backed
+by `github.com/wulfsagedev/civaccount-data`. Fixtures continue to live at
+`src/data/councils-fixtures/`. The `@council-data` alias (wired in
+`next.config.ts` via Turbopack `resolveAlias` + `tsconfig.json` paths) resolves
+to the real data when the submodule's `index.ts` exists, else auto-falls-back
+to the fixture. The env var `CIVACCOUNT_FIXTURES=1` forces fixture mode
+regardless.
+
+**Rules for this project while the cutover is pending:**
+- Do not add new files under `src/data/councils/pdfs/`, `scripts/enrich-*`,
+  `scripts/scrape-*`, `scripts/*.csv`, or `scripts/data-scripts/` — these move to
+  the private repo in the cutover. `.gitignore` already blocks most of these paths.
+- New fields in the `Council` interface must be mirrored in
+  `src/data/councils-fixtures/sample-councils.ts` so fixture mode stays buildable.
+- Never reference `hello@owenfisher.co` or `owenfisher.co` on the site
+  (memory entry `civaccount_positioning`).
+- Treat the aggregation as proprietary: do not propose re-adding bulk download,
+  Hugging Face Datasets submission, or Common Crawl dataset index submission.
+
 ## Data Sources (CRITICAL RULE)
 
 **ONLY use .gov.uk websites for all data.** This is an unbreakable rule:

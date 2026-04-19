@@ -1,8 +1,42 @@
 import type { NextConfig } from "next";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+
+// ─── Data source resolver (@council-data alias) ────────────────────────────
+// The compiled dataset lives at `src/data/councils/` and, after the Phase 1
+// cutover (see /DATA-ACCESS-POLICY.md), is sourced from the private
+// `civaccount-data` Git submodule at that path.
+//
+// In environments without the submodule (contributor clones, or CI with
+// CIVACCOUNT_FIXTURES=1), the alias falls back to the committed 3-council
+// fixture at `src/data/councils-fixtures/`.
+//
+// Turbopack's `resolveAlias` needs a path RELATIVE to the project root
+// (absolute paths trigger "server relative imports are not implemented").
+// NOTE: we point at the `index` *file inside the folder* (not the bare folder
+// name), because `src/data/councils.ts` is a sibling file that would otherwise
+// win the file-vs-folder resolution race.
+const hasRealCouncilData = existsSync(resolve(__dirname, "src/data/councils/index.ts"));
+const useFixtures = process.env.CIVACCOUNT_FIXTURES === "1" || !hasRealCouncilData;
+const councilDataPath = useFixtures
+  ? "./src/data/councils-fixtures/index.ts"
+  : "./src/data/councils/index.ts";
+
+if (useFixtures) {
+  console.log(
+    `[civaccount] Using fixture council data at ${councilDataPath}. ` +
+      `Set CIVACCOUNT_FIXTURES=0 and ensure the submodule is checked out for the full dataset.`,
+  );
+}
 
 const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
+  },
+  turbopack: {
+    resolveAlias: {
+      "@council-data": councilDataPath,
+    },
   },
   async headers() {
     return [
