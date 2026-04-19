@@ -8,6 +8,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { RouteAnnouncer } from "@/components/RouteAnnouncer";
 import { Toaster } from "@/components/ui/sonner";
+import { serializeJsonLd } from "@/lib/safe-json-ld";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -117,7 +118,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: serializeJsonLd({
               "@context": "https://schema.org",
               "@graph": [
                 {
@@ -155,11 +156,10 @@ export default function RootLayout({
                     "https://github.com/wulfsagedev/civaccount"
                   ],
                   "founder": {
-                    "@type": "Person",
-                    "@id": "https://www.civaccount.co.uk/#founder",
-                    "name": "Owen Fisher",
-                    "jobTitle": "Founder",
-                    "worksFor": { "@id": "https://www.civaccount.co.uk/#organization" }
+                    "@type": "Organization",
+                    "@id": "https://wulfsage.com/#wulfsage",
+                    "name": "wulfsage",
+                    "url": "https://wulfsage.com"
                   },
                   "contactPoint": [
                     {

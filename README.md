@@ -16,7 +16,7 @@
 
 CivAccount turns 15,000+ scattered data points across 317 English councils' budget documents into one clean, accessible website. Look up your council, see your tax bill, see where every pound goes, compare against neighbours. Every figure links back to its `.gov.uk` source.
 
-Built for UK residents who pay council tax and want to know what happens to their money — especially on mobile, especially over 70.
+Built for UK residents who pay council tax and want to know what happens to their money.
 
 ## Highlights
 
@@ -109,6 +109,6 @@ CivAccount is an independent civic-tech project. Not affiliated with any UK coun
 
 <div align="center">
 
-Made by [Owen Fisher](https://owenfisher.co) · [civaccount.co.uk](https://www.civaccount.co.uk)
+Made by [wulfsage](https://wulfsage.com) · [civaccount.co.uk](https://www.civaccount.co.uk)
 
 </div>

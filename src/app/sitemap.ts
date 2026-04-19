@@ -80,7 +80,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/license`, lastModified: STATIC_PAGE_LASTMOD },
     // Moat-building pages.
     { url: `${baseUrl}/developers`, lastModified: STATIC_PAGE_LASTMOD },
-    { url: `${baseUrl}/foi`, lastModified: dataDriven },
     { url: `${baseUrl}/parish`, lastModified: STATIC_PAGE_LASTMOD },
     { url: `${baseUrl}/press`, lastModified: STATIC_PAGE_LASTMOD },
   ]

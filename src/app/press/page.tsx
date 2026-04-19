@@ -25,6 +25,7 @@ import Footer from '@/components/Footer';
 import { PageContainer } from '@/components/ui/page-container';
 import { Badge } from '@/components/ui/badge';
 import PressContactButton from './PressContactButton';
+import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 const BASE_URL = 'https://www.civaccount.co.uk';
 const ORG_ID = `${BASE_URL}/#organization`;
@@ -224,7 +225,7 @@ export default function PressPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
 
       <PageContainer className="py-8 sm:py-12">
         <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Using the data' }]} />
@@ -547,7 +548,6 @@ export default function PressPage() {
             <li><Link href="/about" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">About CivAccount</Link></li>
             <li><Link href="/developers" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Developer API & embeds</Link></li>
             <li><Link href="/changelog" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Data change log</Link></li>
-            <li><Link href="/foi" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">FOI archive</Link></li>
             <li><Link href="/license" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Licence</Link></li>
             <li><a href="/updates/rss.xml" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Updates RSS feed</a></li>
           </ul>

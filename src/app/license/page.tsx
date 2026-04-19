@@ -212,7 +212,7 @@ export default function LicensePage() {
                 <h3 className="font-semibold mb-4">Full MIT License text</h3>
                 <div className="bg-muted/50 rounded-lg p-4 font-mono type-body-sm text-muted-foreground leading-relaxed">
                   <p className="mb-4">MIT License</p>
-                  <p className="mb-4">Copyright (c) 2025 Owen Fisher</p>
+                  <p className="mb-4">Copyright (c) 2025 wulfsage.com</p>
                   <p className="mb-4">
                     Permission is hereby granted, free of charge, to any person obtaining a copy
                     of this software and associated documentation files (the &quot;Software&quot;), to deal

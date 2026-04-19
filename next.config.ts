@@ -38,6 +38,13 @@ const nextConfig: NextConfig = {
       "@council-data": councilDataPath,
     },
   },
+  async redirects() {
+    return [
+      // Removed: FOI archive page (feature parked indefinitely).
+      { source: '/foi', destination: '/', permanent: false },
+      { source: '/foi/:path*', destination: '/', permanent: false },
+    ];
+  },
   async headers() {
     return [
       // Allow embed pages to be framed

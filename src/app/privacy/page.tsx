@@ -52,7 +52,7 @@ export default function PrivacyPage() {
                   <section className="space-y-3">
                     <h3 className="font-semibold type-body">Data controller</h3>
                     <p className="text-muted-foreground">
-                      CivAccount is operated by Owen Fisher as an independent open source project.
+                      CivAccount is operated by wulfsage.com as an independent open source project.
                       For data protection enquiries, please contact us via{' '}
                       <a
                         href="https://github.com/wulfsagedev/civaccount"

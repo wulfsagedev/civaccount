@@ -43,7 +43,6 @@ export default function Footer() {
             <Link href="/methodology" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Methodology</Link>
             <Link href="/developers" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Developers</Link>
             <Link href="/changelog" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Change log</Link>
-            <Link href="/foi" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">FOI archive</Link>
             <Link href="/updates" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Updates</Link>
             <button
               type="button"
