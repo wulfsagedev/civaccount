@@ -30,6 +30,11 @@ jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    # CodeQL analysis will not run until "Code scanning" is enabled in the
+    # repo's Security settings. Until then the SARIF upload step fails with
+    # "Code scanning is not available". Keep the workflow advisory so it
+    # doesn't block PRs.
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
