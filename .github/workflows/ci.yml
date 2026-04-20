@@ -63,7 +63,7 @@ jobs:
           fetch-depth: 0
 
       - name: Gitleaks
-        uses: gitleaks/gitleaks-action@cb7149b9d92baec7d8d43c22ee51c038a0781c6f # v2.3.7
+        uses: gitleaks/gitleaks-action@83373cf2f8c4db6e24b41c1a9b086bb9619e9cd3 # v2.3.7
         env:
           # Gitleaks is free for public repos; no licence key required.
           GITLEAKS_NOTIFY_USER_LIST: ''
@@ -88,3 +88,22 @@ jobs:
       - run: npm ci
       - name: Audit (production dependencies only)
         run: npm audit --omit=dev --audit-level=high
+
+  dependency-review:
+    name: Dependency review (PRs only)
+    runs-on: ubuntu-latest
+    # Only runs on pull requests — compares the PR diff against main and
+    # fails if any newly-introduced dependency has a known High/Critical
+    # advisory, or an incompatible licence.  Stops vulnerable deps landing
+    # on main at the PR gate instead of being caught by npm-audit after
+    # the fact.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/dependency-review-action@4081bf99e2866ebe428fc0477b69eb4fcda7220a # v4.4.0
+        with:
+          fail-on-severity: high
+          # Block dependencies released in the last 48h — "day-zero" typosquats
+          # and hijacked packages usually hit registries fresh, so holding a
+          # short maturity window is a cheap supply-chain guard.
+          warn-on-openssf-scorecard-level: 5
