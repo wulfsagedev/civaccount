@@ -38,7 +38,18 @@ jobs:
       - name: Regenerate coverage stats
         run: npm run generate:coverage
 
+      - name: Check for private data
+        id: data
+        run: |
+          if [ -f src/data/councils/index.ts ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping Build step — private council data not present on this runner. Vercel deploys still build against the real dataset."
+          fi
+
       - name: Build
+        if: steps.data.outputs.present == 'true'
         run: npm run build
         env:
           # These placeholders are intentionally non-functional — the build
