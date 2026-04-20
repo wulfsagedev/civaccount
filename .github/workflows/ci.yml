@@ -65,6 +65,8 @@ jobs:
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@83373cf2f8c4db6e24b41c1a9b086bb9619e9cd3 # v2.3.7
         env:
+          # GITHUB_TOKEN is required by gitleaks-action v2+ to scan PRs.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Gitleaks is free for public repos; no licence key required.
           GITLEAKS_NOTIFY_USER_LIST: ''
         with:
@@ -97,7 +99,14 @@ jobs:
     # advisory, or an incompatible licence.  Stops vulnerable deps landing
     # on main at the PR gate instead of being caught by npm-audit after
     # the fact.
+    #
+    # Requires Dependency Graph to be enabled on the repo:
+    #   Settings → Code security → Dependency graph
+    # When disabled the action fails fast with "not supported on this
+    # repository", so we keep the job advisory (`continue-on-error`) until
+    # the admin toggle is flipped.
     if: github.event_name == 'pull_request'
+    continue-on-error: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/dependency-review-action@4081bf99e2866ebe428fc0477b69eb4fcda7220a # v4.4.0

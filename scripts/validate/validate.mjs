@@ -45,6 +45,18 @@ if (process.argv.includes('--link-check')) {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPORTS_DIR = join(__dirname, 'reports');
+const COUNCILS_DIR = join(__dirname, '..', '..', 'src', 'data', 'councils');
+
+// Private-data guard: validation runs against the real 317-council dataset,
+// which lives in the private civaccount-data repo and is only present when
+// CIVACCOUNT_DATA_TOKEN is set at prebuild time. On a fresh CI checkout
+// without that token, the data simply isn't there — skip with exit 0 so
+// the workflow stays green. The nightly data-freshness job (which *does*
+// have the token) is where real validation happens.
+if (!existsSync(join(COUNCILS_DIR, 'index.ts'))) {
+  console.log('validate: private council data not present (no CIVACCOUNT_DATA_TOKEN). Skipping.');
+  process.exit(0);
+}
 
 // ANSI colors
 const RED = '\x1b[31m';
