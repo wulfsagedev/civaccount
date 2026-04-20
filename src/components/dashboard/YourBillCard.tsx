@@ -19,6 +19,7 @@ import { useIsEmbed } from '@/lib/embed-context';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import { INFLATION_CONTEXT } from '@/lib/inflation-context';
+import { SITE_URL } from '@/lib/utils';
 
 // Helper function to find a linkable council from precept authority name
 const findLinkedCouncil = (authorityName: string) => {
@@ -362,7 +363,7 @@ const YourBillCard = ({
           <ShareButton
             title={`${selectedCouncil.name} council tax`}
             text={`I pay ${thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}/year to ${selectedCouncil.name}. See where your council tax goes.`}
-            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/council/${getCouncilSlug(selectedCouncil)}/card/your-bill`}
+            url={`${SITE_URL}/council/${getCouncilSlug(selectedCouncil)}/card/your-bill`}
             imageUrl={`/api/share/${getCouncilSlug(selectedCouncil)}/your-bill?format=story`}
             variant="hero"
           />

@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Check, Loader2, Download, X } from 'lucide-react';
 import { useAnimatedModal } from '@/lib/use-animated-modal';
+import { SITE_URL, buildShareUrl } from '@/lib/utils';
 
 /** OG image with skeleton loader — handles loading state properly */
 function OGImagePreview({ src }: { src: string }) {
@@ -74,7 +75,7 @@ function buildIframeSnippet(src: string, width: string, height: number): string 
 }
 
 function buildImageSnippet(imageUrl: string, pageUrl: string, title: string): string {
-  const absUrl = imageUrl.startsWith('http') ? imageUrl : `https://www.civaccount.co.uk${imageUrl}`;
+  const absUrl = imageUrl.startsWith('http') ? imageUrl : `${SITE_URL}${imageUrl}`;
   return `<a href="${pageUrl}" target="_blank" rel="noopener"><img src="${absUrl}" alt="${title}" style="max-width:100%;height:auto;"/></a>`;
 }
 
@@ -537,7 +538,19 @@ export default function ShareButton({ title, text, url, imageUrl, embedUrl, card
   const [feedback, setFeedback] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
-  const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+  // Always produce an absolute URL. A relative or empty `url` prop falls back
+  // to the current pathname (and then SITE_URL) so copy/share never leaks a
+  // relative path or an empty string.
+  const shareUrl = (() => {
+    if (url && url.startsWith('http')) return url;
+    if (url) return buildShareUrl(url);
+    if (typeof window !== 'undefined') {
+      const href = window.location.href;
+      if (href && href.startsWith('http')) return href;
+      return buildShareUrl(window.location.pathname);
+    }
+    return SITE_URL;
+  })();
 
   // OG image URL for preview (landscape format, not story)
   const previewImageUrl = imageUrl?.replace('?format=story', '?format=og');

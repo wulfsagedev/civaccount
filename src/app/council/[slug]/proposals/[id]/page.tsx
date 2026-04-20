@@ -10,7 +10,7 @@ import {
   PROPOSAL_STATUS_DESCRIPTIONS, PROPOSAL_STATUS_STYLES,
   canEdit, editWindowRemaining,
 } from '@/lib/proposals';
-import { CARD_STYLES } from '@/lib/utils';
+import { CARD_STYLES, SITE_URL } from '@/lib/utils';
 import VoteButton from '@/components/proposals/VoteButton';
 import ShareButton from '@/components/proposals/ShareButton';
 import CommentThread from '@/components/proposals/CommentThread';
@@ -272,7 +272,7 @@ export default function ProposalDetailPage() {
                     <ShareButton
                       title={proposal.title}
                       text={`${proposal.title} — ${proposal.score} votes on CivAccount. Have your say.`}
-                      url={`${typeof window !== 'undefined' ? window.location.origin : ''}/council/${slug}/proposals/${proposal.id}`}
+                      url={`${SITE_URL}/council/${slug}/proposals/${proposal.id}`}
                       imageUrl={`/council/${slug}/proposals/${proposal.id}/opengraph-image`}
                     />
                   </div>

@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import ShareButton from '@/components/proposals/ShareButton';
+import { buildShareUrl } from '@/lib/utils';
 
 interface PageShareButtonProps {
   title: string;
@@ -15,7 +16,7 @@ interface PageShareButtonProps {
  */
 export function PageShareButton({ title, description }: PageShareButtonProps) {
   const pathname = usePathname();
-  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const url = buildShareUrl(pathname);
   const imageUrl = pathname ? `${pathname}/opengraph-image` : undefined;
 
   return (
