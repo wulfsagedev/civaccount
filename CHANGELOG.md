@@ -8,13 +8,13 @@ Vercel disclosed unauthorised access to internal systems and advised
 customers to review environment variables, enable the Sensitive env-var
 feature, and rotate secrets. This changelog entry records the code-side
 work; the vendor-side rotation checklist lives in
-[`ROTATION-RUNBOOK.md`](./ROTATION-RUNBOOK.md) and needs to be worked
+the rotation runbook (in the private ops repo) and needs to be worked
 through in the Vercel dashboard.
 
 ### Documentation
 - **New:** [`SECURITY.md`](./SECURITY.md) — vulnerability disclosure policy,
   reporting channels, scope, and safe-harbour language.
-- **New:** [`ROTATION-RUNBOOK.md`](./ROTATION-RUNBOOK.md) — per-secret
+- **New:** the rotation runbook (in the private ops repo) — per-secret
   step-by-step for `CIVACCOUNT_DATA_TOKEN`, `STRIPE_SECRET_KEY`,
   `UPSTASH_REDIS_REST_TOKEN`, Supabase JWT secret, and the Vercel-incident
   one-time checklist.
@@ -142,7 +142,7 @@ through in the Vercel dashboard.
 - `.env.local` confirmed git-ignored, zero secret hits in history.
 
 ### Action required from the maintainer (in Vercel)
-See [`ROTATION-RUNBOOK.md`](./ROTATION-RUNBOOK.md) for full steps. High
+See the rotation runbook (in the private ops repo) for full steps. High
 priority:
 1. Rotate `CIVACCOUNT_DATA_TOKEN`, `STRIPE_SECRET_KEY`,
    `UPSTASH_REDIS_REST_TOKEN`.

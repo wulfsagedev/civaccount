@@ -105,6 +105,7 @@ secrets in the project.
 ## Upstream incidents
 
 When a relied-upon vendor discloses an incident, we assume the worst until
-proven otherwise and follow `ROTATION-RUNBOOK.md` in this repository to rotate
-every secret that ever touched that vendor. The runbook includes the
-step-by-step for the April 2026 Vercel disclosure.
+proven otherwise and rotate every secret that ever touched that vendor. The
+step-by-step rotation runbook and the current secret inventory live in a
+private operations repository — deliberately not published here to avoid
+giving attackers a map of the estate.
