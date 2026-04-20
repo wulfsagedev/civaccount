@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import ShareButton from '@/components/proposals/ShareButton';
+import { buildShareUrl } from '@/lib/utils';
 
 interface InsightCardProps {
   slug: string;
@@ -32,6 +33,7 @@ export function InsightCard({
   className,
 }: InsightCardProps) {
   const href = `/insights/${slug}`;
+  const shareUrl = buildShareUrl(href);
   const imageUrl = `${href}/opengraph-image`;
 
   return (
@@ -53,7 +55,7 @@ export function InsightCard({
           <ShareButton
             title={title}
             text={shareText ?? `${title} — CivAccount`}
-            url={href}
+            url={shareUrl}
             imageUrl={imageUrl}
             variant="icon"
           />

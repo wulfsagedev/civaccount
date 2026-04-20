@@ -10,6 +10,7 @@ import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { getTypeAverages } from '@/lib/council-averages';
 import ShareButton from '@/components/proposals/ShareButton';
 import Header from '@/components/Header';
+import { SITE_URL } from '@/lib/utils';
 
 const bandDescriptions: Record<string, string> = {
   A: 'Smallest properties',
@@ -321,7 +322,7 @@ export default function TaxCardClient() {
           <ShareButton
             title={`My council tax card — ${council.name}`}
             text={`I pay ${formatCurrency(weeklyCost, { decimals: 2 })}/week in council tax to ${council.name}. What do you pay? Check yours:`}
-            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/council/${slug}/tax-card${selectedBand !== 'D' ? `?band=${selectedBand}` : ''}`}
+            url={`${SITE_URL}/council/${slug}/tax-card${selectedBand !== 'D' ? `?band=${selectedBand}` : ''}`}
             imageUrl={`/api/share/${slug}/tax-card?format=story`}
             variant="hero"
             label="Share your tax card"

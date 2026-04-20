@@ -7,7 +7,7 @@ import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS, PROPOSAL_STATUS_STYL
 import VoteButton from './VoteButton';
 import ShareButton from './ShareButton';
 import MilestoneBar from './MilestoneBar';
-import { CARD_STYLES } from '@/lib/utils';
+import { CARD_STYLES, SITE_URL } from '@/lib/utils';
 
 interface ProposalCardProps {
   proposal: {
@@ -100,7 +100,7 @@ export default function ProposalCard({ proposal, userVote, isHighlighted }: Prop
             <ShareButton
               title={proposal.title}
               text={`${proposal.title} — ${proposal.score} votes on CivAccount. Have your say.`}
-              url={typeof window !== 'undefined' ? `${window.location.origin}/council/${proposal.council_slug}/proposals/${proposal.id}` : ''}
+              url={`${SITE_URL}/council/${proposal.council_slug}/proposals/${proposal.id}`}
               imageUrl={`/council/${proposal.council_slug}/proposals/${proposal.id}/opengraph-image`}
             />
           </div>

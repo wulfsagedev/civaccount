@@ -4,6 +4,7 @@ import { useCallback, useState, type ReactNode } from 'react';
 import { useParams } from 'next/navigation';
 import { Share2, Check, Loader2 } from 'lucide-react';
 import { getCouncilBySlug, getCouncilDisplayName } from '@/data/councils';
+import { SITE_URL } from '@/lib/utils';
 
 interface ShareableStatProps {
   /** The label shown above the stat (e.g. "CEO Salary") */
@@ -74,7 +75,7 @@ export function ShareableStat({ label, value, context, children }: ShareableStat
       }
 
       // Fallback: copy text
-      const shareUrl = `${window.location.origin}/council/${slug}`;
+      const shareUrl = `${SITE_URL}/council/${slug}`;
       await navigator.clipboard.writeText(`${label}: ${value} — ${councilName}\n${shareUrl}`);
       setState('success');
       setTimeout(() => setState('idle'), 2000);
