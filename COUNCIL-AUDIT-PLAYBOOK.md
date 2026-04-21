@@ -28,6 +28,30 @@ Source: owner instruction 2026-04-21. Enforced at build time via `scripts/valida
 
 ---
 
+## Data-year strictness (read before Phase 0)
+
+Mixed data years across fields are expected and correct — council tax 2025-26, waste 2022-23, budget 2024-25, etc. — because each source has its own release cycle.
+
+**What matters:** every rendered value carries its source's data year visibly, and our stored value matches the source for that stated year.
+
+Before auditing a council, confirm no blanket year is being claimed on the page. The Bradford hero paragraph says "In 2025-26 … total service budget of £1.1 billion" — the budget is actually 2024-25 data. Flag that as a rendering bug, not a per-council bug.
+
+Dataset-level year issues (a new national release has dropped, we haven't refreshed) are handled by the **roll-forward workflow** in [DATA-YEAR-POLICY.md](DATA-YEAR-POLICY.md). Run that workflow first when it applies; **don't audit individual councils against stale national data.**
+
+Release cadences to watch:
+- MHCLG council tax levels: March annually → **2026-27 levels likely already out; check before rollout**
+- MHCLG RA Part 1 / 2 + CoR A1: November annually
+- ONS mid-year population: June annually
+- DEFRA ENV18 waste: December, two years lagged
+- DfT RDC / RDL roads: March annually
+- Per-council Pay Policy Statements: March-May
+- Per-council Statement of Accounts: late autumn
+- Per-council MTFS: November-February
+
+Full table and the roll-forward workflow in [DATA-YEAR-POLICY.md](DATA-YEAR-POLICY.md).
+
+---
+
 ## Phase 0 — pick a council, read the baseline
 
 ```
@@ -42,6 +66,20 @@ Expected output per the Bradford reference run:
 - A JSON report at `scripts/validate/reports/audit-<slug>.json`
 
 **Definition of Phase 0 done:** you have a printed baseline for this council showing exact counts per status + the specific field names in each non-PASS bucket.
+
+---
+
+## Phase 0.5 — confirm the year labels match the source
+
+For each rendered value on the council's page:
+- Open its SourceAnnotation popover (tap the value).
+- Confirm the `Data year:` shown matches what `scripts/validate/source-manifest.json` records for that field's dataset.
+
+If the hero paragraph (`CouncilDashboard.tsx`) displays a blanket year ("In 2025-26 …") that covers numbers from multiple vintages, that's a **UI bug, not a council-level bug** — log in ISSUES-FOUND.md §Year-strictness and fix via the hero-template update before continuing the per-council audit.
+
+If the source-manifest year is BEHIND the upstream publisher's latest release (e.g. our manifest says `data_year: "2025-26"` but MHCLG has shipped 2026-27), **stop Phase 0.5 and run the roll-forward workflow** in [DATA-YEAR-POLICY.md](DATA-YEAR-POLICY.md) first. Auditing councils against stale national data just produces churn — one dataset refresh propagates to all 317.
+
+**Definition of Phase 0.5 done:** every year label on the council's page is either (a) exactly matches the latest publisher release we've archived, or (b) a known gap tracked in ISSUES-FOUND.md with a roll-forward ticket.
 
 ---
 
@@ -448,6 +486,7 @@ Read these alongside this playbook:
 
 - [PROVENANCE-INTEGRITY-PLAN.md](PROVENANCE-INTEGRITY-PLAN.md) — the rule, architecture, edge cases.
 - [VALUE-VERIFICATION-PLAN.md](VALUE-VERIFICATION-PLAN.md) — how source-truth.mjs cross-checks work.
+- [DATA-YEAR-POLICY.md](DATA-YEAR-POLICY.md) — data-year rule, current state per dataset, roll-forward workflow when new releases drop.
 - [BRADFORD-AUDIT.md](BRADFORD-AUDIT.md) — worked example of the finished state for one council.
 - [ISSUES-FOUND.md](ISSUES-FOUND.md) — running log of data-accuracy questions across the dataset.
 - [docs/PHASE-4-SCOPE.md](docs/PHASE-4-SCOPE.md) + [docs/PHASE-5-KICKOFF.md](docs/PHASE-5-KICKOFF.md) — original per-phase specs (slightly superseded by this playbook).
