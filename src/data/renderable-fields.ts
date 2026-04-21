@@ -62,7 +62,8 @@ export interface RenderableField {
  * Each has a parsed CSV in src/data/councils/pdfs/gov-uk-bulk-data/.
  */
 const CATEGORY_A: RenderableField[] = [
-  // Council tax (MHCLG live tables)
+  // Council tax (MHCLG live tables, 2026-27 release published 25 March 2026)
+  { path: 'council_tax.band_d_2026', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2026', label: 'Band D council tax 2026-27', status: 'verified_source' },
   { path: 'council_tax.band_d_2025', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2025', label: 'Band D council tax 2025-26', status: 'verified_source' },
   { path: 'council_tax.band_d_2024', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2024', label: 'Band D council tax 2024-25', status: 'verified_source' },
   { path: 'council_tax.band_d_2023', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2023', label: 'Band D council tax 2023-24', status: 'verified_source' },

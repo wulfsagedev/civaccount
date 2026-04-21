@@ -25,6 +25,9 @@ export interface CouncilBudget {
 }
 
 export interface CouncilTax {
+  /** Area Band D for 2026-27 (MHCLG live tables, published 25 March 2026).
+   * Optional because county councils (SC) are not billing authorities. */
+  band_d_2026?: number;
   band_d_2025: number;
   band_d_2024: number | null;
   band_d_2023: number | null;

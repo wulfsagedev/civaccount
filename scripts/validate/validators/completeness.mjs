@@ -151,7 +151,21 @@ export function validate(councils, _population, report) {
     };
   }
 
-  // Regression detection — compare against previous run
+  // Regression detection — compare against previous run.
+  //
+  // INTENTIONAL_REMOVALS records fields that were deliberately removed
+  // from a council's data because their source could not be traced to a
+  // public document (per the integrity rule in PROVENANCE-INTEGRITY-
+  // PLAN.md). Each entry is `<council>|<field>`; matches are excluded
+  // from the regression check so the honest removal doesn't read as drift.
+  const INTENTIONAL_REMOVALS = new Set([
+    // 2026-04-21: Bradford staff_fte removed — no citable source on
+    // bradford.gov.uk for a total FTE figure. See
+    // pdfs/council-pdfs/bradford/statement-of-accounts-2024-25_meta.json
+    // fields_not_verified.staff_fte.
+    'Bradford|staff_fte',
+  ]);
+
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
   if (existsSync(previousPath)) {
     try {
@@ -168,7 +182,7 @@ export function validate(councils, _population, report) {
           KENT_FIELDS.map(([f]) => f).filter(f => !prevEntry.missing.includes(f))
         );
         for (const field of currEntry.missing) {
-          if (prevPresent.has(field)) {
+          if (prevPresent.has(field) && !INTENTIONAL_REMOVALS.has(`${c.name}|${field}`)) {
             report.finding(c, 'completeness', 'regression_field_lost', 'error',
               `Field "${field}" was present in previous run but is now missing`,
               field, 'missing', 'present (was present before)');

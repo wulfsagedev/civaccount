@@ -32,7 +32,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const RA_DIR = join(__dirname, '..', '..', '..', 'src', 'data', 'councils', 'pdfs', 'gov-uk-ra-data');
 const REPORTS_DIR = join(__dirname, '..', 'reports');
 
-const BAND_D_FIELDS = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'band_d_2025'];
+const BAND_D_FIELDS = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'band_d_2025', 'band_d_2026'];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

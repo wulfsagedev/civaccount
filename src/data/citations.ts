@@ -40,9 +40,9 @@ const NATIONAL_SOURCES: Record<string, NationalSource> = {
   'area-council-tax': {
     gov_uk_page: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
     publisher: 'MHCLG',
-    data_year: '2025-26',
+    data_year: '2026-27',
     parsed_csv: 'parsed-area-band-d.csv',
-    last_downloaded: '2026-04-13',
+    last_downloaded: '2026-04-21',
   },
   'council-tax-2025': {
     gov_uk_page: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',
