@@ -1,254 +1,398 @@
-# Provenance Integrity Plan
+# Provenance Integrity Plan — v3
 
-**Status:** Draft — written 2026-04-21 after the Bradford silent-404 incident.
+**Status:** v3 approved 2026-04-21. Execution started. No data stripped.
 **Owner:** Owen (hello@owenfisher.co — internal only, not for site).
-**Principle:** Every number on every page must link back to the exact source row it was scraped from. Zero exceptions.
+**Policy (set by Owen, 2026-04-21):**
+
+> Every single number on the app must trace back to a publicly-available `.gov.uk`, `.ons.gov.uk`, or open-government document. In a maximum of a few clicks from any number, the reader must see the document and identify the exact row, cell, or page the number was taken from.
+>
+> Zero hallucination. Zero estimation. Zero algorithmic gap-filling. Zero "reasonable guesses." If a number cannot satisfy the rule, it does not render.
+
+This plan takes that rule seriously and walks the whole app against it.
 
 ---
 
-## 1. Why this plan exists
+## 1. What "traceable in a few clicks" means
 
-Two incidents exposed that the current provenance system is a promise we can't keep:
+A number on the site passes the rule only if:
 
-**Incident A — silent-404 source links.** Clicking the "Bradford transparency data" link in the Turning Point supplier popover redirected to `bradford.gov.uk/page-not-found/`. The popover said "Council source" confidently; the page said "Page not found" confidently. A reader can't verify. Root cause: `provenance.ts` routed nationally-sourced data (Contracts Finder) to a council's own landing page.
+1. **There is a specific source document** — a CSV row, PDF page, spreadsheet cell, or OCDS JSON record — that contains the exact value we render (subject to unit/format conversion that is itself documented).
+2. **That document is on a `.gov.uk`, `ons.gov.uk`, or equivalent open-government host.** 360Giving CSVs published by councils qualify (publisher is a `.gov.uk` entity); GrantNav aggregations of unknown provenance do not. Contracts Finder qualifies as a host, but values are ceilings, not spend (see §5).
+3. **We archive the raw document** at scrape time so a later source-site change can't invalidate the trail.
+4. **The UI deep-links** to the document — ideally to the exact row (CSV fragment, PDF `#page=N`). A landing-page link doesn't pass.
+5. **The rule is enforced at build time.** Any value without a compliant citation blocks the deploy.
 
-**Incident B — wrong numbers with confident attribution.** Bradford's supplier table shows Turning Point at £234m/year. Turning Point's entire UK turnover is £150m. Ranks 2-4 are identically £169,105,566. Ranks 7-20 are identically £144,019,716 — fourteen suppliers with pound-identical values. Root cause: the parsing pipeline attributes each framework agreement's full ceiling value to every supplier on the framework, then double-counts across contract-notice revisions.
-
-Both incidents share the same deeper defect: **provenance is recorded at the field level, not the value level.** We say "suppliers come from Contracts Finder" (true in a loose sense) but we can't point at the specific contract-notice row that produced the £234,056,691 figure. When the number is wrong or the link dies, there's no way to repair from first principles — we can only rebuild the whole field.
-
-The remedy is per-value provenance: every leaf number in the dataset carries a `__source` object naming the raw file, the row, and the scrape date. The UI deep-links to that row. CI refuses to build if any number lacks it.
+Anything short of (1)–(5) is trust-breaking. We've already seen that readers notice and that "close enough" provenance isn't close enough.
 
 ---
 
-## 2. Current architecture and its gaps
+## 2. Full app-wide field audit (every rendered number)
 
-### What exists today
+Scope: 317 councils × 47 numeric/rendered fields = **12,814 field × council pairs**. Plus a handful of editorial / derived surfaces (KPI RAG colours, hero paragraph, etc.).
 
-- `src/data/provenance.ts` — field-path → `DataProvenance` map, with origin-based routing for ~30 fields. Fixed in 2026-04-21 (commit `f059484`).
-- `src/data/councils/**/*.ts` — compiled dataset. Most councils carry a `field_sources: { field_name: { url, title, accessed } }` block for ~5-6 council-specific fields (CEO salary, cabinet, allowances, salary bands, MTFS).
-- `scripts/validate/source-manifest.json` — canonical registry of 15 national GOV.UK source files with SHA-256 checksums, update cadence, and `fields_validated` lists.
-- `scripts/validate/audit-provenance.mjs` (new) — simulates `getProvenance()` per field × council, GET-checks every resolved URL, detects silent 404s via final-URL path patterns and body markers.
+Ratings used:
 
-### What's missing
+- **A.** National CSV/ODS exists with a row keyed on ONS code. Row-level citation achievable with known work.
+- **B.** Per-council PDF scrape. Page-level citation achievable if raw file preserved and page numbers recorded.
+- **C.** Aggregate/derived from multiple source rows. Needs row-list provenance.
+- **D.** Algorithmic or editorial (thresholds, categorisations, LLM-generated text). **Fails the rule unless removed or re-sourced.**
+- **E.** Unknown / suspected LLM-extracted. **Needs investigation before it can stay.**
 
-| Gap | Consequence |
+### 2.1 Category A — national datasets with row-level citations achievable
+
+Raw file present in `src/data/councils/pdfs/gov-uk-bulk-data/`. Row key is the ONS code unless noted.
+
+| Field(s) | Source (manifest id) | Raw file | Row key |
+|---|---|---|---|
+| `council_tax.band_d_2025` (and 2021-24 historical) | `area-council-tax` | `parsed-area-band-d.csv`, `Band_D_2026-27.ods` | ONS |
+| `budget.education`, `transport`, `childrens_social_care`, `adult_social_care`, `public_health`, `housing`, `cultural`, `environmental`, `planning`, `central_services`, `other`, `total_service` | `revenue-expenditure-part1` | `gov-uk-ra-data/RA_Part1_LA_Data.csv` | ONS + column |
+| `budget.net_current`, `detailed.reserves` | `revenue-expenditure-part2` | `RA_Part2_LA_Data.csv`, `parsed-reserves.csv` | ONS |
+| `population` | `ons-population-mid2024` | `parsed-population.csv` | ONS |
+| `detailed.waste_destinations`, `service_outcomes.waste.recycling_rate_percent` | `defra-waste-2022-23` | `parsed-waste.csv`, `defra-waste-2022-23.ods` | Waste authority |
+| `service_outcomes.roads.condition_good_percent` | `road-condition` | `parsed-road-condition.csv` | ONS |
+| `service_outcomes.roads.maintained_miles` | `road-length` | `parsed-road-length.csv` | ONS |
+| `service_outcomes.children_services.ofsted_rating` | `ofsted-childrens-services` | `parsed-ofsted.csv` | ONS |
+| `service_outcomes.housing.homes_built` | *(not yet in manifest)* | needs to be added | ONS |
+| `detailed.total_councillors` | `lgbce-councillors` | `parsed-lgbce-councillors.csv` | ONS |
+| `detailed.capital_programme` | `capital-expenditure` | `parsed-capital-expenditure.csv` | ONS |
+| `detailed.chief_executive_salary` | `ceo-salary` | `parsed-ceo-salary.csv` + individual Pay Policy PDFs | ONS (compiled) |
+
+**~29 fields across 317 councils = ~9,200 values achievable.** The work: carry the ONS-code row reference + source manifest id on each value, add a CSV-deeplink resolver to the UI.
+
+### 2.2 Category B — per-council PDFs (scrape-archive-cite)
+
+| Field(s) | Typical source per council | Current coverage |
+|---|---|---|
+| `detailed.salary_bands` | Statement of Accounts PDF (Note on employee emoluments) | variable; many councils have it |
+| `detailed.councillor_basic_allowance`, `total_allowances_cost`, `councillor_allowances_detail` | Members' Allowances Scheme PDF + Statement of Councillors Earnings PDF | variable |
+| `detailed.cabinet`, `council_leader`, `chief_executive` | Moderngov `mgMemberIndex` or council portfolio-holders page | ~150 via moderngov script |
+| `detailed.budget_gap`, `savings_target` | Medium Term Financial Strategy PDF | ~200 councils |
+| `detailed.service_spending` (sub-categories like "Learning Disability Services £77.8m") | Council budget book / revenue estimate PDF | varies |
+
+**~10 fields but each requires per-council PDF handling.** The work: for every extracted value, record `{pdf_url, page, extraction_method, extracted_at, raw_text_excerpt}`. Preserve the PDF in the private data repo so cite-links never rot. UI opens the PDF at `#page=N`.
+
+The extraction method matters. If a value was read by a human from the PDF, it's auditable. If it was LLM-extracted or regex-extracted, we need a re-verification step (a second independent read — ideally human spot-check of a random sample per data release).
+
+### 2.3 Category C — aggregates from payment ledgers
+
+| Field(s) | Source | Current state |
+|---|---|---|
+| `detailed.top_suppliers.annual_spend` | Should be: council's own spending-over-£500 CSV. Currently: Contracts Finder OCDS with broken aggregation. | 317 councils have values; all structurally unsound. |
+| `detailed.grant_payments` | Mix: 9 verified (360Giving + spending CSVs). 304 came from `/tmp/grants-batch-*.csv` files no longer in the repo. | 9 verified, 304 unverified. |
+
+**These are aggregate values** (sum of N payments to the same supplier / recipient). For the rule to pass:
+
+- We need the raw payment ledger (.csv from the council, hosted on `.gov.uk`) archived at scrape time.
+- The aggregate's provenance must list every contributing row `{row_index, amount, date, description}`.
+- The UI must let the reader open the aggregate and see all contributing rows → click any row to jump to the original source column.
+
+Current coverage of council spending CSVs: **30 of 317**. Current coverage of 360Giving files: **4 files** (Birmingham, Camden, Trafford `birmingham-grants.xlsx`, `camden-grants.csv`, and two national aggregate files).
+
+### 2.4 Category D — algorithmic / editorial (fail the rule as-is)
+
+These surfaces exist today and do not trace to a source document:
+
+| Surface | Why it fails |
 |---|---|
-| Per-value `__source` metadata | Can't deep-link `£234,056,691` to the specific OCDS award row. |
-| Raw-row citations for aggregates | "£234m from 12 payments" should list all 12 rows with dates. Currently we show only the sum. |
-| Source-file preservation | If Contracts Finder changes its URL or removes a notice, we can't show the reader what we *saw* at scrape time. |
-| CI gate on provenance | A new field can ship without any source URL — or with a silent-404 URL — and nothing blocks it. |
-| Derivation audit trail | `per_capita_spend = budget / population` — which budget? Which population? No trace. |
-| Extraction-time verification | When we scrape a PDF for CEO salary, no one re-reads the PDF to confirm the value. |
+| `performance_kpis` status (red/amber/green) | Thresholds invented by CivAccount (e.g. ≥50% recycling = green). No government source defines these cutoffs. Derived in [scripts/enrich-kpis-derived.py](V3.0/scripts/enrich-kpis-derived.py). |
+| Supplier `description` text ("Summary written by CivAccount based on published contract details") | Self-labelled editorial. Currently tagged `label: 'editorial'` but still user-visible text without source-row backing. |
+| Grant `purpose` / `description` text (some entries) | For 9 allowlisted councils this is the purpose column from the source CSV. For the other 304 it came from `/tmp/grants-batch-*.csv` which we can't trace. |
+| Dashboard hero paragraph ("Bradford Council is a metropolitan district serving 546,200 residents. In 2025-26 …") | Template-generated from other fields. The *components* are sourced, but the generated prose is CivAccount. |
+| Cabinet member `portfolio` summaries (e.g. "Leader of Council and corporate portfolio") | If extracted from moderngov pages verbatim, fine. If paraphrased/LLM-summarised, fails. Needs per-record extraction-method audit. |
+| `tax_bands` (A-H rates computed from Band D × statutory ratios) | The ratios are statutory (VOA). Derivation is transparent. Passes if we link to the VOA ratios table AND to the source Band D value. |
+| `per_capita_spend`, `per_capita_council_tax`, `vs_average`, `council_tax_shares`, `council_tax_increase_percent` | Transparent derivations from sourced components. Pass if the derivation and both inputs are cited. |
+
+The RAG colours and the hero paragraph are the hardest calls. Two options for each:
+
+- **Delete them.** KPIs become a plain list of metric + value + date, no colour. Hero paragraph becomes a data panel of sourced facts, not prose.
+- **Replace with a statutory/published rating.** Ofsted already gives a rating; recycling rate has no government-set target at authority level, so we can't replace it with an official RAG and should just drop the colour.
+
+Recommendation: **delete both.** They're opinionated framing that can't be substantiated from source, and the user asked for zero algorithmic judgment.
+
+### 2.5 Category E — needs investigation before keeping
+
+Flagged as suspect based on audit. Each blocks shipping any new work until resolved.
+
+| Field | Concern | Action |
+|---|---|---|
+| `detailed.staff_fte` | `parsed-workforce.csv` exists with per-council FTE (e.g. Bradford 8168). QPSES / ONS Public Sector Personnel publishes at the regional level; no national per-council FTE file that I've traced. The parse script that produced this CSV isn't in the repo. Could be extracted from individual council statements of accounts, could be LLA, could be something else. | Trace the CSV's origin. If the per-council values were derived (regional share / ONS code weighting), that's algorithmic and fails. If they were scraped from each council's own Statement of Accounts (employee note), they're Category B and we wire page citations. |
+| `detailed.top_suppliers.description` (editorial) | LLM/rule-generated from `tender_title`. The label warns it's editorial; it's still rendered text. | Remove the description field (or keep it on a verified per-council basis with the source `tender_title` row cited). |
+| Cabinet `portfolio` strings (descriptive) | Are these verbatim from the moderngov page or LLM-summaries? | Sample 20 random councils; diff against current moderngov pages. Re-scrape if divergent. |
+| Grant `purpose` strings for the 304 unverified councils | Unknown origin. | These go regardless when we strip to the allowlist. |
 
 ---
 
-## 3. The integrity contract
+## 3. The architecture: per-value citations
 
-Every value rendered on civaccount.co.uk must satisfy all five of these, or it must not render:
-
-1. **Origin-named.** The national-dataset ID (e.g. `revenue-outturn-2024-25`) OR the council-page URL is recorded on the value itself.
-2. **Row-located.** For tabular data, the row index / CSV filename / OCID is recorded. For PDFs, the page number.
-3. **Fetched-at dated.** ISO date the raw file was downloaded.
-4. **Verifiable from source.** A reader can follow the recorded URL and find the same number (modulo row-level deep-linking where possible).
-5. **Accurate.** The number matches the source — i.e. no pipeline aggregation bug has inflated or duplicated it.
-
-The current dataset fails **(1)** partially, **(2)** everywhere, **(3)** partially, **(4)** for ~10% of (field × council) pairs (the audit's broken-link count), and **(5)** for supplier rows and almost-certainly some subset of others we haven't yet verified.
-
----
-
-## 4. Architecture: per-value `__source`
-
-### Type shape
-
-Extend the `Council` model so every leaf value is wrapped with provenance metadata:
+### 3.1 `Citation` type (replaces `DataProvenance`)
 
 ```ts
-// Lives alongside the value, not replaces it.
-// Fields that are leaf numbers keep a parallel `__source` entry with the
-// same dotted key path. This keeps the render path unchanged — it just
-// reads `supplier.annual_spend` — and lets SourceAnnotation look up
-// `supplier.__source.annual_spend` to find the row-level citation.
-interface ValueSource {
-  // Which dataset did this come from?
-  dataset_id: string;          // e.g. 'revenue-outturn-2024-25' | 'bradford-spending-2024-q3'
-  // URL a reader can open to start verifying
-  source_url: string;          // Direct link; deep-linked to row where possible
-  // Where in the source file
-  source_file?: string;        // Local path in the repo, if the raw file is archived
-  row?: string | number;       // Row index, OCID, ONS code — whatever identifies the row
-  column?: string;             // Column name when it disambiguates
-  page?: number;               // PDF page
-  // When
-  fetched: string;             // ISO date of original scrape
-  // Derivation (for computed / aggregated values)
-  derivation?: 'direct' | 'sum' | 'max' | 'ratio' | 'difference' | 'filter';
-  derivation_notes?: string;   // e.g. 'Sum of 12 payments with supplier="Turning Point"'
-  source_rows?: Array<{        // For aggregates — the raw contributing rows
-    row: string | number;
-    amount?: number;
-    date?: string;
-  }>;
+export interface Citation {
+  /** Stable ID from source-manifest.json. Identifies which dataset / scrape cycle this came from. */
+  dataset_id: string;
+
+  /** Document URL on .gov.uk / ons / opengov — the thing the reader opens. */
+  source_url: string;
+
+  /** Local archive path (private repo) — used when source_url goes 404 and as the ground-truth artefact. */
+  archive_path?: string;
+
+  /** Where inside the document. Choose one shape: */
+  locator:
+    | { kind: 'csv_row'; file: string; row: number; column: string }
+    | { kind: 'csv_filter'; file: string; filter: Record<string, string>; column: string }
+    | { kind: 'pdf_page'; page: number; excerpt?: string }
+    | { kind: 'ocds_award'; ocid: string; award_id: string }
+    | { kind: 'html_selector'; selector: string; text_excerpt: string };
+
+  /** When the source was last fetched. ISO date. */
+  fetched: string;
+
+  /** For aggregates, how the final value was produced. */
+  derivation?: {
+    method: 'sum' | 'max' | 'count' | 'ratio' | 'statutory_multiplier';
+    inputs: Citation[];
+    notes?: string;       // e.g. "Sum of grant payments where Recipient = 'Anchor Project'"
+  };
+
+  /** Extraction method — how confident we are in the value match. */
+  extraction: 'exact_cell' | 'pdf_text' | 'pdf_ocr' | 'human_review' | 'regex';
+
+  /** When extraction involves ambiguity, the human-verified-at date. */
+  verified_at?: string;
 }
 ```
 
-### How it surfaces in the UI
+### 3.2 Where citations live
 
-- Hover / tap a number → popover shows the source title and data year (unchanged from today).
-- "See the source" button → opens the deep URL and, for aggregates, expands an inline list of the contributing rows with dates and amounts.
-- For PDF sources → the link opens the PDF at the correct page via `#page=N` fragment.
+- **Category A (national CSVs):** citations computed at build time from source-manifest.json. Every value carries the manifest id + ONS code + column name. UI resolves to a CSV-download link with an anchor-highlight for the row.
+- **Category B (PDFs):** citations hand-written per council per field. Stored on the council record, shape `citation: Citation`. The PDF is archived alongside the record. UI opens `source_url#page=N`.
+- **Category C (aggregates):** citation's `derivation.inputs` lists each row citation. UI expands the aggregate to show all contributing rows, each with its own deep link.
 
-### How it's enforced
+### 3.3 UI surfaces
 
-- `src/data/councils.ts` `Council` interface gets a `__source` parallel tree (compile-time required for every known-leaf key).
-- `npm run validate` (`scripts/validate/validate.mjs`) gains a `provenance-coverage` validator: for every rendered field, assert `__source` exists and passes audit-provenance.mjs. Missing or broken URL = build error.
-- Deployment: Vercel build calls `npm run validate && npm run build`. Validation failure blocks the deploy.
+- Popover (existing) → shows dataset title, year, extraction method. Adds "Open source document" (existing) and "See the exact row/page" (new).
+- Aggregate click → inline expansion listing every source row. Deep-links per row.
+- Source-archive fallback: if a `source_url` fails (silent 404 detection already shipped), UI shows "Original page moved — see archived copy from [fetched]" pointing to Wayback Machine capture.
 
----
+### 3.4 Build-time enforcement
 
-## 5. The supplier data problem (specific fix)
+`npm run validate` adds a `provenance-strict` validator:
 
-### What's wrong
+1. For every rendered field (as defined by a new `src/data/renderable-fields.ts` manifest), every council that has that field must have a compliant `citation`.
+2. Citation URLs must resolve — reuses `audit-provenance.mjs` logic (including silent-404 detection).
+3. If a citation has `derivation`, every input citation must itself be valid.
+4. `extraction: 'pdf_ocr'` or `'regex'` requires `verified_at` within the last N months.
+5. Missing, broken, or stale citation = validation error → deploy blocked.
 
-Contracts Finder OCDS is a **contract-award register**, not a payment ledger. Its `value.amount` is the contract ceiling — the maximum the council might spend over the full term, across all suppliers if it's a framework. That's structurally unsuitable for "who the council pays, annually."
-
-The current pipeline (`scripts/parse-contracts-finder.py`) makes three compounding mistakes:
-
-1. It treats the framework ceiling as the annual value per supplier (splits by term years only, not by supplier count).
-2. It double-counts across revisions: the same framework's notice is re-published every few months with a new OCID; the parser sums all revisions instead of deduplicating by `related_process_id` or contract-period.
-3. It runs the same logic for 2024 and 2025 Contracts Finder dumps and sums — so revisions that span both years count twice.
-
-Together, a £180m five-year framework shared by 14 providers shows as £144m per supplier, per year.
-
-### Fix
-
-**Stop using Contracts Finder for "annual spend."** Use it only for discovery (which suppliers hold live contracts), not for magnitude. For actual spend amounts, use the council's own spending-over-£500 transparency publication.
-
-Status of spending-CSV coverage as of 2026-04-21:
-- 30 / 317 councils have a scraped spending CSV in `src/data/councils/pdfs/spending-csvs/`.
-- The remaining 287 need their spending-over-£500 URL identified and scraped.
-
-Two-stage rollout:
-- **Phase 2a:** For the 30 covered councils, re-run supplier aggregation off the spending CSV (same source grants already use). Replace `top_suppliers` in those councils.
-- **Phase 2b:** For the other 287, hide the "Who the council pays" section entirely. Replace with a DataGapNotice linking to that council's spending-over-£500 page (discovered via `scripts/discover-spending-csvs.py`). Do **not** show Contracts Finder-derived numbers.
-
-Between Phase 2a and Phase 2b, the "Supplier values under review" notice that landed in `f059484` stays up as the honest interim state.
+Pre-deploy: `npm run validate && npm run build`. Any failure blocks Vercel.
 
 ---
 
-## 6. Per-field integrity status (current)
+## 4. Edge cases
 
-Quick triage of every rendered field. "Trust" = confidence the rendered value matches the source row.
+Exhaustive pass. One-liner per case unless it needs detail.
 
-| Field | Source | Trust | Issue |
-|---|---|---|---|
-| `council_tax.band_d_*` | MHCLG live-tables-on-council-tax | High | Source-truth validator compares each row exactly. |
-| `budget.*` | GOV.UK RA Part 1 (2024-25) | High | Spot-check tolerance 0.10; spot-check validator runs in CI. |
-| `budget.net_current`, `reserves` | GOV.UK RA Part 2 | High | Same. |
-| `population` | ONS mid-2024 estimates | High | Exact-match CSV. |
-| `detailed.reserves`, `detailed.capital_programme`, `detailed.salary_bands` | Council Statement of Accounts PDF | **Medium** | Scraped from PDFs; no per-row proof of the number on the page. |
-| `detailed.chief_executive_salary`, `total_remuneration` | Council Pay Policy Statement PDF | **Medium** | Same — PDF scrape, no on-page verification artefact. |
-| `detailed.cabinet`, `council_leader` | Council portfolio-holders page | **Medium** | Names go stale between election cycles; no re-check cadence below per-year. |
-| `detailed.councillor_basic_allowance`, `councillor_allowances_detail`, `total_allowances_cost` | Members' Allowances Scheme (council) | **Medium** | PDF scrape. |
-| `detailed.budget_gap`, `savings_target` | Medium Term Financial Strategy (council) | **Medium** | Bespoke PDF extraction per council. |
-| `detailed.waste_destinations`, `service_outcomes.waste.recycling_rate_percent` | DEFRA ENV18 | High | Exact-match. |
-| `service_outcomes.roads.*` | DfT RDC / RDL | High | Exact-match. |
-| `service_outcomes.children_services.ofsted_rating` | Ofsted inspection data | High | Exact-match. |
-| `service_outcomes.housing.homes_built` | MHCLG housing supply | High | Exact-match. |
-| `detailed.total_councillors` | LGBCE electoral data | High | Exact-match. |
-| `detailed.staff_fte` | ONS PSE reference (fixed 2026-04-21) | **Medium** | The ONS table is regional, not per-council — current per-council FTE may be a derivation we need to audit. |
-| `detailed.top_suppliers.*` | Contracts Finder OCDS | **BROKEN** | See §5. Pipeline bug. |
-| `detailed.grant_payments` | 360Giving + spending CSVs | **Medium** | Correct-ish for the ~30 councils with grant data scraped; aggregation matches source rows but no row-level citation. |
-| `detailed.service_spending` | GOV.UK RA Part 1 (categorised) | **Medium** | Categories are derived aggregations of finer-grain rows. |
-| Computed (tax bands, per-capita, vs-average) | Derived | High (logic) | Derivation notes missing from provenance. |
+### 4.1 Source document lifecycle
+1. **Source URL goes 404.** → Fallback to archived copy. Surface "source removed" badge. Show Wayback link.
+2. **Source URL returns 200 but content is a generic 404 page** (silent 404). → Treat as 404. Same fallback. (Detector already shipped in `link-check.mjs`.)
+3. **Source URL redirects chain.** → Cite the final URL, not the original. Store both.
+4. **Source document updated with a correction** (e.g. MHCLG issues an amended RA release). → New dataset version in `source-manifest.json`. Existing values stay attributed to their original version; rebuild when new data enrichment runs.
+5. **Council removes a PDF from its public site.** → Use archive. Open-data licence (OGL) permits re-hosting; private repo already stores.
+6. **Council site blocks crawlers** (403 moderngov / Cloudflare). → The URL still works in a reader's browser; our checker flags but marks "reader-accessible, bot-blocked" separately so we don't show "broken" incorrectly.
 
----
+### 4.2 Identity and naming
+7. **Council name changes / reorganisation** (North Yorkshire UA replacing NY county + 7 districts 2023). → ONS codes are the stable key. Every citation joins on ONS code, never council name.
+8. **Aliased supplier/buyer names in OCDS** (e.g. "City of Bradford Metropolitan District Council" vs "Bradford Council"). → Normalise at scrape time with the existing alias table; record both raw and normalised in the archive.
+9. **Recipient-name variation across grants CSVs** (e.g. "St John's Ambulance" vs "St John Ambulance"). → Don't consolidate variants unless the council's own publication did so. The aggregate's `derivation.notes` explains any de-duplication applied.
 
-## 7. Rollout phases
+### 4.3 Numeric / format conversions
+10. **Thousands vs units** (budget figures stored as thousands but displayed as millions). → Conversion is transparent; citation cites the source cell's unit; UI formats from that.
+11. **Currency rounding** (source is £1,234,567.89; we render £1.2m). → Explicit formatter rules. Raw value always queryable.
+12. **Percentages** computed from two cells (e.g. council tax share = their band_d / total). → Derivation citation lists both inputs.
+13. **Negative values** (e.g. parking services -£3.3m net revenue). → Display signed; tooltip explains "income exceeds expenditure."
+14. **Redacted rows in spending CSVs** (e.g. "REDACTED" in supplier name). → Excluded from aggregation; aggregate's derivation includes `redacted_rows_excluded: N` and links to the raw file so the reader can reconcile.
 
-Each phase ends at a commit + the audit run confirms coverage moved forward.
+### 4.4 Data freshness
+15. **Data year rolls over** (2024-25 RA dropped, 2025-26 published). → Re-scrape on the manifest's cadence. Stale values get a "Data from [year], refreshed [date]" indicator.
+16. **Historical series** (council tax back to 2021-22). → Each year is its own citation. Never one blanket "historical data" citation.
+17. **Mid-year data** (ONS population mid-2024 represents June 2024). → Citation's data_year field preserves this.
+18. **Cabinet reshuffles / CEO changes** between scrapes. → `verified_at` + max staleness policy. Flagged when overdue.
 
-### Phase 1 — Silent-404 + routing hygiene (**done 2026-04-21**)
-- Origin-based routing in `provenance.ts`.
-- Silent-404 detection in link-check and audit-provenance.
-- Bradford URLs unstuck; workforce national URL moved to ONS.
-- Supplier values flagged in UI.
-- Commits: `f059484` (public), `708578b` (data repo).
+### 4.5 Derivation / computation
+19. **Statutory-multiplier derivations** (Band A = Band D × 6/9 etc.). → Derivation cites the VOA table as a secondary source; primary citation is the Band D value.
+20. **Per-capita ratios.** → Derivation lists both inputs; both must themselves be cited.
+21. **Summed aggregates.** → Every input row cited. Sum is transparent.
+22. **Max / largest-of aggregates.** → Cited the same as sums, with `method: 'max'`.
+23. **Count aggregates** (e.g. "12 payments"). → Just count; cite the filter used.
+24. **"Compared to average"** comparisons. → Cite both the council's value and the computed average, including the source rows feeding the average.
+25. **Year-over-year change** ("up 9.3% from last year"). → Cite both year's values. Derivation is ratio.
 
-### Phase 2 — Kill the broken supplier pipeline
-- Delete `top_suppliers` from the 287 uncovered councils. (This *removes numbers from the site*. Non-reversible without re-scraping — worth the trust gain.)
-- For the 30 covered councils, re-derive `top_suppliers` from the scraped spending CSV.
-- Replace `enrich-top-suppliers.py` with a spending-CSV-backed variant in the private repo. The old script gets a deprecation banner and is deleted after Phase 2a.
-- UI: the interim "Supplier values under review" notice becomes a "Not yet published for this council" DataGapNotice for the 287.
-- Exit criterion: `audit-provenance.mjs --fields=detailed.top_suppliers.annual_spend` shows 30 resolved, 287 not-present (no `_has.top_suppliers` flag).
+### 4.6 Extraction method risk
+26. **Human-read PDFs.** → Trust: high. `extraction: 'human_review'`.
+27. **Plain-text PDF parse** (`pdftotext`). → Trust: high for native PDFs. `extraction: 'pdf_text'`.
+28. **OCR'd PDFs** (image-only scans). → Trust: medium. `extraction: 'pdf_ocr'` + `verified_at` required.
+29. **LLM-extracted values.** → **Not permitted as a sole source.** Allowed only as a first-pass that a human then verifies; recorded as `extraction: 'human_review'` with the LLM as a tool note.
+30. **Regex-extracted from HTML.** → `extraction: 'regex'` + `verified_at`. Re-scrape validates the selector still matches.
 
-### Phase 3 — Per-value `__source` for all numeric fields
-- Extend the `Council` type with a parallel `__source` tree.
-- Migrate one category at a time, in this order (cheapest first):
-  1. Council tax (single CSV, per-ONS-code row index — trivial).
-  2. Budget (RA_Part1 / RA_Part2 — row = ONS code, column = category).
-  3. Service outcomes (DEFRA, DfT, Ofsted, LGBCE — same shape).
-  4. Reserves, capital, salary bands (accounts PDF — add `page`).
-  5. CEO salary, allowances (pay policy PDF).
-  6. Cabinet (page URL + name-string location on page).
-  7. Service spending and grants (aggregates — need `source_rows`).
-  8. Suppliers (aggregates — Phase 2 output).
-- Each migration ships behind a `CIVACCOUNT_ENFORCE_SOURCE=<field>` env flag that, when set, blocks render of values lacking `__source`. Rollout flag by flag.
-- CI gains `validators/provenance-coverage.mjs` that tracks the % of rendered values with compliant `__source` and blocks PRs that drop the number.
+### 4.7 Disagreeing sources
+31. **Two sources with different values** (e.g. CEO salary: Pay Policy PDF £190k vs a newspaper reporting £205k). → Cite the primary (Pay Policy). Do not average. Do not publish the contested figure in the app; readers can check the primary themselves.
+32. **Council corrects its own publication after scrape.** → On next scrape, re-verify against the new version; note the change in a changelog.
 
-### Phase 4 — Row-level UI
-- `SourceAnnotation` gains an expanded state showing `source_rows` when an aggregate is clicked.
-- For PDF sources, open at `#page=N`.
-- "Copy permalink" action that includes the `__source` in the URL so anyone can verify without reconstructing the chain.
-- If the source URL is broken (by the time of click), fall back to a Wayback Machine snapshot captured at `fetched`.
+### 4.8 Missing data
+33. **Field unavailable for a council.** → Do not impute, do not fall back to averages, do not substitute similar councils' values. Render "Not published by this council" with a link to the council's transparency page so the reader can verify absence.
+34. **Partial data** (e.g. some budget categories filled, others not). → Show filled categories only. Don't show a total that includes assumed zeros.
 
-### Phase 5 — Continuous integrity
-- Nightly cron: `audit-provenance.mjs` runs against live URLs; any new silent-404 → GitHub issue.
-- Freshness: any source whose `fetched` is past its `next_expected_update` gets a "stale" badge on the relevant dashboard tile.
-- User-facing "Report incorrect data" feedback is already wired (via the `open-feedback` CustomEvent in `source-annotation.tsx`). Route submissions to a triage queue tagged with the `__source` so corrections are actionable.
+### 4.9 User corrections
+35. **Reader reports a wrong number.** → Already wired via the `open-feedback` event. Every report includes the current citation; triage decides whether the source is wrong, our extraction is wrong, or the reader is wrong.
+36. **Council publishes an erratum.** → Treat as source update (case 4).
 
----
+### 4.10 Edge cases in the data itself
+37. **Framework agreements.** → Contract ceilings, not spend. Use only for discovery; don't render as annual spend. (The Bradford bug in detail.)
+38. **Multi-authority precepts** (e.g. West Yorkshire Combined Authority precept inside Bradford's Band D). → Cite each precept separately with its issuing authority.
+39. **Parish precepts** (district councils collect on behalf of town councils). → Separate citation per parish; aggregated to district totals with full provenance.
+40. **Shared services** (e.g. Adur & Worthing run one council). → Cited on both councils' pages with a note explaining the shared-service arrangement.
+41. **Services provided by upper-tier authority** (districts don't collect waste disposal; county does). → Don't attribute to the district.
 
-## 8. Edge cases to get right
+### 4.11 Licensing / redistribution
+42. **OGL licensing.** → All listed `.gov.uk` sources are OGL-compatible; we can re-host archives. Confirm per-source in a registry entry.
+43. **Third-party publishers** (e.g. moderngov.co.uk hosts council democracy portals). → Hosting platform isn't `.gov.uk` but the publisher is. Treat as compliant if the publishing council is on `.gov.uk`.
+44. **GrantNav / 360Giving federated.** → Only accept data where the publisher is a council. Reject aggregator-only records with no council-side publication.
 
-| Edge case | Handling |
-|---|---|
-| **Framework agreements** (the Bradford bug) | Don't derive per-supplier spend from contract ceilings. Use payment ledgers. If a framework is referenced in a payment row, attribute to the actual payee, not to all framework members. |
-| **Multi-source fields** (e.g. CEO salary: pay policy PDF vs LGA workforce return) | Pick one canonical per field; record it in `source-manifest.json`. Secondary sources annotate the primary, they don't compete. |
-| **Retired source URLs** | On 404/silent-404 detection, the `__source.source_url` gets a Wayback Machine fallback URL generated from `fetched` date. UI link becomes "Archived copy (source page removed)." |
-| **Bot-blocked sources** (moderngov 403s) | Those aren't broken for real users — they just reject our user-agent. Track separately as "verified by human, not by crawler." Don't show "broken" badge. |
-| **Computed values** (per-capita, vs-average) | `derivation: 'ratio'` with `derivation_notes: 'budget.total_service / population'`. The popover explains the calculation and links to both component values' sources. |
-| **Redacted data** (personal info in spending CSVs, e.g. "REDACTED") | Those rows are dropped at scrape time, not displayed. The aggregate's `source_rows` count excludes them; add `redacted_rows_excluded: N` so the number is reconcilable with the raw file. |
-| **Council name mismatches** across sources | Single normalisation layer (`scripts/validate/lib/normalize.mjs`) keyed on ONS code, not name. Every source file gets an ONS-code column added at scrape time. |
-| **Historical values** (2021-22 council tax) | Each historical series has its own `__source` entry per year, not one blanket "historical data" label. |
-| **Per-row corrections from users** | Received via the feedback flow → human triage → either a `field_sources` override (if our data is wrong) or a source-truth annotation (if the council's own publication is what's wrong). |
-| **PDF tables that re-flow** between years | Annual scrape validates structure before extracting; if columns moved, the run fails and flags for human review rather than guessing. |
-| **Data that simply doesn't exist for a council** | Don't substitute a "reasonable" value — render a DataGapNotice with the council's transparency URL so the user can verify absence themselves. |
+### 4.12 Performance / operational
+45. **Scrape-time snapshots are large.** → Private data repo already holds these; keep a rolling 3-year window; older snapshots live in Wayback Machine only.
+46. **Scrape reliability** (site down during nightly scrape). → Retry; flag stale after N failures.
+47. **Crawl politeness.** → Respect robots.txt, rate-limit, include contact in User-Agent. Already applied in link-check.
 
 ---
 
-## 9. Non-goals
+## 5. Applying the rule today — the v3 approach: keep data, show validation status
 
-- **Real-time sourcing.** Council pages don't have stable APIs; we scrape on a cadence. The `fetched` date is the contract, not "live."
-- **Reproducing entire PDFs in-browser.** Source links open the council's PDF; we don't re-host PDFs unless the source site takes one down (then the archived copy serves).
-- **Resolving disagreements between official sources.** If MHCLG RA and the council's own accounts disagree on a number, we publish both and cite both. We don't arbitrate.
+**Decision (Owen, 2026-04-21):** Nothing gets stripped. Instead, every field that fails the traceability rule today carries a visible "Data validation in progress" notice next to it. The number stays visible (so SEO / GEO content isn't gutted and the reader still gets directional signal) but the notice makes the verification state legible and points at the source document so the reader can spot-check themselves.
+
+### 5.1 `DataValidationNotice` component (shared primitive)
+
+One component, consistent wording, wired wherever an unverified field renders.
+
+```tsx
+<DataValidationNotice
+  variant="in-progress"            // 'in-progress' | 'suspended' | 'editorial'
+  title="Data validation in progress"
+  body="Supplier values currently come from Contracts Finder, a .gov.uk register of contract awards (ceilings, not payments). We're rebuilding from each council's spending-over-£500 publication — the number below is the Contracts Finder figure and you can open the source to verify it there."
+  sourceUrl={…}                    // optional, per context
+  policyHref="/data-validation"    // always
+/>
+```
+
+Appears on:
+- Suppliers card (all 317 councils — entire `top_suppliers` section).
+- Grants card, above the list, for the 304 councils without an allowlisted raw file. The 9 allowlisted councils get either no notice or a quieter "Sourced from 360Giving (council-published)" affirmation.
+- `staff_fte` KPI — until its build path is traced (§2.5).
+- Any `extraction: 'pdf_ocr' | 'regex'` value that hasn't been human-verified in the last N months (when Phase 4 ships).
+
+### 5.2 Removed now (editorial that can't be sourced)
+
+- `performance_kpis` RAG colour (the red/amber/green dot). Keep the metric, value, date. Replace the colour with a sourced comparator where one exists (e.g. "31% recycled — national average 43%").
+
+### 5.3 Hero paragraph — keep, cite every number, label honestly
+
+The hero paragraph carries SEO + GEO weight (2026 baseline). It stays. Treatment:
+- Every number inside the paragraph becomes a `SourceAnnotation` click-through.
+- Label the paragraph "Generated summary of the sourced facts below" so readers know the prose was template-assembled from the cited components.
+
+### 5.4 Descriptive fields — keep verbatim + tooltip explainer
+
+Cabinet `portfolio` strings, grant `purpose` strings, supplier categories, waste destination type labels, etc. Keep **only when verbatim** from the source page. Each one gets a tooltip:
+
+> "Copied verbatim from [source name]. CivAccount does not summarise."
+
+Where a field is paraphrased or LLM-summarised, rewrite to use the source's exact text or remove the field. Per-field audit required before Phase 4 closes.
+
+### 5.5 Public source archive — `civaccount-source-archive`
+
+New public repo that mirrors the private `civaccount-data/pdfs/` tree as an append-only archive of raw scraped documents. Readers can verify any citation without needing the private dataset. Every archive entry links back to its live source URL and records the `fetched` date.
+
+README of that repo acknowledges automation: "These files were retrieved by automated scrapers. CivAccount samples and manually verifies values; any discrepancy between this archive and the live source should be reported."
+
+### 5.6 `/data-validation` page
+
+New route on the main app. Explains:
+- The rule (reproduced from this plan).
+- The process (scrape → archive → extract → human sample → render with citation).
+- The source-archive repo link.
+- A live status table: per field, what's verified, what's in progress, what's editorial.
+- Link to `audit-provenance.mjs` output so the technical reader can run the audit themselves.
+
+Linked from the site footer and from every `DataValidationNotice`.
 
 ---
 
-## 10. Open questions
+## 6. Rollout (every step blocks on approval)
 
-- Do we deep-link to Wayback Machine by default, or only on source 404? (Current: only on failure — default to live so readers get current context.)
-- Do we show the raw-source row count on every aggregate, or only on click? (Current proposal: only on click, to avoid clutter for Owen's primary 70+ mobile audience.)
-- How long do we keep archived raw files in the private repo? (Proposal: rolling 3-year window; older snapshots live in Wayback only.)
-- Who can submit corrections that auto-apply vs that sit in the triage queue? (Proposal: all submissions go through triage; there's no auto-apply path.)
+No phase starts until you say so. Each phase ends at a commit and an audit report; the next phase doesn't start until the audit is green.
+
+**Phase 0 — v3 plan approved 2026-04-21.** Decisions locked.
+
+**Phase 1 (this session) — Validation notices + editorial cleanups. No data stripped.**
+- Build shared `DataValidationNotice` component.
+- Wire into suppliers card (all 317 councils).
+- Wire into grants card (visibly different tone for 304 unverified vs 9 verified).
+- Wire into staff_fte display.
+- Drop RAG colours from `performance_kpis`; keep number + period + sourced comparator.
+- Hero paragraph: cite every number; label "Generated summary of the sourced facts below".
+- Verbatim-tooltip on cabinet portfolios, grant purposes, waste labels.
+- Build `/data-validation` page.
+- Set up public `civaccount-source-archive` repo scaffold.
+- Commit per milestone; verify in preview each time.
+
+**Phase 2 — Type system + build gate.**
+- Add `Citation` type.
+- Add `renderable-fields.ts` manifest.
+- Add `provenance-strict` validator (opt-in at first, via env flag).
+- Output: scope report — for every (field × council), does a compliant citation exist today? What's missing?
+
+**Phase 3 — Wire Category A citations (row-level CSV).**
+- For each of the ~29 national-CSV-backed fields, add `Citation` with ONS code + column.
+- Build a CSV-row resolver UI ("See row for [ONS code] in this CSV").
+- Turn on `provenance-strict` for Category A fields.
+
+**Phase 4 — Wire Category B citations (per-council PDFs).**
+- Archive every already-scraped PDF to the public source-archive repo.
+- Per field per council, record page number + extraction method + verified_at.
+- Sample human-verify at least 5% of PDFs per release.
+- Turn on `provenance-strict` for Category B fields.
+
+**Phase 5 — Rebuild Category C (aggregates from payment ledgers).**
+- Investigate `staff_fte` provenance (§2.5); either keep with real citations or remove.
+- Scale the spending-CSV scrape from 30 councils to all 317. Bespoke per CMS; longest phase.
+- Rebuild `top_suppliers` and `grant_payments` from the scraped ledgers.
+- Each aggregate carries its full input-row list as derivation inputs.
+- Turn on `provenance-strict` for Category C fields.
+- At that point `DataValidationNotice` can be retired from the verified fields.
+
+**Phase 6 — Continuous integrity.**
+- Nightly audit (existing `audit-provenance.mjs` runs on schedule).
+- Staleness indicators on rendered values.
+- User-report flow feeds triage.
+- Freshness promise in docs: "We re-verify every value on its source's publication cadence. We show a staleness badge when we're overdue."
 
 ---
 
-## 11. Immediate next actions
+## 7. Decisions locked 2026-04-21 (Owen)
 
-Ordered. Top item is most concrete.
+1. **`top_suppliers`:** keep visible; show `DataValidationNotice` on the whole section.
+2. **`grant_payments` for 304 unverified councils:** keep visible; show `DataValidationNotice`. The 9 verified get a quieter affirmation.
+3. **`performance_kpis` RAG colours:** **drop** the coloured dot. Keep metric + value + date + sourced comparator (e.g. national average).
+4. **Hero paragraph:** **keep** (SEO/GEO weight). Cite every number; label paragraph "Generated summary of the sourced facts below".
+5. **`staff_fte`:** keep visible; show `DataValidationNotice` until the build path is traced.
+6. **Descriptive fields:** keep verbatim; add tooltip "Copied verbatim from [source name]. CivAccount does not summarise." Per-field audit still required to confirm verbatim.
+7. **Public archive repo (`civaccount-source-archive`):** yes, set up in Phase 1. Readme acknowledges automation and invites discrepancy reports.
 
-1. **Replace `top_suppliers` for the 287 uncovered councils with a DataGapNotice.** (No numbers is better than wrong numbers. Covered by Phase 2b.)
-2. **Audit `detailed.staff_fte` values against the ONS PSE table** to confirm the per-council FTE is a defensible derivation, not a guess.
-3. **Write `scripts/validate/validators/provenance-coverage.mjs`** that computes the percentage of rendered values with compliant `__source` and wires it into `npm run validate`.
-4. **Spec the `ValueSource` type in `src/data/councils.ts`** and migrate `council_tax.band_d_*` as the proving-ground migration (trivial source — CSV row by ONS code).
-5. **Extend `SourceAnnotation` to render `source_rows` for aggregates** when present. Initial implementation targeted at grants (aggregates are simple list of payments).
+---
+
+## 8. Execution log
+
+- `f059484` (2026-04-21) — Phase 0.5 one-shot: origin-based routing + silent-404 detection + one-off supplier review notice. Shipped before v3 decisions landed.
+- `708578b` (private data) — Bradford silent-404 URL fix.
+- `701201a` — v1 plan docs.
+- **In progress:** Phase 1 milestones (this session).
