@@ -59,6 +59,10 @@ export interface DataProvenance {
   source_title?: string;
   data_year?: string;
   methodology?: string;
+  /** Phase 3+ row-level citation (Category A fields). When present, the
+   * popover renders a "Verified source" badge with the specific row/cell
+   * the value came from. */
+  citation?: Citation;
 }
 
 /**

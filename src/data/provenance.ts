@@ -10,6 +10,7 @@
  */
 
 import type { DataProvenance, Council } from './councils';
+import { resolveCitation } from './citations';
 
 export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   // ── Council Tax ──
@@ -512,13 +513,24 @@ export function getProvenance(
       }
     }
 
+    // Phase 3: attach row-level citation for Category A fields.
+    if (council) {
+      const citation = resolveCitation(fieldPath, council);
+      if (citation) prov.citation = citation;
+    }
+
     return prov;
   }
 
   // 5. Prefix match: "budget.education" → "budget"
   const prefix = fieldPath.split('.')[0];
   if (FIELD_PROVENANCE[prefix]) {
-    return { ...FIELD_PROVENANCE[prefix] };
+    const prov = { ...FIELD_PROVENANCE[prefix] };
+    if (council) {
+      const citation = resolveCitation(fieldPath, council);
+      if (citation) prov.citation = citation;
+    }
+    return prov;
   }
 
   return undefined;

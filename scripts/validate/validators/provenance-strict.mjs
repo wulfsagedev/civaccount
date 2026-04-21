@@ -55,12 +55,14 @@ function loadRenderableFields() {
  */
 function classifyFieldStatus(field, council) {
   // Category A fields have an achievable citation path (row = ONS code,
-  // column = manifest). Ship-readiness depends on Phase 3 wiring.
+  // column = manifest). Phase 3 shipped the citations.ts resolver that
+  // auto-attaches a Citation to getProvenance(); every Category A value
+  // now carries a row-level locator in the SourceAnnotation popover.
   if (field.origin === 'national_csv') {
     return {
-      compliant: true,               // source exists + row key is known
-      row_level_wired: false,        // Phase 3 will flip this to true
-      reason: 'National CSV source; row-level citation builder not yet wired',
+      compliant: true,
+      row_level_wired: true,
+      reason: 'Row-level citation wired (csv_row locator in popover)',
     };
   }
   if (field.origin === 'calculated') {

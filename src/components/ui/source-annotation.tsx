@@ -1,13 +1,14 @@
 'use client';
 
-import { ExternalLink, Flag, Clock } from 'lucide-react';
+import { ExternalLink, Flag, Clock, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui/popover';
-import type { DataProvenance } from '@/data/councils';
+import type { DataProvenance, Citation } from '@/data/councils';
+import { describeLocator } from '@/data/citations';
 
 interface SourceAnnotationProps {
   provenance?: DataProvenance;
@@ -18,6 +19,12 @@ interface SourceAnnotationProps {
     field: string;
     value: string | number;
   };
+  /**
+   * Phase 3+ value-level citation. When present, the popover renders
+   * a "Verified source" shield plus a locator string telling the reader
+   * exactly which row / page / cell the value came from.
+   */
+  citation?: Citation;
 }
 
 /**
@@ -121,11 +128,19 @@ export default function SourceAnnotation({
   provenance,
   children,
   reportContext,
+  citation,
 }: SourceAnnotationProps) {
   if (!provenance) return <>{children}</>;
 
   const config = LABEL_CONFIG[provenance.label] || LABEL_CONFIG.published;
   const staleness = computeStaleness(provenance.data_year);
+  // Phase 3: row-level citation can be passed explicitly OR carried on the
+  // provenance object (getProvenance() attaches it automatically for
+  // Category A fields). Explicit prop wins for override cases.
+  const effectiveCitation = citation ?? provenance.citation;
+  const locatorText = effectiveCitation && reportContext
+    ? describeLocator(effectiveCitation, reportContext.council)
+    : null;
 
   return (
     <Popover>
@@ -208,6 +223,25 @@ export default function SourceAnnotation({
             <p className="type-caption text-muted-foreground">
               {provenance.methodology}
             </p>
+          )}
+
+          {/* Row-level citation (Phase 3+): tells the reader exactly which
+              row, cell, or page inside the source document the value came
+              from. "Verified source" shield is only rendered when a
+              citation is present — absence means field-level provenance
+              only, which will get the shield once Phase 3/4 wires it. */}
+          {locatorText && (
+            <div className="pt-2 mt-1 border-t border-border/50">
+              <div className="flex items-start gap-1.5">
+                <ShieldCheck className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <div>
+                  <p className="type-caption font-medium text-foreground">Verified source</p>
+                  <p className="type-caption text-muted-foreground mt-0.5 break-words">
+                    {locatorText}
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
 
           {reportContext && (
