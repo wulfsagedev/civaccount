@@ -61,6 +61,54 @@ export interface DataProvenance {
   methodology?: string;
 }
 
+/**
+ * Row-level citation for a single rendered value.
+ *
+ * The long-term goal (per PROVENANCE-INTEGRITY-PLAN.md) is that every
+ * numeric field a user sees carries a `Citation` describing exactly
+ * which row, cell, or page of a public government document it came
+ * from — so "click to verify" is a real two-click operation, not a
+ * generic landing-page link.
+ *
+ * This type ships in Phase 2 as the contract; Category A fields
+ * (national CSVs) migrate in Phase 3, PDFs in Phase 4, aggregates in
+ * Phase 5.
+ */
+export interface Citation {
+  /** Stable ID from scripts/validate/source-manifest.json. */
+  dataset_id: string;
+
+  /** Live document URL (what the reader opens). */
+  source_url: string;
+
+  /** Local archive path in the civaccount-source-archive repo. */
+  archive_path?: string;
+
+  /** Where inside the document the value lives. */
+  locator:
+    | { kind: 'csv_row'; file: string; ons_code: string; column: string }
+    | { kind: 'csv_filter'; file: string; filter: Record<string, string>; column: string }
+    | { kind: 'pdf_page'; page: number; excerpt?: string }
+    | { kind: 'ocds_award'; ocid: string; award_id: string }
+    | { kind: 'html_selector'; selector: string; text_excerpt: string };
+
+  /** ISO date the source was last fetched into our archive. */
+  fetched: string;
+
+  /** How confident we are in the value → source match. */
+  extraction: 'exact_cell' | 'pdf_text' | 'pdf_ocr' | 'human_review' | 'regex';
+
+  /** When a human last re-read the source and confirmed the value. */
+  verified_at?: string;
+
+  /** For aggregates, how the final number was computed. */
+  derivation?: {
+    method: 'sum' | 'max' | 'count' | 'ratio' | 'statutory_multiplier';
+    inputs: Citation[];
+    notes?: string;
+  };
+}
+
 // Leadership team member
 export interface LeadershipMember {
   name: string;
