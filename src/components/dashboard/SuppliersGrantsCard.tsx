@@ -13,6 +13,7 @@ import { getProvenance } from '@/data/provenance';
 import DataGapNotice from '@/components/ui/data-gap-notice';
 import DataValidationNotice from '@/components/ui/data-validation-notice';
 import { getVerifiedGrantSource } from '@/data/grants-allowlist';
+import { getVerifiedSupplierSource } from '@/data/suppliers-allowlist';
 
 interface SuppliersGrantsCardProps {
   selectedCouncil: Council;
@@ -26,8 +27,9 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
 
   const detailed = selectedCouncil.detailed;
   const verifiedGrantSource = getVerifiedGrantSource(selectedCouncil.name);
-  // Contracts Finder source URL — same one getProvenance() uses, built
-  // inline so the notice can link to it without a second round-trip.
+  const verifiedSupplierSource = getVerifiedSupplierSource(selectedCouncil.name);
+  // Contracts Finder fallback URL — used when we don't have a verified
+  // payment-ledger source yet.
   const contractsFinderUrl = `https://www.contractsfinder.service.gov.uk/Search?keywords=${encodeURIComponent(selectedCouncil.name + ' Council')}`;
 
   return (
@@ -52,19 +54,47 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
             <p className="type-body-sm text-muted-foreground mt-1">The biggest companies and organisations paid by the council</p>
           </div>
 
-          {/* Supplier data on every council is sourced from Contracts Finder
-              OCDS — a .gov.uk register of contract awards (ceilings, not
-              payments). The values below reflect that source but don't yet
-              have row-level citations or a fix for framework-agreement
-              over-attribution. See /data-validation. */}
-          <div className="mb-4">
-            <DataValidationNotice
-              variant="in-progress"
-              body={`Supplier values come from Contracts Finder — a .gov.uk register of contract awards. Values below reflect contract ceilings, not actual payments, and can over-count where a single framework agreement lists multiple suppliers. We're rebuilding this from ${selectedCouncil.name}'s own spending-over-£500 publication. Tap any figure to open the Contracts Finder source.`}
-              sourceUrl={contractsFinderUrl}
-              sourceLabel={`Open Contracts Finder for ${selectedCouncil.name}`}
-            />
-          </div>
+          {/* Suppliers card provenance — two states:
+              - verified:    the council has been rebuilt from its own
+                             payments-over-£500 CSV; values here are
+                             actual net payments aggregated by supplier.
+                             Shows a ShieldCheck "Sourced from …" row.
+              - in-progress: the council's values still derive from the
+                             Contracts Finder OCDS feed (contract
+                             ceilings, prone to framework over-attribution).
+                             Shows the DataValidationNotice and links to
+                             the Contracts Finder search for that buyer. */}
+          {verifiedSupplierSource ? (
+            <div
+              role="status"
+              className="mb-4 p-3 rounded-lg border border-border bg-muted/30 flex gap-3"
+            >
+              <ShieldCheck className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" aria-hidden="true" />
+              <div className="min-w-0">
+                <p className="type-body-sm font-semibold text-foreground">Sourced from {verifiedSupplierSource.sourceTitle}</p>
+                <p className="type-body-sm text-muted-foreground mt-1">
+                  Every supplier total below is aggregated from {selectedCouncil.name}'s own published payment ledger for {verifiedSupplierSource.period}. No contract ceilings, no estimates.{' '}
+                  <a
+                    href={verifiedSupplierSource.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground"
+                  >
+                    Open the source
+                  </a>.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-4">
+              <DataValidationNotice
+                variant="in-progress"
+                body={`Supplier values come from Contracts Finder — a .gov.uk register of contract awards. Values below reflect contract ceilings, not actual payments, and can over-count where a single framework agreement lists multiple suppliers. We're rebuilding this from ${selectedCouncil.name}'s own spending-over-£500 publication. Tap any figure to open the Contracts Finder source.`}
+                sourceUrl={contractsFinderUrl}
+                sourceLabel={`Open Contracts Finder for ${selectedCouncil.name}`}
+              />
+            </div>
+          )}
 
           {/* Hook stat */}
           <div className="p-3 rounded-lg bg-muted/30 mb-2">
@@ -121,6 +151,13 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg">
                       <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
+                      {/* Descriptions are CivAccount summaries of what the
+                          supplier contract covers — not a verbatim quote
+                          from a council publication. Labelled honestly per
+                          the integrity policy (§5.4 / /data-validation). */}
+                      <p className="type-caption text-muted-foreground mt-2 italic">
+                        CivAccount summary — not from council publication
+                      </p>
                     </div>
                   )}
                 </button>
