@@ -35,6 +35,12 @@ export const VERIFIED_GRANT_COUNCILS: Record<string, VerifiedGrantSource> = {
     sourceTitle: 'Barnet grants register (360Giving XLSX)',
     sourceType: '360giving-xlsx',
   },
+  Bradford: {
+    council: 'Bradford',
+    sourceTitle: 'Bradford Council Grants Register (February 2025)',
+    sourceType: 'council-xlsx',
+    sourceUrl: 'https://datahub.bradford.gov.uk/datasets/finance/bradford-council-grants/',
+  },
   Birmingham: {
     council: 'Birmingham',
     sourceTitle: 'Birmingham grants register (360Giving XLSX)',

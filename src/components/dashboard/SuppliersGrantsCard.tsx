@@ -151,6 +151,13 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg">
                       <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
+                      {/* Descriptions are CivAccount summaries of what the
+                          supplier contract covers — not a verbatim quote
+                          from a council publication. Labelled honestly per
+                          the integrity policy (§5.4 / /data-validation). */}
+                      <p className="type-caption text-muted-foreground mt-2 italic">
+                        CivAccount summary — not from council publication
+                      </p>
                     </div>
                   )}
                 </button>

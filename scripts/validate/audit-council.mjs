@@ -139,7 +139,9 @@ function statusFor(council, field, valueReport) {
     if (field.path === 'detailed.grant_payments') {
       const allowlist = readFileSync(join(ROOT, 'src', 'data', 'grants-allowlist.ts'), 'utf-8');
       const escaped = council.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      if (new RegExp(`['"]${escaped}['"]\\s*:\\s*\\{`, 'g').test(allowlist)) {
+      // Key may be quoted ('Bradford': {) or unquoted (Bradford: {) in TS
+      const re = new RegExp(`(?:^|\\s|['"])${escaped}(?:['"])?\\s*:\\s*\\{`, 'm');
+      if (re.test(allowlist)) {
         return { status: 'VERIFIED-SOURCE', detail: 'Aggregated from archived 360Giving/council CSV' };
       }
       return { status: 'IN-PROGRESS', detail: 'Research file unavailable; DataValidationNotice rendered' };
