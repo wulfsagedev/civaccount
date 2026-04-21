@@ -12,6 +12,7 @@ import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import DataGapNotice from '@/components/ui/data-gap-notice';
+import DataValidationNotice from '@/components/ui/data-validation-notice';
 
 interface LeadershipCardProps {
   selectedCouncil: Council;
@@ -175,7 +176,13 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
         </button>
       )}
 
-      {/* Workforce stats */}
+      {/* Workforce stats. The `staff_fte` field's build provenance is
+          currently under review — `parsed-workforce.csv` exists in the
+          data repo but the parse script that produced it isn't in the
+          repo, and ONS Public Sector Personnel (the canonical national
+          source) publishes at the regional, not per-council, level.
+          Until the build path is confirmed, render a validation notice
+          next to the number. See /data-validation. */}
       {(detailed.staff_fte || detailed.agency_staff_count) && (
         <div className="mt-4 p-3 rounded-lg bg-muted/30">
           <p className="type-body-sm font-semibold mb-1">Council workforce</p>
@@ -204,6 +211,12 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
                 ><span className="font-medium text-foreground">{detailed.agency_staff_count.toLocaleString('en-GB')}</span></SourceAnnotation> agency staff
               </p>
             )}
+          </div>
+          <div className="mt-3">
+            <DataValidationNotice
+              variant="suspended"
+              body="Staff FTE is currently under source review. ONS Public Sector Personnel publishes regional totals; per-council figures historically came from a compiled workforce CSV whose build path we're re-tracing. Click the number to open the current best source — we're working on row-level citations."
+            />
           </div>
         </div>
       )}

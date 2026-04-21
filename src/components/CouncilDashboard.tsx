@@ -10,6 +10,8 @@ import DataSourcesFooter from '@/components/DataSourcesFooter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, formatCurrency, formatBudget, toSentenceTypeName, type Council } from '@/data/councils';
 
 interface CouncilDashboardProps {
@@ -83,27 +85,10 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
     }
   }
 
-  // Narrative summary — visible for users and crawlers.
-  // Use sentence-form that preserves proper nouns ("London borough", not "london borough").
-  const typeNameSentence = toSentenceTypeName(typeName);
-  const narrativeParts: string[] = [];
-  narrativeParts.push(`${displayName} is a ${typeNameSentence}${population ? ` serving ${population.toLocaleString('en-GB')} residents` : ''}.`);
-  if (bandD) {
-    let taxSentence = `In 2025-26, Band D council tax is ${formatCurrency(bandD, { decimals: 2 })}`;
-    if (taxChange !== null) {
-      const direction = taxChange > 0 ? 'more' : 'less';
-      taxSentence += ` — ${Math.abs(taxChange).toFixed(1)}% ${direction} than last year`;
-    }
-    taxSentence += '.';
-    narrativeParts.push(taxSentence);
-  }
-  if (totalBudget && biggestCategory) {
-    narrativeParts.push(`The council manages a total service budget of ${totalBudget}, with ${biggestCategory.name} being the largest spending area at ${biggestCategory.pct.toFixed(0)}% of the total.`);
-  } else if (totalBudget) {
-    narrativeParts.push(`The council manages a total service budget of ${totalBudget}.`);
-  }
-  const narrativeText = narrativeParts.join(' ');
-
+  // Narrative hero — now rendered as cited JSX below (every number is a
+  // click-through to its source). The plain-text equivalent for
+  // <meta description> / OpenGraph is computed in
+  // src/app/council/[slug]/layout.tsx where the metadata actually lives.
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -122,7 +107,79 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
             <h1 className="type-title-1 font-bold text-foreground leading-tight mt-2">
               {displayName}
             </h1>
-            <p className="type-body-sm text-muted-foreground mt-2">{narrativeText}</p>
+            {/* Hero narrative — SEO/GEO-critical.
+                Numbers are cited inline via SourceAnnotation so readers can
+                open the document the figure was taken from in one click.
+                The `title` attribute makes the provenance of the prose
+                itself legible: the sentence structure is CivAccount-
+                generated; every quantity inside is sourced. */}
+            <p
+              className="type-body-sm text-muted-foreground mt-2"
+              title="Generated summary of the sourced facts shown below. Every number in this paragraph is a click-through to its source document."
+            >
+              {displayName} is a {toSentenceTypeName(typeName)}
+              {population ? (
+                <>
+                  {' '}serving{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance('population', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Population',
+                      value: population.toLocaleString('en-GB'),
+                    }}
+                  >{population.toLocaleString('en-GB')}</SourceAnnotation>
+                  {' '}residents
+                </>
+              ) : null}
+              .
+              {bandD && (
+                <>
+                  {' '}In 2025-26, Band D council tax is{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Band D council tax 2025-26',
+                      value: formatCurrency(bandD, { decimals: 2 }),
+                    }}
+                  >{formatCurrency(bandD, { decimals: 2 })}</SourceAnnotation>
+                  {taxChange !== null && (
+                    <> — {Math.abs(taxChange).toFixed(1)}% {taxChange > 0 ? 'more' : 'less'} than last year</>
+                  )}
+                  .
+                </>
+              )}
+              {totalBudget && biggestCategory ? (
+                <>
+                  {' '}The council manages a total service budget of{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance('budget.total_service', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Total service budget',
+                      value: totalBudget,
+                    }}
+                  >{totalBudget}</SourceAnnotation>, with {biggestCategory.name} being the largest spending area at {biggestCategory.pct.toFixed(0)}% of the total.
+                </>
+              ) : totalBudget ? (
+                <>
+                  {' '}The council manages a total service budget of{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance('budget.total_service', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Total service budget',
+                      value: totalBudget,
+                    }}
+                  >{totalBudget}</SourceAnnotation>.
+                </>
+              ) : null}
+            </p>
+            <p className="type-caption text-muted-foreground mt-1 italic">
+              Generated summary of the sourced facts below.{' '}
+              <a href="/data-validation" className="underline hover:text-foreground">How we verify data</a>
+            </p>
           </div>
 
           {/* Single scrolling dashboard */}

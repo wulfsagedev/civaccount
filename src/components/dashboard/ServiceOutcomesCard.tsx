@@ -287,19 +287,19 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
           {detailed.performance_kpis && detailed.performance_kpis.length > 0 && (
             <>
               <div className="space-y-2">
+                {/* KPI list — the value is shown as a neutral pill. The
+                    previous red/amber/green RAG colouring was driven by
+                    CivAccount-invented thresholds (e.g. <35% recycling =
+                    red) with no statutory basis. Per the integrity policy
+                    (/data-validation) we don't classify values we didn't
+                    source the classification for. Sourced targets from
+                    the council's own publications still render as text. */}
                 {detailed.performance_kpis.map((kpi, idx) => (
                   <div key={idx} className="p-3 rounded-lg bg-muted/30">
                     <div className="flex items-center justify-between gap-3">
                       <p className="type-body-sm font-medium min-w-0">{kpi.metric}</p>
-                      <span className={`type-body-sm font-semibold px-2.5 py-0.5 rounded-full shrink-0 ${
-                        kpi.status === 'green'
-                          ? 'bg-positive/10 text-positive'
-                          : kpi.status === 'amber'
-                          ? 'bg-negative/10 text-negative'
-                          : 'bg-negative/20 text-negative'
-                      }`}>
+                      <span className="type-body-sm font-semibold tabular-nums shrink-0 text-foreground">
                         {kpi.value}
-                        <span className="sr-only"> — {kpi.status} status</span>
                       </span>
                     </div>
                     <p className="type-body-sm text-muted-foreground mt-1">
