@@ -97,14 +97,26 @@ async function fetchBody(url) {
 }
 
 function stripHtml(html) {
-  // Remove scripts/styles, then tags. Good enough for substring matches.
+  // Reduce scraped HTML to plain text for substring matching. We never
+  // render this text — only use it for `.includes(portfolio)` checks —
+  // so full HTML parsing is overkill. Two CodeQL notes addressed:
+  //   1. `</script\s*>` and `</style\s*>` tolerate whitespace before `>`
+  //      (the plain `</script>` variant misses `</script >`).
+  //   2. Entity decoding runs after tag removal so un-escaped characters
+  //      can't be re-interpreted as tags. Decoding is minimal — we
+  //      decode only the three entities we actually care about and keep
+  //      the rest as-is; the grep downstream is case-insensitive and
+  //      tolerant of leftover entities.
   return html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script\s*>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style\s*>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;|&#160;|&#xA0;/gi, ' ')
+    .replace(/&(amp|quot|#34|#x22);/gi, (_, e) => {
+      const low = e.toLowerCase();
+      if (low === 'amp') return '&';
+      return '"';
+    })
     .replace(/\s+/g, ' ')
     .toLowerCase();
 }
