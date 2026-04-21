@@ -4,6 +4,7 @@ import { useState } from 'react';
 import {
   ChevronDown,
   ExternalLink,
+  AlertTriangle,
 } from "lucide-react";
 import { formatCurrency, formatBudget, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
@@ -15,6 +16,26 @@ interface SuppliersGrantsCardProps {
   selectedCouncil: Council;
 }
 
+/**
+ * Detect the "framework over-attribution" pattern in top_suppliers:
+ *   - Multiple suppliers with identical `annual_spend` (to the pound)
+ * This happens when a framework agreement lists N suppliers and the full
+ * contract value is attributed to every single one rather than split. The
+ * resulting rows look plausible individually but stack to totals that exceed
+ * reality (e.g. Turning Point showing more spend from one council than the
+ * company's UK-wide turnover). We warn rather than hide — the list is still
+ * directionally useful for identifying which companies hold frameworks.
+ */
+function detectSupplierAggregationBug(
+  suppliers: Array<{ annual_spend: number }> | undefined
+): { flagged: boolean; duplicateCount: number } {
+  if (!suppliers || suppliers.length < 3) return { flagged: false, duplicateCount: 0 };
+  const counts = new Map<number, number>();
+  for (const s of suppliers) counts.set(s.annual_spend, (counts.get(s.annual_spend) ?? 0) + 1);
+  const maxDup = Math.max(...counts.values());
+  return { flagged: maxDup >= 3, duplicateCount: maxDup };
+}
+
 const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
   const [showAllSuppliers, setShowAllSuppliers] = useState(false);
   const [showAllGrants, setShowAllGrants] = useState(false);
@@ -22,6 +43,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
   const [expandedGrant, setExpandedGrant] = useState<number | null>(null);
 
   const detailed = selectedCouncil.detailed;
+  const supplierQuality = detectSupplierAggregationBug(detailed?.top_suppliers);
 
   return (
     <section id="suppliers" className="card-elevated p-5 sm:p-6">
@@ -44,6 +66,30 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
             </div>
             <p className="type-body-sm text-muted-foreground mt-1">The biggest companies and organisations paid by the council</p>
           </div>
+
+          {/* Data-quality notice — shown when framework-agreement
+              over-attribution is detected (multiple suppliers with identical
+              annual_spend). Transparent about the limitation rather than
+              silently showing numbers we can't stand behind. */}
+          {supplierQuality.flagged && (
+            <div
+              role="status"
+              className="mb-4 p-3 rounded-lg border border-border bg-muted/30 flex gap-3"
+            >
+              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" aria-hidden="true" />
+              <div>
+                <p className="type-body-sm font-semibold text-foreground">
+                  Supplier values under review
+                </p>
+                <p className="type-body-sm text-muted-foreground mt-1">
+                  These values come from Contracts Finder (the national OCDS register). Where a single
+                  framework agreement lists multiple suppliers, the full contract value may currently
+                  be shown against each one — so totals can over-count. We're working on a split.
+                  Tap any value to open the source and verify directly.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Hook stat */}
           <div className="p-3 rounded-lg bg-muted/30 mb-2">

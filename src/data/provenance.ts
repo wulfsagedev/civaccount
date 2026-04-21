@@ -288,29 +288,35 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     data_year: '2023-24',
   },
 
-  // ── Suppliers ──
+    // ── Suppliers (Contracts Finder OCDS — national register, NOT council
+  //    transparency pages). Per-council verifiability is via a buyer-filtered
+  //    search URL constructed in getProvenance().
   'detailed.top_suppliers.annual_spend': {
     label: 'published',
-    source_title: 'Contracts Finder / Council Transparency',
+    source_url: 'https://www.contractsfinder.service.gov.uk/Search',
+    source_title: 'Contracts Finder (OCDS)',
     data_year: '2024-25',
+    methodology: 'Annualised contract values aggregated from Contracts Finder OCDS data where the council is the buyer.',
   },
   'detailed.top_suppliers.description': {
     label: 'editorial',
     methodology: 'Summary written by CivAccount based on published contract details. Not official text.',
   },
 
-  // ── Grants ──
+  // ── Grants (council-published on transparency pages; sometimes via 360Giving) ──
   'detailed.grant_payments': {
     label: 'published',
-    source_title: 'Council Transparency / 360Giving',
+    source_title: 'Council grants register',
     data_year: '2024-25',
   },
 
-  // ── Workforce ──
+  // ── Workforce — per-council FTE from ONS Public Sector Personnel.
+  //    The older GOV.UK "local-authority-data-workforce" collection page has
+  //    been retired; the active dataset is the ONS PSE reference table.
   'detailed.staff_fte': {
     label: 'published',
-    source_url: 'https://www.gov.uk/government/collections/local-authority-data-workforce',
-    source_title: 'Quarterly Public Sector Employment Survey',
+    source_url: 'https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/publicsectorpersonnel/datasets/publicsectoremploymentreferencetable',
+    source_title: 'ONS Public Sector Employment reference table',
     data_year: '2024',
   },
 
@@ -334,24 +340,31 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
 };
 
 /**
- * URL-routing rules: map field paths to the council-owned URL field that
- * should be preferred over a generic GOV.UK citation. Applied as a fallback
- * when `field_sources` doesn't cover the path.
+ * URL-routing rules: map each field path to the council-owned URL that should
+ * be used when `field_sources` doesn't have an explicit entry for that field.
  *
- * Data published BY the council (budgets, reserves, suppliers, cabinet) should
- * link to that council's own page. Data published BY the state (council tax
- * levels, DEFRA waste stats, Ofsted ratings) should keep their GOV.UK source —
- * those paths are intentionally excluded here.
+ * The rules below are **origin-based**. A field is routed to a council URL
+ * only when the data truly originates from that council's own publication
+ * (budget docs, Statement of Accounts, Pay Policy Statement, Members'
+ * Allowances Scheme, cabinet/portfolio page). Data that originates in a
+ * national register — Contracts Finder, ONS, DEFRA, DfT, Ofsted, LGBCE — is
+ * NEVER routed to a council URL; `FIELD_PROVENANCE` above holds the national
+ * source URL and `getProvenance()` returns it directly.
+ *
+ * Why this split matters: pointing a Contracts Finder supplier number at the
+ * council's own "transparency" landing page produces a source link the user
+ * can click but cannot use to verify the number — the council's site doesn't
+ * publish that data. The origin must match the scrape.
  */
 const URL_ROUTING: Array<{
   match: (path: string) => boolean;
   urlField: 'budget_url' | 'accounts_url' | 'transparency_url' | 'councillors_url';
   titleSuffix: string;
 }> = [
-  // Budget breakdowns, service spending, capital programme → council budget page
+  // Budget breakdowns, service spending, capital programme, financial
+  // strategy → council's own budget page.
   {
     match: (p) =>
-      p.startsWith('budget.') ||
       p === 'detailed.service_spending' ||
       p === 'detailed.capital_programme' ||
       p === 'detailed.budget_gap' ||
@@ -359,46 +372,69 @@ const URL_ROUTING: Array<{
     urlField: 'budget_url',
     titleSuffix: 'budget',
   },
-  // Reserves, salary bands → Statement of Accounts
+  // Reserves and salary bands come from the council's Statement of Accounts.
+  // (The high-level budget categories stay routed to the national RO returns
+  //  via FIELD_PROVENANCE — they are national data, not council-published.)
   {
     match: (p) => p === 'detailed.reserves' || p === 'detailed.salary_bands',
     urlField: 'accounts_url',
     titleSuffix: 'Statement of Accounts',
   },
-  // Suppliers, grants, workforce, CEO pay → transparency page
+  // Grants are published on council transparency pages (occasionally via
+  // 360Giving). CEO pay comes from the council's Pay Policy Statement —
+  // typically linked from either transparency_url or councillors_url. If no
+  // field_sources entry exists, prefer transparency_url for grants and the
+  // councillors_url for pay-policy-adjacent fields (see next rule).
   {
-    match: (p) =>
-      p.startsWith('detailed.top_suppliers') ||
-      p === 'detailed.grant_payments' ||
-      p === 'detailed.staff_fte' ||
-      p === 'detailed.chief_executive_salary' ||
-      p === 'detailed.chief_executive_total_remuneration',
+    match: (p) => p === 'detailed.grant_payments',
     urlField: 'transparency_url',
-    titleSuffix: 'transparency data',
+    titleSuffix: 'grants register',
   },
-  // Cabinet, leader, councillor allowances → councillors page
+  // Cabinet, leader, councillor allowances, CEO salary → councillors/leader
+  // page, which in most CMSes is the parent of the Pay Policy and Members'
+  // Allowances documents.
   {
     match: (p) =>
       p === 'detailed.cabinet' ||
       p === 'detailed.council_leader' ||
       p === 'detailed.chief_executive' ||
+      p === 'detailed.chief_executive_salary' ||
+      p === 'detailed.chief_executive_total_remuneration' ||
       p.startsWith('detailed.councillor_') ||
       p === 'detailed.total_allowances_cost',
     urlField: 'councillors_url',
     titleSuffix: 'councillors',
   },
+  // NOTE: detailed.top_suppliers.* and detailed.staff_fte are intentionally
+  // NOT routed to a council URL — their origin is national (Contracts Finder
+  // OCDS, ONS PSE). They resolve via FIELD_PROVENANCE above. Likewise
+  // budget.* stays on the RO national source.
 ];
+
+/**
+ * URL-encode a council buyer name for Contracts Finder search.
+ * Contracts Finder's /Search accepts a free-text keyword; we use the council
+ * name as a buyer filter. Not perfect — the user sees a search result page,
+ * not the specific contracts — but it's the same surface a journalist would
+ * hit to audit the data, which is the whole point of the source link.
+ */
+function contractsFinderSearchUrl(councilName: string): string {
+  const keyword = encodeURIComponent(`${councilName} Council`);
+  return `https://www.contractsfinder.service.gov.uk/Search?keywords=${keyword}`;
+}
 
 /**
  * Look up provenance for a field path.
  *
  * Priority:
  *   1. `council.detailed.field_sources[path]` — exact per-field URL override
- *   2. URL routing — if the path represents council-published data and the
+ *      (authoritative when present, because it was hand-verified per council)
+ *   2. National-origin override for suppliers (Contracts Finder buyer search)
+ *   3. URL routing — if the path represents council-published data and the
  *      council has the relevant top-level URL field (budget_url, etc.), use that
- *   3. Global `FIELD_PROVENANCE` (for truly national sources — GOV.UK bulk data,
+ *   4. Global `FIELD_PROVENANCE` (for truly national sources — GOV.UK bulk data,
  *      ONS population, DEFRA/DfT/Ofsted statistics, calculated metrics)
- *   4. Prefix match on `FIELD_PROVENANCE` (e.g., "budget.education" → "budget")
+ *   5. Prefix match on `FIELD_PROVENANCE` (e.g., "budget.education" → "budget")
  */
 export function getProvenance(
   fieldPath: string,
@@ -427,7 +463,21 @@ export function getProvenance(
     }
   }
 
-  // 2. URL routing — council-owned data paths prefer the council's own URL
+  // 2. National-origin override for suppliers: per-council verifiability
+  //    comes from a Contracts Finder buyer search, not the council's own
+  //    pages. Applied before URL_ROUTING so the national origin wins.
+  if (fieldPath.startsWith('detailed.top_suppliers') && council?.name) {
+    const global = FIELD_PROVENANCE['detailed.top_suppliers.annual_spend'];
+    return {
+      label: 'published',
+      source_url: contractsFinderSearchUrl(council.name),
+      source_title: `Contracts Finder — ${council.name}`,
+      data_year: global?.data_year,
+      methodology: global?.methodology,
+    };
+  }
+
+  // 3. URL routing — council-owned data paths prefer the council's own URL
   //    over generic GOV.UK citations. Keeps label/data_year from the global
   //    table for consistency ("Published data", "Data year: 2025-26").
   if (council?.detailed) {
@@ -446,7 +496,7 @@ export function getProvenance(
     }
   }
 
-  // 3. Global FIELD_PROVENANCE (for GOV.UK bulk data fields)
+  // 4. Global FIELD_PROVENANCE (for GOV.UK bulk data fields)
   if (FIELD_PROVENANCE[fieldPath]) {
     const prov = { ...FIELD_PROVENANCE[fieldPath] };
 
@@ -465,7 +515,7 @@ export function getProvenance(
     return prov;
   }
 
-  // 4. Prefix match: "budget.education" → "budget"
+  // 5. Prefix match: "budget.education" → "budget"
   const prefix = fieldPath.split('.')[0];
   if (FIELD_PROVENANCE[prefix]) {
     return { ...FIELD_PROVENANCE[prefix] };

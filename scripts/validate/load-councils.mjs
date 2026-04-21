@@ -288,6 +288,106 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
     }
   }
 
+  // Extract field_sources — per-field explicit source URLs.
+  // Shape:
+  //   field_sources: {
+  //     ceo_salary: { url: "...", title: "...", accessed: "..." },
+  //     ...
+  //   }
+  // Regex-extract each nested block. The outer loader doesn't reuse a real
+  // TS parser, so we grab the block between `field_sources: {` and the
+  // matching top-level `}` via brace-depth counting.
+  const fsIdx = section.indexOf('field_sources: {');
+  if (fsIdx !== -1) {
+    let depth = 0;
+    let fsEnd = section.length;
+    for (let si = fsIdx + 'field_sources: '.length; si < section.length; si++) {
+      if (section[si] === '{') depth++;
+      else if (section[si] === '}') { depth--; if (depth === 0) { fsEnd = si + 1; break; } }
+    }
+    const fsBlock = section.substring(fsIdx, fsEnd);
+    // Match nested entries: `  fieldname: { url: "...", title: "...", ... },`
+    // We capture field name + url + title.
+    const fsEntryRe = /([A-Za-z_][A-Za-z0-9_]*):\s*\{\s*url:\s*"([^"]+)"(?:,\s*title:\s*"([^"]*)")?/g;
+    const fieldSources = {};
+    let fsm;
+    while ((fsm = fsEntryRe.exec(fsBlock)) !== null) {
+      const key = fsm[1];
+      // Skip the literal `field_sources` key itself in case the regex catches it
+      if (key === 'field_sources') continue;
+      fieldSources[key] = {
+        url: fsm[2],
+        title: fsm[3] || '',
+      };
+    }
+    if (Object.keys(fieldSources).length > 0) {
+      d.field_sources = fieldSources;
+    }
+  }
+
+  // Extract section_transparency URLs (shape:
+  //   section_transparency: { finances: [{ label, url, ... }], outcomes: [...] }
+  // ). Used by the finance footer and SuppliersGrantsCard "See the raw data" list.
+  const stIdx = section.indexOf('section_transparency: {');
+  if (stIdx !== -1) {
+    let depth = 0;
+    let stEnd = section.length;
+    for (let si = stIdx + 'section_transparency: '.length; si < section.length; si++) {
+      if (section[si] === '{') depth++;
+      else if (section[si] === '}') { depth--; if (depth === 0) { stEnd = si + 1; break; } }
+    }
+    const stBlock = section.substring(stIdx, stEnd);
+    const stLinks = [];
+    const linkRe = /\{\s*label:\s*"([^"]+)"\s*,\s*url:\s*"([^"]+)"/g;
+    let sm;
+    while ((sm = linkRe.exec(stBlock)) !== null) {
+      stLinks.push({ label: sm[1], url: sm[2] });
+    }
+    if (stLinks.length > 0) d.section_transparency = { _all: stLinks };
+  }
+
+  // Extract governance_transparency[] and documents[] URLs for coverage.
+  for (const arrField of ['governance_transparency', 'documents', 'sources']) {
+    if (!d._has[arrField]) continue;
+    const arrIdx = section.indexOf(`${arrField}: [`);
+    if (arrIdx === -1) continue;
+    let depth = 0;
+    let arrEnd = section.length;
+    for (let si = arrIdx + `${arrField}: `.length; si < section.length; si++) {
+      if (section[si] === '[') depth++;
+      else if (section[si] === ']') { depth--; if (depth === 0) { arrEnd = si + 1; break; } }
+    }
+    const arrBlock = section.substring(arrIdx, arrEnd);
+    const links = [];
+    const linkRe = /url:\s*"([^"]+)"/g;
+    let lm;
+    while ((lm = linkRe.exec(arrBlock)) !== null) {
+      links.push({ url: lm[1] });
+    }
+    if (links.length > 0) d[arrField] = links;
+  }
+
+  // Extract open_data_links[].links[].url
+  if (d._has.open_data_links) {
+    const odlIdx = section.indexOf('open_data_links: [');
+    if (odlIdx !== -1) {
+      let depth = 0;
+      let odlEnd = section.length;
+      for (let si = odlIdx + 'open_data_links: '.length; si < section.length; si++) {
+        if (section[si] === '[') depth++;
+        else if (section[si] === ']') { depth--; if (depth === 0) { odlEnd = si + 1; break; } }
+      }
+      const odlBlock = section.substring(odlIdx, odlEnd);
+      const groups = [];
+      const linkRe = /url:\s*"([^"]+)"/g;
+      const links = [];
+      let lm;
+      while ((lm = linkRe.exec(odlBlock)) !== null) links.push({ url: lm[1] });
+      if (links.length > 0) groups.push({ theme: 'all', links });
+      d.open_data_links = groups;
+    }
+  }
+
   // Extract document URLs and years
   if (d._has.documents) {
     const docYears = [];
