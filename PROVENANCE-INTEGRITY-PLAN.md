@@ -392,7 +392,36 @@ No phase starts until you say so. Each phase ends at a commit and an audit repor
 
 ## 8. Execution log
 
-- `f059484` (2026-04-21) — Phase 0.5 one-shot: origin-based routing + silent-404 detection + one-off supplier review notice. Shipped before v3 decisions landed.
+### Shipped 2026-04-21
+
+- `f059484` — Origin-based routing in `provenance.ts` + silent-404 detection in link-check + one-off supplier review notice.
 - `708578b` (private data) — Bradford silent-404 URL fix.
-- `701201a` — v1 plan docs.
-- **In progress:** Phase 1 milestones (this session).
+- `701201a` — v1 plan doc.
+- `3728d91` — **Milestone 1:** shared `DataValidationNotice` + grants allowlist + suppliers/grants wiring (v3 landing commit).
+- `b19c5c3` — **Milestones 2-4:** RAG colours dropped, staff_fte validation notice, hero paragraph per-number citations, `/data-validation` page.
+- `9f38451` — **Milestone 5 scaffold:** `docs/SOURCE-ARCHIVE-REPO.md` README template for the planned public archive repo.
+- `7755d32` — **Phase 2:** `Citation` type, `renderable-fields.ts` manifest, `provenance-strict` validator, `ISSUES-FOUND.md` running triage doc.
+- `ce4ef9e` — **Phase 3:** citations.ts resolver → row-level citations attached via `getProvenance()` → SourceAnnotation popover renders "Verified source" with csv_row locator for Category A fields. **Coverage: row-level wired jumped from 12.1% → 63.8% (8,380 / 13,131 pairs).**
+
+### Overnight-runway additions (this commit)
+
+- `scripts/validate/audit-portfolio-verbatim.mjs` — portfolio verbatim-vs-paraphrased audit. Random sample of 20 councils showed 1.5% verbatim; likely confounded by wrong source URL (councillors_url vs cabinet_url). Logged in ISSUES-FOUND.md §B3 with proposed disambiguation.
+- `docs/PHASE-4-SCOPE.md` — scope doc for per-council PDF citations (Category B). Inventory + archive + page-capture workflow.
+- `docs/PHASE-5-KICKOFF.md` — supplier + grant rebuild spec. The Contracts Finder pivot (ledgers > ceilings).
+
+### Validator baseline as of this commit
+
+- `npm run validate` → 0 errors, 129 warnings (all documented in ISSUES-FOUND.md).
+- `npm run validate` with `--strict-provenance` → 10 field families non-compliant; details in ISSUES-FOUND.md and audit-provenance report.
+- `source-truth` validator: **0 errors** on the 5 × 317 Band D rows (exact CSV match).
+
+### Remaining work
+
+- Phase 4 (per-council PDF citations) — scoped in docs/PHASE-4-SCOPE.md. ~53 hours of human-in-the-loop work for page tagging, 1-2 days for automation + wiring.
+- Phase 5 (suppliers + grants rebuild) — scoped in docs/PHASE-5-KICKOFF.md. ~10 working days including per-council spending-CSV discovery.
+- Phase 6 continuous integrity — nightly audit cron + freshness badges + triage flow. Builds on already-shipped audit-provenance.mjs.
+
+Every remaining gap is represented visually to the reader by a
+`DataValidationNotice` (suppliers, unverified grants, staff_fte) so
+nothing on the site today silently claims more than the verification
+actually supports.

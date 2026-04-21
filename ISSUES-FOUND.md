@@ -34,16 +34,46 @@ by ±50% because of schools staff inclusion differences — that's
 consistent with option (a). If (a), we're probably OK and just need to
 wire the PDF citations. If (b), we need to find the LGA source.
 
-### B3. Cabinet portfolio verbatim vs paraphrased — per-field audit needed
-v3 §5.4 says keep verbatim, delete paraphrased. A sample of portfolios
-(e.g. Bradford "Leader of Council and corporate portfolio") looks
-paraphrased / rewritten. I can't tell from the data alone — need to
-compare against the live council pages. **Proposed automation:**
-scrape each council's portfolio-holders page, diff each portfolio
-string against the scraped page's text. If substring match → verbatim,
-keep. If not → flag for rewrite/deletion. This is a one-shot audit
-script I can write; flag says how many records are affected before you
-decide to delete or rewrite.
+### B3. Cabinet portfolio verbatim vs paraphrased — AUDITED; decision needed
+
+**Audit tool:** `scripts/validate/audit-portfolio-verbatim.mjs` (new,
+landed this session). Fetches each council's `councillors_url`, strips
+HTML, and checks each cabinet member's `portfolio` string for verbatim
+substring match.
+
+**Sample run (random 20 councils):**
+- 10 / 20 fetched successfully (others: 403 moderngov, 404, 502)
+- 66 members audited
+- **1 verbatim (1.5%)**
+- **65 paraphrased (98.5%)**
+
+Portfolio strings as rendered (e.g. Bradford "Leader of Council and
+corporate portfolio", Birmingham "Health, public health and place-based
+wellbeing") do not appear verbatim on the councils' pages at
+`councillors_url`.
+
+**Two possible reasons — need to disambiguate before action:**
+
+1. **Wrong page:** `councillors_url` for most councils points at a
+   find-your-councillor page, which typically doesn't list portfolios.
+   The portfolio text lives on a separate "cabinet" or "executive" page.
+   If that's the case, the fix is: add a `cabinet_url` field per council
+   and re-audit against *that* page.
+
+2. **Genuine paraphrase:** the portfolios are LLM-summarised or
+   otherwise rewritten and are not present verbatim on any council page.
+   In that case, per the integrity rule, portfolios must be either
+   re-sourced verbatim or removed.
+
+**Proposed action:**
+- Add `cabinet_url` field (where applicable) to the Council type.
+- For 20 random councils, manually identify the cabinet page URL and
+  fill in `cabinet_url`.
+- Re-run audit restricted to those 20 councils against `cabinet_url`.
+- If verbatim rate jumps to >80%: reason (1) — scale fix to all 317.
+- If it stays low: reason (2) — plan removal / rewrite per v3 §5.4.
+
+Report: `scripts/validate/reports/portfolio-audit-latest.json`
 
 ---
 
