@@ -11,6 +11,7 @@
 
 import type { DataProvenance, Council } from './councils';
 import { resolveCitation } from './citations';
+import { getVerifiedSupplierSource } from './suppliers-allowlist';
 
 export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   // ── Council Tax ──
@@ -464,10 +465,21 @@ export function getProvenance(
     }
   }
 
-  // 2. National-origin override for suppliers: per-council verifiability
-  //    comes from a Contracts Finder buyer search, not the council's own
-  //    pages. Applied before URL_ROUTING so the national origin wins.
+  // 2. Suppliers: prefer the council's own verified payment-ledger when
+  //    one exists (see suppliers-allowlist.ts). Otherwise fall back to
+  //    the Contracts Finder buyer search — a lossy source that's still
+  //    traceable, surfaced to readers via the DataValidationNotice.
   if (fieldPath.startsWith('detailed.top_suppliers') && council?.name) {
+    const verified = getVerifiedSupplierSource(council.name);
+    if (verified) {
+      return {
+        label: 'published',
+        source_url: verified.sourceUrl,
+        source_title: verified.sourceTitle,
+        data_year: verified.period,
+        methodology: `Aggregated from ${council.name}'s own published payments-over-£500 CSV. Net amount summed per supplier across all quarters of the period.`,
+      };
+    }
     const global = FIELD_PROVENANCE['detailed.top_suppliers.annual_spend'];
     return {
       label: 'published',
