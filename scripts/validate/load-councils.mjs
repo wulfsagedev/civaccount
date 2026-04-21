@@ -494,11 +494,11 @@ export function loadCsv(filename) {
   const lines = content.split('\n');
   if (lines.length < 2) return [];
 
-  const headers = lines[0].split(',');
+  const headers = parseCsvLineQ(lines[0]);
   const rows = [];
 
   for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(',');
+    const parts = parseCsvLineQ(lines[i]);
     if (parts.length < headers.length) continue;
 
     const row = {};
@@ -511,6 +511,29 @@ export function loadCsv(filename) {
   }
 
   return rows;
+}
+
+/**
+ * Quote-aware CSV line parser. Needed for rows where a name field
+ * contains a comma (e.g. "Bournemouth, Christchurch & Poole").
+ */
+function parseCsvLineQ(line) {
+  const result = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
 }
 
 /**

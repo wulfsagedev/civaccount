@@ -215,6 +215,89 @@ row-level citation" visible to the reader?
 
 ---
 
+## 🔵 Value-verification cross-check (new VP1+VP2 run)
+
+Source-truth validator now cross-checks every Category A field against
+its national CSV source. Report:
+`scripts/validate/reports/value-verification-latest.json`.
+
+Final numbers after BCP fix:
+
+- **Total checks:** 6,927 (field × council pairs with both rendered and source value)
+- **Pass:** 5,251 (77.1%)
+- **Fail:** 1,556
+- **Skip:** 120 (no reference row; expected for SC councils on Band D)
+- **Hard errors:** 0
+
+### 🟢 Fields with exact or near-exact agreement (≥95% pass)
+
+| Field | Pass rate | Notes |
+|---|---|---|
+| `council_tax.band_d_2025` | 100% (294/294) | Exact match, zero drift |
+| `council_tax.band_d_2024` | 100% (294/294) | Exact |
+| `council_tax.band_d_2023` | 100% (294/294) | Exact |
+| `council_tax.band_d_2022` | 100% (290/290) | Exact |
+| `council_tax.band_d_2021` | 100% (289/290) | Exact (1 fixed this run — see D1) |
+| `detailed.total_councillors` | 98% (307/313) | 6 LGBCE disagreements; Oxfordshire and Buckinghamshire suspicious, already flagged in A4 |
+| `service_outcomes.roads.condition_poor_percent` | 97% (139/143) | DfT RDC ±0.5pp |
+| `detailed.capital_programme` | 95% (297/313) | CoR A1 ±5% |
+
+### 🟡 Fields with moderate drift (60-92%)
+
+| Field | Pass rate | Most likely cause |
+|---|---|---|
+| `service_outcomes.roads.maintained_miles` | 92% | DfT RDL ±0.5% |
+| `budget.public_health` | 87% | RA ±10%; year-over-year variance |
+| `population` | 85% | ONS revisions between preliminary and final publish |
+| `budget.education` | 82% | Year-drift + tolerance |
+| `service_outcomes.children_services.ofsted_rating` | 80% | 30 mismatches — reference CSV was last refreshed 2026-01-15, Ofsted re-inspects rolling; mostly stale reference (e.g. Haringey A12) |
+| `budget.adult_social_care` | 79% | Year-drift |
+| `service_outcomes.waste.recycling_rate_percent` | 77% | DEFRA 2022-23 ±2pp; recycling figures rounded differently between source and rendered |
+| `budget.childrens_social_care` | 76% | Year-drift |
+| `budget.total_service` | 76% | Year-drift |
+| `budget.environmental` | 64% | |
+| `budget.cultural` | 60% | |
+
+### 🟠 Fields with significant drift (<60%) — triage required
+
+All below are budget categories. Most likely year-drift (RA 2024-25 vs
+our stored 2025-26) but some are probably definitional mismatches worth
+hand-checking:
+
+| Field | Pass rate | Likely cause |
+|---|---|---|
+| `budget.central_services` | 58% | Large councils allocate "central" broadly |
+| `budget.other` | 56% | RA-catch-all; variance expected |
+| `budget.transport` | 47% | County vs district split; shared-service arrangements |
+| `budget.planning` | 36% | Small absolute values mean small £ differences register as large % |
+| `budget.housing` | 33% | **Definitional:** HRA vs GFRA split. We may store the full housing budget; RA column is GFRA-only. Needs review. |
+
+### 🔵 Calculated-fields validator warnings
+
+307 `per_capita_spend_extreme` info-level findings (values outside
+£50–£25,000/person window). Nearly all are small councils where the
+budget is low and the denominator small; City of London is the
+classic outlier (£18,919/person). Not errors — information only.
+
+---
+
+### D1. BCP Band D year-shift — CORRECTED this run
+
+Bournemouth, Christchurch & Poole had Band D values shifted by one year:
+- Our `band_d_2025` was 2157 (the actual 2024 figure); source says 2265.
+- Every historical year was similarly shifted down by one.
+
+**Fixed in-place** in `src/data/councils/unitary.ts`. `total_band_d`
+updated to 2265, `council_tax_increase_percent` recomputed to 5.0%.
+
+**Still outstanding:** BCP precept values (1639.55 + 283.41 + 83.04 =
+2006.00) sum to £259 less than the corrected Band D (£2,265). The
+precepts were scraped against an earlier year. Needs re-scrape from
+BCP's 2025-26 council tax leaflet and `council_tax_shares` percentages
+recomputed. Flagged in the data file.
+
+---
+
 ## 🟢 Confirmed — no action needed
 
 - `council_tax.band_d_*` (5 years × 317 councils) — all match
