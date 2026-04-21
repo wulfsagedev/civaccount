@@ -76,6 +76,7 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
 
   // Council tax
   council.council_tax = {
+    band_d_2026: extractField(section, 'band_d_2026'),
     band_d_2025: extractField(section, 'band_d_2025'),
     band_d_2024: extractField(section, 'band_d_2024'),
     band_d_2023: extractField(section, 'band_d_2023'),

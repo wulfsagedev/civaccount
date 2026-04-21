@@ -15,10 +15,16 @@ import { getVerifiedSupplierSource } from './suppliers-allowlist';
 
 export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   // ── Council Tax ──
+  'council_tax.band_d_2026': {
+    label: 'published',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    source_title: 'GOV.UK Council Tax Live Tables 2026-27',
+    data_year: '2026-27',
+  },
   'council_tax.band_d_2025': {
     label: 'published',
-    source_url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',
-    source_title: 'GOV.UK Council Tax Levels 2025-26',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    source_title: 'GOV.UK Council Tax Live Tables',
     data_year: '2025-26',
   },
   'council_tax.band_d_2024': {

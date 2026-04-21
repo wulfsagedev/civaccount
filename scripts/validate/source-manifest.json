@@ -4,16 +4,19 @@
   "sources": [
     {
       "id": "area-council-tax",
-      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields.",
+      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields. Refreshed 2026-04-21 to the 2026-27 release published by MHCLG on 25 March 2026.",
       "raw_file": "Band_D_2026-27.ods",
+      "raw_file_sha256": "2b50aa3688b162c1ed070ff7799315a48ed655311aa52ad94077a49e80946104",
+      "raw_file_url": "https://assets.publishing.service.gov.uk/media/69de2101961ff0ba6bff8e07/Band_D_2026-27.ods",
       "parsed_csv": "parsed-area-band-d.csv",
       "gov_uk_page": "https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax",
       "publisher": "MHCLG",
-      "data_year": "2025-26",
+      "data_year": "2026-27",
       "update_frequency": "annual_march",
-      "last_downloaded": "2026-04-13",
-      "next_expected_update": "2027-04-13",
+      "last_downloaded": "2026-04-21",
+      "next_expected_update": "2027-03-25",
       "fields_validated": [
+        "council_tax.band_d_2026",
         "council_tax.band_d_2025",
         "council_tax.band_d_2024",
         "council_tax.band_d_2023",
@@ -22,7 +25,7 @@
       ],
       "spot_check_tolerance": "0",
       "sync_command": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
-      "parsed_csv_sha256": "421e5822ff9eb499c63609b78f2b3ade8ff49d259cc6ba9a958fd9c5e55112bd"
+      "parsed_csv_sha256": "66250aa56c7b2a641f5107fa73b7f0961896e238250c9b70aed8e92880e0c6f2"
     },
     {
       "id": "council-tax-2025",
