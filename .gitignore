@@ -53,6 +53,8 @@ scripts/*
 !scripts/data-audit-log.mjs
 !scripts/requirements.txt
 !scripts/fetch-private-data.mjs
+!scripts/council-research/
+!scripts/council-research/**
 scripts/validate/reports/*.json
 council_pdfs/
 pdf_downloads/
