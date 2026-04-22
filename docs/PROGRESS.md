@@ -15,7 +15,7 @@ All three must be North-Star complete (§19) before bulk rollout begins.
 
 | Council | Type | Status | Phase | Last touched | Notes |
 |---------|------|--------|-------|--------------|-------|
-| **Bradford** | MD | 🟢 **North-Star complete (v1.0)** | All phases 0-7 ✓ **+ Phase 5b ✓** | 2026-04-22 | First fully-compliant reference council. 4 PDFs archived + sha256'd + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/bradford.json. 0/5 north-star gaps. 0 tier-classification errors. **0 UX-audit violations** (every rendered number wrapped in SourceAnnotation). Stripped: performance_kpis, service_outcomes.housing, service_outcomes.population_served. Fixed: stale population (546,200 → 563,605). |
+| **Bradford** | MD | 🟢 **North-Star complete (v1.1 strict)** | All phases 0-7 ✓ **+ Phase 5b ✓ + derivation-strip ✓** | 2026-04-22 | First fully-compliant reference council. 4 PDFs archived + sha256'd + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/bradford.json. 0/5 north-star gaps. 0 tier-classification errors. **0 UX-audit violations + 0 derived/comparator values** — every single rendered number appears verbatim in a linkable public document. Stripped data: performance_kpis, service_outcomes.housing, service_outcomes.population_served, service_spending (sub-category amounts). Stripped UI: vs-average comparators, YoY change deltas, 5-year change, per-capita comparator, 2 FAQ blocks. Fixed: stale population (546,200 → 563,605). Tax bands A-H kept as statutory calc per Council Tax Act 1992 s.5. |
 | Camden | LB | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Value-verification pass done. Suppliers + grants archived. CE salary / allowance / MTFS figures need full Phase 1 archival via Wayback where Cloudflare blocks. tier + extraction_method addition pending. |
 | Kent | SC | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Budget Report PDF extracted manually. Full Phase 1 archival pending. tier + extraction_method addition pending. |
 
@@ -65,5 +65,45 @@ Per [`/ROADMAP.md`](../ROADMAP.md):
 
 1. **Phase B**: flesh out the research toolkit scripts so they actually work
 2. **Phase C**: Bradford end-to-end through new pipeline → first North-Star council
-3. **Phase D**: Camden + Kent through new pipeline
+3. **Phase D**: Camden + Kent through new pipeline (apply the Bradford strip-list below)
 4. **Phase F**: assess readiness for bulk rollout across 314 others
+
+---
+
+## Reference: what got stripped from Bradford (expected for every council)
+
+Future councils are expected to need the **same strips**. Before marking a council as "North-Star complete", verify these fields are either absent from the council's data record OR the UI component has the rendering disabled. Cross-check against [`/COUNCIL-ROLLOUT-PLAYBOOK.md`](../COUNCIL-ROLLOUT-PLAYBOOK.md) Phase 3.
+
+### Data-level strips (per-council `Council.detailed`)
+
+These fields should be **absent** on a North-Star-compliant council unless the council publishes the specific values in a document we've archived with page-level provenance:
+
+| Path | Why stripped on Bradford | What to do for new council |
+| ---- | ------------------------ | -------------------------- |
+| `performance_kpis` | Mix of duplicates + unsourced (CQC, collection rate, housing delivery) + one direct contradiction with Tier 1 (96% rd vs 93%) | Strip the whole array. Individual values it held already appear in other cards with proper provenance. |
+| `service_outcomes.housing.homes_built / homes_target / delivery_percent` | No Tier 1 dataset for these in our source-manifest | Strip until MHCLG housing supply dataset is added (ROADMAP Phase E) |
+| `service_outcomes.population_served` | Dupes top-level `population` + holds a different year's value | **Always strip** — always a dupe |
+| `service_outcomes.libraries` (if present) | LLM-researched, no Tier 1 | Strip |
+| `service_outcomes.adult_social_care.cqc_rating` (if present) | CQC not in our Tier 1 manifest | Strip until CQC dataset added |
+| `service_spending` (whole array of category sub-breakdowns) | Landing page only (Tier 4), not page-level deep-linkable | Strip until MTFS page 12-14 (or equivalent) is archived with page-image evidence |
+| `chief_executive_total_remuneration` | Bradford-only field, rarely published atomically | Usually absent; strip if present without source |
+
+### UI-level strips (component-level, universal across all councils)
+
+Already applied in the public repo as of 2026-04-22; no per-council action:
+
+- Year-on-year bill change callout (`Up X% from last year (+£Y)`) — `YourBillCard`
+- 5-year bill change callout (`+£X over 5 years (+Y%)`) — `BillHistoryCard`
+- Peer-average comparator (`Compared to average metropolitan district: -£X`) — `YourBillCard`, `SpendingCard`, `PayAllowancesCard`, `LeadershipCard`
+- Per-capita comparator (`+£X per resident`) — `SpendingCard` footer
+- Typical CE salary comparator — `LeadershipCard`
+- Typical councillor allowance comparator — `PayAllowancesCard`
+- "Is this council expensive?" + "How much has my bill gone up?" FAQ blocks — `UnifiedDashboard`
+
+If any of these ever re-appear, Phase 5b (`ux-audit.mjs`) catches them via the derivation sweep.
+
+### Permitted statutory calculation (only one)
+
+- **Tax bands A-H** — Council Tax Act 1992 s.5 mandates the ratios (6/9, 7/9, 8/9, 11/9, 13/9, 15/9, 18/9 of Band D). Every billing authority publishes all 8 band values verbatim. Provenance label is `published`, not `calculated`, with `source_url` pointing at `legislation.gov.uk/ukpga/1992/14/section/5`.
+
+If future UI work proposes adding any other "calculated" or "comparison" rendering, the default answer is **no** — even if the inputs are Tier 1. Bradford's audit proved this needs to be a hard line.

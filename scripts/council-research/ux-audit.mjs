@@ -63,12 +63,30 @@ const url = args.url
   ? `https://civaccount.co.uk/council/${slug}`
   : `http://localhost:3000/council/${slug}`;
 
+/**
+ * Two separate sweeps run inside the page:
+ *
+ *   (1) unwrappedSweep — every numeric text node whose ancestors don't
+ *       include a SourceAnnotation trigger (role=button aria-label starts
+ *       with "Source:"). Each result is a numeric value rendered without
+ *       provenance.
+ *
+ *   (2) derivationSweep — every SourceAnnotation trigger whose aria-label
+ *       marks the value as Calculated / Comparison / peer-average /
+ *       year-on-year etc. Each result violates NORTH-STAR.md principle #2:
+ *       the rendered value doesn't appear verbatim in any council's
+ *       publication. The single permitted exception is statutory tax
+ *       bands (which render with label 'published', not 'calculated').
+ *
+ * Combined result = all violations. Exit 0 only if both empty.
+ */
 const sweepScript = `
 (() => {
+  // ── Sweep 1: unwrapped numeric values ──
   const main = document.querySelector('main') || document.body;
   const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, null);
   const numberRegex = /(£[\\d,]+(?:\\.\\d+)?(?:\\s*(?:million|billion|bn|m))?|\\d{1,3}(?:,\\d{3})+(?:\\.\\d+)?|\\d+\\.\\d+%|\\d{3,}\\b)/;
-  const results = [];
+  const unwrapped = [];
   let node;
   while ((node = walker.nextNode())) {
     const text = node.textContent.trim();
@@ -94,10 +112,9 @@ const sweepScript = `
       }
       h = h.parentElement;
     }
-    results.push({ text: text.slice(0, 100), card });
+    unwrapped.push({ kind: 'unwrapped', text: text.slice(0, 100), card });
   }
-  // Strip decorative / non-data items
-  return results.filter(r => {
+  const unwrappedFiltered = unwrapped.filter(r => {
     if (/^20\\d\\d$/.test(r.text)) return false;
     if (/^\\d{4}-\\d{2}$/.test(r.text)) return false;
     if (/^£\\d+k(-£\\d+k|\\+)$/.test(r.text)) return false;
@@ -111,6 +128,26 @@ const sweepScript = `
     if (/^\\d\\d? [A-Z][a-z]+ \\d{4}$/.test(r.text)) return false;
     return true;
   });
+
+  // ── Sweep 2: derived / comparator labels ──
+  // Per NORTH-STAR.md §3 Forbidden derived patterns. Tax bands are the
+  // single permitted statutory exception; their provenance label is
+  // 'published' (not 'Calculated'), so they don't match here.
+  const btns = Array.from(document.querySelectorAll('[role="button"][aria-label^="Source:"]'));
+  const derivationViolations = btns
+    .filter(b => /Calculated|Comparison|Average|year-on-year|peer.?average/i.test(b.getAttribute('aria-label')))
+    // Allow explicit statutory exception: tax_bands provenance has label
+    // 'published' now, so it won't match. If someone re-labels it
+    // Calculated, we want to catch that.
+    .map(b => ({
+      kind: 'derived',
+      text: b.textContent.trim().slice(0, 100),
+      label: b.getAttribute('aria-label').slice(0, 120),
+      card: (b.closest('section') && b.closest('section').querySelector('h2') &&
+             b.closest('section').querySelector('h2').textContent.trim().slice(0, 40)) || '(no heading)',
+    }));
+
+  return { unwrapped: unwrappedFiltered, derived: derivationViolations };
 })()
 `;
 
@@ -131,7 +168,10 @@ async function main() {
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60_000 });
-    const violations = await page.evaluate(sweepScript);
+    const sweeps = await page.evaluate(sweepScript);
+    const unwrapped = sweeps.unwrapped || [];
+    const derived = sweeps.derived || [];
+    const total = unwrapped.length + derived.length;
 
     const reportsDir = join(REPO_ROOT, 'scripts', 'validate', 'reports');
     mkdirSync(reportsDir, { recursive: true });
@@ -141,26 +181,47 @@ async function main() {
       slug,
       url,
       audited_at: new Date().toISOString(),
-      violation_count: violations.length,
-      violations,
+      total_violations: total,
+      unwrapped_count: unwrapped.length,
+      derived_count: derived.length,
+      unwrapped,
+      derived,
     }, null, 2));
 
-    if (violations.length === 0) {
+    if (total === 0) {
       console.log(`\n✓ 0 violations — ${args.council} passes Phase 5b`);
+      console.log(`  (0 unwrapped numbers · 0 derived/comparator values)`);
       console.log(`  Report: ${outPath}`);
       process.exit(0);
     }
 
-    console.log(`\n✗ ${violations.length} violation(s) — ${args.council} fails Phase 5b`);
-    console.log('  Each is a numeric value rendered without SourceAnnotation provenance.\n');
-    for (const v of violations.slice(0, 30)) {
-      console.log(`  • [${v.card ?? 'unknown'}] "${v.text}"`);
+    console.log(`\n✗ ${total} violation(s) — ${args.council} fails Phase 5b`);
+    console.log(`  ${unwrapped.length} unwrapped numeric values (no provenance)`);
+    console.log(`  ${derived.length} derived / comparator values (violate NORTH-STAR §3 forbidden patterns)\n`);
+
+    if (unwrapped.length > 0) {
+      console.log(`UNWRAPPED (numeric values without SourceAnnotation):`);
+      for (const v of unwrapped.slice(0, 20)) {
+        console.log(`  • [${v.card ?? 'unknown'}] "${v.text}"`);
+      }
+      if (unwrapped.length > 20) console.log(`  … and ${unwrapped.length - 20} more.`);
+      console.log();
     }
-    if (violations.length > 30) {
-      console.log(`  … and ${violations.length - 30} more.`);
+
+    if (derived.length > 0) {
+      console.log(`DERIVED / COMPARATORS (rendered but not in any council's publication):`);
+      for (const v of derived.slice(0, 20)) {
+        console.log(`  • [${v.card ?? 'unknown'}] "${v.text}" — label: ${v.label}`);
+      }
+      if (derived.length > 20) console.log(`  … and ${derived.length - 20} more.`);
+      console.log();
     }
-    console.log(`\nFull list: ${outPath}`);
-    console.log(`Per COUNCIL-ROLLOUT-PLAYBOOK.md §Phase 5b: wrap each or strip the source data. Re-run until 0.`);
+
+    console.log(`Full list: ${outPath}`);
+    console.log(`Per COUNCIL-ROLLOUT-PLAYBOOK.md §Phase 5b:`);
+    console.log(`  - UNWRAPPED → wrap in SourceAnnotation OR strip source data`);
+    console.log(`  - DERIVED → strip rendering in component (don't re-label)`);
+    console.log(`Re-run until 0 / 0.`);
     process.exit(1);
   } finally {
     await browser.close();
