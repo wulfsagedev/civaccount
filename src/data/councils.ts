@@ -417,13 +417,21 @@ export interface DetailedCouncilData {
   // When this detailed data was last verified
   last_verified?: string;
 
-  // Per-field source URLs — exact provenance for each data point
-  // Every field that comes from a council website (not GOV.UK bulk data) should have an entry here
+  // Per-field source URLs — exact provenance for each data point.
+  // Every field that comes from a council website (not GOV.UK bulk data)
+  // should have an entry here. `data_year` is REQUIRED — every rendered
+  // value must be traceable to (a) a real public document and (b) the
+  // fiscal year that document covers. See DATA-YEAR-POLICY.md for the
+  // per-field-type defaults and rationale. `sha256_at_access` is a
+  // hash of the fetched document bytes taken the last time we verified
+  // the URL; lets a future release-watcher cron detect content drift.
   field_sources?: Record<string, {
-    url: string;        // Direct URL to the source document/page
-    title: string;      // Human-readable source title
-    page?: number;      // Page number within a PDF (optional)
-    accessed: string;   // ISO date when this source was last verified
+    url: string;             // Direct URL to the source document/page
+    title: string;           // Human-readable source title
+    page?: number;           // Page number within a PDF (optional)
+    accessed: string;        // ISO date when this source was last verified
+    data_year: string;       // Fiscal year the source covers: "2025-26", "2024-25", "mid-2024", "current", etc.
+    sha256_at_access?: string; // SHA-256 of the fetched document at `accessed` (optional)
   }>;
 }
 

@@ -459,13 +459,18 @@ export function getProvenance(
       || council.detailed.field_sources[simpleKey];
 
     if (fieldSource) {
-      // Merge with global FIELD_PROVENANCE for label/methodology, but use per-council URL
+      // Merge with global FIELD_PROVENANCE for label/methodology.
+      // Per-council data_year wins over the global default — the value
+      // we render is the value that council published, and the year
+      // next to it must be the year printed on that council's document.
+      // Global data_year is a fallback for older entries that predate
+      // the DATA-YEAR-POLICY.md contract.
       const global = FIELD_PROVENANCE[fieldPath] || FIELD_PROVENANCE[fieldPath.split('.')[0]];
       return {
         label: global?.label || 'official',
         source_url: fieldSource.url,
         source_title: fieldSource.title,
-        data_year: global?.data_year,
+        data_year: fieldSource.data_year || global?.data_year,
         methodology: global?.methodology,
       };
     }

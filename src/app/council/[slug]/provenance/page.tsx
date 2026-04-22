@@ -299,7 +299,17 @@ export default async function ProvenancePage({ params }: Props) {
                 <li key={fieldKey} className="pb-4 border-b border-border/50 last:border-b-0 last:pb-0">
                   <div className="flex items-start justify-between gap-4 mb-1">
                     <div className="min-w-0">
-                      <p className="type-body-sm font-semibold">{FIELD_LABEL[fieldKey] ?? fieldKey}</p>
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <p className="type-body-sm font-semibold">{FIELD_LABEL[fieldKey] ?? fieldKey}</p>
+                        {src.data_year && (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] font-medium gap-1 bg-navy-50 text-navy-600 border-navy-200 dark:bg-navy-950 dark:border-navy-800"
+                          >
+                            {src.data_year === 'current' ? 'Live page' : src.data_year}
+                          </Badge>
+                        )}
+                      </div>
                       <p className="type-caption text-muted-foreground break-words">{src.title}</p>
                       {src.page && (
                         <p className="type-caption text-muted-foreground mt-1">Page {src.page}</p>
