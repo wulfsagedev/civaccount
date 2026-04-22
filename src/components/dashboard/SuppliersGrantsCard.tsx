@@ -124,6 +124,15 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
               const isExpanded = expandedSupplier === idx;
               const hasDescription = !!supplier.description;
 
+              // When the council is on the suppliers allowlist, every row
+              // gets a "Open council's payment ledger" link pointing at the
+              // published source dataset — readers can filter to the
+              // supplier's row and verify the aggregated total themselves.
+              // This is the concrete "every number links to a real document"
+              // contract, not just a footer caveat.
+              const sourceUrl = verifiedSupplierSource?.sourceUrl;
+              const sourceTitle = verifiedSupplierSource?.sourceTitle;
+
               return hasDescription ? (
                 <button
                   key={idx}
@@ -145,19 +154,39 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      {formatBudget(supplier.annual_spend / 1000)}
+                      <SourceAnnotation
+                        provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}
+                        reportContext={{
+                          council: selectedCouncil.name,
+                          field: `Supplier spend: ${supplier.name}`,
+                          value: formatBudget(supplier.annual_spend / 1000),
+                        }}
+                      >{formatBudget(supplier.annual_spend / 1000)}</SourceAnnotation>
                     </span>
                   </div>
                   {isExpanded && (
-                    <div className="mt-2 p-3 bg-muted/20 rounded-lg">
+                    <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-2">
                       <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
                       {/* Descriptions are CivAccount summaries of what the
                           supplier contract covers — not a verbatim quote
                           from a council publication. Labelled honestly per
                           the integrity policy (§5.4 / /data-validation). */}
-                      <p className="type-caption text-muted-foreground mt-2 italic">
+                      <p className="type-caption text-muted-foreground italic">
                         CivAccount summary — not from council publication
                       </p>
+                      {sourceUrl && (
+                        <a
+                          href={sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
+                        >
+                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                          Verify £{formatBudget(supplier.annual_spend / 1000).replace('£', '')} in {sourceTitle}
+                          <span className="sr-only"> (opens in new tab)</span>
+                        </a>
+                      )}
                     </div>
                   )}
                 </button>
@@ -168,6 +197,18 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       <p className="type-body font-semibold">{supplier.name}</p>
                       {supplier.category && (
                         <p className="type-body-sm text-muted-foreground">{supplier.category}</p>
+                      )}
+                      {sourceUrl && (
+                        <a
+                          href={sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 type-caption text-muted-foreground hover:text-foreground transition-colors mt-1"
+                        >
+                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                          Open source ledger
+                          <span className="sr-only"> (opens in new tab)</span>
+                        </a>
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
@@ -290,6 +331,12 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
             ).map((grant, idx) => {
               const isExpanded = expandedGrant === idx;
               const hasDescription = !!grant.description;
+              // Same "every row links to its source" contract as the
+              // suppliers list above: when the council is on the grants
+              // allowlist, every row gets a direct link to the published
+              // register so readers can verify the recipient + amount.
+              const grantSourceUrl = verifiedGrantSource?.sourceUrl;
+              const grantSourceTitle = verifiedGrantSource?.sourceTitle;
 
               return hasDescription ? (
                 <button
@@ -312,12 +359,32 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
-                      {formatCurrency(grant.amount, { decimals: 0 })}
+                      <SourceAnnotation
+                        provenance={getProvenance('detailed.grant_payments', selectedCouncil)}
+                        reportContext={{
+                          council: selectedCouncil.name,
+                          field: `Grant payment: ${grant.recipient}`,
+                          value: formatCurrency(grant.amount, { decimals: 0 }),
+                        }}
+                      >{formatCurrency(grant.amount, { decimals: 0 })}</SourceAnnotation>
                     </span>
                   </div>
                   {isExpanded && (
-                    <div className="mt-2 p-3 bg-muted/20 rounded-lg">
+                    <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-2">
                       <p className="type-body-sm text-muted-foreground leading-relaxed">{grant.description}</p>
+                      {grantSourceUrl && (
+                        <a
+                          href={grantSourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
+                        >
+                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                          Verify {formatCurrency(grant.amount, { decimals: 0 })} to {grant.recipient} in {grantSourceTitle}
+                          <span className="sr-only"> (opens in new tab)</span>
+                        </a>
+                      )}
                     </div>
                   )}
                 </button>
@@ -328,6 +395,18 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                       <p className="type-body font-semibold">{grant.recipient}</p>
                       {grant.purpose && (
                         <p className="type-body-sm text-muted-foreground">{grant.purpose}</p>
+                      )}
+                      {grantSourceUrl && (
+                        <a
+                          href={grantSourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 type-caption text-muted-foreground hover:text-foreground transition-colors mt-1"
+                        >
+                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                          Open grants register
+                          <span className="sr-only"> (opens in new tab)</span>
+                        </a>
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
