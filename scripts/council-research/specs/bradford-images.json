@@ -46,5 +46,13 @@
     "page": 4,
     "value": "£1,766,870",
     "note": "Sum of Total column (last page typically has aggregate row)"
+  },
+  {
+    "council": "Bradford",
+    "field": "salary_bands",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 62,
+    "value": "(10 bands, £50k-£150k+)",
+    "note": "Note 10b Officers' Remuneration (continued) — employees earning over £50,000 grouped by band (2024/25 column)"
   }
 ]

@@ -436,9 +436,24 @@ export interface DetailedCouncilData {
     url: string;             // Direct URL to the source document/page
     title: string;           // Human-readable source title
     page?: number;           // Page number within a PDF (optional)
+    excerpt?: string;        // Verbatim quote of the line/row containing the value
     accessed: string;        // ISO date when this source was last verified
     data_year: string;       // Fiscal year the source covers: "2025-26", "2024-25", "mid-2024", "current", etc.
-    sha256_at_access?: string; // SHA-256 of the fetched document at `accessed` (optional)
+    /**
+     * Source quality tier per NORTH-STAR.md §3:
+     *   1 — GOV.UK bulk CSV (automated cross-check possible)
+     *   2 — Council open-data portal, archived locally
+     *   3 — Council PDF, archived locally with sha256
+     *   4 — Reader-accessible but not archived (bot-blocked / live page)
+     *   5 — Primary confirmed via secondary source (last-resort)
+     */
+    tier?: 1 | 2 | 3 | 4 | 5;
+    /**
+     * How the value was obtained from the source — required for every
+     * Tier ≤ 3 entry. NORTH-STAR.md §4.
+     */
+    extraction_method?: 'csv_row' | 'pdf_page' | 'aggregate' | 'socrata_query' | 'manual_read';
+    sha256_at_access?: string; // SHA-256 of the fetched document at `accessed` (required for Tier ≤ 3)
     /**
      * When the document genuinely can't be fingerprinted: e.g. the
      * council site blocks automated fetches (Cloudflare), or the data
