@@ -39,7 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.claude/
+# Ignore Claude Code local-session files, but track commit-worthy
+# project-scoped artefacts (slash commands, project settings).
+.claude/*
+!.claude/commands/
+.claude/settings.local.json
+.claude/launch.json.bak
 
 # research artifacts & tooling
 # Block one-off research scripts but allow active build/validation scripts.

@@ -1089,6 +1089,15 @@ When adding a new field to the `Council` interface:
    fixture mode keeps building.
 3. Enrichment across the real dataset happens in the private repo.
 
+## Council rollout slash commands
+
+When the user wants to add or re-verify a council's data, use these slash commands — they execute the full methodology-compliant process:
+
+- `/rollout-council <Name>` — run the full 9-phase Bradford-level rollout on a new council (or re-run on one that needs work). Reads `NORTH-STAR.md` + `COUNCIL-ROLLOUT-PLAYBOOK.md` + applies the Bradford strip-list from `docs/PROGRESS.md`. Ends with `ux-audit` at 0 / 0 violations. Ships paired PRs on both repos.
+- `/audit-council <Name>` — read-only spot-check of an already-shipped council. Four gates: north-star structural, validator suite, live UX sweep (unwrapped + derived), live-site reality check against council's own website. No data changes.
+
+Voice triggers: "roll out Camden", "bring Kent up to Bradford's standard", "audit Bradford", "re-verify Bradford".
+
 ## Skill routing
 
 When the user's request matches an available skill, ALWAYS invoke it using the Skill
