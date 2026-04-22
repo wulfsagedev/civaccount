@@ -24,6 +24,12 @@ export const VERIFIED_SUPPLIER_COUNCILS: Record<string, VerifiedSupplierSource> 
     sourceUrl: 'https://datahub.bradford.gov.uk/datasets/finance/bradford-council-expenditure-greater-than-500/',
     period: '2024-25',
   },
+  Camden: {
+    council: 'Camden',
+    sourceTitle: "Camden Council Spend Over £500 (Socrata dataset 3ixw-qvb8, 2024-25)",
+    sourceUrl: 'https://opendata.camden.gov.uk/Finance/Camden-Council-Spend-Over-500-GBP/3ixw-qvb8',
+    period: '2024-25',
+  },
 };
 
 export function isVerifiedSupplierCouncil(councilName: string): boolean {
