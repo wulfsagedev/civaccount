@@ -22,7 +22,7 @@ This mission is the forcing function behind every decision below. If any decisio
 
 2. **Primary source = UK government publication.** GOV.UK, ONS, DEFRA, DfT, Ofsted, LGBCE, or a council's own `.gov.uk` domain. News, aggregators, Wikipedia, and third parties can only cross-reference — never supply the value itself.
 
-3. **No computed values unless the computation is transparent and shown.** Per-capita spend (= spend ÷ population) is fine — both inputs are sourced, the formula is visible. "Savings target growth estimate" is not — it's not in a document, so it doesn't render.
+3. **Every rendered value must appear verbatim in a linkable public document.** No peer averages ("typical metropolitan district CE salary £X"), no year-on-year deltas ("+£191 from last year"), no per-capita comparators ("+£113 per resident vs average"), no 5-year arithmetic. Even when the inputs are individually sourced, the derived value doesn't exist on any council's website — so it fails the bar. The only exception is calculations mandated by statute whose outputs every council publishes verbatim (e.g. Council Tax Act 1992 s.5 band ratios — every council lists all 8 band values on its own website). Adopted 2026-04-22 after Bradford UX audit.
 
 4. **Date is structural, not decorative.** Every value has a year label visible to the reader within one interaction. Mixed vintages across a single card are expected and correct — we label each value with its own year rather than pretend they share one.
 
@@ -77,6 +77,23 @@ Every rendered value is assigned a tier. Lower number = higher quality.
 - News items that don't cite a primary UK-government source
 - "Estimates based on size" / interpolation / model-derived values
 - Prior CivAccount values that can't be back-traced to a primary document
+
+### Forbidden derived patterns (added 2026-04-22 after Bradford UX audit)
+
+These render with "Source: Calculated" or "Source: Comparison" labels and are **all banned** — they don't satisfy principle #2 (every value appears verbatim in a council publication):
+
+1. **Year-on-year change deltas** — "Up 9.3% from last year (+£191.00)". Even though this year's and last year's Band D are each Tier 1 sourced, the *delta* isn't in any publication. Strip. (The individual year-by-year Band D history card remains — each bar is sourced.)
+2. **Multi-year change deltas** — "+£450 over 5 years (+25.1%)". Same reason. Strip.
+3. **Peer-group averages** — "Typical metropolitan district CE salary £192,127", "Avg for districts £12,307". CivAccount computes these across all councils of a type. Strip.
+4. **Peer-group comparators** — "Compared to average: -£40.89", "+£113 per resident". Strip.
+5. **Per-capita derivations** — "£X per resident" budgets. Inputs (budget + population) are Tier 1 but the ratio isn't published. Strip.
+6. **Combined ranking scores** — "Above median on 5 of 7 metrics". Strip.
+
+**Only permitted derivation:** statutory calculations whose outputs every council publishes verbatim. Current permitted set:
+
+- **Tax bands A-H from Band D** (Council Tax Act 1992 s.5 — 6/9, 7/9, 8/9, 11/9, 13/9, 15/9, 18/9 ratios; every billing authority publishes all 8 band values on its own council-tax page). Provenance label = `published`, not `calculated`, because the output figures ARE in every council's publication.
+
+If an apparent derivation doesn't meet this "every council publishes the output verbatim" test, it's stripped. When in doubt, strip.
 
 ---
 
@@ -582,14 +599,16 @@ A council is **North-Star done** when:
 1. ✓ All archivable documents fetched to `pdfs/council-pdfs/<slug>/` with sha256 + `_meta.json` + Wayback URL
 2. ✓ Every rendered field has a `field_sources` entry meeting section 4 schema
 3. ✓ All 13 CI validators pass (0 errors, warnings reviewed)
-4. ✓ **`ux-audit.mjs --council=<Name>` reports 0 violations** (Phase 5b — added 2026-04-22)
-5. ✓ `<COUNCIL>-AUDIT.md` written with Datasheet for Datasets structure (section 6 Phase 6)
-6. ✓ `manifests/<slug>.json` reproducibility manifest committed
-7. ✓ `npm run reproduce -- --council=<slug>` exits 0
-8. ✓ `status/<slug>.json` marked `"done": true`
-9. ✓ Any fields that can't meet the bar are absent (stripped), not approximated
+4. ✓ **`ux-audit.mjs --council=<Name>` reports 0/0 violations** — both 0 unwrapped numeric values AND 0 derived/comparator values (Phase 5b — expanded 2026-04-22 after Bradford audit)
+5. ✓ Expected data-level strips applied per COUNCIL-ROLLOUT-PLAYBOOK.md Phase 3 checklist (performance_kpis, service_outcomes.housing, service_outcomes.population_served, service_spending, etc. — unless explicitly page-level sourced)
+6. ✓ `<COUNCIL>-AUDIT.md` written with Datasheet for Datasets structure (section 6 Phase 6)
+7. ✓ `manifests/<slug>.json` reproducibility manifest committed
+8. ✓ `npm run reproduce -- --council=<slug>` exits 0
+9. ✓ `status/<slug>.json` marked `"done": true`
+10. ✓ Any fields that can't meet the bar are absent (stripped), not approximated
+11. ✓ **Every single rendered value appears verbatim in a linkable public document** — no peer averages, no YoY deltas, no per-capita ratios, no multi-year change callouts; only the statutory tax-bands exception is permitted (principle #3)
 
-See `COUNCIL-ROLLOUT-PLAYBOOK.md` for the step-by-step operational guide.
+See [`COUNCIL-ROLLOUT-PLAYBOOK.md`](COUNCIL-ROLLOUT-PLAYBOOK.md) for the step-by-step operational guide.
 
 Three reference councils (Bradford, Camden, Kent) must be North-Star done before we scale to any other council. After that, new councils are added one at a time, each passing the same bar.
 

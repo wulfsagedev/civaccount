@@ -160,19 +160,57 @@ For each archived document type, run the matching extraction routine:
 3. **YoY outlier** — > 30% change from last known year → human review.
 4. **Sum consistency** — sub-totals match totals.
 
-### The strip rule
+### The strip rule (TIGHTENED 2026-04-22 — zero tolerance for derived values)
 
 **If a value can't be traced to a primary `.gov.uk` publication (Tier 1-4) OR confirmed via secondary (Tier 5), it does not render.**
 
-Strip means: remove the value from the council's data entry. The UI either omits the card entirely or shows a `DataValidationNotice`. 
+**AND** (new): Even when inputs are individually sourced, if the **rendered value itself** doesn't appear verbatim in a single council's publication — strip. This catches CivAccount-derived peer averages, year-on-year deltas, and per-capita ratios.
+
+Strip means: remove the value from the council's data entry. The UI either omits the card entirely or shows a `DataValidationNotice`.
 
 **Don't keep values "for completeness" — keep the standard.**
 
-Typical strips on first audit:
-- `performance_kpis` entries with no Tier 1 backing (CQC, council tax collection, homes delivery) — strip
-- `service_outcomes.housing` if not in a Tier 1 dataset we track — strip
-- `service_outcomes.population_served` duplicating the top-level `population` field — strip the dupe
-- Any value contradicting another Tier 1 value (e.g. 96% here vs 93% from DfT RDC) — strip the duplicate, keep the one with Tier 1 provenance
+### Strip checklist — every new council's data record (before populate)
+
+Walk the council's existing `Council.detailed` record and **remove** each of the following if present. Bradford's final state is the reference — your council should end with the same shape.
+
+#### Data-level strips (per-council record)
+
+| Field path | Reason to strip | When to keep |
+| ---------- | --------------- | ------------ |
+| `performance_kpis` (entire array) | Items labelled with RAG colours, thresholds set by CivAccount, values often duplicate Tier 1 data and sometimes contradict it (Bradford: 96% rd condition vs Tier 1 93%) | **Never keep** — roll out as removed field for all councils under the current schema |
+| `service_outcomes.housing.homes_built / homes_target / delivery_percent` | Not in any Tier 1 dataset we track (MHCLG Live Tables on Housing Supply not yet archived) | Only keep if you've archived the specific MHCLG publication that council appears in |
+| `service_outcomes.population_served` | Duplicates top-level `population` (which is already Tier 1 from ONS) | **Never keep** — always a dupe |
+| `service_outcomes.libraries` | Typically LLM-researched, no Tier 1 source in our manifest | Only if council publishes a specific libraries stats page that can be archived |
+| `service_outcomes.adult_social_care.cqc_rating` | CQC data isn't in our Tier 1 manifest yet | Strip until we add CQC dataset to source-manifest.json |
+| `service_spending` (per-category sub-amounts) | Usually landing-page only (Tier 4), not deep-linkable to a specific document page showing the exact sub-amount | Keep only if the council's MTFS / Budget Book PDF has been archived and you can point at the exact page |
+| `chief_executive_total_remuneration` | Only Bradford had this field — total package vs base is rarely published atomically | Only if council publishes the specific total package figure |
+| `council_tax_collection_rate` / `business_rates_collection_rate` | Not in our Tier 1 sources | Strip |
+| `homes_delivery_vs_target` | Not in our Tier 1 sources | Strip |
+| Any field that duplicates a Tier 1 value with a different year / derivation | Contradictions erode trust | Strip dupe, keep Tier-1-sourced canonical |
+
+#### UI-level strips (ALREADY DONE — universal across all councils)
+
+These were stripped from the React components as part of the Bradford audit and now affect every council rendered on the site. No per-council action needed:
+
+- YearHistory 5-year change (`+£X (+Y%)` callout) — `BillHistoryCard`
+- YoY change callout (`Up X% from last year (+£Y)`) — `YourBillCard`
+- Peer-average comparator (`Compared to average ...: -£X`) — `YourBillCard`
+- Typical CE salary comparator — `LeadershipCard`
+- Avg councillor allowance comparator — `PayAllowancesCard`
+- Per-capita comparator (`+£X per resident`) — `SpendingCard`
+- FAQ blocks "Is this council expensive?" + "How much has my bill gone up?" — `UnifiedDashboard`
+
+If a future UI change re-introduces any of these, Phase 5b will catch it (see below).
+
+### Tier 1 cross-check (on what remains)
+
+For each extracted value that survives the strip:
+
+1. **Tier 1 cross-check** — does the value appear in any Tier 1 CSV we have? If yes, must match exactly.
+2. **Benford's Law** — once validator is live (ROADMAP Phase E). z > 1.96 = flag.
+3. **YoY outlier** — > 30% change from last known year → human review.
+4. **Sum consistency** — sub-totals match totals (budget categories sum to `total_service`, allowances sum to `total_allowances_cost`, band values follow statutory ratios).
 
 ---
 
@@ -294,12 +332,34 @@ If any fail — fix or strip the offending value.
 
 5. Re-run the sweep. Iterate until **0 results**.
 
+### Derivation sweep (also required — added 2026-04-22)
+
+A second browser sweep for banned derivation patterns:
+
+```javascript
+(() => {
+  const btns = Array.from(document.querySelectorAll('[role="button"][aria-label^="Source:"]'));
+  return btns
+    .filter(b => /Calculated|Comparison|Average|derived|year-on-year/i.test(b.getAttribute('aria-label')))
+    .map(b => ({
+      label: b.getAttribute('aria-label'),
+      text: b.textContent.trim().slice(0, 60),
+      section: b.closest('section')?.querySelector('h2')?.textContent?.trim(),
+    }));
+})()
+```
+
+**Every result is a violation** unless it's the single permitted statutory calculation: tax bands A-H under `provenance = 'tax_bands'` which is labelled `published` (not `calculated`) with source linking to Council Tax Act 1992.
+
+Any `Calculated` or `Comparison` label other than the statutory tax_bands exception → strip the rendering in the component; don't just re-label.
+
 ### Ancillary visual checks (required before ship)
 
 - **Tap the first numeric value in the hero.** Popover opens. Source URL points to a specific resource (not a landing page). Tier badge visible.
 - **Tap a value with a page_image_url.** Lightbox opens, popover closes, PNG renders the expected page.
 - **Tap "Open source" on a Tier 3 PDF value.** Browser opens PDF directly at the right page.
 - **Click a supplier drill-down.** Verify helper copy names the specific supplier/recipient the reader should search for.
+- **Spot-check against the council's live website.** Pick 3 random rendered values. Visit `<council>.gov.uk` (in a browser, as a real user). Confirm each value appears on the council's own page either verbatim or in a document linked from that page. This is the "would a journalist find anything wrong" check.
 
 ### Automated version (coming)
 
