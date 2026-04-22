@@ -38,6 +38,7 @@ import { validate as validateFieldStaleness } from './validators/field-staleness
 import { validate as validateProvenanceStrict } from './validators/provenance-strict.mjs';
 import { validate as validateCalculatedFields } from './validators/calculated-fields.mjs';
 import { validate as validateFieldSourceYears } from './validators/field-source-years.mjs';
+import { validate as validateNorthStarGate } from './validators/north-star-gate.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -102,6 +103,7 @@ async function main() {
     ['provenance-strict', validateProvenanceStrict],
     ['calculated-fields', validateCalculatedFields],
     ['field-source-years', validateFieldSourceYears],
+    ['north-star-gate', validateNorthStarGate],
   ];
 
   // Link-check is opt-in (requires network access, slow)
