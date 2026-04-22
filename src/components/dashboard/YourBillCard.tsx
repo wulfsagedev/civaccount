@@ -120,38 +120,15 @@ const YourBillCard = ({
             relevant to them. We deliberately don't subtract one from the other
             or interpret "real terms" — that's the reader's call. See
             src/lib/inflation-context.ts for the sources. */}
-        {taxChange !== null && (
-          <div className="mt-2 space-y-0.5">
-            {/* Neutral framing: arrow icon carries direction, colour is reserved
-                for genuine concern (ie. this is transparency, not a warning). */}
-            <div className="flex items-center gap-1.5">
-              {taxChange > 0 ? (
-                <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-              ) : (
-                <TrendingDown className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-              )}
-              <span className="type-body-sm text-foreground">
-                <span className="font-semibold">{taxChange > 0 ? 'Up' : 'Down'} {Math.abs(taxChange).toFixed(1)}%</span>
-                {' from last year'}
-                {taxChangeAmount !== null && (
-                  <span className="text-muted-foreground ml-1 whitespace-nowrap">
-                    (<SourceAnnotation
-                      provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}
-                      reportContext={{
-                        council: selectedCouncil.name,
-                        field: 'Band D change vs prior year (£)',
-                        value: `${taxChangeAmount > 0 ? '+' : ''}${formatCurrency(taxChangeAmount, { decimals: 2 })}`,
-                      }}
-                    >{taxChangeAmount > 0 ? '+' : ''}{formatCurrency(taxChangeAmount, { decimals: 2 })}</SourceAnnotation>)
-                  </span>
-                )}
-              </span>
-            </div>
-            <p className="type-caption text-muted-foreground pl-5">
-              Over the same year, prices rose {INFLATION_CONTEXT.cpi_rate}% and average pay rose {INFLATION_CONTEXT.wage_growth_rate}%.
-            </p>
-          </div>
-        )}
+        {/* Year-on-year change callout removed 2026-04-22 per owner
+            directive. Both the % change and the £ delta are
+            CivAccount subtractions between this year's and last year's
+            Tier 1 Band D figures. The calculation is trivial but the
+            resulting value doesn't appear verbatim in any single
+            council's publication, so it fails the "every data point
+            directly from a linkable public document" bar. Readers can
+            still see every individual year's Band D (all Tier 1
+            sourced) in the "How your bill has changed" card below. */}
       </div>
 
       {/* Two-tier explainer — district residents also pay county council tax,
@@ -338,23 +315,14 @@ const YourBillCard = ({
         </div>
       )}
 
-      {/* Comparison callout — neutral framing. Direction is clear from the
-          sign; colouring it green/amber implies judgement ("you're overpaying")
-          which isn't the job of this app. */}
-      {vsAverage !== null && (
-        <div className="mt-5 p-3 rounded-lg bg-muted/30">
-          <div className="flex items-center justify-between gap-3">
-            <span className="type-caption text-muted-foreground">
-              Compared to average {toSentenceTypeName(selectedCouncil.type_name)}
-            </span>
-            <SourceAnnotation provenance={getProvenance('vs_average')}>
-              <span className="type-body-sm font-semibold tabular-nums whitespace-nowrap shrink-0 text-foreground">
-                {vsAverage > 0 ? '+' : ''}{formatCurrency(vsAverage, { decimals: 2 })}
-              </span>
-            </SourceAnnotation>
-          </div>
-        </div>
-      )}
+      {/* "Compared to average" callout removed 2026-04-22 per owner
+          directive. The comparator is a CivAccount-derived average
+          across all councils of the same type; it doesn't appear
+          verbatim in any single council's publication, so it fails
+          the "every data point directly from a linkable public
+          document" bar. Individual Band D values for every council
+          are still published and sourced — readers can compare
+          manually via /compare. */}
 
       {/* Compare CTA */}
       <Link

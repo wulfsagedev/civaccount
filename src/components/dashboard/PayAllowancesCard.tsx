@@ -71,7 +71,7 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                     {' councillors'}
                   </span>
                 </p>
-                {basic && avgAllowance > 0 && (
+                {basic && (
                   <p className="type-caption text-muted-foreground">
                     Basic allowance: <SourceAnnotation
                       provenance={getProvenance('detailed.councillor_basic_allowance', selectedCouncil)}
@@ -80,7 +80,10 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                         field: 'Councillor basic allowance',
                         value: formatCurrency(basic, { decimals: 0 }),
                       }}
-                    >{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation> · Avg for {toSentenceTypeName(selectedCouncil.type_name)}s: <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>{formatCurrency(Math.round(avgAllowance), { decimals: 0 })}</SourceAnnotation>
+                    >{formatCurrency(basic, { decimals: 0 })}</SourceAnnotation>
+                    {/* Peer-average comparator removed 2026-04-22 —
+                        derived across councils, not from any single
+                        council's publication. */}
                   </p>
                 )}
               </div>
