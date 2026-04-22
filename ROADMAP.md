@@ -25,7 +25,7 @@
 **Scope:** flesh out the six council-research scripts to the point where they can process one council end-to-end.
 
 - [ ] `01-inventory.mjs` — given a council name, probes the 11 URL patterns from NORTH-STAR §6 Phase 0. Outputs `inventory.json`
-- [ ] `02-archive.mjs` — fetch + sha256 + `_meta.json` + SavePageNow. Handles Cloudflare gracefully (marks `archive_exempt`)
+- [ ] `02-archive.mjs` — fetch + sha256 + `_meta.json` + SavePageNow. Handles Cloudflare gracefully (marks `archive_exempt`). **Also pre-generates page-render PNGs for Tier 3 PDFs** (per NORTH-STAR §6 Phase 1b, §8)
 - [ ] `03-extract-pdf.mjs` — pdftotext wrapper with structured output
 - [ ] `04-extract-csv.mjs` — CSV/XLSX extractor
 - [ ] `05-populate.mjs` — extracted JSON → TypeScript data-file diff (proposes changes; human confirms)

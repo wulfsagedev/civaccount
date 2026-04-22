@@ -114,6 +114,12 @@ Every entry in `Council.detailed.field_sources[k]` must carry:
   wayback_url?: string;          // Auto-snapshot on ingest (Memento protocol, RFC 7089)
   page?: number;                 // For pdf_page extraction
   excerpt?: string;              // Verbatim quote of the line containing the value
+  page_image_url?: string;       // Pre-generated PDF-page PNG (Tier 3 only) — see §6 Phase 1b + §8
+  csv_row_excerpt?: {            // Pre-extracted CSV row (Tier 1/2 only) — see §8
+    headers: string[];
+    row: string[];
+    highlight_column: string;
+  };
 }
 ```
 
@@ -176,6 +182,35 @@ For each inventory URL, download the file to `src/data/councils/pdfs/council-pdf
 Where the URL is bot-blocked (Tier 4), skip archive and record `archive_exempt` — the URL itself is still recorded in inventory, just not fetched.
 
 Every successfully-archived URL gets a Wayback Machine snapshot via SavePageNow API. The Wayback URL goes into the `_meta.json`.
+
+### Phase 1b — Pre-generate visual evidence (random-spot-check enablement)
+
+At archive time, generate lightweight visual evidence for each value so **any reader, on a phone, can verify any number without running scripts**.
+
+For **Tier 3 archived PDFs**:
+- At extraction time (Phase 2), we know which page each value came from.
+- Render that page to PNG using `pdftoppm -png -r 150 -f <page> -l <page>`.
+- Store the PNG as a public static asset in `src/data/councils/pdfs/council-pdfs/<slug>/images/` (served by Next at `/archive/<slug>/images/...`).
+- Record the resulting URL in `field_sources[k].page_image_url`.
+- One PNG per page-per-field (pages shared by multiple values get cached).
+
+For **Tier 1 GOV.UK CSVs**:
+- No PNG — screenshots of spreadsheets are unreadable.
+- Instead, emit a structured `csv_row_excerpt` containing headers + the council's row + the column to highlight.
+- UI renders this as an inline mini-table in the popover.
+
+For **Tier 2 council open-data** (Socrata / 360Giving):
+- Either inline mini-table (same as Tier 1), or link directly to the platform's filtered view if the platform renders well (Socrata's native UI shows the row).
+
+For **Tier 4** (bot-blocked):
+- Pre-generation not possible. Rely on Wayback snapshot URL + live-URL-works-in-browser caveat.
+
+For **Tier 5** (secondary-confirmed):
+- Not applicable — no primary file to screenshot.
+
+**Storage budget**: ~200 KB per PNG × ~10 fields per council × 317 councils ≈ **~600 MB at full rollout.** Acceptable. Deduplication via content-hashed filenames possible later if it becomes large.
+
+**Why this is worth the storage**: the single biggest blocker to non-technical spot-checks is "I'd have to open a 6 MB PDF and find the right page." Pre-generated page PNGs reduce that to "tap the value, see the page." Immediately usable by anyone, not just developers.
 
 ### Phase 2 — Extract
 
@@ -258,7 +293,52 @@ At render time, the SourceAnnotation popover can render a plain-English lineage 
 
 ---
 
-## 8. Statistical sanity — Benford's Law
+## 8. Presentation — random spot-check UX
+
+The one UI rule: **any reader, on any device, must be able to verify any rendered value with at most two taps.**
+
+### The popover (tap any number)
+
+A `SourceAnnotation` popover opens, showing:
+
+1. Plain-English lineage sentence (§7)
+2. **Tier badge** — "GOV.UK bulk" / "Council open-data" / "Archived PDF" / "Council PDF (bot-blocked)" / "Secondary-confirmed"
+3. **Data year badge** — e.g. "2025-26"
+4. **Visual evidence appropriate to the tier:**
+   - **Tier 1 / 2**: inline mini-table with the CSV row + column highlighted
+   - **Tier 3**: thumbnail of the pre-generated page PNG — tap to expand full-screen
+   - **Tier 4**: "Open source" link → live council URL + "Open archived copy" link → Wayback snapshot
+   - **Tier 5**: primary URL + secondary confirmation URL side by side with quoted figure
+5. **sha256 fingerprint** prefix (first 12 chars) — proof the archived file is tamper-evident
+6. **"Open source"** button — opens the primary `.gov.uk` document in a new tab
+7. **"Open local archive"** button (Tier ≤ 3) — opens our immutable archived copy
+8. **Last-verified date** (ISO, human-readable)
+9. **"Report incorrect data"** footer link → pre-filled feedback form
+
+The non-dev spot-check path is: **tap value → see page image + source URL**. One tap. No terminal. No scripts. No PDF download on mobile data.
+
+### The provenance page (`/council/[slug]/provenance`)
+
+Aggregate view of every rendered field for a council:
+- Table sorted by tier (best evidence first)
+- Each row has the same evidence as the popover: mini-table / page PNG thumbnail / source link
+- FAIR self-assessment JSON-LD block (§9)
+- Datasheet-for-Datasets summary (§6 Phase 6)
+- "Download all archives as ZIP" for researchers
+
+### The corrections page (`/corrections`)
+
+Every correction ever made, visible to the public (§14).
+
+### Inline data-year labels
+
+- Card headers carry year: "Who the council pays — 2024-25"
+- Mixed-vintage cards: each number carries its own year inline
+- Hero paragraphs that combine multiple numbers must either (a) share a year across all numbers or (b) each number gets its own year inline
+
+---
+
+## 9. Statistical sanity — Benford's Law
 
 Following the methodology in Mark Nigrini's *Journal of Accountancy* 2022 paper and his 2012 *Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection*:
 
@@ -284,7 +364,7 @@ This wouldn't be a gate — Benford false-positives are real, especially with sm
 
 ---
 
-## 9. FAIR compliance
+## 10. FAIR compliance
 
 Per Wilkinson et al., *Scientific Data* (2016), the most-cited modern data-quality standard:
 
@@ -297,7 +377,7 @@ A FAIR self-assessment JSON-LD block lives on every council's `/provenance` page
 
 ---
 
-## 10. Schema.org & 5-Star Open Data
+## 11. Schema.org & 5-Star Open Data
 
 ### Schema.org JSON-LD on every council page
 
@@ -319,7 +399,7 @@ Target: ★★★★★ for the derived dataset.
 
 ---
 
-## 11. Reproducibility (Turing Way alignment)
+## 12. Reproducibility (Turing Way alignment)
 
 Following the Alan Turing Institute's *Turing Way* handbook for reproducible research:
 
@@ -340,7 +420,7 @@ This is the scientific-reproducibility floor: anyone in the world should be able
 
 ---
 
-## 12. Immutable archive (content-addressed storage)
+## 13. Immutable archive (content-addressed storage)
 
 Downloaded source files are stored **content-addressed** — the filename on disk is the sha256 hash:
 
@@ -365,7 +445,7 @@ Benefit: if `pay-policy-2025-26.pdf` is ever replaced (accidentally or malicious
 
 ---
 
-## 13. Memento / Wayback integration (RFC 7089)
+## 14. Memento / Wayback integration (RFC 7089)
 
 Every source URL on ingest is auto-snapshotted to Internet Archive via the SavePageNow API. The Wayback URL is stored in `field_sources[k].wayback_url` alongside the live URL.
 
@@ -377,7 +457,7 @@ Means readers can always verify the value even if the council has since edited o
 
 ---
 
-## 14. Corrections & change transparency
+## 15. Corrections & change transparency
 
 Visible on the site at `/corrections`:
 
@@ -392,7 +472,7 @@ Today's Camden £118.5m → £10m correction is correction #001. Bradford's CE n
 
 ---
 
-## 15. Data dependency declaration (Sculley-style)
+## 16. Data dependency declaration (Sculley-style)
 
 Per Sculley et al., *Hidden Technical Debt in Machine Learning Systems* (Google, NeurIPS 2015), silent data dependencies are the single biggest source of data-pipeline rot.
 
@@ -415,7 +495,7 @@ Change a source → validator knows exactly which fields depend → CI fails unt
 
 ---
 
-## 16. Schema enforcement (CI validator stack)
+## 17. Schema enforcement (CI validator stack)
 
 These run on every commit. Any failure blocks merge.
 
@@ -439,7 +519,7 @@ Five new validators to build. Three existing validators to extend.
 
 ---
 
-## 17. Session continuity (working across weeks)
+## 18. Session continuity (working across weeks)
 
 I (Claude) have no persistent memory across sessions. The methodology must be resumable from scratch by reading:
 
@@ -452,7 +532,7 @@ Any future session reads these four sources and knows exactly where to pick up. 
 
 ---
 
-## 18. Tooling inventory
+## 19. Tooling inventory
 
 Already installed / in repo:
 - `pdftotext` (poppler) — PDF text extraction ✓
@@ -472,7 +552,7 @@ To build (as part of foundation scaffolding):
 
 ---
 
-## 19. Definition of "Done" per council
+## 20. Definition of "Done" per council
 
 A council is **North-Star done** when:
 
@@ -489,7 +569,7 @@ Three reference councils (Bradford, Camden, Kent) must be North-Star done before
 
 ---
 
-## 20. What this methodology rules out
+## 21. What this methodology rules out
 
 - LLM-invented numbers (the root cause of Camden's £118.5m fabrication — will be forbidden by `forbidden-source-scan` validator)
 - Uniform schema that forces every council to have every field (optional schema; stripping is fine)
@@ -500,7 +580,7 @@ Three reference councils (Bradford, Camden, Kent) must be North-Star done before
 
 ---
 
-## 21. Reading list (for any future maintainer)
+## 22. Reading list (for any future maintainer)
 
 Essential (cited throughout this doc):
 
@@ -523,6 +603,6 @@ These are the floor. Anyone picking up this project should skim all of them befo
 
 ---
 
-## 22. Owner sign-off
+## 23. Owner sign-off
 
 This document was adopted 2026-04-22. Any change to its principles (section 2) requires explicit sign-off from the project owner. Changes to process/tooling (sections 3-20) can be made by commit with clear commit message; reverted at owner's request.
