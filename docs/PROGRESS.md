@@ -50,6 +50,8 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
+<!-- counters as of 2026-04-22 after Kent rollout -->
+
 
 - Councils in scope: 317
 - **Councils North-Star complete: 2** (Bradford, Kent)
