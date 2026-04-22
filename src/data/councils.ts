@@ -469,6 +469,13 @@ export interface DetailedCouncilData {
      * as a thumbnail + lightbox.
      */
     page_image_url?: string;
+    /**
+     * Internet Archive Wayback URL for this source. Always populated
+     * when `archive_exempt` is set (Cloudflare-blocked domains etc.) so
+     * a reader with a different IP / UA can still reach a preserved
+     * copy even if the council's live URL 403s for them too.
+     */
+    wayback_url?: string;
   }>;
 }
 
