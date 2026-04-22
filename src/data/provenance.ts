@@ -33,6 +33,13 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     source_title: 'GOV.UK Council Tax Levels',
     data_year: '2024-25',
   },
+  'council_tax_increase_percent': {
+    label: 'calculated',
+    source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
+    source_title: 'Year-on-year change — calculated from Band D live tables',
+    data_year: '2024-25 → 2025-26',
+    methodology: 'Difference between this year\'s and last year\'s MHCLG-published Band D for the same authority',
+  },
   'tax_bands': {
     label: 'calculated',
     methodology: 'Band D rate multiplied by official band ratios (A = 6/9 through H = 2x)',
