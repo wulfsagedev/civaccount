@@ -241,7 +241,7 @@ Values that failed:
 - **Published but extraction ambiguous** → flag in `<COUNCIL>-AUDIT.md` under "Known gaps"; field absent until resolved.
 - **Published but fails cross-check (Benford outlier / sum inconsistency / YoY outlier)** → field absent; investigate separately.
 
-### Phase 5 — Verify
+### Phase 5 — Verify (structural)
 
 Run the validator suite:
 - `source-truth` (Tier 1 values match source cell)
@@ -254,6 +254,29 @@ Run the validator suite:
 - `link-check` (no silent 404s)
 
 All must pass. Any failure → field stripped or fix re-attempted; not waved through.
+
+### Phase 5b — Live browser UX sweep (mandatory)
+
+**Added 2026-04-22 after Bradford audit revealed that structural validators can pass while the UI still renders unwrapped numbers.** Structural compliance is necessary but not sufficient.
+
+Load `/council/<slug>` in a real browser. Walk every text node. Any numeric value **not** inside a `[role="button"][aria-label^="Source:"]` ancestor is a violation.
+
+Script: `node scripts/council-research/ux-audit.mjs --council=<Name>`
+
+For each violation:
+- If it's a real data point → wrap it in `<SourceAnnotation>` in the rendering component
+- If it's decorative / repeat / label → leave (and make sure the sweep filter catches it as non-data)
+- If it's unsourceable → strip the underlying data field; UI either omits the card or shows `DataValidationNotice`
+
+Re-run until **0 violations**. No exceptions.
+
+Visual checks (human must do):
+- Tap first hero value → popover opens → source URL is specific (not a landing page) → tier badge visible
+- Tap a Tier 3 value with `page_image_url` → thumbnail loads → lightbox shows exactly the right PDF page
+- Tap "Open source" on a Tier 3 PDF link → browser jumps to the right page (via `#page=N`)
+- Supplier drill-down → helper copy names the specific supplier/recipient to search for
+
+This is the single most important gate. A council that passes Phases 0-5 but fails Phase 5b still has unverified data rendering to the public — and that breaks the whole mission.
 
 ### Phase 6 — Document
 
@@ -559,11 +582,14 @@ A council is **North-Star done** when:
 1. ✓ All archivable documents fetched to `pdfs/council-pdfs/<slug>/` with sha256 + `_meta.json` + Wayback URL
 2. ✓ Every rendered field has a `field_sources` entry meeting section 4 schema
 3. ✓ All 13 CI validators pass (0 errors, warnings reviewed)
-4. ✓ `<COUNCIL>-AUDIT.md` written with Datasheet for Datasets structure (section 6 Phase 6)
-5. ✓ `manifests/<slug>.json` reproducibility manifest committed
-6. ✓ `npm run reproduce -- --council=<slug>` exits 0
-7. ✓ `status/<slug>.json` marked `"done": true`
-8. ✓ Any fields that can't meet the bar are absent (stripped), not approximated
+4. ✓ **`ux-audit.mjs --council=<Name>` reports 0 violations** (Phase 5b — added 2026-04-22)
+5. ✓ `<COUNCIL>-AUDIT.md` written with Datasheet for Datasets structure (section 6 Phase 6)
+6. ✓ `manifests/<slug>.json` reproducibility manifest committed
+7. ✓ `npm run reproduce -- --council=<slug>` exits 0
+8. ✓ `status/<slug>.json` marked `"done": true`
+9. ✓ Any fields that can't meet the bar are absent (stripped), not approximated
+
+See `COUNCIL-ROLLOUT-PLAYBOOK.md` for the step-by-step operational guide.
 
 Three reference councils (Bradford, Camden, Kent) must be North-Star done before we scale to any other council. After that, new councils are added one at a time, each passing the same bar.
 
