@@ -132,6 +132,7 @@ export default function SourceAnnotation({
   citation,
 }: SourceAnnotationProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   if (!provenance) return <>{children}</>;
 
   const config = LABEL_CONFIG[provenance.label] || LABEL_CONFIG.published;
@@ -145,7 +146,7 @@ export default function SourceAnnotation({
     : null;
 
   return (
-    <Popover>
+    <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
         <span
           role="button"
@@ -237,6 +238,8 @@ export default function SourceAnnotation({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
+                  // Close popover so the lightbox doesn't render beneath it
+                  setPopoverOpen(false);
                   setLightboxOpen(true);
                 }}
                 className="group w-full flex items-center gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted transition-colors cursor-pointer text-left"
