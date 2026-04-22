@@ -200,6 +200,26 @@ export function validate(councils, _population, report) {
     'Camden|total_allowances_cost',
     'Camden|councillor_allowances_detail',
     'Camden|salary_bands',
+    // 2026-04-22 batch: Manchester, Birmingham, Leeds, Surrey, Cornwall.
+    // All 5 apply the Bradford strip checklist uniformly via batch script.
+    // Reasons in BATCH-5-AUDIT.md (combined audit for the batch).
+    ...['Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall'].flatMap(c => [
+      `${c}|council_tax_shares`,
+      `${c}|performance_kpis`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|grant_payments`,
+      `${c}|waste_destinations`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
+    // Manchester's CE salary was stripped too (no verbatim source in archived Pay Policy).
+    'Manchester|chief_executive_salary',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

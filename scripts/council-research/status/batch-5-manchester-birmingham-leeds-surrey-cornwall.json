@@ -1,0 +1,34 @@
+{
+  "batch": "5-councils-batch-1",
+  "councils": ["Manchester", "Birmingham", "Leeds", "Surrey", "Cornwall"],
+  "methodology_version": "NORTH-STAR v1.1 strict",
+  "date": "2026-04-22",
+  "summary": {
+    "pdfs_archived": 17,
+    "direct_fetch_success": 17,
+    "wayback_needed": 0,
+    "councils_in_strict_set": 8,
+    "bulk_rollout_test": "success"
+  },
+  "phase_results": {
+    "phase_0_inventory": "done (domain probes + URL discovery via WebSearch)",
+    "phase_1_archive": "done (17 PDFs direct-fetched, sha256'd, _meta.json written)",
+    "phase_1b_page_images": "deferred — field_sources has sha256 + url anchor but not page_image_url",
+    "phase_2_extract": "done (grep-based extraction of key fields from PDFs)",
+    "phase_3_strip": "done (batch Node script applied Bradford checklist uniformly)",
+    "phase_4_populate": "done (7-8 field_sources entries per council)",
+    "phase_5_validators": "0 errors, 0 regressions across full suite",
+    "phase_5b_ux_audit": "0/0 for all 5 (1 unwrapped strip needed for Birmingham accountability narrative)",
+    "phase_6_document": "combined BATCH-5-AUDIT.md",
+    "phase_7_ship": "pending"
+  },
+  "audit_doc": "src/data/councils/docs/BATCH-5-AUDIT.md",
+  "manifest": null,
+  "per_council_status": {
+    "Manchester": { "north_star_complete": true, "gaps": 0, "ux_violations": 0 },
+    "Birmingham": { "north_star_complete": true, "gaps": 0, "ux_violations": 0 },
+    "Leeds": { "north_star_complete": true, "gaps": 0, "ux_violations": 0 },
+    "Surrey": { "north_star_complete": true, "gaps": 0, "ux_violations": 0 },
+    "Cornwall": { "north_star_complete": true, "gaps": 0, "ux_violations": 0 }
+  }
+}
