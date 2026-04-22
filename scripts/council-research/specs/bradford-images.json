@@ -1,0 +1,50 @@
+[
+  {
+    "council": "Bradford",
+    "field": "chief_executive_salary",
+    "pdf": "pay-policy-2025-26.pdf",
+    "page": 11,
+    "value": "£217,479",
+    "note": "Chief Executive salary — disclosure table on page 11. Also quoted on pages 3 and 6."
+  },
+  {
+    "council": "Bradford",
+    "field": "budget_gap",
+    "pdf": "mtfs-2025-26-to-2029-30.pdf",
+    "page": 4,
+    "value": "£120m",
+    "note": "MTFS structural budget gap"
+  },
+  {
+    "council": "Bradford",
+    "field": "savings_target",
+    "pdf": "mtfs-2025-26-to-2029-30.pdf",
+    "page": 5,
+    "value": "£40m",
+    "note": "Revenue savings target for 2025/26"
+  },
+  {
+    "council": "Bradford",
+    "field": "councillor_basic_allowance",
+    "pdf": "councillors-earnings-2024-25.pdf",
+    "page": 1,
+    "value": "£14,672",
+    "note": "Basic allowance column; per-councillor rows follow"
+  },
+  {
+    "council": "Bradford",
+    "field": "councillor_allowances_detail",
+    "pdf": "councillors-earnings-2024-25.pdf",
+    "page": 1,
+    "value": "(all 90 councillors)",
+    "note": "Per-councillor table across pages 1-4"
+  },
+  {
+    "council": "Bradford",
+    "field": "total_allowances_cost",
+    "pdf": "councillors-earnings-2024-25.pdf",
+    "page": 4,
+    "value": "£1,766,870",
+    "note": "Sum of Total column (last page typically has aggregate row)"
+  }
+]

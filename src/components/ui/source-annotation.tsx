@@ -1,6 +1,7 @@
 'use client';
 
-import { ExternalLink, Flag, Clock, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import { ExternalLink, Flag, Clock, ShieldCheck, ImageIcon, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -130,6 +131,7 @@ export default function SourceAnnotation({
   reportContext,
   citation,
 }: SourceAnnotationProps) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   if (!provenance) return <>{children}</>;
 
   const config = LABEL_CONFIG[provenance.label] || LABEL_CONFIG.published;
@@ -225,6 +227,41 @@ export default function SourceAnnotation({
             </p>
           )}
 
+          {/* Page-image thumbnail — pre-generated PNG of the exact PDF
+              page where the value appears (NORTH-STAR §6 Phase 1b, §8).
+              Tap expands to full-screen lightbox. Non-dev users can
+              verify a value without downloading the PDF. */}
+          {provenance.page_image_url && (
+            <div className="pt-2 mt-1 border-t border-border/50">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxOpen(true);
+                }}
+                className="group w-full flex items-center gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted transition-colors cursor-pointer text-left"
+                aria-label="View source document page image"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={provenance.page_image_url}
+                  alt="Source document page"
+                  loading="lazy"
+                  className="w-16 h-20 object-cover object-top rounded border border-border/50 shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="type-caption font-medium text-foreground flex items-center gap-1">
+                    <ImageIcon className="h-3 w-3 shrink-0" aria-hidden="true" />
+                    View source page
+                  </p>
+                  <p className="type-caption text-muted-foreground">
+                    Tap to enlarge
+                  </p>
+                </div>
+              </button>
+            </div>
+          )}
+
           {/* Row-level citation (Phase 3+): tells the reader exactly which
               row, cell, or page inside the source document the value came
               from. "Verified source" shield is only rendered when a
@@ -261,6 +298,38 @@ export default function SourceAnnotation({
           )}
         </div>
       </PopoverContent>
+
+      {/* Lightbox — full-screen view of the pre-generated page image.
+          Simple overlay; closes on escape / backdrop click. */}
+      {lightboxOpen && provenance.page_image_url && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Source document page"
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={() => setLightboxOpen(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setLightboxOpen(false); }}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxOpen(false);
+            }}
+            aria-label="Close image"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={provenance.page_image_url}
+            alt="Source document page (full size)"
+            className="max-w-full max-h-full object-contain rounded shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </Popover>
   );
 }

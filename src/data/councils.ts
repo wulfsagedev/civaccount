@@ -66,6 +66,13 @@ export interface DataProvenance {
    * popover renders a "Verified source" badge with the specific row/cell
    * the value came from. */
   citation?: Citation;
+  /**
+   * Pre-generated PDF page image (NORTH-STAR §6 Phase 1b + §8).
+   * When present, the SourceAnnotation popover renders a thumbnail
+   * showing the exact page of the source document where the value
+   * appears — lets a reader verify without downloading the PDF.
+   */
+  page_image_url?: string;
 }
 
 /**
@@ -440,6 +447,13 @@ export interface DetailedCouncilData {
      * documented in the council's AUDIT.md.
      */
     archive_exempt?: 'cloudflare_blocked' | 'bot_blocked' | 'no_document_form' | 'live_page';
+    /**
+     * Pre-generated PNG of the exact PDF page where this value appears.
+     * See NORTH-STAR.md §6 Phase 1b + §8. Served via /archive/<slug>/
+     * images/<file> route handler. Surfaced in SourceAnnotation popover
+     * as a thumbnail + lightbox.
+     */
+    page_image_url?: string;
   }>;
 }
 

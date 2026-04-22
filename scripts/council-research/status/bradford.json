@@ -1,0 +1,17 @@
+{
+  "council": "bradford",
+  "slug": "bradford",
+  "phases": {
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-04-22T05:10:39.056Z",
+      "results": {
+        "ok": 0,
+        "skipped": 4,
+        "blocked": 0,
+        "failed": 0
+      }
+    }
+  },
+  "last_session": "2026-04-22T05:10:39.057Z"
+}

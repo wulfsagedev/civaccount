@@ -472,6 +472,7 @@ export function getProvenance(
         source_title: fieldSource.title,
         data_year: fieldSource.data_year || global?.data_year,
         methodology: global?.methodology,
+        page_image_url: fieldSource.page_image_url,
       };
     }
   }
