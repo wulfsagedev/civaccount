@@ -32,7 +32,7 @@ const VALID_ARCHIVE_EXEMPT = new Set([
 // Strict enforcement councils — those that have been fully audited
 // under NORTH-STAR.md §6 and are expected to carry tier + extraction_method
 // on every entry.
-const STRICT_COUNCILS = new Set(['Bradford', 'Kent', 'Camden', 'Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall']);
+const STRICT_COUNCILS = new Set(['Bradford', 'Kent', 'Camden', 'Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall', 'Liverpool', 'Bristol', 'Lancashire', 'Tower Hamlets']);
 
 export function validate(councils, _population, report) {
   for (const c of councils) {

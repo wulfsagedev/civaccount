@@ -53,10 +53,10 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 
 
 - Councils in scope: 317
-- **Councils North-Star complete: 8** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall)
+- **Councils North-Star complete: 12** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets)
 - Councils in progress: 0
-- Councils not yet started: 309
-- **Batch-5 milestone**: first bulk rollout (Manchester, Birmingham, Leeds, Surrey, Cornwall) — proves the playbook compresses at scale and handles UA type (Cornwall) + direct-fetch councils. See `src/data/councils/docs/BATCH-5-AUDIT.md`.
+- Councils not yet started: 305
+- **Batch-4-overnight milestone**: Liverpool, Bristol, Lancashire, Tower Hamlets added (4 more councils). Attempted Sheffield, Newcastle, Hampshire, Hackney in the same batch but their PDFs hit various fetch issues (empty responses, connection timeouts, HTML redirects). Those 4 are first candidates for next session.
 
 ---
 
