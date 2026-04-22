@@ -329,6 +329,8 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
         title: inner.match(/\btitle:\s*"([^"]*)"/)?.[1] || '',
         accessed: inner.match(/\baccessed:\s*"([^"]*)"/)?.[1] || '',
         data_year: inner.match(/\bdata_year:\s*"([^"]*)"/)?.[1] || '',
+        sha256_at_access: inner.match(/\bsha256_at_access:\s*"([^"]*)"/)?.[1],
+        archive_exempt: inner.match(/\barchive_exempt:\s*"([^"]*)"/)?.[1],
       };
     }
     if (Object.keys(fieldSources).length > 0) {

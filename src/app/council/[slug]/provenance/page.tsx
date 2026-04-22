@@ -326,10 +326,18 @@ export default async function ProvenancePage({ params }: Props) {
                       <span className="sr-only"> (opens in new tab)</span>
                     </a>
                   </div>
-                  <p className="type-caption text-muted-foreground mt-2 flex items-center gap-1.5">
-                    <Calendar className="h-3 w-3" aria-hidden="true" />
-                    <span className="tabular-nums">Accessed {src.accessed}</span>
-                  </p>
+                  <div className="mt-2 flex items-center gap-3 flex-wrap">
+                    <p className="type-caption text-muted-foreground flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3" aria-hidden="true" />
+                      <span className="tabular-nums">Accessed {src.accessed}</span>
+                    </p>
+                    {src.sha256_at_access && (
+                      <p className="type-caption text-muted-foreground flex items-center gap-1.5">
+                        <ShieldCheck className="h-3 w-3" aria-hidden="true" />
+                        <span className="font-mono tabular-nums">sha256 {src.sha256_at_access.slice(0, 12)}…</span>
+                      </p>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

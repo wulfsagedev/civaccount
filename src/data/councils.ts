@@ -432,6 +432,14 @@ export interface DetailedCouncilData {
     accessed: string;        // ISO date when this source was last verified
     data_year: string;       // Fiscal year the source covers: "2025-26", "2024-25", "mid-2024", "current", etc.
     sha256_at_access?: string; // SHA-256 of the fetched document at `accessed` (optional)
+    /**
+     * When the document genuinely can't be fingerprinted: e.g. the
+     * council site blocks automated fetches (Cloudflare), or the data
+     * lives in a live web page with no downloadable document form.
+     * North-star audit accepts one of these values in lieu of sha256;
+     * documented in the council's AUDIT.md.
+     */
+    archive_exempt?: 'cloudflare_blocked' | 'bot_blocked' | 'no_document_form' | 'live_page';
   }>;
 }
 
