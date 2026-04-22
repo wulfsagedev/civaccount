@@ -11,9 +11,9 @@ export const COVERAGE_STATS: Record<string, { label: string; present: number; to
   'budget': { label: 'Service budgets', present: 315, total: 315 },
   'chief_executive_salary': { label: 'CEO salary', present: 315, total: 315 },
   'councillor_basic_allowance': { label: 'Councillor basic allowance', present: 315, total: 315 },
-  'total_allowances_cost': { label: 'Total allowances cost', present: 315, total: 315 },
-  'councillor_allowances_detail': { label: 'Councillor allowances detail', present: 315, total: 315 },
-  'salary_bands': { label: 'Salary bands', present: 315, total: 315 },
+  'total_allowances_cost': { label: 'Total allowances cost', present: 314, total: 315 },
+  'councillor_allowances_detail': { label: 'Councillor allowances detail', present: 314, total: 315 },
+  'salary_bands': { label: 'Salary bands', present: 314, total: 315 },
   'staff_fte': { label: 'Staff headcount (FTE)', present: 314, total: 315 },
   'top_suppliers': { label: 'Top suppliers', present: 315, total: 315 },
   'grant_payments': { label: 'Grant payments', present: 311, total: 315 },
@@ -29,11 +29,11 @@ export const COVERAGE_STATS: Record<string, { label: string; present: number; to
 
 export const VALIDATION_SUMMARY = {
   errors: 0,
-  warnings: 1904,
+  warnings: 3481,
   info: 12,
   regressions: 0,
-  totalChecks: 55830,
+  totalChecks: 57410,
   totalCouncils: 315,
-  parityAverage: 100,
+  parityAverage: 99.9,
   timestamp: '2026-04-22',
 };

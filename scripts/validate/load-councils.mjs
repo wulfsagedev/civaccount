@@ -324,13 +324,22 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
       if (key === 'field_sources') continue;
       const url = inner.match(/\burl:\s*"([^"]+)"/)?.[1];
       if (!url) continue;
+      const tierMatch = inner.match(/\btier:\s*(\d)/)?.[1];
       fieldSources[key] = {
         url,
         title: inner.match(/\btitle:\s*"([^"]*)"/)?.[1] || '',
         accessed: inner.match(/\baccessed:\s*"([^"]*)"/)?.[1] || '',
         data_year: inner.match(/\bdata_year:\s*"([^"]*)"/)?.[1] || '',
+        tier: tierMatch ? parseInt(tierMatch, 10) : undefined,
+        extraction_method: inner.match(/\bextraction_method:\s*"([^"]*)"/)?.[1],
         sha256_at_access: inner.match(/\bsha256_at_access:\s*"([^"]*)"/)?.[1],
         archive_exempt: inner.match(/\barchive_exempt:\s*"([^"]*)"/)?.[1],
+        page: (() => {
+          const m = inner.match(/\bpage:\s*(\d+)/);
+          return m ? parseInt(m[1], 10) : undefined;
+        })(),
+        excerpt: inner.match(/\bexcerpt:\s*"([^"]*)"/)?.[1],
+        page_image_url: inner.match(/\bpage_image_url:\s*"([^"]*)"/)?.[1],
       };
     }
     if (Object.keys(fieldSources).length > 0) {

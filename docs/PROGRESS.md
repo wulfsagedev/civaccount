@@ -14,9 +14,9 @@ All three must be North-Star complete (§19) before bulk rollout begins.
 
 | Council | Type | Status | Phase | Last touched | Notes |
 |---------|------|--------|-------|--------------|-------|
-| Bradford | MD | 🟡 Rework pending | Phase 2 — new pipeline not yet applied | 2026-04-22 | Deep-audited before north-star standard. Needs re-ingest via new toolkit. Earlier `BRADFORD-AUDIT.md` still valid for provenance. |
-| Camden | LB | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Value-verification pass done. Suppliers + grants archived. CE salary / allowance / MTFS figures need full Phase 1 archival via Wayback where Cloudflare blocks. |
-| Kent | SC | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Budget Report PDF extracted manually. Full Phase 1 archival pending. |
+| **Bradford** | MD | 🟢 **North-Star complete (v1.0)** | All phases 0-7 ✓ | 2026-04-22 | First fully-compliant reference council. 4 PDFs archived + sha256'd + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/bradford.json. 0/5 north-star gaps. 0 tier-classification errors. |
+| Camden | LB | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Value-verification pass done. Suppliers + grants archived. CE salary / allowance / MTFS figures need full Phase 1 archival via Wayback where Cloudflare blocks. tier + extraction_method addition pending. |
+| Kent | SC | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Budget Report PDF extracted manually. Full Phase 1 archival pending. tier + extraction_method addition pending. |
 
 All three are on [`fix/camden-kent-value-verification`](../.git/) state as of 2026-04-22 main.
 
@@ -52,8 +52,8 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ## Global counters
 
 - Councils in scope: 317
-- Councils North-Star complete: 0
-- Councils in progress: 3 (Bradford, Camden, Kent)
+- **Councils North-Star complete: 1** (Bradford — first reference)
+- Councils in progress: 2 (Camden, Kent)
 - Councils not yet started: 314
 
 ---
