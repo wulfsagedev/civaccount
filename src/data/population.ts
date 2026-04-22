@@ -313,7 +313,7 @@ export const populationData: Record<string, number> = {
   "York": 210400,
 
   // Inner London Boroughs (ILB)
-  "Camden": 218400,
+  "Camden": 216943,
   "City of London": 15100,
   "Greenwich": 291700,
   "Hackney": 269900,

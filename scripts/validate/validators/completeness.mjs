@@ -185,6 +185,21 @@ export function validate(councils, _population, report) {
     'Kent|performance_kpis',              // Per Bradford strip rule (Tier 1 dupes / contradictions / unsourced).
     'Kent|waste_destinations',            // Tonnages require Waste Strategy Evidence Base PDF page-level provenance.
     'Kent|service_outcomes',              // All sub-fields LLM-derived or Tier 4 landing-only.
+    // 2026-04-22: Camden rollout — Phase 3 strips. Reasons in
+    // src/data/councils/london-boroughs.ts Camden entry inline
+    // comments and in CAMDEN-AUDIT.md.
+    'Camden|chief_executive_salary',      // AFR figure was Jenny Rowlands (previous CE); Jon Rowney (current) has no atomically-published figure.
+    'Camden|staff_fte',                   // No archived Camden source.
+    'Camden|service_spending',            // Per-category sub-amounts not in archived PDFs with deep-link page provenance.
+    'Camden|top_suppliers',               // Socrata query results not yet sha256'd as archived query snapshots.
+    'Camden|grant_payments',              // Same — Socrata dataset, not yet archived as query snapshots.
+    'Camden|performance_kpis',            // Bradford strip rule.
+    'Camden|waste_destinations',          // DEFRA ENV18 not archived with deep-link provenance.
+    'Camden|service_outcomes',            // All sub-fields duplicates / unsourced.
+    // These three were stripped in an earlier Camden pass — preserved here for the regression check.
+    'Camden|total_allowances_cost',
+    'Camden|councillor_allowances_detail',
+    'Camden|salary_bands',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
