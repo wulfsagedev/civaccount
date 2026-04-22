@@ -1,0 +1,58 @@
+[
+  {
+    "council": "Kent",
+    "field": "budget_gap",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 2,
+    "value": "£48.9m",
+    "note": "§1.4 — budget gap between spending and available funding. Also cited §9.2 p36 in different framing."
+  },
+  {
+    "council": "Kent",
+    "field": "savings_target",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 2,
+    "value": "£61.5m",
+    "note": "§1.4 — '-£61.5m net from savings/income'. Also §9.2 p36."
+  },
+  {
+    "council": "Kent",
+    "field": "council_tax_increase_percent",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 3,
+    "value": "4.99%",
+    "note": "§1.11 — '4.99% proposed increase in Council Tax. This would increase the County Council share of the bill for a typical band D household by £1.54 per week (£80.37 per year).'"
+  },
+  {
+    "council": "Kent",
+    "field": "reserves",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 4,
+    "value": "£43.0m general reserve / £357.6m total usable reserves",
+    "note": "§1.12 — 'total usable revenue reserves at the end of 2023-24 were £357.6m (30.3% of net revenue outturn), comprising of £43.0m general reserve, £297.6m earmarked reserves ... and £17.0m public health reserve'"
+  },
+  {
+    "council": "Kent",
+    "field": "tax_bands",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 20,
+    "value": "Band D £1,691.19 (full A-H table)",
+    "note": "§6.4 Table 6.1 — Proposed Council Tax Increases by Band. All 8 bands published verbatim."
+  },
+  {
+    "council": "Kent",
+    "field": "council_tax_base",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 21,
+    "value": "587,921.91 band D equivalent / £994,287,650 total precept",
+    "note": "§6.6 Table 6.2 — Tax base changes and 2025-26 Precept. Total row."
+  },
+  {
+    "council": "Kent",
+    "field": "revenue_budget",
+    "pdf": "draft-revenue-budget-mtfp-feb-2025.pdf",
+    "page": 34,
+    "value": "£1,530.9m net revenue budget for 2025-26",
+    "note": "§9 — 'Proposed Revised Draft 2025-26 Revenue Budget – key numbers'. £1,530.9m represents £101.4m increase on 2024-25's £1,429.5m."
+  }
+]

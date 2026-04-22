@@ -1,0 +1,58 @@
+{
+  "council": "Kent",
+  "slug": "kent",
+  "ons_code": "E10000016",
+  "type": "SC",
+  "methodology_version": "NORTH-STAR v1.1 strict",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "15 candidate sources identified (3 Tier 1 bulk + 7 Tier 3 PDFs + 5 Tier 4 live pages). Full inventory at src/data/councils/pdfs/council-pdfs/kent/inventory.json. Key finding: kent.gov.uk and democracy.kent.gov.uk return 403 on all direct HTTP fetches (Cloudflare-style bot block). Phase 1 must route through Internet Archive Wayback."
+    },
+    "phase_1_archive": {
+      "done": false
+    },
+    "phase_1b_visual_evidence": {
+      "done": false
+    },
+    "phase_2_extract": {
+      "done": false
+    },
+    "phase_3_crosscheck": {
+      "done": false
+    },
+    "phase_4_populate": {
+      "done": false
+    },
+    "phase_5_verify": {
+      "done": false
+    },
+    "phase_5b_ux_audit": {
+      "done": false
+    },
+    "phase_6_document": {
+      "done": false
+    },
+    "phase_7_ship": {
+      "done": false
+    }
+  },
+  "north_star_gaps": null,
+  "integrity_score": null,
+  "benford_z": null,
+  "last_verified": null,
+  "last_session": "2026-04-22T18:30:00Z",
+  "audit_doc": null,
+  "manifest": null,
+  "page_image_count": 0,
+  "pdfs_archived": 0,
+  "tier_1_field_count": null,
+  "tier_3_field_count": null,
+  "tier_4_field_count": null,
+  "north_star_complete": false,
+  "known_constraints": {
+    "bot_blocking": "All kent.gov.uk and democracy.kent.gov.uk URLs return HTTP 403 on direct fetch. Archival routes via Wayback (2 snapshots already exist, 5 SavePageNow triggers needed).",
+    "cabinet_reshuffles": "Reform UK leadership under Kemkaran has reshuffled Cabinet at least once post-May 2025. Current in-repo cabinet list predates the most recent reshuffle (per news.kent.gov.uk/articles/cabinet-reshuffle-at-county-hall-announced). Phase 4 will re-verify."
+  }
+}
