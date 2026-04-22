@@ -123,7 +123,16 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                   <Car className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   <p className="type-caption text-muted-foreground">Roads maintained</p>
                 </div>
-                <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads.maintained_miles.toLocaleString('en-GB')}</p>
+                <SourceAnnotation
+                  provenance={getProvenance('service_outcomes.roads.maintained_miles', selectedCouncil)}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Maintained road length (miles)',
+                    value: detailed.service_outcomes.roads.maintained_miles.toLocaleString('en-GB'),
+                  }}
+                >
+                  <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads.maintained_miles.toLocaleString('en-GB')}</p>
+                </SourceAnnotation>
                 <p className="type-caption text-muted-foreground/60">miles</p>
               </div>
             ) : null}
@@ -191,7 +200,17 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                         </span>
                       </div>
                       <p className="type-caption text-muted-foreground/60 mt-1.5">
-                        {ofstedCtx.sameRatingCount} of {ofstedCtx.totalAssessed} councils rated {detailed.service_outcomes.children_services.ofsted_rating}
+                        <SourceAnnotation
+                          provenance={getProvenance('service_outcomes.children_services.ofsted_rating', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Ofsted peer-comparison count',
+                            value: `${ofstedCtx.sameRatingCount} of ${ofstedCtx.totalAssessed}`,
+                          }}
+                        >
+                          {ofstedCtx.sameRatingCount} of {ofstedCtx.totalAssessed}
+                        </SourceAnnotation>
+                        {' councils rated '}{detailed.service_outcomes.children_services.ofsted_rating}
                         <span className="text-muted-foreground/50"> · {DATA_YEARS.ofsted} data</span>
                       </p>
                     </div>
@@ -328,19 +347,46 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
           {/* Waste destinations chart */}
           {detailed.waste_destinations && detailed.waste_destinations.length > 0 && (() => {
             const maxPct = Math.max(...detailed.waste_destinations!.map(w => w.percentage));
+            const totalTonnes = detailed.waste_destinations!.reduce((sum, w) => sum + w.tonnage, 0);
             return (
               <div className={detailed?.performance_kpis?.length ? "mt-6 pt-5 border-t border-border/50" : ""}>
                 <p className="type-body-sm font-semibold mb-1">Where your waste goes</p>
                 <p className="type-body-sm text-muted-foreground mb-4">
-                  {detailed.waste_destinations!.reduce((sum, w) => sum + w.tonnage, 0).toLocaleString('en-GB')} tonnes total (2023-24)
+                  <SourceAnnotation
+                    provenance={getProvenance('detailed.waste_destinations', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Total waste tonnage (all destinations)',
+                      value: totalTonnes.toLocaleString('en-GB'),
+                    }}
+                  >{totalTonnes.toLocaleString('en-GB')}</SourceAnnotation>
+                  {' tonnes total (2022-23 DEFRA)'}
                 </p>
                 <RankedBarList>
                   {detailed.waste_destinations!.map((dest, idx) => (
                     <RankedBarRow
                       key={idx}
                       title={dest.type}
-                      value={`${dest.percentage}%`}
-                      subLeft={`${dest.tonnage.toLocaleString('en-GB')} tonnes`}
+                      value={
+                        <SourceAnnotation
+                          provenance={getProvenance('detailed.waste_destinations', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: `Waste % to ${dest.type}`,
+                            value: `${dest.percentage}%`,
+                          }}
+                        >{`${dest.percentage}%`}</SourceAnnotation>
+                      }
+                      subLeft={
+                        <SourceAnnotation
+                          provenance={getProvenance('detailed.waste_destinations', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: `Waste tonnes to ${dest.type}`,
+                            value: `${dest.tonnage.toLocaleString('en-GB')} tonnes`,
+                          }}
+                        >{`${dest.tonnage.toLocaleString('en-GB')} tonnes`}</SourceAnnotation>
+                      }
                       fillPct={(dest.percentage / maxPct) * 100}
                     />
                   ))}

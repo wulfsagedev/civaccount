@@ -135,7 +135,14 @@ const YourBillCard = ({
                 {' from last year'}
                 {taxChangeAmount !== null && (
                   <span className="text-muted-foreground ml-1 whitespace-nowrap">
-                    ({taxChangeAmount > 0 ? '+' : ''}{formatCurrency(taxChangeAmount, { decimals: 2 })})
+                    (<SourceAnnotation
+                      provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: 'Band D change vs prior year (£)',
+                        value: `${taxChangeAmount > 0 ? '+' : ''}${formatCurrency(taxChangeAmount, { decimals: 2 })}`,
+                      }}
+                    >{taxChangeAmount > 0 ? '+' : ''}{formatCurrency(taxChangeAmount, { decimals: 2 })}</SourceAnnotation>)
                   </span>
                 )}
               </span>
@@ -254,7 +261,14 @@ const YourBillCard = ({
                     <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0 ml-2" />
                   )}
                   <span className={`type-body-sm font-semibold tabular-nums shrink-0 ml-3 ${isThisCouncil ? '' : 'text-muted-foreground'}`}>
-                    {formatCurrency(precept.band_d, { decimals: 2 })}
+                    <SourceAnnotation
+                      provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `Precept share: ${precept.authority}`,
+                        value: formatCurrency(precept.band_d, { decimals: 2 }),
+                      }}
+                    >{formatCurrency(precept.band_d, { decimals: 2 })}</SourceAnnotation>
                   </span>
                 </div>
               );
@@ -278,11 +292,28 @@ const YourBillCard = ({
             <div>
               <span className="type-body font-semibold">Typical Band D total</span>
               {totalDailyCost && (
-                <p className="type-caption text-muted-foreground">{formatCurrency(totalDailyCost, { decimals: 2 })} per day</p>
+                <p className="type-caption text-muted-foreground">
+                  <SourceAnnotation
+                    provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Band D daily cost',
+                      value: `${formatCurrency(totalDailyCost, { decimals: 2 })} per day`,
+                    }}
+                  >{formatCurrency(totalDailyCost, { decimals: 2 })}</SourceAnnotation>
+                  {' per day'}
+                </p>
               )}
             </div>
             <span className="type-metric tabular-nums whitespace-nowrap">
-              {formatCurrency(totalBill, { decimals: 2 })}
+              <SourceAnnotation
+                provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                reportContext={{
+                  council: selectedCouncil.name,
+                  field: 'Band D total bill',
+                  value: formatCurrency(totalBill, { decimals: 2 }),
+                }}
+              >{formatCurrency(totalBill, { decimals: 2 })}</SourceAnnotation>
             </span>
           </div>
 

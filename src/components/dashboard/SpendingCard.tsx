@@ -120,9 +120,29 @@ const SpendingCard = ({
                     />
                   </span>
                 }
-                value={shareValue}
+                value={
+                  category.yourShare ? (
+                    <SourceAnnotation
+                      provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: `${category.name} budget (your share)`,
+                        value: shareValue,
+                      }}
+                    >{shareValue}</SourceAnnotation>
+                  ) : shareValue
+                }
                 subLeft={details?.description || ''}
-                subRight={pctText}
+                subRight={
+                  <SourceAnnotation
+                    provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `${category.name} budget share (%)`,
+                      value: pctText,
+                    }}
+                  >{pctText}</SourceAnnotation>
+                }
                 fillPct={category.percentage}
               />
             ) : (

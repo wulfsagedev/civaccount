@@ -57,7 +57,19 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                       value: formatCurrency(highest.total, { decimals: 0 }),
                     }}
                   >{formatCurrency(highest.total, { decimals: 0 })}</SourceAnnotation>
-                  <span className="text-muted-foreground"> · {detailed.councillor_allowances_detail!.length} councillors</span>
+                  {/* Use the LGBCE councillor count for the CURRENT number of
+                      councillors. The allowances-detail array often contains
+                      more rows because partial-year pay-outs for resigned /
+                      replaced members appear alongside full-year councillors
+                      in the source document (see PayAllowancesCard change
+                      2026-04-22 per Bradford UX audit). */}
+                  <span className="text-muted-foreground">
+                    {' · '}
+                    <SourceAnnotation provenance={getProvenance('detailed.total_councillors', selectedCouncil)}>
+                      {detailed.total_councillors ?? detailed.councillor_allowances_detail!.length}
+                    </SourceAnnotation>
+                    {' councillors'}
+                  </span>
                 </p>
                 {basic && avgAllowance > 0 && (
                   <p className="type-caption text-muted-foreground">
@@ -136,7 +148,11 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
               <ChevronDown className={`h-4 w-4 transition-transform ${showAllCouncillors ? 'rotate-180' : ''}`} aria-hidden="true" />
               {showAllCouncillors
                 ? 'Show less'
-                : `Show all ${detailed.councillor_allowances_detail.length} councillors`
+                // The source publication often lists > current-seat-count
+                // rows (partial-year pay-outs for resigned / replaced
+                // members). Labelling "N allowance entries" instead of
+                // "N councillors" avoids implying seat count.
+                : `Show all ${detailed.councillor_allowances_detail.length} allowance entries`
               }
             </button>
           )}

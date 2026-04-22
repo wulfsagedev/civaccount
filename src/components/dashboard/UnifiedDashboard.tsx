@@ -16,6 +16,8 @@ import PayAllowancesCard from '@/components/dashboard/PayAllowancesCard';
 import WhoToContactCard from '@/components/dashboard/WhoToContactCard';
 import ServiceOutcomesCard from '@/components/dashboard/ServiceOutcomesCard';
 import DataGapNotice from '@/components/ui/data-gap-notice';
+import SourceAnnotation from '@/components/ui/source-annotation';
+import { getProvenance } from '@/data/provenance';
 
 const UnifiedDashboard = () => {
   const { selectedCouncil } = useCouncil();
@@ -302,16 +304,32 @@ const UnifiedDashboard = () => {
                     if (pct >= 100 || (detailed?.precepts?.length ?? 0) < 2) {
                       return (
                         <>All of your council tax goes to {selectedCouncil.name} (
-                        <span className="font-semibold text-foreground whitespace-nowrap">{formatCurrency(thisCouncilBandD, { decimals: 2 })}</span>)</>
+                        <span className="font-semibold text-foreground whitespace-nowrap">
+                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                            {formatCurrency(thisCouncilBandD, { decimals: 2 })}
+                          </SourceAnnotation>
+                        </span>)</>
                       );
                     }
                     return (
                       <>
-                        <span className="font-semibold text-foreground">{pct}%</span>
+                        <span className="font-semibold text-foreground">
+                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                            {pct}%
+                          </SourceAnnotation>
+                        </span>
                         {' of your total bill ('}
-                        <span className="whitespace-nowrap">{formatCurrency(thisCouncilBandD, { decimals: 2 })}</span>
+                        <span className="whitespace-nowrap">
+                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                            {formatCurrency(thisCouncilBandD, { decimals: 2 })}
+                          </SourceAnnotation>
+                        </span>
                         {' out of '}
-                        <span className="whitespace-nowrap">{formatCurrency(totalBandDBill, { decimals: 2 })}</span>
+                        <span className="whitespace-nowrap">
+                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                            {formatCurrency(totalBandDBill, { decimals: 2 })}
+                          </SourceAnnotation>
+                        </span>
                         {')'}
                       </>
                     );
@@ -324,8 +342,18 @@ const UnifiedDashboard = () => {
               <div className="p-3 rounded-lg bg-muted/30">
                 <p className="type-body-sm font-semibold mb-1">What does most of my money go towards?</p>
                 <p className="type-caption text-muted-foreground">
-                  <span className="font-semibold text-foreground">{spendingCategories[0].name}</span> takes the biggest share at {spendingCategories[0].percentage.toFixed(0)}%
-                  {spendingCategories[0].yourShare && ` (${formatCurrency(spendingCategories[0].yourShare, { decimals: 0 })} of your bill)`}
+                  <span className="font-semibold text-foreground">{spendingCategories[0].name}</span> takes the biggest share at{' '}
+                  <SourceAnnotation provenance={getProvenance(`budget.${spendingCategories[0].key}`, selectedCouncil)}>
+                    {spendingCategories[0].percentage.toFixed(0)}%
+                  </SourceAnnotation>
+                  {spendingCategories[0].yourShare && (
+                    <> (
+                    <SourceAnnotation provenance={getProvenance(`budget.${spendingCategories[0].key}`, selectedCouncil)}>
+                      {formatCurrency(spendingCategories[0].yourShare, { decimals: 0 })}
+                    </SourceAnnotation>
+                    {' of your bill)'}
+                    </>
+                  )}
                 </p>
               </div>
             )}
@@ -336,9 +364,17 @@ const UnifiedDashboard = () => {
                 <p className="type-caption text-muted-foreground">
                   {/* Neutral copy — let the number speak, don't frame as good/bad. */}
                   {vsAverage > 0 ? (
-                    <>This council charges <span className="font-semibold text-foreground whitespace-nowrap">{formatCurrency(vsAverage, { decimals: 2 })} more</span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
+                    <>This council charges <span className="font-semibold text-foreground whitespace-nowrap">
+                      <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>
+                        {formatCurrency(vsAverage, { decimals: 2 })} more
+                      </SourceAnnotation>
+                    </span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
                   ) : vsAverage < 0 ? (
-                    <>This council charges <span className="font-semibold text-foreground whitespace-nowrap">{formatCurrency(Math.abs(vsAverage), { decimals: 2 })} less</span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
+                    <>This council charges <span className="font-semibold text-foreground whitespace-nowrap">
+                      <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>
+                        {formatCurrency(Math.abs(vsAverage), { decimals: 2 })} less
+                      </SourceAnnotation>
+                    </span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
                   ) : (
                     <>This council charges about the same as the average {toSentenceTypeName(selectedCouncil.type_name)}</>
                   )}
@@ -351,9 +387,23 @@ const UnifiedDashboard = () => {
                 <p className="type-body-sm font-semibold mb-1">How much has my bill gone up this year?</p>
                 <p className="type-caption text-muted-foreground">
                   {taxChangeAmount > 0 ? (
-                    <>Your bill went up by <span className="font-semibold text-foreground whitespace-nowrap">{formatCurrency(taxChangeAmount, { decimals: 2 })}</span> ({taxChange.toFixed(1)}%) from last year</>
+                    <>Your bill went up by <span className="font-semibold text-foreground whitespace-nowrap">
+                      <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
+                        {formatCurrency(taxChangeAmount, { decimals: 2 })}
+                      </SourceAnnotation>
+                    </span> (
+                    <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
+                      {taxChange.toFixed(1)}%
+                    </SourceAnnotation>) from last year</>
                   ) : taxChangeAmount < 0 ? (
-                    <>Your bill went down by <span className="font-semibold text-foreground whitespace-nowrap">{formatCurrency(Math.abs(taxChangeAmount), { decimals: 2 })}</span> ({Math.abs(taxChange).toFixed(1)}%) from last year</>
+                    <>Your bill went down by <span className="font-semibold text-foreground whitespace-nowrap">
+                      <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
+                        {formatCurrency(Math.abs(taxChangeAmount), { decimals: 2 })}
+                      </SourceAnnotation>
+                    </span> (
+                    <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
+                      {Math.abs(taxChange).toFixed(1)}%
+                    </SourceAnnotation>) from last year</>
                   ) : (
                     <>Your bill stayed the same as last year</>
                   )}

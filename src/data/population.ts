@@ -222,7 +222,7 @@ export const populationData: Record<string, number> = {
   // Metropolitan Districts (MD)
   "Birmingham": 1157600,
   "Bolton": 292700,
-  "Bradford": 546200,
+  "Bradford": 563605,  // ONS mid-2024 (parsed-population.csv); corrected 2026-04-22 per Bradford UX audit — previous 546,200 was stale / mid-2022-era
   "Bury": 192400,
   "Calderdale": 212500,
   "Coventry": 371500,
