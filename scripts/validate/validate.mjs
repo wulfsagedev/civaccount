@@ -37,6 +37,7 @@ import { validate as validateFreshness } from './validators/freshness.mjs';
 import { validate as validateFieldStaleness } from './validators/field-staleness.mjs';
 import { validate as validateProvenanceStrict } from './validators/provenance-strict.mjs';
 import { validate as validateCalculatedFields } from './validators/calculated-fields.mjs';
+import { validate as validateFieldSourceYears } from './validators/field-source-years.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -100,6 +101,7 @@ async function main() {
     ['field-staleness', validateFieldStaleness],
     ['provenance-strict', validateProvenanceStrict],
     ['calculated-fields', validateCalculatedFields],
+    ['field-source-years', validateFieldSourceYears],
   ];
 
   // Link-check is opt-in (requires network access, slow)

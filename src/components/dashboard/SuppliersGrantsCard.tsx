@@ -73,7 +73,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
               <div className="min-w-0">
                 <p className="type-body-sm font-semibold text-foreground">Sourced from {verifiedSupplierSource.sourceTitle}</p>
                 <p className="type-body-sm text-muted-foreground mt-1">
-                  Every supplier total below is aggregated from {selectedCouncil.name}'s own published payment ledger for {verifiedSupplierSource.period}. No contract ceilings, no estimates.{' '}
+                  Every supplier total below is aggregated from {selectedCouncil.name}&apos;s own published payment ledger for {verifiedSupplierSource.period}. No contract ceilings, no estimates.{' '}
                   <a
                     href={verifiedSupplierSource.sourceUrl}
                     target="_blank"

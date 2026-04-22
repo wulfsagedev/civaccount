@@ -308,18 +308,27 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
       else if (section[si] === '}') { depth--; if (depth === 0) { fsEnd = si + 1; break; } }
     }
     const fsBlock = section.substring(fsIdx, fsEnd);
-    // Match nested entries: `  fieldname: { url: "...", title: "...", ... },`
-    // We capture field name + url + title.
-    const fsEntryRe = /([A-Za-z_][A-Za-z0-9_]*):\s*\{\s*url:\s*"([^"]+)"(?:,\s*title:\s*"([^"]*)")?/g;
+    // Match nested entries. Each block carries at minimum `url` and
+    // (per DATA-YEAR-POLICY) `data_year`. We capture url, title,
+    // accessed, data_year so the field-source-years validator can
+    // enforce the year contract. Regex is greedy-tolerant of any
+    // intermediate fields (page, sha256_at_access, etc.) — it just
+    // looks for the named keys within the same block.
+    const fsEntryRe = /([A-Za-z_][A-Za-z0-9_]*):\s*\{([^{}]*?)\}/g;
     const fieldSources = {};
     let fsm;
     while ((fsm = fsEntryRe.exec(fsBlock)) !== null) {
       const key = fsm[1];
+      const inner = fsm[2];
       // Skip the literal `field_sources` key itself in case the regex catches it
       if (key === 'field_sources') continue;
+      const url = inner.match(/\burl:\s*"([^"]+)"/)?.[1];
+      if (!url) continue;
       fieldSources[key] = {
-        url: fsm[2],
-        title: fsm[3] || '',
+        url,
+        title: inner.match(/\btitle:\s*"([^"]*)"/)?.[1] || '',
+        accessed: inner.match(/\baccessed:\s*"([^"]*)"/)?.[1] || '',
+        data_year: inner.match(/\bdata_year:\s*"([^"]*)"/)?.[1] || '',
       };
     }
     if (Object.keys(fieldSources).length > 0) {
