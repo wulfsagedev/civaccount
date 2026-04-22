@@ -38,9 +38,10 @@ function extractField(section, fieldName) {
 
   const valueStart = match[1].trim();
 
-  // Simple number
-  if (/^-?[\d.]+,?\s*$/.test(valueStart)) {
-    return parseFloat(valueStart.replace(',', ''));
+  // Simple number (tolerates trailing `,` and optional inline `// comment`)
+  const numMatch = valueStart.match(/^(-?[\d.]+)\s*,?\s*(?:\/\/.*)?$/);
+  if (numMatch) {
+    return parseFloat(numMatch[1]);
   }
 
   // String value
