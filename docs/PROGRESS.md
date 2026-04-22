@@ -5,6 +5,7 @@ in the North-Star pipeline. For detail on a specific council, open that
 council's `status/<slug>.json` or `<COUNCIL>-AUDIT.md` (in the data repo).
 
 Pipeline phases are defined in [`/NORTH-STAR.md`](../NORTH-STAR.md) §6.
+**Step-by-step operational guide: [`/COUNCIL-ROLLOUT-PLAYBOOK.md`](../COUNCIL-ROLLOUT-PLAYBOOK.md).**
 
 ---
 
@@ -14,7 +15,7 @@ All three must be North-Star complete (§19) before bulk rollout begins.
 
 | Council | Type | Status | Phase | Last touched | Notes |
 |---------|------|--------|-------|--------------|-------|
-| **Bradford** | MD | 🟢 **North-Star complete (v1.0)** | All phases 0-7 ✓ | 2026-04-22 | First fully-compliant reference council. 4 PDFs archived + sha256'd + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/bradford.json. 0/5 north-star gaps. 0 tier-classification errors. |
+| **Bradford** | MD | 🟢 **North-Star complete (v1.0)** | All phases 0-7 ✓ **+ Phase 5b ✓** | 2026-04-22 | First fully-compliant reference council. 4 PDFs archived + sha256'd + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/bradford.json. 0/5 north-star gaps. 0 tier-classification errors. **0 UX-audit violations** (every rendered number wrapped in SourceAnnotation). Stripped: performance_kpis, service_outcomes.housing, service_outcomes.population_served. Fixed: stale population (546,200 → 563,605). |
 | Camden | LB | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Value-verification pass done. Suppliers + grants archived. CE salary / allowance / MTFS figures need full Phase 1 archival via Wayback where Cloudflare blocks. tier + extraction_method addition pending. |
 | Kent | SC | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Budget Report PDF extracted manually. Full Phase 1 archival pending. tier + extraction_method addition pending. |
 
