@@ -220,6 +220,18 @@ export function validate(councils, _population, report) {
     ]),
     // Manchester's CE salary was stripped too (no verbatim source in archived Pay Policy).
     'Manchester|chief_executive_salary',
+    // 2026-04-22 Batch-4 overnight push: Liverpool, Bristol, Lancashire, Tower Hamlets.
+    // Same Bradford strip checklist applied via batch script.
+    ...['Liverpool', 'Bristol', 'Lancashire', 'Tower Hamlets'].flatMap(c => [
+      `${c}|council_tax_shares`, `${c}|performance_kpis`, `${c}|service_spending`,
+      `${c}|top_suppliers`, `${c}|grant_payments`, `${c}|waste_destinations`,
+      `${c}|salary_bands`, `${c}|councillor_allowances_detail`, `${c}|service_outcomes`,
+      `${c}|staff_fte`, `${c}|total_allowances_cost`, `${c}|budget_gap`, `${c}|savings_target`,
+    ]),
+    // Liverpool, Lancashire, Tower Hamlets: CE salary stripped (no verbatim in available archived PDFs).
+    'Liverpool|chief_executive_salary',
+    'Lancashire|chief_executive_salary',
+    'Tower Hamlets|chief_executive_salary',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
