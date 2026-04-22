@@ -202,7 +202,7 @@ export const populationData: Record<string, number> = {
   "Gloucestershire": 645100,
   "Hampshire": 1421600,
   "Hertfordshire": 1200400,
-  "Kent": 1589100,
+  "Kent": 1639029,
   "Lancashire": 1238100,
   "Leicestershire": 716400,
   "Lincolnshire": 779300,
