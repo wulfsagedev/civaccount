@@ -175,17 +175,22 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                         CivAccount summary — not from council publication
                       </p>
                       {sourceUrl && (
-                        <a
-                          href={sourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
-                        >
-                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
-                          Verify £{formatBudget(supplier.annual_spend / 1000).replace('£', '')} in {sourceTitle}
-                          <span className="sr-only"> (opens in new tab)</span>
-                        </a>
+                        <div className="flex flex-col gap-1 pt-1">
+                          <a
+                            href={sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
+                          >
+                            <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                            Open {sourceTitle}
+                            <span className="sr-only"> (opens in new tab)</span>
+                          </a>
+                          <p className="type-caption text-muted-foreground">
+                            Download the file and search for &quot;{supplier.name}&quot; to see every payment line behind our £{formatBudget(supplier.annual_spend / 1000).replace('£', '')} aggregate.
+                          </p>
+                        </div>
                       )}
                     </div>
                   )}
@@ -373,17 +378,22 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-2">
                       <p className="type-body-sm text-muted-foreground leading-relaxed">{grant.description}</p>
                       {grantSourceUrl && (
-                        <a
-                          href={grantSourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
-                        >
-                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
-                          Verify {formatCurrency(grant.amount, { decimals: 0 })} to {grant.recipient} in {grantSourceTitle}
-                          <span className="sr-only"> (opens in new tab)</span>
-                        </a>
+                        <div className="flex flex-col gap-1 pt-1">
+                          <a
+                            href={grantSourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
+                          >
+                            <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                            Open {grantSourceTitle}
+                            <span className="sr-only"> (opens in new tab)</span>
+                          </a>
+                          <p className="type-caption text-muted-foreground">
+                            Download the register and search for &quot;{grant.recipient}&quot; to see the {formatCurrency(grant.amount, { decimals: 0 })} grant line.
+                          </p>
+                        </div>
                       )}
                     </div>
                   )}
