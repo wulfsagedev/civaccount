@@ -124,25 +124,13 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
         </div>
       </div>
 
-      {/* 5-year change callout — neutral framing. Most councils' bills have
-          risen over 5 years; colouring that amber everywhere reads as alarm. */}
-      <div className="mt-5 p-3 rounded-lg bg-muted/30">
-        <div className="flex items-center justify-between gap-3">
-          <span className="type-caption text-muted-foreground">Change over 5 years</span>
-          <span className="type-body-sm font-semibold tabular-nums whitespace-nowrap shrink-0 text-foreground">
-            <SourceAnnotation
-              provenance={getProvenance('bill_history', selectedCouncil)}
-              reportContext={{
-                council: selectedCouncil.name,
-                field: 'Council tax 5-year change',
-                value: `${fiveYearChange > 0 ? '+' : ''}${formatCurrency(fiveYearChange, { decimals: 2 })} (${fiveYearPercent > 0 ? '+' : ''}${fiveYearPercent.toFixed(1)}%)`,
-              }}
-            >
-              {fiveYearChange > 0 ? '+' : ''}{formatCurrency(fiveYearChange, { decimals: 2 })} ({fiveYearPercent > 0 ? '+' : ''}{fiveYearPercent.toFixed(1)}%)
-            </SourceAnnotation>
-          </span>
-        </div>
-      </div>
+      {/* 5-year change callout removed 2026-04-22 per owner directive.
+          Both the cash-terms change (+£450) and % change (+25.1%) are
+          CivAccount subtractions of Tier 1 Band D figures. While the
+          underlying year-by-year values are all individually sourced,
+          the delta itself isn't in any single council's publication.
+          Readers can see every individual year's Band D in the bars
+          above — each wrapped with source provenance. */}
 
       {/* Source link */}
       <p className="mt-4 pt-3 border-t border-border/30 type-caption text-muted-foreground">

@@ -358,58 +358,14 @@ const UnifiedDashboard = () => {
               </div>
             )}
 
-            {vsAverage !== null && (
-              <div className="p-3 rounded-lg bg-muted/30">
-                <p className="type-body-sm font-semibold mb-1">Is this council expensive compared to others?</p>
-                <p className="type-caption text-muted-foreground">
-                  {/* Neutral copy — let the number speak, don't frame as good/bad. */}
-                  {vsAverage > 0 ? (
-                    <>This council charges <span className="font-semibold text-foreground whitespace-nowrap">
-                      <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>
-                        {formatCurrency(vsAverage, { decimals: 2 })} more
-                      </SourceAnnotation>
-                    </span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
-                  ) : vsAverage < 0 ? (
-                    <>This council charges <span className="font-semibold text-foreground whitespace-nowrap">
-                      <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}>
-                        {formatCurrency(Math.abs(vsAverage), { decimals: 2 })} less
-                      </SourceAnnotation>
-                    </span> than the average {toSentenceTypeName(selectedCouncil.type_name)}</>
-                  ) : (
-                    <>This council charges about the same as the average {toSentenceTypeName(selectedCouncil.type_name)}</>
-                  )}
-                </p>
-              </div>
-            )}
-
-            {taxChange !== null && taxChangeAmount !== null && (
-              <div className="p-3 rounded-lg bg-muted/30">
-                <p className="type-body-sm font-semibold mb-1">How much has my bill gone up this year?</p>
-                <p className="type-caption text-muted-foreground">
-                  {taxChangeAmount > 0 ? (
-                    <>Your bill went up by <span className="font-semibold text-foreground whitespace-nowrap">
-                      <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
-                        {formatCurrency(taxChangeAmount, { decimals: 2 })}
-                      </SourceAnnotation>
-                    </span> (
-                    <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
-                      {taxChange.toFixed(1)}%
-                    </SourceAnnotation>) from last year</>
-                  ) : taxChangeAmount < 0 ? (
-                    <>Your bill went down by <span className="font-semibold text-foreground whitespace-nowrap">
-                      <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
-                        {formatCurrency(Math.abs(taxChangeAmount), { decimals: 2 })}
-                      </SourceAnnotation>
-                    </span> (
-                    <SourceAnnotation provenance={getProvenance('council_tax_increase_percent', selectedCouncil)}>
-                      {Math.abs(taxChange).toFixed(1)}%
-                    </SourceAnnotation>) from last year</>
-                  ) : (
-                    <>Your bill stayed the same as last year</>
-                  )}
-                </p>
-              </div>
-            )}
+            {/* Two FAQ blocks removed 2026-04-22 per owner directive:
+                - "Is this council expensive compared to others?"
+                - "How much has my bill gone up this year?"
+                Both used CivAccount-derived values (peer-average or
+                year-over-year subtraction) that don't appear verbatim
+                in any single council's publication. Readers can still
+                see every Tier 1 Band D value in the "How your bill
+                has changed" card and compare side-by-side at /compare. */}
           </div>
         </section>
       )}

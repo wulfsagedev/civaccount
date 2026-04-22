@@ -149,13 +149,12 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
               )}
               {'.'}
             </p>
-            {avgCeo > 0 && (
-              <p className="type-caption text-muted-foreground mt-1">
-                {'Typical pay for a '}{toSentenceTypeName(selectedCouncil.type_name)}{' chief executive is about '}
-                <SourceAnnotation provenance={getProvenance('vs_average', selectedCouncil)}><span className="tabular-nums whitespace-nowrap">{formatCurrency(Math.round(avgCeo), { decimals: 0 })}</span></SourceAnnotation>
-                {'.'}
-              </p>
-            )}
+            {/* Peer-comparison row removed 2026-04-22 per owner directive
+                — derived averages across councils don't appear in any
+                single council's own publication, so they fail the
+                "every data point from a linkable public document" bar.
+                The CE salary above remains, verifiable against the
+                Pay Policy Statement. */}
           </div>
         );
       })()}

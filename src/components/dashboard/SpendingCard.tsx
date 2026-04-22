@@ -342,17 +342,15 @@ const SpendingCard = ({
                   >{population.toLocaleString('en-GB')}</SourceAnnotation> residents</span>
                 )}
               </p>
-              {diff !== null && (
-                <p className="type-caption text-muted-foreground">
-                  Compared to average {toSentenceTypeName(selectedCouncil.type_name)}:{' '}
-                  {/* Neutral: higher/lower per-resident spend isn't inherently
-                      good or bad (could be efficiency, could be reduced service). */}
-                  <span className="font-semibold whitespace-nowrap text-foreground">
-                    <SourceAnnotation provenance={getProvenance('per_capita_spend', selectedCouncil)}>{diff > 0 ? '+' : ''}{formatCurrency(diff, { decimals: 0 })}</SourceAnnotation>
-                  </span>
-                  {' '}per resident
-                </p>
-              )}
+              {/* "Compared to average metropolitan district: +£X per resident"
+                  row removed 2026-04-22 per owner directive. The
+                  comparator is a CivAccount-derived average across
+                  councils; it doesn't appear verbatim in any single
+                  council's publication, so it fails the "every data
+                  point directly from a linkable public document" bar.
+                  Total budget + population (both Tier 1 sourced) remain
+                  — a reader can still calculate per-capita spend if
+                  they want; we just don't publish the comparison. */}
             </div>
           );
         })()}

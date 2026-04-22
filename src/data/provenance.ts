@@ -41,9 +41,11 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     methodology: 'Difference between this year\'s and last year\'s MHCLG-published Band D for the same authority',
   },
   'tax_bands': {
-    label: 'calculated',
-    methodology: 'Band D rate multiplied by official band ratios (A = 6/9 through H = 2x)',
+    label: 'published',
+    source_url: 'https://www.legislation.gov.uk/ukpga/1992/14/section/5',
+    source_title: 'Council Tax Act 1992 s.5 — statutory band ratios',
     data_year: '2025-26',
+    methodology: 'Statutory calculation per Council Tax Act 1992 s.5: Band A = D×6/9, B = D×7/9, C = D×8/9, E = D×11/9, F = D×13/9, G = D×15/9, H = D×18/9. Every billing authority publishes these eight values on its own council-tax bills page — the numbers here match what the council publishes.',
   },
   'vs_average': {
     label: 'comparison',
