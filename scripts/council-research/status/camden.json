@@ -1,0 +1,36 @@
+{
+  "council": "Camden",
+  "slug": "camden",
+  "ons_code": "E09000007",
+  "type": "LB",
+  "methodology_version": "NORTH-STAR v1.1 strict",
+  "phases": {
+    "phase_0_inventory": { "done": true, "at": "2026-04-22" },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "4 of 4 target PDFs archived via Wayback SavePageNow. camden.moderngov.co.uk direct returns 403 but IA can crawl it successfully (unlike Kent's www.kent.gov.uk which returns 520 to IA)."
+    },
+    "phase_1b_visual_evidence": { "done": true, "at": "2026-04-22", "note": "5 page-image PNGs rendered at 150 DPI." },
+    "phase_2_extract": { "done": true, "at": "2026-04-22", "note": "Verbatim excerpts folded into each field_sources[k].excerpt." },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "Stripped: chief_executive_salary (misattributed to Jenny Rowlands, previous CE), staff_fte, total_allowances_cost, councillor_allowances_detail, council_tax_shares, service_spending, top_suppliers, grant_payments, salary_bands, performance_kpis, waste_destinations, service_outcomes.*. Fixed: reserves 125,689,000 → 17,000,000 (General Fund per §2.73)."
+    },
+    "phase_4_populate": { "done": true, "at": "2026-04-22", "note": "9 field_sources entries with full NORTH-STAR §4 schema." },
+    "phase_5_verify": { "done": true, "at": "2026-04-22", "note": "audit-north-star 0/5 gaps. Full validator: 0 errors, 0 regressions. Camden added to STRICT_COUNCILS." },
+    "phase_5b_ux_audit": { "done": true, "at": "2026-04-22", "note": "ux-audit.mjs: 0 unwrapped + 0 derived. 42 SourceAnnotation-wrapped values." },
+    "phase_6_document": { "done": true, "at": "2026-04-22", "note": "CAMDEN-AUDIT.md (Datasheet for Datasets) + manifests/camden.json." },
+    "phase_7_ship": { "done": false, "pr_pending": true }
+  },
+  "north_star_gaps": 0,
+  "integrity_score": 100,
+  "last_verified": "2026-04-22",
+  "last_session": "2026-04-22T19:45:00Z",
+  "audit_doc": "src/data/councils/docs/CAMDEN-AUDIT.md",
+  "manifest": "src/data/councils/manifests/camden.json",
+  "page_image_count": 5,
+  "pdfs_archived": 4,
+  "north_star_complete": true
+}

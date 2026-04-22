@@ -17,7 +17,7 @@ All three must be North-Star complete (§19) before bulk rollout begins.
 |---------|------|--------|-------|--------------|-------|
 | **Bradford** | MD | 🟢 **North-Star complete (v1.1 strict)** | All phases 0-7 ✓ **+ Phase 5b ✓ + derivation-strip ✓** | 2026-04-22 | First fully-compliant reference council. 4 PDFs archived + sha256'd + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/bradford.json. 0/5 north-star gaps. 0 tier-classification errors. **0 UX-audit violations + 0 derived/comparator values** — every single rendered number appears verbatim in a linkable public document. Stripped data: performance_kpis, service_outcomes.housing, service_outcomes.population_served, service_spending (sub-category amounts). Stripped UI: vs-average comparators, YoY change deltas, 5-year change, per-capita comparator, 2 FAQ blocks. Fixed: stale population (546,200 → 563,605). Tax bands A-H kept as statutory calc per Council Tax Act 1992 s.5. |
 | **Kent** | SC | 🟢 **North-Star complete (v1.1 strict)** | All phases 0-7 ✓ **+ Phase 5b ✓ + derivation-strip ✓** | 2026-04-22 | Second fully-compliant reference council and the first where archival had to route entirely through Internet Archive Wayback (every kent.gov.uk + democracy.kent.gov.uk URL returns 403 on direct fetch). 5 Tier-3 PDFs archived via Wayback (Feb 2025 Draft Revenue Budget + MTFP, audited SoA 2023-24, draft SoA, Pay Policy 2025-26, Members' Allowances 2025-26) + 7 page-image PNGs + full Datasheet-for-Datasets audit + manifests/kent.json. **0/5 north-star gaps. 0 UX-audit violations (0 unwrapped + 0 derived).** Stripped: chief_executive_salary (no archived Kent source), staff_fte, total_allowances_cost, councillor_allowances_detail (2024-25 PDF IA-blocked), council_tax_shares (duplicate w/ derived %), service_spending (Budget Book IA-blocked), top_suppliers (invoices CSVs IA-blocked), salary_bands, grant_payments, performance_kpis, waste_destinations, service_outcomes.*, cabinet[] reduced to Leader-only (reshuffle drift; live link surfaces full). Fixed: revenue_budget 2,274m→1,530.9m (wrong source), council_tax_requirement 994,287,655→994,287,650 (PDF Table 6.2), reserves 85m→43m (PDF §1.12), population 1,589,100→1,639,029 (Tier 1 drift). |
-| Camden | LB | 🟡 Rework pending | Phase 2 — partial | 2026-04-22 | Value-verification pass done. Suppliers + grants archived. CE salary / allowance / MTFS figures need full Phase 1 archival via Wayback where Cloudflare blocks. tier + extraction_method addition pending. Now next in the queue. |
+| **Camden** | LB | 🟢 **North-Star complete (v1.1 strict)** | All phases 0-7 ✓ **+ Phase 5b ✓ + derivation-strip ✓** | 2026-04-22 | Third fully-compliant reference council and the first London Borough. 4 Tier-3 PDFs archived via Wayback (camden.moderngov.co.uk is IA-crawlable even though www.camden.gov.uk blocks). 5 page-image PNGs + full Datasheet-for-Datasets audit + manifests/camden.json. **0/5 north-star gaps. 0 UX-audit violations.** Stripped: chief_executive_salary (was Jenny Rowlands 2024-25, not current CE Jon Rowney), staff_fte, total_allowances_cost, councillor_allowances_detail, council_tax_shares, service_spending, top_suppliers, grant_payments (Socrata query snapshots not yet archived), salary_bands, performance_kpis, waste_destinations, service_outcomes.*. Fixed: reserves 125.7m→17m (General Fund per §2.73), population 218,400→216,943 (Tier 1 drift). |
 
 ## All other councils (314)
 
@@ -53,9 +53,10 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 
 
 - Councils in scope: 317
-- **Councils North-Star complete: 2** (Bradford, Kent)
-- Councils in progress: 1 (Camden — next in queue)
+- **Councils North-Star complete: 3** (Bradford, Kent, Camden — all 3 reference councils)
+- Councils in progress: 0
 - Councils not yet started: 314
+- **Milestone: all reference councils North-Star complete. Bulk rollout to the remaining 314 can begin.**
 
 ---
 

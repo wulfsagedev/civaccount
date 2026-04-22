@@ -1,0 +1,42 @@
+[
+  {
+    "council": "Camden",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-allowances-2025-26.pdf",
+    "page": 1,
+    "value": "£16,084.30",
+    "note": "§1.1 Basic Allowance — verbatim '£16,084.30'. Also at top of document: '2.5% uplift from £15,692 to £16,084.30'."
+  },
+  {
+    "council": "Camden",
+    "field": "leader_allowance",
+    "pdf": "members-allowances-2025-26.pdf",
+    "page": 1,
+    "value": "£43,721.38",
+    "note": "§2.1 Band 1 — Leader of the Council SRA. Our data rounds to £43,721."
+  },
+  {
+    "council": "Camden",
+    "field": "cabinet",
+    "pdf": "members-allowances-2025-26.pdf",
+    "page": 1,
+    "value": "Cabinet Members (x 9) + Leader = 10 total",
+    "note": "§2.1 Band 2 — confirms cabinet count of 9 members (+ Leader) matching our 10-member array. Specific names/portfolios sourced from Camden live Cabinet page."
+  },
+  {
+    "council": "Camden",
+    "field": "reserves",
+    "pdf": "council-tax-report-2025-26.pdf",
+    "page": 22,
+    "value": "£17m General Fund balance",
+    "note": "§2.73 — 'Our General Fund balances stand at £17m or roughly 5% of our core spending power and our General Fund earmarked reserves stand at £159m or 47% of our core spending power.'"
+  },
+  {
+    "council": "Camden",
+    "field": "savings_target",
+    "pdf": "council-tax-report-2025-26.pdf",
+    "page": 5,
+    "value": "MTFS savings totals 2024-26",
+    "note": "Table One p5 — Total MTFS Savings 16.64 (2024/25) + 6.8 (2025/26) + 4.53 (2026/27) = £27.97m cumulative. Current value £27.7m is the 3-year plan total referenced in news release."
+  }
+]
