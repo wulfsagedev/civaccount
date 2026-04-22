@@ -31,9 +31,8 @@ const VALID_ARCHIVE_EXEMPT = new Set([
 
 // Strict enforcement councils — those that have been fully audited
 // under NORTH-STAR.md §6 and are expected to carry tier + extraction_method
-// on every entry. Camden and Kent will be added when they complete the
-// Phase B workflow (currently in progress).
-const STRICT_COUNCILS = new Set(['Bradford']);
+// on every entry. Camden will be added when it completes its rollout.
+const STRICT_COUNCILS = new Set(['Bradford', 'Kent']);
 
 export function validate(councils, _population, report) {
   for (const c of councils) {

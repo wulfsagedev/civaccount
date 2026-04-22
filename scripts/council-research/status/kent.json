@@ -1,0 +1,77 @@
+{
+  "council": "Kent",
+  "slug": "kent",
+  "ons_code": "E10000016",
+  "type": "SC",
+  "methodology_version": "NORTH-STAR v1.1 strict",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "15 candidate sources identified (3 Tier 1 bulk + 7 Tier 3 PDFs + 5 Tier 4 live pages). Full inventory at src/data/councils/pdfs/council-pdfs/kent/inventory.json. Key finding: kent.gov.uk + democracy.kent.gov.uk both return HTTP 403 on direct fetch (Cloudflare-style bot block). Phase 1 routed entirely through Internet Archive Wayback."
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "5 of 7 Tier 3 PDFs archived via Wayback (2 pre-existing snapshots + 3 SavePageNow triggers). The 2 blocked PDFs (Budget Book 2025-26 + Councillors Allowances 2024-25, both on www.kent.gov.uk) return HTTP 520 from IA — Cloudflare refuses IA crawler. Affected fields stripped rather than fabricated."
+    },
+    "phase_1b_visual_evidence": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "7 page-image PNGs generated at 150 DPI from the Feb 2025 Draft Revenue Budget MTFP. Each field_sources[k].page_image_url points at /archive/kent/images/<field>-p<page>.png for inline popover rendering."
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "Values extracted via pdftotext -layout. Verbatim excerpts folded into each field_sources[k].excerpt."
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "Stripped arrays: performance_kpis, service_spending, top_suppliers, salary_bands, grant_payments, waste_destinations, councillor_allowances_detail, council_tax_shares, service_outcomes. Stripped scalars: chief_executive_salary, staff_fte, total_allowances_cost. Cabinet reduced to Leader-only. Full reasons in docs/KENT-AUDIT.md §4."
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "13 field_sources entries populated with NORTH-STAR §4 full schema (url+#page, title, accessed, data_year, tier, extraction_method, sha256_at_access/archive_exempt, page, excerpt, page_image_url). Fixed: revenue_budget 2274m→1530.9m, council_tax_requirement 994287655→994287650, reserves 85m→43m, population 1589100→1639029."
+    },
+    "phase_5_verify": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "Passes audit-north-star 0/5 gaps. Full validator suite: 0 errors, 0 regressions (intentional strips registered in completeness.mjs INTENTIONAL_REMOVALS). Kent added to STRICT_COUNCILS in tier-classification.mjs."
+    },
+    "phase_5b_ux_audit": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "ux-audit.mjs: 0 unwrapped numeric values, 0 derived/comparator values. Live Kent page renders 59 SourceAnnotation-wrapped values. Automated audit report at scripts/validate/reports/ux-audit-kent.json."
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-04-22",
+      "note": "src/data/councils/docs/KENT-AUDIT.md (full Datasheet for Datasets per Gebru 2021) + src/data/councils/manifests/kent.json (reproducibility manifest)."
+    },
+    "phase_7_ship": {
+      "done": false,
+      "pr_pending": true,
+      "note": "To be marked true on merge of rollout/kent on both repos."
+    }
+  },
+  "north_star_gaps": 0,
+  "integrity_score": 100,
+  "benford_z": null,
+  "last_verified": "2026-04-22",
+  "last_session": "2026-04-22T18:50:00Z",
+  "audit_doc": "src/data/councils/docs/KENT-AUDIT.md",
+  "manifest": "src/data/councils/manifests/kent.json",
+  "page_image_count": 7,
+  "pdfs_archived": 5,
+  "pdfs_blocked_via_ia": 2,
+  "tier_1_field_count": 18,
+  "tier_3_field_count": 10,
+  "tier_4_field_count": 3,
+  "north_star_complete": true,
+  "known_constraints": {
+    "bot_blocking": "All kent.gov.uk and democracy.kent.gov.uk URLs return HTTP 403 on direct fetch AND Internet Archive SavePageNow returns 520 on www.kent.gov.uk PDFs. Affected: Budget Book 2025-26 (service_spending stripped), Councillors Allowances 2024-25 (councillor_allowances_detail + total_allowances_cost stripped), news.kent.gov.uk cabinet reshuffle articles (cabinet reduced to Leader-only).",
+    "ce_salary_not_sourceable": "Kent publishes grade ranges (Pay Policy) and part-year historic (SoA Note 33) but not a named-officer headline figure for a full year. Field stripped rather than derived."
+  }
+}

@@ -164,6 +164,27 @@ export function validate(councils, _population, report) {
     // pdfs/council-pdfs/bradford/statement-of-accounts-2024-25_meta.json
     // fields_not_verified.staff_fte.
     'Bradford|staff_fte',
+    // 2026-04-22: Bradford service_spending + performance_kpis stripped
+    // per Phase 3 zero-tolerance rule (performance_kpis had Tier 1
+    // contradictions + CQC/housing unsourced; service_spending
+    // sub-category amounts needed the Budget Book page-level
+    // provenance we hadn't yet archived).
+    'Bradford|service_spending',
+    'Bradford|performance_kpis',
+    // 2026-04-22: Kent rollout — Phase 3 strips. Reasons logged in
+    // src/data/councils/county-councils.ts Kent entry inline comments
+    // and in KENT-AUDIT.md.
+    'Kent|chief_executive_salary',        // Pay Policy has grades only; SoA Note 33 has part-year historic only.
+    'Kent|staff_fte',                     // No archived source in Feb 2025 Budget Report or SoA.
+    'Kent|total_allowances_cost',         // 2024-25 published allowances PDF Cloudflare-blocked via IA.
+    'Kent|councillor_allowances_detail',  // Same — per-member detail unsourceable.
+    'Kent|service_spending',              // Sub-amounts need Budget Book which is Cloudflare-blocked on www.kent.gov.uk.
+    'Kent|top_suppliers',                 // Requires archived invoices-over-£250 CSVs (blocked).
+    'Kent|salary_bands',                  // Requires "Staff earning £50k+" PDF (blocked).
+    'Kent|grant_payments',                // 2022-23 values untraced to any archived Kent grants list.
+    'Kent|performance_kpis',              // Per Bradford strip rule (Tier 1 dupes / contradictions / unsourced).
+    'Kent|waste_destinations',            // Tonnages require Waste Strategy Evidence Base PDF page-level provenance.
+    'Kent|service_outcomes',              // All sub-fields LLM-derived or Tier 4 landing-only.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
