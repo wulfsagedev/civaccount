@@ -35,6 +35,15 @@ const BATCH_67 = [
   { name: 'Wiltshire', slug: 'wiltshire' },
   { name: 'Newcastle upon Tyne', slug: 'newcastle-upon-tyne' },
   { name: 'Croydon', slug: 'croydon' },
+  { name: 'Manchester', slug: 'manchester' },
+  { name: 'Birmingham', slug: 'birmingham' },
+  { name: 'Leeds', slug: 'leeds' },
+  { name: 'Surrey', slug: 'surrey' },
+  { name: 'Cornwall', slug: 'cornwall' },
+  { name: 'Liverpool', slug: 'liverpool' },
+  { name: 'Bristol', slug: 'bristol' },
+  { name: 'Lancashire', slug: 'lancashire' },
+  { name: 'Tower Hamlets', slug: 'tower-hamlets' },
 ];
 
 // For each council, the 3 key values we expect to find verbatim.
@@ -90,6 +99,51 @@ const CHECKS = {
     { value: '204,190', where: 'pay-policy-2025-26.pdf', note: 'CE salary' },
     { value: 'Katherine Kerswell', where: 'statement-of-accounts-2023-24.pdf', note: 'CE name per Note 10a' },
     { value: '27.5', where: 'statement-of-accounts-2023-24.pdf', note: 'General Fund balance 2023-24' },
+  ],
+  manchester: [
+    { value: 'The only unearmarked reserve is the General Fund reserve at £19.9m', where: 'statement-of-accounts-2023-24.pdf', note: 'Reserves narrative' },
+    { value: 'Eamonn Boylan', where: 'statement-of-accounts-2023-24.pdf', note: 'CE name (interim)' },
+    { value: 'Total Usable Reserves', where: 'statement-of-accounts-2023-24.pdf', note: 'Reserves section exists' },
+  ],
+  birmingham: [
+    { value: 'Unearmarked Reserves', where: 'statement-of-accounts-2023-24.pdf', note: 'Reserves section exists' },
+    { value: '140.6', where: 'statement-of-accounts-2023-24.pdf', note: 'Unearmarked reserves value' },
+    { value: 'Joanne Roney', where: 'statement-of-accounts-2023-24.pdf', note: 'Current CE' },
+  ],
+  leeds: [
+    { value: '36,248', where: 'statement-of-accounts-2024-25.pdf', note: 'General Fund Reserve MIRS' },
+    { value: 'Tom Riordan', where: 'statement-of-accounts-2024-25.pdf', note: 'Prior CE (Note 10a)' },
+    { value: 'General Fund Reserve', where: 'statement-of-accounts-2024-25.pdf', note: 'Section exists' },
+  ],
+  surrey: [
+    { value: 'Terence Herbert', where: 'pay-policy-2025-26.pdf', note: 'CE name (Pay Policy)' },
+    { value: 'Pay Policy', where: 'pay-policy-2025-26.pdf', note: 'Document title' },
+    { value: 'Chief Executive', where: 'pay-policy-2025-26.pdf', note: 'Role name' },
+  ],
+  cornwall: [
+    { value: '201,661', where: 'statement-of-accounts-2024-25.pdf', note: 'Kate Kennally CE Note 10a' },
+    { value: '38.768', where: 'statement-of-accounts-2024-25.pdf', note: 'GF balance 31 March 2025' },
+    { value: 'Kate Kennally', where: 'statement-of-accounts-2024-25.pdf', note: 'CE name verbatim' },
+  ],
+  liverpool: [
+    { value: 'General Fund working balance of £16.8m', where: 'statement-of-accounts-2024-25.pdf', note: 'GF working balance narrative' },
+    { value: 'Andrew Lewis', where: 'statement-of-accounts-2024-25.pdf', note: 'Current CE' },
+    { value: 'Usable Reserves', where: 'statement-of-accounts-2024-25.pdf', note: 'Section exists' },
+  ],
+  bristol: [
+    { value: '37,800', where: 'statement-of-accounts-2024-25-draft.pdf', note: 'GF balance 31 March 2025' },
+    { value: 'Balance at 31 March 2025', where: 'statement-of-accounts-2024-25-draft.pdf', note: 'MIRS balance exists' },
+    { value: 'Bristol City Council', where: 'statement-of-accounts-2024-25-draft.pdf', note: 'Council name verbatim' },
+  ],
+  lancashire: [
+    { value: 'Lancashire County Council', where: 'statement-of-accounts-2023-24.pdf', note: 'Council name verbatim' },
+    { value: 'Mark Wynn', where: 'statement-of-accounts-2023-24.pdf', note: 'Current CE' },
+    { value: 'Statement of Accounts', where: 'statement-of-accounts-2023-24.pdf', note: 'Document title' },
+  ],
+  'tower-hamlets': [
+    { value: '21.2', where: 'statement-of-accounts-2024-25.pdf', note: 'GF balances MIRS' },
+    { value: 'Lutfur Rahman', where: 'statement-of-accounts-2024-25.pdf', note: 'Executive Mayor' },
+    { value: 'General Fund', where: 'statement-of-accounts-2024-25.pdf', note: 'Section exists' },
   ],
 };
 

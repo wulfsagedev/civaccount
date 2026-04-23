@@ -248,6 +248,20 @@ export function validate(councils, _population, report) {
     'Essex|chief_executive_salary',               // CE turnover 13 Feb 2025 — Jones → Wood part-year.
     'Wiltshire|chief_executive_salary',           // Pay Policy framework-only; SoA Cloudflare-blocked.
     'Newcastle upon Tyne|chief_executive_salary', // Pay Policy range-only; SoA not archivable.
+    // 2026-04-23 Batch-4/5 Phase-4 Bradford-level verification:
+    //  - Reserves values updated to General Fund unallocated balance verbatim from archived SoA
+    //    (e.g. Manchester 258.6m → 19.9m per narrative "General Fund reserve at £19.9m")
+    //  - Stripped where no verbatim figure existed within GOV.UK validator tolerance
+    //    (Surrey: no SoA archived; Lancashire: GF balance £486m exceeds GOV.UK ref × 1.1)
+    //  - CE salaries stripped where not verbatim in archived Pay Policy or SoA
+    //    (Birmingham: CE title/person transition; Leeds: Tom Riordan departed Sep 2024
+    //     → Pexton part-year; Surrey: Pay Policy is shell; Cornwall: UPDATED to £201,661
+    //     per SoA Note 10a verbatim, replacing the old £153,000 figure).
+    'Surrey|reserves',
+    'Surrey|chief_executive_salary',
+    'Lancashire|reserves',
+    'Birmingham|chief_executive_salary',
+    'Leeds|chief_executive_salary',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
