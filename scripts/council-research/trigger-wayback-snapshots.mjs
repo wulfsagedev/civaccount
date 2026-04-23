@@ -19,8 +19,14 @@ const REPO_ROOT = join(__dirname, '..', '..');
 const PDFS_DIR = join(REPO_ROOT, 'src', 'data', 'councils', 'pdfs', 'council-pdfs');
 
 const BATCH_67_SLUGS = [
+  // Batch-6
   'hampshire', 'essex', 'hertfordshire', 'sheffield', 'westminster',
+  // Batch-7
   'nottinghamshire', 'staffordshire', 'wiltshire', 'newcastle-upon-tyne', 'croydon',
+  // Batch-5 (retroactive)
+  'manchester', 'birmingham', 'leeds', 'surrey', 'cornwall',
+  // Batch-4-overnight (retroactive)
+  'liverpool', 'bristol', 'lancashire', 'tower-hamlets',
 ];
 
 async function processCouncil(slug) {

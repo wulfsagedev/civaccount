@@ -19,16 +19,29 @@ const PDFS = join(REPO, 'src', 'data', 'councils', 'pdfs', 'council-pdfs');
 const MANIFESTS = join(REPO, 'src', 'data', 'councils', 'manifests');
 
 const BATCH_67 = [
+  // Batch-6
   { name: 'Hampshire', slug: 'hampshire', ons: 'E10000014', type: 'SC' },
   { name: 'Essex', slug: 'essex', ons: 'E10000012', type: 'SC' },
   { name: 'Hertfordshire', slug: 'hertfordshire', ons: 'E10000015', type: 'SC' },
   { name: 'Sheffield', slug: 'sheffield', ons: 'E08000039', type: 'MD' },
   { name: 'Westminster', slug: 'westminster', ons: 'E09000033', type: 'LB' },
+  // Batch-7
   { name: 'Nottinghamshire', slug: 'nottinghamshire', ons: 'E10000024', type: 'SC' },
   { name: 'Staffordshire', slug: 'staffordshire', ons: 'E10000028', type: 'SC' },
   { name: 'Wiltshire', slug: 'wiltshire', ons: 'E06000054', type: 'UA' },
   { name: 'Newcastle upon Tyne', slug: 'newcastle-upon-tyne', ons: 'E08000021', type: 'MD' },
   { name: 'Croydon', slug: 'croydon', ons: 'E09000008', type: 'LB' },
+  // Batch-5 (retroactive)
+  { name: 'Manchester', slug: 'manchester', ons: 'E08000003', type: 'MD' },
+  { name: 'Birmingham', slug: 'birmingham', ons: 'E08000025', type: 'MD' },
+  { name: 'Leeds', slug: 'leeds', ons: 'E08000035', type: 'MD' },
+  { name: 'Surrey', slug: 'surrey', ons: 'E10000030', type: 'SC' },
+  { name: 'Cornwall', slug: 'cornwall', ons: 'E06000052', type: 'UA' },
+  // Batch-4-overnight (retroactive)
+  { name: 'Liverpool', slug: 'liverpool', ons: 'E08000012', type: 'MD' },
+  { name: 'Bristol', slug: 'bristol', ons: 'E06000023', type: 'UA' },
+  { name: 'Lancashire', slug: 'lancashire', ons: 'E10000017', type: 'SC' },
+  { name: 'Tower Hamlets', slug: 'tower-hamlets', ons: 'E09000030', type: 'LB' },
 ];
 
 const IMAGE_SPEC = JSON.parse(readFileSync(
@@ -107,7 +120,17 @@ for (const { name, slug, ons, type } of BATCH_67) {
     generated_at: new Date().toISOString().slice(0, 10),
     methodology_version: 'NORTH-STAR v1.1 strict',
     spec_uri: 'https://github.com/wulfsagedev/civaccount/blob/main/NORTH-STAR.md',
-    batch: name === 'Nottinghamshire' || name === 'Staffordshire' || name === 'Wiltshire' || name === 'Newcastle upon Tyne' || name === 'Croydon' ? 'Batch-7 (2026-04-23)' : 'Batch-6 (2026-04-23)',
+    batch: (() => {
+      const b6 = new Set(['Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster']);
+      const b7 = new Set(['Nottinghamshire', 'Staffordshire', 'Wiltshire', 'Newcastle upon Tyne', 'Croydon']);
+      const b5 = new Set(['Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall']);
+      const b4 = new Set(['Liverpool', 'Bristol', 'Lancashire', 'Tower Hamlets']);
+      if (b6.has(name)) return 'Batch-6 (2026-04-23)';
+      if (b7.has(name)) return 'Batch-7 (2026-04-23)';
+      if (b5.has(name)) return 'Batch-5 (2026-04-22; Phase-0/6 backfilled 2026-04-23)';
+      if (b4.has(name)) return 'Batch-4-overnight (2026-04-22; Phase-0/6 backfilled 2026-04-23)';
+      return 'unknown';
+    })(),
 
     archived_sources: archivedSources,
     page_images: pageImages,
