@@ -1,0 +1,83 @@
+{
+  "batch": "6-councils-batch-2",
+  "councils": ["Hampshire", "Essex", "Hertfordshire", "Sheffield", "Westminster"],
+  "methodology_version": "NORTH-STAR v1.1 strict",
+  "date": "2026-04-23",
+  "summary": {
+    "pdfs_archived": 9,
+    "direct_fetch_success": 8,
+    "wayback_needed": 1,
+    "blocked_entirely": 1,
+    "councils_in_strict_set": 17,
+    "bulk_rollout_test": "success"
+  },
+  "phase_results": {
+    "phase_0_inventory": "done (WebSearch + targeted URL discovery per council; 11 URL patterns per playbook)",
+    "phase_1_archive": "done (9 PDFs archived: 8 direct_https + 1 Wayback for Hampshire democracy.hants.gov.uk; 1 Sheffield Pay Policy blocked entirely → CE salary sourced from SoA instead)",
+    "phase_1b_page_images": "deferred — field_sources has sha256 + url anchor but not page_image_url",
+    "phase_2_extract": "done (pdftotext -layout extraction of CE salaries, reserves, general fund balances)",
+    "phase_3_strip": "done (batch Node script /tmp/batch-6-apply.mjs applied Bradford checklist uniformly; 13 fields × 5 councils + 2 per-council exceptions)",
+    "phase_4_populate": "done (5-7 field_sources entries per council with NORTH-STAR §4 schema)",
+    "phase_5_validators": "0 errors, 0 regressions. Sheffield pre-existing band_d drift against GOV.UK fixed opportunistically (side-effect of ONS loader fix).",
+    "phase_5b_ux_audit": "0/0 for all 5",
+    "phase_6_document": "combined BATCH-6-AUDIT.md",
+    "phase_7_ship": "pending"
+  },
+  "audit_doc": "src/data/councils/docs/BATCH-6-AUDIT.md",
+  "manifest": null,
+  "per_council_status": {
+    "Hampshire": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 1,
+      "strips_added": 13,
+      "per_council_exceptions": ["reserves (SoA not archivable)"],
+      "ce_salary_kept": true,
+      "notes": "Pay Statement 2025-26 via Wayback — moderngov blocked on direct fetch. CE salary £252,318 verbatim in para 23."
+    },
+    "Essex": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 2,
+      "strips_added": 13,
+      "per_council_exceptions": ["chief_executive_salary (CE turnover 13 Feb 2025 — Jones → Wood)"],
+      "ce_salary_kept": false,
+      "notes": "SoA + Pay Policy both direct-fetched. Reserves £68.1m retained from pre-existing GOV.UK data (general reserves, not total)."
+    },
+    "Hertfordshire": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 3,
+      "strips_added": 13,
+      "per_council_exceptions": [],
+      "ce_salary_kept": true,
+      "notes": "All 3 docs direct-fetched including CE role profile PDF (Tier 3 source for chief_executive). CE salary £251,808 verbatim in Pay Policy §4.4."
+    },
+    "Sheffield": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 1,
+      "strips_added": 13,
+      "per_council_exceptions": [],
+      "ce_salary_kept": true,
+      "notes": "Pay Policy blocked (moderngov + democracy subdomain). CE salary £213,454 (Kate Josephs) sourced from SoA Note 10a. Also fixed pre-existing band_d drift against GOV.UK 2025-26 reference."
+    },
+    "Westminster": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 2,
+      "strips_added": 13,
+      "per_council_exceptions": [],
+      "ce_salary_kept": true,
+      "notes": "Both docs direct-fetched. CE salary £232,389 (Stuart Love) from SoA 2023-24 Note 10a p.72."
+    }
+  },
+  "north_star_gaps": 0,
+  "integrity_score": 100,
+  "last_verified": "2026-04-23"
+}
