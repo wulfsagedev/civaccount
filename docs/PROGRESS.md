@@ -49,14 +49,14 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
-<!-- counters as of 2026-04-23 after Batch-6 rollout -->
+<!-- counters as of 2026-04-23 after Batches 6+7 rollout -->
 
 
 - Councils in scope: 317
-- **Councils North-Star complete: 17** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets + Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster)
+- **Councils North-Star complete: 22** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets + Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster + Batch-7: Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon)
 - Councils in progress: 0
-- Councils not yet started: 300
-- **Batch-6 milestone (2026-04-23)**: Top-population tier knocked out. Hampshire, Essex, Hertfordshire (3 biggest uncovered SCs) + Sheffield (biggest uncovered MD) + Westminster (highest-profile LB) added. 9 PDFs archived (8 direct + 1 Wayback); Sheffield Pay Policy blocked on both moderngov subdomains but CE salary recovered from SoA Note 10a. Essex CE salary stripped (Jones → Wood turnover 13 Feb 2025). Hampshire reserves stripped (SoA not archivable). Sheffield band_d values corrected against GOV.UK 2025-26 reference (pre-existing drift, surfaced opportunistically by adding Sheffield to STRICT_COUNCILS).
+- Councils not yet started: 295
+- **Batches 6+7 milestone (2026-04-23)**: 10 more councils rolled out — top-population tier (Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster) + second-tier mix (Batch-7: Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon). 17 PDFs archived (13 direct + 4 Wayback). Per-council exceptions: Essex chief_executive_salary stripped (CE turnover Jones→Wood 13 Feb 2025); Hampshire reserves stripped (SoA not archivable); Wiltshire + Newcastle chief_executive_salary stripped (PP framework/range-only). CE-name corrections: Croydon Elaine Jackson → Katherine Kerswell (per SoA Note 10a); Wiltshire Ian Gibbons → Lucy Townsend (per PP signature). Sheffield band_d 2021-25 corrected against GOV.UK 2025-26 reference (pre-existing drift surfaced when Sheffield became loadable as strict council).
 
 ---
 

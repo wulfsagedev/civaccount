@@ -232,19 +232,22 @@ export function validate(councils, _population, report) {
     'Liverpool|chief_executive_salary',
     'Lancashire|chief_executive_salary',
     'Tower Hamlets|chief_executive_salary',
-    // 2026-04-23 Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster.
+    // 2026-04-23 Batches 6+7: Hampshire, Essex, Hertfordshire, Sheffield, Westminster,
+    // Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon.
     // Same Bradford strip checklist applied via batch script. Reasons in
-    // BATCH-6-AUDIT.md.
-    ...['Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster'].flatMap(c => [
+    // BATCH-6-AUDIT.md + BATCH-7-AUDIT.md.
+    ...['Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster',
+        'Nottinghamshire', 'Staffordshire', 'Wiltshire', 'Newcastle upon Tyne', 'Croydon'].flatMap(c => [
       `${c}|council_tax_shares`, `${c}|performance_kpis`, `${c}|service_spending`,
       `${c}|top_suppliers`, `${c}|grant_payments`, `${c}|waste_destinations`,
       `${c}|salary_bands`, `${c}|councillor_allowances_detail`, `${c}|service_outcomes`,
       `${c}|staff_fte`, `${c}|total_allowances_cost`, `${c}|budget_gap`, `${c}|savings_target`,
     ]),
-    // Hampshire: reserves stripped (SoA 2023-24 unarchived — moderngov blocked).
-    'Hampshire|reserves',
-    // Essex: CE salary stripped (CE turnover mid-2024-25; Jones ended 13 Feb 2025; Wood part-year).
-    'Essex|chief_executive_salary',
+    // Per-council CE salary exceptions.
+    'Hampshire|reserves',                         // SoA 2023-24 unarchived — moderngov blocked.
+    'Essex|chief_executive_salary',               // CE turnover 13 Feb 2025 — Jones → Wood part-year.
+    'Wiltshire|chief_executive_salary',           // Pay Policy framework-only; SoA Cloudflare-blocked.
+    'Newcastle upon Tyne|chief_executive_salary', // Pay Policy range-only; SoA not archivable.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
