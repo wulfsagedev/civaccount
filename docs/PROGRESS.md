@@ -49,14 +49,14 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
-<!-- counters as of 2026-04-22 after Kent rollout -->
+<!-- counters as of 2026-04-23 after Batch-6 rollout -->
 
 
 - Councils in scope: 317
-- **Councils North-Star complete: 12** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets)
+- **Councils North-Star complete: 17** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets + Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster)
 - Councils in progress: 0
-- Councils not yet started: 305
-- **Batch-4-overnight milestone**: Liverpool, Bristol, Lancashire, Tower Hamlets added (4 more councils). Attempted Sheffield, Newcastle, Hampshire, Hackney in the same batch but their PDFs hit various fetch issues (empty responses, connection timeouts, HTML redirects). Those 4 are first candidates for next session.
+- Councils not yet started: 300
+- **Batch-6 milestone (2026-04-23)**: Top-population tier knocked out. Hampshire, Essex, Hertfordshire (3 biggest uncovered SCs) + Sheffield (biggest uncovered MD) + Westminster (highest-profile LB) added. 9 PDFs archived (8 direct + 1 Wayback); Sheffield Pay Policy blocked on both moderngov subdomains but CE salary recovered from SoA Note 10a. Essex CE salary stripped (Jones → Wood turnover 13 Feb 2025). Hampshire reserves stripped (SoA not archivable). Sheffield band_d values corrected against GOV.UK 2025-26 reference (pre-existing drift, surfaced opportunistically by adding Sheffield to STRICT_COUNCILS).
 
 ---
 

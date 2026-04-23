@@ -121,7 +121,7 @@ const sweepScript = `
     if (/^£\\d+k[\\u2013-]£\\d+k$/.test(r.text)) return false;
     if (r.text.startsWith('Show all ')) return false;
     if (r.text.startsWith('tonnes total ')) return false;
-    if (/Bradford|Camden|Kent|Council|Statement|Pay Policy|Grants|City of Culture|Annual Financial Report|Budget Book|MTFS|Members.? Allowances|Revenue Budget|Capital Programme/.test(r.text) && !/^£/.test(r.text)) return false;
+    if (/Bradford|Camden|Kent|Council|Statement|Pay Policy|Pay Statement|Grants|City of Culture|Annual Financial Report|Annual Accounts|Budget Book|MTFS|Members.? Allowances|Revenue Budget|Capital Programme/.test(r.text) && !/^£/.test(r.text)) return false;
     if (r.text === 'Spending over £500') return false;
     if (r.text === 'Staff earning £50,000 or more' || r.text === 'staff earn £50,000 or more') return false;
     if (/^In 20\\d\\d-\\d\\d,/.test(r.text)) return false;
