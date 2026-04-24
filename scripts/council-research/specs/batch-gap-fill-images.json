@@ -1,0 +1,23 @@
+[
+  {
+    "council": "Lancashire",
+    "field": "chief_executive",
+    "pdf": "statement-of-accounts-2023-24.pdf",
+    "page": 7,
+    "value": "Mark Wynn (Chief Executive signature)"
+  },
+  {
+    "council": "Newcastle upon Tyne",
+    "field": "chief_executive_salary_band",
+    "pdf": "pay-policy-2024-25.pdf",
+    "page": 10,
+    "value": "Chief Executive 183,473 – 200,487"
+  },
+  {
+    "council": "Surrey",
+    "field": "council_tax_increase_percent",
+    "pdf": "budget-mtfs-2025-26.pdf",
+    "page": 19,
+    "value": "Council Tax £972.3m / 4.99% increase in 2025/26"
+  }
+]

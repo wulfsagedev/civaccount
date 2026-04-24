@@ -12,22 +12,33 @@ Companion docs:
 
 ---
 
-## Quick-reference: the nine phases
+## Quick-reference: the eleven phases
 
 | Phase | Name | Typical time | Output |
 | ----- | ---- | ------------ | ------ |
 | 0 | Inventory | 15 min | `pdfs/council-pdfs/<slug>/inventory.json` |
-| 1 | Archive | 20 min | Local PDFs + `_meta.json` + Wayback URLs |
+| 1 | Archive | 20 min | Local PDFs + `_meta.json` + **Wayback URLs (ALL PDFs, not just blocked)** |
 | 1b | Page-image generation | 10 min | PNGs under `images/` |
 | 2 | Extract | 30 min | `extracted-values.json` per field |
 | 3 | Cross-check + strip | 45 min | Stripped fields + `*-AUDIT.md` draft |
+| **3.5** | **Tier-1 drift check** ← NEW | 5 min | **ZERO drift** against parsed GOV.UK/ONS CSVs |
+| **3.6** | **Tier-4 link check** ← NEW | 5 min | Every live-page URL returns 200 (or documented 403 HEAD-bot block) |
 | 4 | Populate | 20 min | Updated TypeScript data file |
 | 5 | Validator suite | 5 min | All CI validators pass |
-| **5b** | **Live browser UX sweep** ← NEW | 30 min | `0` unwrapped numeric values |
-| 6 | Document | 30 min | Full `<COUNCIL>-AUDIT.md` |
+| **5b** | **Live browser UX sweep** | 30 min | `0` unwrapped numeric values |
+| **5c** | **Live-site reality check** ← NEW | 10 min | 3/3 rendered values appear verbatim in archived PDFs |
+| **5d** | **Screenshot parity (1:1 matched data)** ← NEW | 10 min | ≥1 `page_image_url`, PNG on disk, excerpt verbatim in archived source |
+| 6 | Document | 30 min | Full `<COUNCIL>-AUDIT.md` + `manifests/<slug>.json` |
 | 7 | Ship | 10 min | One PR each on public + data repos |
 
-Total: ~3.5 hours per council for competent human-supervised run. Automated rollout won't start until Camden + Kent have run through this template (per ROADMAP Phase F).
+Total: ~4.5 hours per council for competent human-supervised run.
+
+**CRITICAL**: Phases 3.5 + 3.6 + 5c were added 2026-04-23 after a Leeds spot-check surfaced
+widespread drift that passed the earlier structural audits. Phase 5d was added 2026-04-24
+after a live-site audit found only 3 of 22 councils had shipped screenshot evidence to
+`main` (the other 19 popovers had no visual proof). See "Drift prevention" section below.
+**Zero drift is the standard — any cell that can be cross-checked against a Tier-1 CSV
+must match exactly, and every council must have at least one 1:1 screenshot of its data.**
 
 ---
 
@@ -256,6 +267,61 @@ chief_executive: {
 
 ---
 
+## Phase 3.5 — Tier-1 drift check ← NEW, MANDATORY
+
+**Added 2026-04-23 after a spot-check of Leeds (which had been declared
+"North-Star complete") surfaced 187 drifted cells across 22 councils.**
+Every TS value that mirrors a national CSV must match that CSV exactly.
+
+Drift sources:
+- **`src/data/population.ts`** — must match `parsed-population.csv` (ONS Mid-YYYY)
+- **`council_tax.band_d_YYYY`** — must match `parsed-area-band-d.csv` columns
+- **`budget.*` (education, transport, social_care, etc.)** — must match `RA_Part1_LA_Data.csv` `*tot` columns
+- **`budget.total_service`** — must equal sum of the 11 budget category fields
+- **`budget.net_current`** — must match RA Part 1 `netcurrtot`
+
+### How to check
+
+```bash
+node /tmp/audit-tier1-drift.mjs   # see `/tmp/fix-tier1-drift.mjs` + `/tmp/fix-budget-totals.mjs`
+```
+
+Pass criterion: **0 cells drifted.**
+
+If any cell differs from the CSV reference by more than the float tolerance,
+either (a) update the TS value to match the CSV, or (b) if the council's
+SoA has an authoritative alternative, update both the TS value AND the
+corresponding `field_sources` `excerpt`/`sha256`/`page`.
+
+No third option. "Our value comes from an older snapshot" is not acceptable
+going forward. Zero drift.
+
+---
+
+## Phase 3.6 — Tier-4 link check ← NEW, MANDATORY
+
+**Added 2026-04-23 after the Leeds spot-check found 12/25 Tier-4 URLs
+returning 404 (link rot) and two councils showing stale CE names.**
+
+Every Tier-4 URL in `field_sources` across every North-Star council must
+return HTTP 200 (or a documented 403 HEAD-bot block that works in-browser).
+
+```bash
+node /tmp/link-check-tier4.mjs
+```
+
+Personnel drift check: for `chief_executive` + `council_leader` scalar
+values, confirm the rendered name is current (via `gh search news` or
+a direct fetch of the council's leadership page).
+
+If link broken → find replacement URL via WebSearch + WebFetch, update TS.
+If name stale → update both the scalar (`chief_executive: "..."`) and the
+`field_source.excerpt`/`accessed`.
+
+Pass criterion: **0 broken URLs, 0 stale names.**
+
+---
+
 ## Phase 5 — Validator suite
 
 ```bash
@@ -361,9 +427,80 @@ Any `Calculated` or `Comparison` label other than the statutory tax_bands except
 - **Click a supplier drill-down.** Verify helper copy names the specific supplier/recipient the reader should search for.
 - **Spot-check against the council's live website.** Pick 3 random rendered values. Visit `<council>.gov.uk` (in a browser, as a real user). Confirm each value appears on the council's own page either verbatim or in a document linked from that page. This is the "would a journalist find anything wrong" check.
 
-### Automated version (coming)
+### Automated version
 
-`scripts/council-research/ux-audit.mjs --council=<Name>` — wraps the sweep above, starts a dev server, navigates, reports violations. To be built in ROADMAP Phase E.
+`scripts/council-research/ux-audit.mjs --council=<Name>` — wraps the sweep above, starts a dev server, navigates, reports violations. Produces JSON report under `scripts/validate/reports/ux-audit-<slug>.json`. **Built + mandatory as of 2026-04-22.**
+
+---
+
+## Phase 5c — Live-site reality check ← NEW, MANDATORY
+
+**Added 2026-04-23 after the Leeds spot-check revealed that rendered values can
+pass Phase 5b structurally (every number has a SourceAnnotation) while still
+being wrong (rendered value does not appear verbatim in the cited archived
+document).**
+
+For each council, pick 3 rendered values and confirm each appears **verbatim**
+(string match) in the PDF that `field_sources` cites.
+
+```bash
+node scripts/council-research/live-site-reality-check.mjs --council=<Name>
+```
+
+The script extracts the PDF via `pdftotext -layout` and runs `grep -c -F` for
+the rendered value. Produces `scripts/validate/reports/live-site-reality-check.json`.
+
+Pass criterion: **3/3 verbatim** per council.
+
+If any rendered value is not verbatim in the archived PDF, either:
+- Update the rendered value to match the PDF (most common fix), OR
+- Strip the rendered field if no PDF has a matching figure.
+
+---
+
+## Phase 5d — Screenshot parity (1:1 matched data) ← NEW, MANDATORY
+
+**Added 2026-04-24 after a live-site regression: only Bradford, Kent, and
+Camden had shipped `page_image_url` evidence to `main`; the other 19 councils
+rendered `SourceAnnotation` popovers with no visual proof of the value. The
+popover read "view source" but no screenshot was there to compare against
+what the document said.**
+
+Every council must end the rollout with at least one `page_image_url` declared
+in `field_sources`, every referenced PNG present on disk, and every `excerpt`
+appearing verbatim (after whitespace/unicode canonicalisation) in the
+archived source file.
+
+```bash
+node scripts/validate/screenshot-parity.mjs 2>&1 | grep -E "^[✓✗] <Name>"
+```
+
+Pass criterion: **line starts with ✓ and reports 0 mismatched, 0 missing PNG**.
+
+The canonicalisation handles the usual pdftotext/HTML variations:
+- Whitespace collapsed to single spaces (newlines + multi-space → " ").
+- Unicode dashes (em/en-dash, minus) → ASCII hyphen.
+- Unicode smart quotes → ASCII single/double quote.
+- Literal `\n` in TS-string excerpts treated as real newlines.
+
+The matcher first tries a whole-substring hit; if that misses, it splits
+the excerpt into distinctive chunks (≥3 chars, separated by `—`, `:`, `|`,
+multi-space, newline) and passes when ≥60% of chunks appear in the source.
+This tolerates column-width drift from pdftotext extraction but catches
+fabricated or paraphrased excerpts that lose verbatim fidelity.
+
+If missing screenshot coverage:
+1. Pick a renderable TS field whose value appears verbatim in an archived
+   document (SoA, pay-policy, or council news/Wayback HTML).
+2. Render the PNG via `node scripts/council-research/render-page-images.mjs`
+   (PDF source) or `puppeteer.goto()` (HTML/live source) and save to
+   `src/data/councils/pdfs/council-pdfs/<slug>/images/<field>-<page>.png`.
+3. Add `page_image_url`, `page` (for PDFs), `excerpt` to the relevant
+   `field_sources.<key>` entry. If the current URL is Tier-4 live-page,
+   upgrade to Tier-3 by pointing `url` at the archived file (with `#page=N`
+   for PDFs) and adding `sha256_at_access`.
+
+Re-run until ✓. No exceptions.
 
 ---
 
@@ -461,4 +598,41 @@ This prevents regression — each new council can only inherit from a green base
 2. Then read this playbook.
 3. Then check `docs/PROGRESS.md` to see which council to pick up.
 4. Open the target council's `status/<slug>.json` to see exactly which phase to resume from.
-5. Do not skip Phase 5b. Do not ship without it.
+5. Do not skip Phase 3.5, 3.6, 5b, or 5c. Do not ship without all four.
+
+---
+
+## Drift prevention — why 3.5 / 3.6 / 5c exist
+
+**Standard: ZERO drift across the entire North-Star-complete set.**
+
+### What went wrong (April 2026)
+
+Between 2026-04-21 (first Bradford rollout) and 2026-04-23 we brought 22 councils
+to "North-Star complete" state. On 2026-04-23 a user-requested spot-check of
+**Leeds** — declared complete days earlier — surfaced **all of these**:
+
+1. **187 Tier-1 cells drifted** across the 22 councils:
+   - Populations (TS files held ONS Mid-2022 or Mid-2023 figures; parsed CSVs had Mid-2024)
+   - Band_d years off by one (TS `band_d_2025` held the value that was actually 2024's)
+   - Budget categories (TS held 2024-25 RA values; current CSVs have 2025-26)
+2. **12/25 Tier-4 URLs returned 404** (link rot on council websites)
+3. **2/22 CE names stale** (Manchester still said "Eamonn Boylan (Interim)" months after Tom Stannard took over; Leeds still said "Mariana Pexton" months after Ed Whiting OBE)
+4. **Tier-3 `field_sources`** had full sha256 + title + accessed but were missing `page` + `excerpt` + `#page=N` + `page_image_url` for most councils (Bradford/Kent/Camden had them; the Batch-4/5/6/7 rollouts had taken shortcuts)
+
+None of these were caught by the existing structural validators (`audit-north-star`, `tier-classification`, `source-truth`, `ux-audit.mjs`) because those validators check **form**, not **correctness-against-reference**.
+
+### What we added
+
+- **Phase 3.5 (Tier-1 drift check)**: explicit reference comparison. `audit-tier1-drift.mjs` compares every TS value against its parsed CSV and flags mismatches. Zero tolerance.
+- **Phase 3.6 (Tier-4 link check)**: HEAD every Tier-4 URL. Personnel drift handled via periodic WebSearch for current CE/leader names.
+- **Phase 5c (Live-site reality check)**: verify 3 rendered values appear verbatim in the archived PDFs. Catches the case where `field_sources` cite a document but the rendered value isn't actually in that document.
+- **Phase 5d (Screenshot parity)** ← added 2026-04-24: every council ships at least one `page_image_url` whose PNG exists on disk and whose `excerpt` is present verbatim in the archived source. `screenshot-parity.mjs` enforces this. Closes the gap exposed when 19 of 22 councils' popovers had no visual evidence.
+- **Quarterly refresh requirement**: Phases 3.5, 3.6, 5c, and 5d must re-run on every council at least quarterly. `/audit-council` can be scheduled for this.
+
+### The rule
+
+If Phase 3.5 / 3.6 / 5c / 5d reports any drift on a council currently in the
+`STRICT_COUNCILS` set, **that council is no longer North-Star complete**
+until the drift is resolved. Update `status/<slug>.json.north_star_complete: false`
+and open a fix PR immediately.

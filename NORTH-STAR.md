@@ -1,6 +1,18 @@
 # CivAccount — North-Star methodology
 
-**Version 1.0 — adopted 2026-04-22. This document is the canonical contract for how data lands on CivAccount. Older planning docs (`NORTH-STAR-STANDARD.md`, `DATA-PIPELINE.md`, `DATA-YEAR-POLICY.md`, `COUNCIL-AUDIT-PLAYBOOK.md`, `PROVENANCE-INTEGRITY-PLAN.md`) are superseded and moved to [`docs/archive/`](docs/archive/). Any conflict between this doc and older text — this doc wins.**
+**Version 1.3 — adopted 2026-04-22, revised 2026-04-23 (Leeds drift spot-check:
+187 drifted Tier-1 cells + 12 broken Tier-4 URLs + stale personnel), revised
+2026-04-24 (Bradford screenshot regression: only 3 of 22 councils had shipped
+screenshot evidence to `main`). This document is the canonical contract for
+how data lands on CivAccount. Older planning docs (`NORTH-STAR-STANDARD.md`,
+`DATA-PIPELINE.md`, `DATA-YEAR-POLICY.md`, `COUNCIL-AUDIT-PLAYBOOK.md`,
+`PROVENANCE-INTEGRITY-PLAN.md`) are superseded and moved to [`docs/archive/`](docs/archive/).
+Any conflict between this doc and older text — this doc wins.**
+
+**v1.2 additions:**
+- Non-negotiable #6: **Zero drift against reference datasets.** (§2)
+- Tier rules strengthened: verbatim rule applies to Tiers 1-4, not just Tier-3 PDFs. (§3)
+- New §15: **Continuous drift prevention** — quarterly re-verification mandatory.
 
 ---
 
@@ -16,7 +28,7 @@ This mission is the forcing function behind every decision below. If any decisio
 
 ---
 
-## 2. Five non-negotiables
+## 2. Seven non-negotiables
 
 1. **Every rendered value must be independently verifiable by any member of the public.** No internal-only sources, no trust-us layer, no "we checked, trust us" values.
 
@@ -27,6 +39,10 @@ This mission is the forcing function behind every decision below. If any decisio
 4. **Date is structural, not decorative.** Every value has a year label visible to the reader within one interaction. Mixed vintages across a single card are expected and correct — we label each value with its own year rather than pretend they share one.
 
 5. **If a value can't meet the bar above, it does not render.** The UI's `DataValidationNotice` / card-hiding pattern handles this gracefully. Stripping is always preferable to fabrication.
+
+6. **Zero drift against reference datasets.** ← NEW 2026-04-23. Every rendered value that mirrors a national reference CSV (parsed-population, parsed-area-band-d, RA Part 1/2) must match that CSV's current row **exactly**. Every Tier-4 live-page URL must resolve to HTTP 200. Every Tier-4 personnel name must match the council's currently-listed official. Verification is continuous (quarterly at minimum), not one-time. Councils that fall out of alignment drop out of `STRICT_COUNCILS` immediately.
+
+7. **Every council ships 1:1 screenshot evidence.** ← NEW 2026-04-24. Every council in `STRICT_COUNCILS` declares at least one `page_image_url` in its `field_sources`. Every referenced PNG exists on disk under `src/data/councils/pdfs/council-pdfs/<slug>/images/`. Every `excerpt` is verbatim-present in the archived source (whitespace + unicode canonicalisation is OK, paraphrase isn't). The live popover is the contract: click a value → see the page in the document that contains it. No screenshot = no trust.
 
 ---
 
@@ -648,6 +664,58 @@ These are the floor. Anyone picking up this project should skim all of them befo
 
 ---
 
-## 23. Owner sign-off
+## 23. Continuous drift prevention ← NEW 2026-04-23
 
-This document was adopted 2026-04-22. Any change to its principles (section 2) requires explicit sign-off from the project owner. Changes to process/tooling (sections 3-20) can be made by commit with clear commit message; reverted at owner's request.
+**Problem statement**: Between 2026-04-21 and 2026-04-23 we rolled out 22 councils
+to North-Star-complete state. A routine spot-check of Leeds (ordered by the
+project owner on 2026-04-23) found that most declared-complete councils had
+**drifted** against their Tier-1 source datasets and Tier-4 live pages. The
+structural validators (`audit-north-star.mjs`, `ux-audit.mjs`, `tier-classification.mjs`,
+`source-truth.mjs` on a limited field subset) had all passed even while 187
+Tier-1 cells rendered values that did not match the current parsed CSVs, 12
+Tier-4 URLs had linkrot, and 2 CE names were months out of date.
+
+**Root cause**: structural validators check **form** (every entry has sha256,
+every value has SourceAnnotation, etc.). They do not check **correctness against
+current reference data**. Drift accumulates silently.
+
+**Standing policy going forward**:
+
+### Drift sources and their watchdogs
+
+| Drift source | Audit tool | Target cadence | Pass bar |
+|---|---|---|---|
+| `src/data/population.ts` vs `parsed-population.csv` | `audit-tier1-drift.mjs` | quarterly + every rollout | 0 cells drifted |
+| `council_tax.band_d_YYYY` vs `parsed-area-band-d.csv` | `audit-tier1-drift.mjs` | same | 0 cells |
+| `budget.*` vs `RA_Part1_LA_Data.csv` | `audit-tier1-drift.mjs` | same | 0 cells |
+| `budget.total_service` vs sum of categories | `validate.mjs` cross-field | every validator run | match within £1k |
+| `budget.net_current` vs RA `netcurrtot` | `audit-tier1-drift.mjs` | same | match within £1k |
+| Tier-4 URL rot (404/403/5xx) | `link-check-tier4.mjs` | monthly | 0 broken (HEAD-403 bot-blocks documented) |
+| CE / Leader / councillor count personnel drift | manual spot-check + WebSearch | quarterly | current as of published leadership page |
+| Tier-3 archived PDF superseded by newer version | `compare-checksums.mjs` | annually | sha256 unchanged OR refresh triggered |
+| Missing / non-verbatim `page_image_url` (← added 2026-04-24) | `screenshot-parity.mjs` | every rollout + quarterly | ≥1 screenshot per council, excerpt verbatim in archive |
+
+### Acceptance test per council
+
+**A council is North-Star complete if and only if** all 5 structural gates
+(north-star 0/5, ux-audit 0/0, validator 0 errors, live-site-reality 3/3,
+**screenshot-parity ✓**) pass simultaneously **on the current reference
+CSVs**. Drift detected by the quarterly audit → council's `status/<slug>.json`
+flipped to `north_star_complete: false`, removed from `STRICT_COUNCILS`
+until fix PR lands. No exceptions.
+
+### Implementation
+
+- `/rollout-council` skill: runs Phases 3.5, 3.6, 5c, 5d as mandatory gates.
+- `/audit-council` skill: lightweight quarterly re-verification across 7 gates.
+- `/refresh-data` skill (new): pulls fresh parsed CSVs from GOV.UK and
+  re-runs `audit-tier1-drift.mjs` across all strict councils.
+
+---
+
+## 24. Owner sign-off
+
+This document was adopted 2026-04-22, revised 2026-04-23 (v1.2 drift-prevention
+additions). Any change to its principles (section 2) requires explicit sign-off
+from the project owner. Changes to process/tooling (sections 3-20, 23) can be
+made by commit with clear commit message; reverted at owner's request.

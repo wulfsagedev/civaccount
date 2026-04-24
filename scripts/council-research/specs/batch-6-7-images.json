@@ -1,0 +1,27 @@
+[
+  { "council": "Hampshire",        "field": "chief_executive_salary", "pdf": "pay-statement-2025-26.pdf",           "page": 5,   "value": "£252,318" },
+
+  { "council": "Essex",            "field": "reserves",                "pdf": "statement-of-accounts-2024-25.pdf",   "page": 28,  "value": "Total Reserves £2,850,327" },
+
+  { "council": "Hertfordshire",    "field": "chief_executive_salary", "pdf": "pay-policy-2026-27.pdf",              "page": 2,   "value": "£251,808" },
+  { "council": "Hertfordshire",    "field": "chief_executive",        "pdf": "chief-executive-role.pdf",            "page": 1,   "value": "Angie Ridgwell £251,808" },
+  { "council": "Hertfordshire",    "field": "reserves",                "pdf": "statement-of-accounts-2023-24.pdf",   "page": 28,  "value": "Closing General Fund £62,266k" },
+
+  { "council": "Sheffield",        "field": "chief_executive_salary", "pdf": "statement-of-accounts-2023-24.pdf",   "page": 112, "value": "Kate Josephs £213,454" },
+  { "council": "Sheffield",        "field": "reserves",                "pdf": "statement-of-accounts-2023-24.pdf",   "page": 31,  "value": "Usable Reserves £557,970k" },
+
+  { "council": "Westminster",      "field": "chief_executive_salary", "pdf": "annual-accounts-2023-24.pdf",         "page": 72,  "value": "S Love £232,389" },
+  { "council": "Westminster",      "field": "reserves",                "pdf": "annual-accounts-2023-24.pdf",         "page": 46,  "value": "Sub-Total GF £350,778k" },
+
+  { "council": "Nottinghamshire",  "field": "chief_executive_salary", "pdf": "pay-policy-2024-25.pdf",              "page": 11,  "value": "£201,664" },
+  { "council": "Nottinghamshire",  "field": "reserves",                "pdf": "statement-of-accounts-2023-24.pdf",   "page": 36,  "value": "Earmarked £318,749k" },
+
+  { "council": "Staffordshire",    "field": "chief_executive_salary", "pdf": "pay-policy-2026.pdf",                 "page": 11,  "value": "Chief Executive £202,542" },
+  { "council": "Staffordshire",    "field": "reserves",                "pdf": "statement-of-accounts-2023-24.pdf",   "page": 10,  "value": "GF balance £48.5m" },
+
+  { "council": "Wiltshire",        "field": "chief_executive",        "pdf": "pay-policy-2025-26.pdf",              "page": 1,   "value": "Lucy Townsend, Chief Executive" },
+
+  { "council": "Croydon",          "field": "chief_executive_salary", "pdf": "pay-policy-2025-26.pdf",              "page": 3,   "value": "£204,190" },
+  { "council": "Croydon",          "field": "reserves",                "pdf": "statement-of-accounts-2023-24.pdf",   "page": 14,  "value": "Earmarked £165.0m" },
+  { "council": "Croydon",          "field": "chief_executive",        "pdf": "statement-of-accounts-2023-24.pdf",   "page": 76,  "value": "Katherine Kerswell £199,209" }
+]

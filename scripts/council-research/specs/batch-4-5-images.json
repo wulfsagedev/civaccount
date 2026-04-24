@@ -1,0 +1,10 @@
+[
+  { "council": "Manchester", "field": "reserves", "pdf": "statement-of-accounts-2023-24.pdf", "page": 48, "value": "General Fund reserve £19.9m (narrative)" },
+  { "council": "Birmingham", "field": "reserves", "pdf": "statement-of-accounts-2023-24.pdf", "page": 15, "value": "Unearmarked Reserves £140.6m" },
+  { "council": "Leeds", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 32, "value": "General Fund Reserve £36,248k (MIRS 31 March 2025)" },
+  { "council": "Cornwall", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 24, "value": "General Fund balance £38.768m (31 March 2025)" },
+  { "council": "Cornwall", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 102, "value": "Kate Kennally CE 2024/25 £201,661 (Note 10a)" },
+  { "council": "Liverpool", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 16, "value": "General Fund working balance £16.8m (narrative)" },
+  { "council": "Bristol", "field": "reserves", "pdf": "statement-of-accounts-2024-25-draft.pdf", "page": 58, "value": "General Fund balance £37,800k (MIRS 31 March 2025)" },
+  { "council": "Tower Hamlets", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 24, "value": "General Fund balances £21.2m (MIRS)" }
+]

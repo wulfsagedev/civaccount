@@ -1,5 +1,5 @@
 ---
-description: Run the full Bradford-level North-Star rollout on a single council. Reads NORTH-STAR.md + COUNCIL-ROLLOUT-PLAYBOOK.md, works through all 9 phases, ends with ux-audit Phase 5b at 0/0 violations.
+description: Run the full Bradford-level North-Star rollout on a single council. Reads NORTH-STAR.md + COUNCIL-ROLLOUT-PLAYBOOK.md, works through all 14 phases (0, 1, 1b, 2, 3, 3.5, 3.6, 4, 5, 5b, 5c, 5d, 6, 7), ends with ZERO Tier-1 drift, ZERO broken Tier-4 URLs, ux-audit at 0/0 violations, live-site reality check at 3/3 verbatim, and 1:1 screenshot parity (≥1 page_image_url with excerpt verbatim in the archived source).
 argument-hint: <council-name>
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch, TodoWrite, mcp__Claude_Preview__preview_start, mcp__Claude_Preview__preview_eval, mcp__Claude_Preview__preview_click, mcp__Claude_Preview__preview_screenshot, mcp__Claude_Preview__preview_stop
 ---
@@ -70,6 +70,33 @@ Apply the **Bradford strip checklist** from `docs/PROGRESS.md#reference`:
 
 **Don't re-introduce derivations:** peer averages, YoY deltas, per-capita comparators, multi-year changes. UI-level strips are already applied across all components; if you find yourself adding a `Calculated` or `Comparison` label, stop and strip instead.
 
+### Phase 3.5 — Tier-1 drift check (MANDATORY, added 2026-04-23)
+
+```bash
+node /tmp/audit-tier1-drift.mjs   # or scripts/validate/audit-tier1-drift.mjs once promoted
+```
+
+Must report **zero drift** for $ARGUMENTS. Compares:
+- `src/data/population.ts` entry → `parsed-population.csv` row
+- `council_tax.band_d_2021..2025` → `parsed-area-band-d.csv` columns
+- `budget.*` (education/transport/social_care/public_health/housing/cultural/environmental/planning/central_services) → `RA_Part1_LA_Data.csv` `*tot` columns
+- `budget.total_service` must equal the sum of the 11 category fields
+- `budget.net_current` → RA Part 1 `netcurrtot`
+
+If drift found → update the TS values to match the CSV. No exceptions.
+
+### Phase 3.6 — Tier-4 link check (MANDATORY, added 2026-04-23)
+
+```bash
+node /tmp/link-check-tier4.mjs   # or scripts/validate/link-check-tier4.mjs once promoted
+```
+
+Every Tier-4 URL in $ARGUMENTS's `field_sources` must return HTTP 200 (or a
+documented 403 HEAD-bot block that works in-browser).
+
+Also spot-check the current CE and council leader names via WebSearch.
+If either is stale → update the TS scalar and the `field_source.excerpt`/`accessed`.
+
 ### Phase 4 — Populate
 Every surviving value gets a full `field_sources[k]` entry per NORTH-STAR §4:
 `{ url, title, accessed, data_year, tier, extraction_method, sha256_at_access | archive_exempt, page, excerpt, page_image_url }`.
@@ -105,7 +132,41 @@ Re-run until 0 / 0. No exceptions.
 
 **Also visually spot-check** — load the council page in the live browser, click 3 random values, verify each popover's source URL opens a specific page of a real public document (not a landing page).
 
-**Live-site reality check** — open `<council>.gov.uk` in another tab and confirm 3 random rendered values appear verbatim on the council's own page (or in a document linked from it).
+### Phase 5c — Live-site reality check (MANDATORY, added 2026-04-23)
+
+```bash
+node scripts/council-research/live-site-reality-check.mjs --council=$ARGUMENTS
+```
+
+Pick 3 rendered values for $ARGUMENTS; extract each archived PDF via `pdftotext
+-layout`; run `grep -c -F <value>`. Pass criterion: **3/3 verbatim hits.**
+
+If 0/3 or 1/3 or 2/3 — the rendered value is not verbatim in the cited source.
+Either update the rendered value to match the PDF, or strip the field.
+
+### Phase 5d — Screenshot parity (MANDATORY, added 2026-04-24)
+
+```bash
+node scripts/validate/screenshot-parity.mjs 2>&1 | grep -E "^[✓✗] $ARGUMENTS"
+```
+
+Every council must end the rollout with **≥1 page_image_url** declared in
+`field_sources`, every referenced PNG present on disk, and every `excerpt`
+appearing verbatim (after whitespace/unicode canonicalisation) in the
+archived source. Pass criterion: **line starts with ✓**.
+
+If missing:
+1. Pick a renderable TS field whose value appears verbatim in an archived
+   document (SoA, pay-policy, or council news/Wayback HTML).
+2. Render the PNG via `node scripts/council-research/render-page-images.mjs`
+   (PDF source) or `puppeteer.goto()` (HTML/live source).
+3. Add `page_image_url`, `page`, `excerpt` to the relevant `field_sources`
+   entry. If the current URL is Tier-4 live-page, upgrade to Tier-3 by
+   pointing `url` at the archived file (with `#page=N` for PDFs).
+
+Re-run until ✓. No exceptions. **This phase was added after the 2026-04-24
+audit found only Bradford, Kent, and Camden had screenshot evidence shipped
+to `main` — 19 other councils rendered popovers with no visual proof.**
 
 ### Phase 6 — Document
 Write `src/data/councils/docs/$(slugify $ARGUMENTS | uppercase)-AUDIT.md` using the Bradford template:
@@ -135,15 +196,25 @@ Use `gh pr create` with a body that lists:
 
 ---
 
-## Acceptance — don't mark complete unless
+## Acceptance — don't mark complete unless ALL of these pass
 
-- [ ] All 9 phases done; status/<slug>.json shows each phase ✓
-- [ ] `audit-north-star --council=$ARGUMENTS` → 0/5 gaps
-- [ ] `ux-audit --council=$ARGUMENTS` → 0 / 0 violations
+- [ ] All 14 phases done (0, 1, 1b, 2, 3, **3.5**, **3.6**, 4, 5, 5b, **5c**, **5d**, 6, 7); status/<slug>.json shows each phase ✓
+- [ ] `audit-north-star --council=$ARGUMENTS` → **0/5 gaps**
+- [ ] `audit-tier1-drift --council=$ARGUMENTS` → **0 cells drifted** (Phase 3.5 — added 2026-04-23)
+- [ ] `link-check-tier4 --council=$ARGUMENTS` → **0 broken URLs** (Phase 3.6 — added 2026-04-23)
+- [ ] `ux-audit --council=$ARGUMENTS` → **0 / 0 violations** (Phase 5b)
+- [ ] `live-site-reality-check --council=$ARGUMENTS` → **3/3 verbatim** (Phase 5c — added 2026-04-23)
+- [ ] `screenshot-parity --council=$ARGUMENTS` → **✓ line** (Phase 5d — added 2026-04-24)
 - [ ] `tier-classification` validator 0 errors (council added to STRICT_COUNCILS)
-- [ ] 3-value live spot-check vs council website passes
-- [ ] AUDIT.md + manifest shipped
+- [ ] CE + Leader names verified current via WebSearch cross-check (Phase 3.6)
+- [ ] AUDIT.md (Datasheet for Datasets, 13 sections per Gebru 2021) + `manifests/<slug>.json` shipped
 - [ ] Both PRs merged to `main`
+
+**If any of Phase 3.5, 3.6, 5c, or 5d fails — the council is NOT North-Star
+complete, even if the structural validators pass. Zero drift, 1:1 screenshot
+proof. Added after the Leeds drift spot-check of 2026-04-23 (187 cells +
+12 URLs + 2 stale CE names) and the 2026-04-24 Bradford-only screenshot
+regression (19 of 22 councils rendered popovers with no visual proof).**
 
 If any one of these fails, the council is **not** North-Star complete.
 

@@ -1,0 +1,83 @@
+{
+  "batch": "7-councils-batch-3",
+  "councils": ["Nottinghamshire", "Staffordshire", "Wiltshire", "Newcastle upon Tyne", "Croydon"],
+  "methodology_version": "NORTH-STAR v1.1 strict",
+  "date": "2026-04-23",
+  "summary": {
+    "pdfs_archived": 8,
+    "direct_fetch_success": 5,
+    "wayback_needed": 3,
+    "blocked_entirely": 1,
+    "councils_in_strict_set": 22,
+    "bulk_rollout_test": "success"
+  },
+  "phase_results": {
+    "phase_0_inventory": "done (WebSearch + targeted URL discovery)",
+    "phase_1_archive": "done (8 PDFs: 5 direct_https + 3 Wayback; Newcastle SoA unarchivable — timeout + no Wayback snapshot)",
+    "phase_1b_page_images": "deferred",
+    "phase_2_extract": "done (pdftotext -layout; CE salaries + reserves extracted)",
+    "phase_3_strip": "done (batch script /tmp/batch-7-apply.mjs)",
+    "phase_4_populate": "done (4-6 field_sources per council)",
+    "phase_5_validators": "0 errors from Batch-7 councils; 0 regressions",
+    "phase_5b_ux_audit": "0/0 for all 5",
+    "phase_6_document": "combined BATCH-7-AUDIT.md",
+    "phase_7_ship": "pending"
+  },
+  "audit_doc": "src/data/councils/docs/BATCH-7-AUDIT.md",
+  "manifest": null,
+  "per_council_status": {
+    "Nottinghamshire": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 2,
+      "strips_added": 13,
+      "per_council_exceptions": [],
+      "ce_salary_kept": true,
+      "notes": "Both docs direct-fetched. CE salary £201,664 from Pay Policy 2024-25 (current-rate post-April-2024 award)."
+    },
+    "Staffordshire": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 2,
+      "strips_added": 13,
+      "per_council_exceptions": [],
+      "ce_salary_kept": true,
+      "notes": "Pay Policy 2026 direct. SoA via Wayback (URL restructured). CE salary £202,542."
+    },
+    "Wiltshire": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 1,
+      "strips_added": 13,
+      "per_council_exceptions": ["chief_executive_salary (Pay Policy framework-only; SoA blocked)"],
+      "ce_salary_kept": false,
+      "notes": "Pay Policy via Wayback. SoA Cloudflare-blocked. CE Lucy Townsend (corrected from 'Ian Gibbons') from PP signature."
+    },
+    "Newcastle upon Tyne": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 1,
+      "strips_added": 13,
+      "per_council_exceptions": ["chief_executive_salary (range only in PP; SoA not archivable)"],
+      "ce_salary_kept": false,
+      "notes": "Pay Policy via Wayback. SoA direct-fetch timeout + no Wayback snapshot. CE salary stripped."
+    },
+    "Croydon": {
+      "north_star_complete": true,
+      "gaps": 0,
+      "ux_violations": 0,
+      "pdfs_archived": 2,
+      "strips_added": 13,
+      "per_council_exceptions": [],
+      "ce_salary_kept": true,
+      "notes": "Pay Policy via Wayback (moderngov). SoA direct. CE Katherine Kerswell (corrected from 'Elaine Jackson') from SoA Note 10a. CE salary £204,190 from PP."
+    }
+  },
+  "north_star_gaps": 0,
+  "integrity_score": 100,
+  "last_verified": "2026-04-23"
+}

@@ -49,14 +49,14 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
-<!-- counters as of 2026-04-22 after Kent rollout -->
+<!-- counters as of 2026-04-23 after Batches 6+7 rollout -->
 
 
 - Councils in scope: 317
-- **Councils North-Star complete: 12** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets)
+- **Councils North-Star complete: 22** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets + Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster + Batch-7: Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon)
 - Councils in progress: 0
-- Councils not yet started: 305
-- **Batch-4-overnight milestone**: Liverpool, Bristol, Lancashire, Tower Hamlets added (4 more councils). Attempted Sheffield, Newcastle, Hampshire, Hackney in the same batch but their PDFs hit various fetch issues (empty responses, connection timeouts, HTML redirects). Those 4 are first candidates for next session.
+- Councils not yet started: 295
+- **Batches 6+7 milestone (2026-04-23)**: 10 more councils rolled out — top-population tier (Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster) + second-tier mix (Batch-7: Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon). 17 PDFs archived (13 direct + 4 Wayback). Per-council exceptions: Essex chief_executive_salary stripped (CE turnover Jones→Wood 13 Feb 2025); Hampshire reserves stripped (SoA not archivable); Wiltshire + Newcastle chief_executive_salary stripped (PP framework/range-only). CE-name corrections: Croydon Elaine Jackson → Katherine Kerswell (per SoA Note 10a); Wiltshire Ian Gibbons → Lucy Townsend (per PP signature). Sheffield band_d 2021-25 corrected against GOV.UK 2025-26 reference (pre-existing drift surfaced when Sheffield became loadable as strict council).
 
 ---
 
