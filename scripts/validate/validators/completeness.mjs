@@ -262,6 +262,11 @@ export function validate(councils, _population, report) {
     'Lancashire|reserves',
     'Birmingham|chief_executive_salary',
     'Leeds|chief_executive_salary',
+    // 2026-04-24 Norfolk full-depth rollout (first remediation of the
+    // Batch-8/9/10 councils that were breadth-only). Strips: fields
+    // without a verbatim archived source as of this pass.
+    'Norfolk|total_allowances_cost', // Derived estimate (basic × 84 + SRA approximation), no published total.
+    'Norfolk|budget_gap',            // MTFS not archived yet; live-page only.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
