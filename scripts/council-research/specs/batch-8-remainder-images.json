@@ -1,0 +1,23 @@
+[
+  {
+    "council": "West Sussex",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2023-24.pdf",
+    "page": 15,
+    "value": "The General Fund balance at 31 March 2024 is £36.3m"
+  },
+  {
+    "council": "Derbyshire",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2023-24.pdf",
+    "page": 13,
+    "value": "The Council's General Reserve was £40. 182m at 31 March 2024"
+  },
+  {
+    "council": "Lincolnshire",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 26,
+    "value": "adequate level of general reserves (£24.200m)"
+  }
+]

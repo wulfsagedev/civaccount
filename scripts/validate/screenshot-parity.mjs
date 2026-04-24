@@ -37,7 +37,7 @@ const NORTH_STAR_22 = [
   'Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster',
   'Nottinghamshire', 'Staffordshire', 'Wiltshire', 'Newcastle upon Tyne', 'Croydon',
   // Batch-8 (2026-04-24): next 5 most-populous SC not yet complete.
-  'Norfolk',
+  'Norfolk', 'West Sussex', 'Derbyshire', 'Lincolnshire',
 ];
 
 function slugify(n) {
