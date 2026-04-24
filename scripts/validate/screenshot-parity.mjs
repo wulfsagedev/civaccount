@@ -41,6 +41,11 @@ const NORTH_STAR_22 = [
   // Batch-9 (2026-04-24): Suffolk, Leicestershire, Cambridgeshire.
   // Devon + Oxfordshire deferred — both sites block puppeteer PDF navigation.
   'Suffolk', 'Leicestershire', 'Cambridgeshire',
+  // Batch-10 (2026-04-24): Gloucestershire, Worcestershire, North Yorkshire.
+  // Warwickshire + Somerset deferred — Warwickshire's api.warwickshire.gov.uk
+  // blocks puppeteer fetch; Somerset 2023-24 SoA PDF not directly downloadable
+  // from somerset.gov.uk (audit cycle unresolved).
+  'Gloucestershire', 'Worcestershire', 'North Yorkshire',
 ];
 
 function slugify(n) {

@@ -9,6 +9,7 @@ Companion docs:
 - [`ROADMAP.md`](ROADMAP.md) — the sequence (which councils, in what order)
 - [`docs/PROGRESS.md`](docs/PROGRESS.md) — running state per council
 - [`scripts/council-research/README.md`](scripts/council-research/README.md) — tooling
+- [`scripts/council-research/ROLLOUT-LESSONS.md`](scripts/council-research/ROLLOUT-LESSONS.md) — **READ FIRST**: continuous self-learning log. Fetch-method table by site, reserves-scalar discipline, excerpt-authoring rules, deferred councils. Every batch appends.
 
 ---
 
