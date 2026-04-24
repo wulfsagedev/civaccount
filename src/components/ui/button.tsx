@@ -5,7 +5,12 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md type-body-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out-snap active:scale-[0.97] active:duration-75 cursor-pointer outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none motion-reduce:active:scale-100 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  // `touch-action: manipulation` kills the 300ms tap delay on iOS Safari
+  // and stops the first tap from being interpreted as :hover on a button
+  // that has no :hover rule (the iOS "first tap shows hover, second tap
+  // fires click" bug). Without it, the mobile floating-nav search button
+  // was unresponsive on iPhone — fixed 2026-04-24.
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md type-body-sm font-medium whitespace-nowrap touch-manipulation transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out-snap active:scale-[0.97] active:duration-75 cursor-pointer outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none motion-reduce:active:scale-100 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -50,12 +55,20 @@ function Button({
   }) {
   const Comp = asChild ? Slot.Root : "button"
 
+  // Default HTML buttons to type="button" (not "submit") so a <Button>
+  // placed inside a <form> doesn't accidentally submit the form. Callers
+  // can still override via props.
+  const typeProp = !asChild && !(props as { type?: string }).type
+    ? { type: "button" as const }
+    : {}
+
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
+      {...typeProp}
       {...props}
     />
   )
