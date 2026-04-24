@@ -101,7 +101,10 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Right: Search + Desktop Navigation (simplified: 3 core pages + actions) */}
+            {/* Right: Search + Desktop Navigation (simplified: 3 core pages + actions).
+                This is the sole overlay-owning SearchCommand in the tree — the
+                tablet + mobile instances below set renderOverlay={false} so we
+                don't mount 3 parallel modals with 3 F-key listeners. */}
             <div className="hidden lg:flex items-center gap-1 shrink-0">
               <SearchCommand />
               <nav className="flex items-center gap-1 ml-2" aria-label="Main navigation">
@@ -131,7 +134,7 @@ export default function Header() {
 
             {/* Right: Medium screens — Town Hall + Compare + essentials */}
             <div className="hidden md:flex lg:hidden items-center gap-1 shrink-0">
-              <SearchCommand />
+              <SearchCommand renderOverlay={false} />
               <nav className="flex items-center gap-1 ml-1" aria-label="Main navigation">
                 <Link href={selectedCouncil ? `/council/${getCouncilSlug(selectedCouncil)}/proposals` : '/townhall'} className={navLink(pathname.includes('/proposals') ? pathname : '/townhall')}>
                   <Vote className="h-4 w-4" aria-hidden="true" />
@@ -156,7 +159,7 @@ export default function Header() {
 
             {/* Right: Mobile Navigation (small screens only) */}
             <div className="flex md:hidden items-center gap-1">
-              <SearchCommand />
+              <SearchCommand renderOverlay={false} />
               <ThemeToggle />
               <Button
                 variant="ghost"

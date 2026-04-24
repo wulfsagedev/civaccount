@@ -27,12 +27,17 @@ import { join } from 'node:path';
 const REPO = '/Users/owenfisher/Projects/CivAccount/V3.0';
 const DC = join(REPO, 'src', 'data', 'councils');
 
+// Kept the identifier as NORTH_STAR_22 for historical continuity, but the list
+// grows as each batch lands. Update here + STRICT_COUNCILS in validators/tier-
+// classification.mjs whenever a council reaches North-Star complete.
 const NORTH_STAR_22 = [
   'Bradford', 'Kent', 'Camden',
   'Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall',
   'Liverpool', 'Bristol', 'Lancashire', 'Tower Hamlets',
   'Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster',
   'Nottinghamshire', 'Staffordshire', 'Wiltshire', 'Newcastle upon Tyne', 'Croydon',
+  // Batch-8 (2026-04-24): next 5 most-populous SC not yet complete.
+  'Norfolk',
 ];
 
 function slugify(n) {
