@@ -48,7 +48,7 @@ If time is constrained, do fewer councils — never cut phases.
 1. **Read these documents in full** (they supersede any prior conversation context):
    - [`/NORTH-STAR.md`](/NORTH-STAR.md) — the standard
    - [`/COUNCIL-ROLLOUT-PLAYBOOK.md`](/COUNCIL-ROLLOUT-PLAYBOOK.md) — the 14-phase process
-   - [`/scripts/council-research/ROLLOUT-LESSONS.md`](/scripts/council-research/ROLLOUT-LESSONS.md) — **continuous self-learning log**. Read this BEFORE starting. Fetch-method table by site (curl / puppeteer / Wayback), reserves-scalar "General Fund vs Total Usable" trap, excerpt-authoring rules, the deferred-councils list, AND the **depth-over-breadth enforcement** rule captured after Batch-10.
+   - [`/scripts/council-research/ROLLOUT-LESSONS.md`](/scripts/council-research/ROLLOUT-LESSONS.md) — **continuous self-learning log**. Read this BEFORE starting. Fetch-method table by site (curl / puppeteer / Wayback), reserves-scalar "General Fund vs Total Usable" trap, excerpt-authoring rules, the deferred-councils list, AND the **depth-over-breadth enforcement** rule captured after Batch-10. Every batch appends to it — check if the target council is already deferred.
    - [`/docs/PROGRESS.md`](/docs/PROGRESS.md) — what Bradford got stripped (apply the same strips here)
 
 2. **Check current state of $ARGUMENTS:**
