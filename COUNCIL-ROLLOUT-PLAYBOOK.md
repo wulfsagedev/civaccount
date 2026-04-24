@@ -1,8 +1,23 @@
 # Per-council rollout playbook
 
-**Adopted 2026-04-22 after Bradford became the first fully North-Star-compliant reference council. Every council added to the verified set from here runs through these 9 phases without deviation.** If you're a future session picking this up cold, this is your manual.
+**Adopted 2026-04-22 after Bradford became the first fully North-Star-compliant reference council. Every council added to the verified set from here runs through these 14 phases without deviation.** If you're a future session picking this up cold, this is your manual.
 
 Bradford is the template. Everything done to Bradford in April 2026 is codified below as the workflow. No step is optional.
+
+## ⛔ DEPTH OVER BREADTH — the non-negotiable rule
+
+**Every council rollout runs ALL 14 phases, start to finish, BEFORE the next council starts.**
+
+The app's entire value proposition is that a user can click any number on a council page, open a document, and see that exact number verbatim on the referenced page. A council entry with 1 verified field and 20 unverified ones is worse than no entry — it sets a false expectation of reliability.
+
+**Anti-patterns that are forbidden:**
+- "Let me add this council to the screenshot watchlist first with 1 reserves PNG, then come back for full depth later." **No.**
+- "I'll do a breadth-first sweep of 5 councils then deepen each." **No.**
+- "This council's pay-policy PDF is hard to fetch, let me skip Phase 1 for it and move on." **No** — either solve the fetch problem or defer the whole council.
+
+**If time is constrained, do fewer councils — never cut phases.**
+
+When you catch yourself about to take a shortcut, stop and re-read `scripts/council-research/ROLLOUT-LESSONS.md` § "Batch-10 depth-over-breadth enforcement (2026-04-24)".
 
 Companion docs:
 - [`NORTH-STAR.md`](NORTH-STAR.md) — the standards (what "done" means)

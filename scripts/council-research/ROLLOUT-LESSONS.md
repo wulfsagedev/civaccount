@@ -193,3 +193,67 @@ when the council ships.
   GOV.UK RA reference. Corrected to General Fund Reserve £16.1m /
   General Working Balance £55.9m respectively. **This is now rule 2a
   above — read before wiring any reserves field.**
+
+### Batch-10 depth-over-breadth enforcement (2026-04-24) — the hardest rule
+
+After Batch-8/9/10, the user caught me running **truncated rollouts**:
+1 reserves screenshot per council, no Phase 0 inventory, no pay-policy
+archive, no UX audit, no AUDIT.md, councils never added to
+`STRICT_COUNCILS`. 10 councils touched, zero of them at Bradford-level.
+
+The user's correction was blunt and repeated across the session:
+"depth and accuracy and evidence … one by one in full or nothing at all".
+
+### The rule, now memorialised at the top of the playbook
+
+Every council rollout runs ALL 14 phases before the NEXT one starts.
+No 1-PNG screenshot-parity passes. No "I'll come back for depth later."
+
+### How to recognise the slip in the moment
+
+These are the thoughts to catch yourself on:
+- "Let me just get this council on the screenshot watchlist first." → Stop.
+- "I'll do breadth-first across 5 councils then deepen." → Stop.
+- "Phase 5b / 5c / 6 / adding to STRICT_COUNCILS — I'll do those in a
+  follow-up commit." → Stop. It never happens. Do it now.
+- "The pay-policy PDF is blocked, I'll skip Phase 1 for it." → No —
+  either solve the fetch (puppeteer, Wayback, session warming) or mark
+  the whole council deferred and don't partial-ship it.
+
+### What "full" actually means (checklist to run every time)
+
+Before opening the paired PRs, confirm the council has:
+- [ ] `pdfs/council-pdfs/<slug>/inventory.json` — Phase 0
+- [ ] All Tier-3 PDFs archived with sha256 + `_meta.json` — Phase 1
+- [ ] Wayback URL for every archived PDF — Phase 1
+- [ ] `images/*.png` for EVERY renderable Tier-3 field — Phase 1b
+- [ ] `extracted-values.json` or equivalent verbatim extraction — Phase 2
+- [ ] All derived / YoY / comparator fields stripped — Phase 3
+- [ ] `audit-tier1-drift.mjs --council=<name>` → 0 drift — Phase 3.5
+- [ ] `link-check-tier4.mjs` for this council's URLs → 0 broken — Phase 3.6
+- [ ] EVERY `detailed.*` field the UI renders has a `field_sources[k]`
+      entry with url + sha256 + page + excerpt + page_image_url — Phase 4
+- [ ] `validate.mjs` → 0 errors — Phase 5
+- [ ] `ux-audit.mjs --council=<name>` → 0 / 0 — Phase 5b
+- [ ] `live-site-reality-check.mjs --council=<name>` → 3/3 verbatim — Phase 5c
+- [ ] `screenshot-parity.mjs` → ✓ for this council, multi-screenshot not
+      just 1 — Phase 5d
+- [ ] `docs/<COUNCIL>-AUDIT.md` + `manifests/<slug>.json` — Phase 6
+- [ ] Council added to `STRICT_COUNCILS` in tier-classification.mjs — Phase 7
+- [ ] Both paired PRs opened AND merged — Phase 7
+
+**If any box is unchecked, the council is NOT done.** Don't open the PR.
+Don't move to the next council.
+
+### Remediation for Batch-8/9/10 (10 councils not at Bradford-level)
+
+These 10 councils have 1 reserves screenshot each but are otherwise
+not Bradford-level:
+- Batch-8: Norfolk, West Sussex, Derbyshire, Lincolnshire
+- Batch-9: Suffolk, Leicestershire, Cambridgeshire
+- Batch-10: Gloucestershire, Worcestershire, North Yorkshire
+
+**Remediation plan**: re-run all 14 phases on each of these 10 councils,
+one at a time, starting with Norfolk. Before starting Batch-11 or
+anything else. The reserves screenshots we've already shipped are still
+good — don't re-do them; extend from there to the other fields.

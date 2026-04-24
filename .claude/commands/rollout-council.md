@@ -14,10 +14,41 @@ You are running the full per-council rollout playbook on **$ARGUMENTS** — brin
 
 ## Before you start
 
+## ⛔ DEPTH OVER BREADTH — read this first every time
+
+This skill runs the FULL 14-phase playbook on ONE council, end to end, before anything else happens. No shortcuts. No "1 reserves screenshot to get them on the watchlist and I'll come back for the rest". No breadth-first sweeps.
+
+Forbidden thought patterns to watch for:
+- "Let me just add this to the screenshot watchlist first." → Stop.
+- "I'll do Phase 5b / 5c / 6 in a follow-up commit." → Stop. Do them now.
+- "The pay-policy PDF is blocked, let me skip Phase 1 for it." → Either solve the fetch or mark the whole council deferred.
+
+**Checklist (must all be checked before opening the paired PRs):**
+- [ ] Phase 0 inventory.json
+- [ ] Phase 1 all archived PDFs + sha256 + meta.json (NOT just SoA — also pay-policy, MTFS, members' allowances, council-tax decision, any CE/leader archives)
+- [ ] Phase 1b PNG rendered for every renderable Tier-3 field (not just reserves)
+- [ ] Phase 2 verbatim extraction
+- [ ] Phase 3 derivations stripped
+- [ ] Phase 3.5 audit-tier1-drift → 0
+- [ ] Phase 3.6 link-check-tier4 → 0 broken
+- [ ] Phase 4 EVERY rendered `detailed.*` field has field_sources[k] with url + sha256 + page + excerpt + page_image_url
+- [ ] Phase 5 validate.mjs → 0 errors
+- [ ] Phase 5b ux-audit → 0/0
+- [ ] Phase 5c live-site-reality-check → 3/3 verbatim
+- [ ] Phase 5d screenshot-parity → ✓ with multiple screenshots
+- [ ] Phase 6 AUDIT.md + manifests/<slug>.json
+- [ ] Phase 7 council added to STRICT_COUNCILS, both paired PRs opened + merged
+
+If ANY box is unchecked, the council is not done. Don't open the PR. Don't move on.
+
+If time is constrained, do fewer councils — never cut phases.
+
+---
+
 1. **Read these documents in full** (they supersede any prior conversation context):
    - [`/NORTH-STAR.md`](/NORTH-STAR.md) — the standard
    - [`/COUNCIL-ROLLOUT-PLAYBOOK.md`](/COUNCIL-ROLLOUT-PLAYBOOK.md) — the 14-phase process
-   - [`/scripts/council-research/ROLLOUT-LESSONS.md`](/scripts/council-research/ROLLOUT-LESSONS.md) — **continuous self-learning log**. Read this BEFORE starting. Fetch-method table by site (curl / puppeteer / Wayback), reserves-scalar "General Fund vs Total Usable" trap, excerpt-authoring rules, and the deferred-councils list. Every batch appends to it — check if the target council is already deferred.
+   - [`/scripts/council-research/ROLLOUT-LESSONS.md`](/scripts/council-research/ROLLOUT-LESSONS.md) — **continuous self-learning log**. Read this BEFORE starting. Fetch-method table by site (curl / puppeteer / Wayback), reserves-scalar "General Fund vs Total Usable" trap, excerpt-authoring rules, the deferred-councils list, AND the **depth-over-breadth enforcement** rule captured after Batch-10.
    - [`/docs/PROGRESS.md`](/docs/PROGRESS.md) — what Bradford got stripped (apply the same strips here)
 
 2. **Check current state of $ARGUMENTS:**
