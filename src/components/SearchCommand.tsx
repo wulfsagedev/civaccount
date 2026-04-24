@@ -17,6 +17,13 @@ function isPostcode(query: string): boolean {
 
 interface SearchCommandProps {
   forceDesktopStyle?: boolean;
+  // Header renders three responsive SearchCommand instances (desktop, tablet,
+  // mobile). Only one should own the overlay state + keyboard listener;
+  // the other two are pure trigger buttons that dispatch `open-search`.
+  // Defaults to `true` for backward compatibility. Set `false` on the
+  // secondary responsive instances — otherwise pressing F opens three
+  // stacked overlays and each close callback only dismisses one.
+  renderOverlay?: boolean;
 }
 
 // Memoized result item for optimal re-render performance
@@ -58,7 +65,7 @@ const SearchResultItem = memo(function SearchResultItem({
 // Pre-compute default councils once
 const defaultCouncils = getDefaultCouncils(SEARCH_RESULT_LIMIT);
 
-export default function SearchCommand({ forceDesktopStyle = false }: SearchCommandProps) {
+export default function SearchCommand({ forceDesktopStyle = false, renderOverlay = true }: SearchCommandProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { shouldRender: shouldRenderOverlay, dataState: overlayState } = useAnimatedModal(isOpen);
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,29 +177,36 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
     }
   }, []);
 
-  // Global keyboard shortcuts
-  const handleGlobalKeyDown = useCallback((e: KeyboardEvent) => {
-    const target = e.target as HTMLElement;
-    const isInputFocused = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
-
-    if (e.key === 'f' && !isInputFocused) {
-      e.preventDefault();
-      triggerRef.current = document.activeElement;
-      setIsOpen(true);
-    }
-
-    if (e.key === 'Escape' && isOpen) {
-      closeSearch();
-    }
-  }, [isOpen, closeSearch]);
+  // Global keyboard shortcuts — only the overlay-owning instance listens.
+  // `isOpen` is read via ref to avoid recreating the listener on every state
+  // change (which was causing the listener to detach/reattach and could race
+  // with browser focus restoration on reload).
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);
 
   useEffect(() => {
+    if (!renderOverlay) return;
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInputFocused = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+      if (e.key === 'f' && !isInputFocused) {
+        e.preventDefault();
+        triggerRef.current = document.activeElement;
+        setIsOpen(true);
+      }
+
+      if (e.key === 'Escape' && isOpenRef.current) {
+        closeSearch();
+      }
+    };
     document.addEventListener('keydown', handleGlobalKeyDown);
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [handleGlobalKeyDown]);
+  }, [renderOverlay, closeSearch]);
 
-  // Listen for custom event to open search
+  // Listen for custom event to open search — only the overlay-owning instance.
   useEffect(() => {
+    if (!renderOverlay) return;
     const handleOpenSearch = () => {
       triggerRef.current = document.activeElement;
       document.dispatchEvent(new CustomEvent('close-mobile-menu'));
@@ -200,7 +214,7 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
     };
     document.addEventListener('open-search', handleOpenSearch);
     return () => document.removeEventListener('open-search', handleOpenSearch);
-  }, []);
+  }, [renderOverlay]);
 
   // Focus trap for the search overlay
   useEffect(() => {
@@ -285,7 +299,15 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
             <Button
               variant="outline"
               size="sm"
-              onClick={() => { triggerRef.current = document.activeElement; setIsOpen(true); }}
+              onClick={() => {
+                if (renderOverlay) {
+                  triggerRef.current = document.activeElement;
+                  setIsOpen(true);
+                } else {
+                  // Secondary instance — route click through the singleton event.
+                  document.dispatchEvent(new CustomEvent('open-search'));
+                }
+              }}
               className="hidden lg:flex items-center justify-between text-muted-foreground hover:text-foreground h-9 px-3 min-w-[180px]"
             >
               <div className="flex items-center gap-2">
@@ -300,7 +322,15 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => { triggerRef.current = document.activeElement; setIsOpen(true); }}
+              onClick={() => {
+                if (renderOverlay) {
+                  triggerRef.current = document.activeElement;
+                  setIsOpen(true);
+                } else {
+                  // Secondary instance — route click through the singleton event.
+                  document.dispatchEvent(new CustomEvent('open-search'));
+                }
+              }}
               className="lg:hidden h-11 w-11"
               aria-label="Search councils"
             >
@@ -310,8 +340,11 @@ export default function SearchCommand({ forceDesktopStyle = false }: SearchComma
         )
       )}
 
-      {/* Search overlay - only render from the main instance (not forceDesktopStyle) */}
-      {!forceDesktopStyle && shouldRenderOverlay && (
+      {/* Search overlay — only one SearchCommand instance renders it.
+          Header mounts three responsive instances (desktop / tablet / mobile);
+          only the first is the overlay owner. `forceDesktopStyle` is the
+          sticky-nav variant which is always button-only. */}
+      {renderOverlay && !forceDesktopStyle && shouldRenderOverlay && (
         <div ref={dialogRef} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Search councils" data-state={overlayState}>
           <div
             className="absolute inset-0 modal-overlay ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-180 motion-reduce:animate-none"
