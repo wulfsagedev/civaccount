@@ -1,5 +1,5 @@
 ---
-description: Run the full six-gate audit on an already-North-Star council. Confirms it still meets the zero-drift bar. Use after any change, quarterly as continuous-drift-prevention, or as a user-requested spot-check.
+description: Run the full seven-gate audit on an already-North-Star council. Confirms it still meets the zero-drift bar. Use after any change, quarterly as continuous-drift-prevention, or as a user-requested spot-check.
 argument-hint: <council-name>
 allowed-tools: Bash, Read, WebFetch, WebSearch, mcp__Claude_Preview__preview_start, mcp__Claude_Preview__preview_eval, mcp__Claude_Preview__preview_screenshot, mcp__Claude_Preview__preview_stop
 ---
@@ -8,7 +8,7 @@ allowed-tools: Bash, Read, WebFetch, WebSearch, mcp__Claude_Preview__preview_sta
 
 Read-only verification that **$ARGUMENTS** still meets the North-Star bar. No data changes. Just checks.
 
-Six gates must all pass. **Added 2026-04-23: Gates 2, 3, 6 are new, codifying lessons from the Leeds spot-check that exposed 187 drifted cells + 12 broken URLs + 2 stale CE names across councils previously declared North-Star complete by older 4-gate runs.**
+Seven gates must all pass. **Added 2026-04-23: Gates 2, 3, 6 codified the Leeds drift lesson (187 cells + 12 URLs + 2 stale CE names). Added 2026-04-24: Gate 7 codifies the Bradford screenshot-regression lesson — only 3 of 22 councils had screenshot evidence on main at that point.**
 
 ## Gate 1: structural audit (every field has provenance)
 
@@ -65,16 +65,37 @@ Additionally using mcp__Claude_Preview tools (human judgement):
 3. For each: click → dialog opens → verify source URL opens a specific public document with `#page=N` where applicable
 4. Confirm each value's `page_image_url` PNG loads (Tier-3 only)
 
+## Gate 7: screenshot parity (1:1 matched data, NEW 2026-04-24)
+
+```bash
+node scripts/validate/screenshot-parity.mjs 2>&1 | grep -E "^[✓✗] $ARGUMENTS"
+```
+
+For $ARGUMENTS:
+1. At least one `page_image_url` is declared (screenshot evidence exists).
+2. Every `page_image_url` PNG exists on disk under `src/data/councils/pdfs/council-pdfs/<slug>/images/`.
+3. The `excerpt` claimed in each `field_sources.<key>` entry matches the
+   archived PDF/HTML content 1:1 after whitespace/unicode canonicalisation.
+   The matcher passes whole-substring hits and falls back to "≥60% of
+   distinctive phrases appear in source".
+
+Pass: **1 screenshot minimum, 0 missing PNGs, 0 mismatched excerpts**.
+
+If Gate 7 fails, the live-site popover for that council shows evidence that
+doesn't 1:1 match the rendered value — the exact failure mode caught for
+Newcastle's Pam Smith before the 2026-04-24 fix.
+
 ## Report
 
-For each of the 6 gates: pass / fail + any findings.
+For each of the 7 gates: pass / fail + any findings.
 
-**Pass condition:** all six gates green. Report the full list of sources verified.
+**Pass condition:** all seven gates green. Report the full list of sources verified.
 
 **Fail condition:** any one gate red.
 - If the failure is drift (Gate 2/3): mark $ARGUMENTS `north_star_complete: false` in `status/<slug>.json`, remove from `STRICT_COUNCILS`, and recommend `/rollout-council $ARGUMENTS` to fix.
 - If the failure is structural (Gate 1/4/5): same — demotion + recommend rollout.
 - If the failure is reality-check (Gate 6): value doesn't match PDF — critical. Same demotion.
+- If the failure is screenshot parity (Gate 7): excerpt/PNG drift — same demotion.
 
 Don't silently wave through.
 

@@ -27,15 +27,18 @@ Companion docs:
 | 5 | Validator suite | 5 min | All CI validators pass |
 | **5b** | **Live browser UX sweep** | 30 min | `0` unwrapped numeric values |
 | **5c** | **Live-site reality check** ← NEW | 10 min | 3/3 rendered values appear verbatim in archived PDFs |
+| **5d** | **Screenshot parity (1:1 matched data)** ← NEW | 10 min | ≥1 `page_image_url`, PNG on disk, excerpt verbatim in archived source |
 | 6 | Document | 30 min | Full `<COUNCIL>-AUDIT.md` + `manifests/<slug>.json` |
 | 7 | Ship | 10 min | One PR each on public + data repos |
 
-Total: ~4 hours per council for competent human-supervised run.
+Total: ~4.5 hours per council for competent human-supervised run.
 
 **CRITICAL**: Phases 3.5 + 3.6 + 5c were added 2026-04-23 after a Leeds spot-check surfaced
-widespread drift that passed the earlier structural audits. See "Drift prevention" section
-below. **Zero drift is the standard — any cell that can be cross-checked against a Tier-1
-CSV must match exactly.**
+widespread drift that passed the earlier structural audits. Phase 5d was added 2026-04-24
+after a live-site audit found only 3 of 22 councils had shipped screenshot evidence to
+`main` (the other 19 popovers had no visual proof). See "Drift prevention" section below.
+**Zero drift is the standard — any cell that can be cross-checked against a Tier-1 CSV
+must match exactly, and every council must have at least one 1:1 screenshot of its data.**
 
 ---
 
@@ -455,6 +458,52 @@ If any rendered value is not verbatim in the archived PDF, either:
 
 ---
 
+## Phase 5d — Screenshot parity (1:1 matched data) ← NEW, MANDATORY
+
+**Added 2026-04-24 after a live-site regression: only Bradford, Kent, and
+Camden had shipped `page_image_url` evidence to `main`; the other 19 councils
+rendered `SourceAnnotation` popovers with no visual proof of the value. The
+popover read "view source" but no screenshot was there to compare against
+what the document said.**
+
+Every council must end the rollout with at least one `page_image_url` declared
+in `field_sources`, every referenced PNG present on disk, and every `excerpt`
+appearing verbatim (after whitespace/unicode canonicalisation) in the
+archived source file.
+
+```bash
+node scripts/validate/screenshot-parity.mjs 2>&1 | grep -E "^[✓✗] <Name>"
+```
+
+Pass criterion: **line starts with ✓ and reports 0 mismatched, 0 missing PNG**.
+
+The canonicalisation handles the usual pdftotext/HTML variations:
+- Whitespace collapsed to single spaces (newlines + multi-space → " ").
+- Unicode dashes (em/en-dash, minus) → ASCII hyphen.
+- Unicode smart quotes → ASCII single/double quote.
+- Literal `\n` in TS-string excerpts treated as real newlines.
+
+The matcher first tries a whole-substring hit; if that misses, it splits
+the excerpt into distinctive chunks (≥3 chars, separated by `—`, `:`, `|`,
+multi-space, newline) and passes when ≥60% of chunks appear in the source.
+This tolerates column-width drift from pdftotext extraction but catches
+fabricated or paraphrased excerpts that lose verbatim fidelity.
+
+If missing screenshot coverage:
+1. Pick a renderable TS field whose value appears verbatim in an archived
+   document (SoA, pay-policy, or council news/Wayback HTML).
+2. Render the PNG via `node scripts/council-research/render-page-images.mjs`
+   (PDF source) or `puppeteer.goto()` (HTML/live source) and save to
+   `src/data/councils/pdfs/council-pdfs/<slug>/images/<field>-<page>.png`.
+3. Add `page_image_url`, `page` (for PDFs), `excerpt` to the relevant
+   `field_sources.<key>` entry. If the current URL is Tier-4 live-page,
+   upgrade to Tier-3 by pointing `url` at the archived file (with `#page=N`
+   for PDFs) and adding `sha256_at_access`.
+
+Re-run until ✓. No exceptions.
+
+---
+
 ## Phase 6 — Document (Datasheet for Datasets)
 
 Write `docs/<COUNCIL>-AUDIT.md` in the data repo following Gebru et al. *Communications of the ACM* 2021:
@@ -578,11 +627,12 @@ None of these were caught by the existing structural validators (`audit-north-st
 - **Phase 3.5 (Tier-1 drift check)**: explicit reference comparison. `audit-tier1-drift.mjs` compares every TS value against its parsed CSV and flags mismatches. Zero tolerance.
 - **Phase 3.6 (Tier-4 link check)**: HEAD every Tier-4 URL. Personnel drift handled via periodic WebSearch for current CE/leader names.
 - **Phase 5c (Live-site reality check)**: verify 3 rendered values appear verbatim in the archived PDFs. Catches the case where `field_sources` cite a document but the rendered value isn't actually in that document.
-- **Annual refresh requirement**: Phases 3.5, 3.6, and 5c must re-run on every council at least **quarterly**. `/audit-council` can be scheduled for this.
+- **Phase 5d (Screenshot parity)** ← added 2026-04-24: every council ships at least one `page_image_url` whose PNG exists on disk and whose `excerpt` is present verbatim in the archived source. `screenshot-parity.mjs` enforces this. Closes the gap exposed when 19 of 22 councils' popovers had no visual evidence.
+- **Quarterly refresh requirement**: Phases 3.5, 3.6, 5c, and 5d must re-run on every council at least quarterly. `/audit-council` can be scheduled for this.
 
 ### The rule
 
-If Phase 3.5 / 3.6 / 5c reports any drift on a council currently in the
+If Phase 3.5 / 3.6 / 5c / 5d reports any drift on a council currently in the
 `STRICT_COUNCILS` set, **that council is no longer North-Star complete**
 until the drift is resolved. Update `status/<slug>.json.north_star_complete: false`
 and open a fix PR immediately.

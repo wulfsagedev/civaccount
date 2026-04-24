@@ -1,9 +1,10 @@
 # CivAccount — North-Star methodology
 
-**Version 1.2 — adopted 2026-04-22, revised 2026-04-23 after Leeds spot-check
-exposed 187 drifted Tier-1 cells + 12 broken Tier-4 URLs + stale personnel on
-councils previously declared North-Star complete. This document is the canonical
-contract for how data lands on CivAccount. Older planning docs (`NORTH-STAR-STANDARD.md`,
+**Version 1.3 — adopted 2026-04-22, revised 2026-04-23 (Leeds drift spot-check:
+187 drifted Tier-1 cells + 12 broken Tier-4 URLs + stale personnel), revised
+2026-04-24 (Bradford screenshot regression: only 3 of 22 councils had shipped
+screenshot evidence to `main`). This document is the canonical contract for
+how data lands on CivAccount. Older planning docs (`NORTH-STAR-STANDARD.md`,
 `DATA-PIPELINE.md`, `DATA-YEAR-POLICY.md`, `COUNCIL-AUDIT-PLAYBOOK.md`,
 `PROVENANCE-INTEGRITY-PLAN.md`) are superseded and moved to [`docs/archive/`](docs/archive/).
 Any conflict between this doc and older text — this doc wins.**
@@ -27,7 +28,7 @@ This mission is the forcing function behind every decision below. If any decisio
 
 ---
 
-## 2. Six non-negotiables
+## 2. Seven non-negotiables
 
 1. **Every rendered value must be independently verifiable by any member of the public.** No internal-only sources, no trust-us layer, no "we checked, trust us" values.
 
@@ -40,6 +41,8 @@ This mission is the forcing function behind every decision below. If any decisio
 5. **If a value can't meet the bar above, it does not render.** The UI's `DataValidationNotice` / card-hiding pattern handles this gracefully. Stripping is always preferable to fabrication.
 
 6. **Zero drift against reference datasets.** ← NEW 2026-04-23. Every rendered value that mirrors a national reference CSV (parsed-population, parsed-area-band-d, RA Part 1/2) must match that CSV's current row **exactly**. Every Tier-4 live-page URL must resolve to HTTP 200. Every Tier-4 personnel name must match the council's currently-listed official. Verification is continuous (quarterly at minimum), not one-time. Councils that fall out of alignment drop out of `STRICT_COUNCILS` immediately.
+
+7. **Every council ships 1:1 screenshot evidence.** ← NEW 2026-04-24. Every council in `STRICT_COUNCILS` declares at least one `page_image_url` in its `field_sources`. Every referenced PNG exists on disk under `src/data/councils/pdfs/council-pdfs/<slug>/images/`. Every `excerpt` is verbatim-present in the archived source (whitespace + unicode canonicalisation is OK, paraphrase isn't). The live popover is the contract: click a value → see the page in the document that contains it. No screenshot = no trust.
 
 ---
 
@@ -690,20 +693,21 @@ current reference data**. Drift accumulates silently.
 | Tier-4 URL rot (404/403/5xx) | `link-check-tier4.mjs` | monthly | 0 broken (HEAD-403 bot-blocks documented) |
 | CE / Leader / councillor count personnel drift | manual spot-check + WebSearch | quarterly | current as of published leadership page |
 | Tier-3 archived PDF superseded by newer version | `compare-checksums.mjs` | annually | sha256 unchanged OR refresh triggered |
+| Missing / non-verbatim `page_image_url` (← added 2026-04-24) | `screenshot-parity.mjs` | every rollout + quarterly | ≥1 screenshot per council, excerpt verbatim in archive |
 
 ### Acceptance test per council
 
-**A council is North-Star complete if and only if** all 4 structural gates
-(north-star 0/5, ux-audit 0/0, validator 0 errors, live-site-reality 3/3)
-pass simultaneously **on the current reference CSVs**. Drift detected by
-the quarterly audit → council's `status/<slug>.json` flipped to
-`north_star_complete: false`, removed from `STRICT_COUNCILS` until fix PR
-lands. No exceptions.
+**A council is North-Star complete if and only if** all 5 structural gates
+(north-star 0/5, ux-audit 0/0, validator 0 errors, live-site-reality 3/3,
+**screenshot-parity ✓**) pass simultaneously **on the current reference
+CSVs**. Drift detected by the quarterly audit → council's `status/<slug>.json`
+flipped to `north_star_complete: false`, removed from `STRICT_COUNCILS`
+until fix PR lands. No exceptions.
 
 ### Implementation
 
-- `/rollout-council` skill: runs Phases 3.5, 3.6, 5c as mandatory gates.
-- `/audit-council` skill: lightweight quarterly re-verification.
+- `/rollout-council` skill: runs Phases 3.5, 3.6, 5c, 5d as mandatory gates.
+- `/audit-council` skill: lightweight quarterly re-verification across 7 gates.
 - `/refresh-data` skill (new): pulls fresh parsed CSVs from GOV.UK and
   re-runs `audit-tier1-drift.mjs` across all strict councils.
 
