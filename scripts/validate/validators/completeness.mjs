@@ -533,6 +533,23 @@ export function validate(councils, _population, report) {
     'Wolverhampton|staff_fte',                     // 5,377 not in archived SoA.
     'Wolverhampton|savings_target',                // Not in archived SoA.
     'Wolverhampton|budget_gap',                    // Not in archived SoA.
+    // 2026-04-25 Barnsley Batch-10 full-depth rollout (8/10).
+    'Barnsley|council_leader',                     // Sir Steve Houghton not verbatim in archived SoA.
+    'Barnsley|cabinet',                            // No archived source for current cabinet.
+    'Barnsley|councillor_basic_allowance',         // £12,237 not verbatim.
+    'Barnsley|leader_allowance',                   // Not verbatim.
+    'Barnsley|total_allowances_cost',              // Not verbatim.
+    'Barnsley|councillor_allowances_detail',       // No archived per-cllr source.
+    'Barnsley|salary_bands',                       // Not in archived SoA.
+    'Barnsley|top_suppliers',                      // No archived Spending CSV.
+    'Barnsley|grant_payments',                     // No archived grants source.
+    'Barnsley|performance_kpis',                   // Bradford strip-list.
+    'Barnsley|service_outcomes',                   // Bradford strip-list.
+    'Barnsley|service_spending',                   // Bradford strip-list.
+    'Barnsley|waste_destinations',                 // No archived source.
+    'Barnsley|staff_fte',                          // 4,008 not in archived SoA.
+    'Barnsley|savings_target',                     // Not in archived SoA.
+    'Barnsley|budget_gap',                         // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
