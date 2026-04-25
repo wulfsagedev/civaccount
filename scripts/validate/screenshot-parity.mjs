@@ -49,7 +49,7 @@ const NORTH_STAR_22 = [
   // Batch-9-take-2 (2026-04-25): re-attempting the deferred ones via Wayback.
   'Devon', 'East Sussex', 'Oxfordshire', 'Wakefield', 'Doncaster', 'Coventry', 'Bolton', 'Salford', 'Wirral', 'Sandwell', 'Sefton', 'Stockport', 'Wolverhampton', 'Barnsley', 'Solihull', 'St Helens', 'Dudley', 'Oldham',
   // Batch-11 (2026-04-26): UAs.
-  'York', 'Plymouth', 'Portsmouth',
+  'York', 'Plymouth', 'Portsmouth', 'Luton',
 ];
 
 function slugify(n) {
