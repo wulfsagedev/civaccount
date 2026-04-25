@@ -674,6 +674,23 @@ export function validate(councils, _population, report) {
     'Portsmouth|staff_fte',                        // 4,071 not in archived SoA.
     'Portsmouth|savings_target',                   // Not in archived SoA.
     'Portsmouth|budget_gap',                       // Not in archived SoA.
+    // 2026-04-26 Luton Batch-11.
+    'Luton|reserves',                              // TS £111.7m doesn't match SoA.
+    'Luton|cabinet',                               // No archived source.
+    'Luton|councillor_basic_allowance',            // Not verbatim.
+    'Luton|leader_allowance',                      // Not verbatim.
+    'Luton|total_allowances_cost',                 // Not verbatim.
+    'Luton|councillor_allowances_detail',          // No archived per-cllr source.
+    'Luton|salary_bands',                          // Not in archived SoA.
+    'Luton|top_suppliers',                         // No archived Spending CSV.
+    'Luton|grant_payments',                        // No archived grants source.
+    'Luton|performance_kpis',                      // Bradford strip-list.
+    'Luton|service_outcomes',                      // Bradford strip-list.
+    'Luton|service_spending',                      // Bradford strip-list.
+    'Luton|waste_destinations',                    // No archived source.
+    'Luton|staff_fte',                             // 4,543 not in archived SoA.
+    'Luton|savings_target',                        // Not in archived SoA.
+    'Luton|budget_gap',                            // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
