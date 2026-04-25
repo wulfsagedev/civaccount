@@ -68,6 +68,8 @@ const NORTH_STAR_22 = [
   'Barking & Dagenham', 'Brent', 'Ealing',
   // Batch-20 (2026-04-26): NE UAs (Stockton swapped for Cumberland — Stockton 403).
   'Cumberland', 'Hartlepool', 'Middlesbrough', 'Redcar & Cleveland',
+  // Batch-21 (2026-04-26): more UAs.
+  'Westmorland and Furness', 'North Lincolnshire', 'North East Lincolnshire', 'East Riding of Yorkshire',
 ];
 
 function slugify(n) {
