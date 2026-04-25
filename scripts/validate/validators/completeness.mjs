@@ -288,6 +288,11 @@ export function validate(councils, _population, report) {
     'Suffolk|savings_target',             // TS £28.4m not in archived SoA narrative.
     'Suffolk|budget_gap',                 // TS £6m not verbatim in archived SoA.
     'Suffolk|total_allowances_cost',      // 2023-24 Members Allowances Statement PDF not directly archived.
+    // 2026-04-25 Leicestershire full-depth rollout (6/10 remediation).
+    'Leicestershire|chief_executive_salary', // Historic £221k for John Sinnott (£'000s rounded). Current CE Jane Moore has no published current salary in archived sources.
+    'Leicestershire|councillor_basic_allowance', // Note 33 publishes aggregate only; £12,779 needs Members' Allowance Scheme PDF.
+    'Leicestershire|savings_target',         // TS £33m not in archived SoA narrative.
+    'Leicestershire|budget_gap',             // TS £91m not verbatim in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
