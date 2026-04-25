@@ -415,6 +415,22 @@ export function validate(councils, _population, report) {
     'Coventry|staff_fte',                          // 6,980 not in archived SoA.
     'Coventry|savings_target',                     // Not in archived SoA.
     'Coventry|budget_gap',                         // Not in archived SoA.
+    // 2026-04-25 Bolton Batch-10 full-depth rollout (1/10).
+    'Bolton|council_leader',                       // Nick Peel not verbatim in archived SoA; bolton.gov.uk councillor pages Cloudflare-blocked.
+    'Bolton|cabinet',                              // No archived source for current cabinet.
+    'Bolton|councillor_basic_allowance',           // £11,848 not verbatim in archived SoA.
+    'Bolton|leader_allowance',                     // Not in archived SoA.
+    'Bolton|councillor_allowances_detail',         // No archived per-cllr source.
+    'Bolton|salary_bands',                         // Not in archived SoA.
+    'Bolton|top_suppliers',                        // No archived Spending CSV.
+    'Bolton|grant_payments',                       // No archived grants source.
+    'Bolton|performance_kpis',                     // Bradford strip-list.
+    'Bolton|service_outcomes',                     // Bradford strip-list.
+    'Bolton|service_spending',                     // Bradford strip-list.
+    'Bolton|waste_destinations',                   // No archived source.
+    'Bolton|staff_fte',                            // 4,895 not in archived SoA.
+    'Bolton|savings_target',                       // Not in archived SoA.
+    'Bolton|budget_gap',                           // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
