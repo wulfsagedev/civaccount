@@ -309,6 +309,13 @@ export function validate(councils, _population, report) {
     'Worcestershire|total_allowances_cost',      // £1,000,000 not verbatim in SoA.
     'Worcestershire|savings_target',             // TS £25m not in archived SoA narrative.
     'Worcestershire|budget_gap',                 // TS £74m not verbatim in archived SoA.
+    // 2026-04-25 North Yorkshire full-depth rollout (10/10 remediation — final).
+    'North Yorkshire|councillor_basic_allowance', // £17,340 not in SoA; separate Members Allowances PDF not archived.
+    'North Yorkshire|leader_allowance',           // £40,447 not in SoA.
+    'North Yorkshire|councillor_allowances_detail', // Sum (~£2.27m incl. travel) exceeds SoA p75 verbatim total £1,934k; per-cllr PDF not archived.
+    'North Yorkshire|performance_kpis',           // Bradford strip-list — no per-page archived sources.
+    'North Yorkshire|savings_target',             // £85.7m derived from GOV.UK RA, not council document.
+    'North Yorkshire|budget_gap',                 // £95.2m derived from GOV.UK RA, not council document.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
