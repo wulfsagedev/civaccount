@@ -267,6 +267,12 @@ export function validate(councils, _population, report) {
     // without a verbatim archived source as of this pass.
     'Norfolk|total_allowances_cost', // Derived estimate (basic × 84 + SRA approximation), no published total.
     'Norfolk|budget_gap',            // MTFS not archived yet; live-page only.
+    // 2026-04-24 West Sussex full-depth rollout (2/10 remediation).
+    'West Sussex|chief_executive_salary', // TS £225k not verbatim; SoA Note 13 shows £169,187 paid for Becky Shaw shared-services 2023-24; Whitehouse appointed March 2024 (post-SoA period).
+    'West Sussex|savings_target',         // TS £35m not in archived SoA. SoA narrative gives "£58m to £190m budget gap" range only.
+    'West Sussex|budget_gap',             // TS £38.5m not verbatim; same SoA range narrative.
+    'West Sussex|councillor_basic_allowance', // £11,875 not on archived allowances landing page; needs Members' Allowance Scheme PDF.
+    'West Sussex|total_allowances_cost',  // Derived estimate, no published aggregate.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
