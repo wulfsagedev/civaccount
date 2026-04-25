@@ -304,6 +304,11 @@ export function validate(councils, _population, report) {
     'Gloucestershire|savings_target',         // TS £24.5m not in archived SoA narrative.
     'Gloucestershire|budget_gap',             // TS £31.7m not verbatim.
     'Gloucestershire|councillor_allowances_detail', // 2025-26 scheme derived; sum exceeded SoA verbatim Note 19 total. Re-introduce when scheme PDF archived.
+    // 2026-04-25 Worcestershire full-depth rollout (9/10 remediation).
+    'Worcestershire|councillor_basic_allowance', // £9,245 not on archived pages.
+    'Worcestershire|total_allowances_cost',      // £1,000,000 not verbatim in SoA.
+    'Worcestershire|savings_target',             // TS £25m not in archived SoA narrative.
+    'Worcestershire|budget_gap',                 // TS £74m not verbatim in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
