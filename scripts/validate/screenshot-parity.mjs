@@ -70,6 +70,8 @@ const NORTH_STAR_22 = [
   'Cumberland', 'Hartlepool', 'Middlesbrough', 'Redcar & Cleveland',
   // Batch-21 (2026-04-26): more UAs.
   'Westmorland and Furness', 'North Lincolnshire', 'North East Lincolnshire', 'East Riding of Yorkshire',
+  // Batch-22 (2026-04-26): 3 more UAs (Peterborough/Slough/Warrington/IoW Azure WAF blocked).
+  'Medway Towns', 'Milton Keynes', 'Swindon',
 ];
 
 function slugify(n) {
