@@ -568,6 +568,24 @@ export function validate(councils, _population, report) {
     'Solihull|staff_fte',                          // 3,414 not in archived SoA.
     'Solihull|savings_target',                     // Not in archived SoA.
     'Solihull|budget_gap',                         // Not in archived SoA.
+    // 2026-04-25 St Helens Batch-10 full-depth rollout (10/10).
+    'St Helens|reserves',                          // TS £56.97m doesn't match SoA narrative.
+    'St Helens|council_leader',                    // Cllr David Baines not verbatim in archived SoA.
+    'St Helens|cabinet',                           // No archived source.
+    'St Helens|councillor_basic_allowance',        // £10,716 not verbatim.
+    'St Helens|leader_allowance',                  // £32,150 not verbatim.
+    'St Helens|total_allowances_cost',             // Not verbatim.
+    'St Helens|councillor_allowances_detail',      // No archived per-cllr source.
+    'St Helens|salary_bands',                      // Not in archived SoA.
+    'St Helens|top_suppliers',                     // No archived Spending CSV.
+    'St Helens|grant_payments',                    // No archived grants source.
+    'St Helens|performance_kpis',                  // Bradford strip-list.
+    'St Helens|service_outcomes',                  // Bradford strip-list.
+    'St Helens|service_spending',                  // Bradford strip-list.
+    'St Helens|waste_destinations',                // No archived source.
+    'St Helens|staff_fte',                         // 4,080 not in archived SoA.
+    'St Helens|savings_target',                    // Not in archived SoA.
+    'St Helens|budget_gap',                        // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
