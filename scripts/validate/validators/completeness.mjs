@@ -586,6 +586,23 @@ export function validate(councils, _population, report) {
     'St Helens|staff_fte',                         // 4,080 not in archived SoA.
     'St Helens|savings_target',                    // Not in archived SoA.
     'St Helens|budget_gap',                        // Not in archived SoA.
+    // 2026-04-26 Dudley Batch-10 full-depth rollout (11/10).
+    'Dudley|reserves',                             // TS £19.3m doesn't match SoA narrative.
+    'Dudley|cabinet',                              // No archived source.
+    'Dudley|councillor_basic_allowance',           // £12,143 not verbatim.
+    'Dudley|leader_allowance',                     // Not verbatim.
+    'Dudley|total_allowances_cost',                // Not verbatim.
+    'Dudley|councillor_allowances_detail',         // No archived per-cllr source.
+    'Dudley|salary_bands',                         // Not in archived SoA.
+    'Dudley|top_suppliers',                        // No archived Spending CSV.
+    'Dudley|grant_payments',                       // No archived grants source.
+    'Dudley|performance_kpis',                     // Bradford strip-list.
+    'Dudley|service_outcomes',                     // Bradford strip-list.
+    'Dudley|service_spending',                     // Bradford strip-list.
+    'Dudley|waste_destinations',                   // No archived source.
+    'Dudley|staff_fte',                            // 5,458 not in archived SoA.
+    'Dudley|savings_target',                       // Not in archived SoA.
+    'Dudley|budget_gap',                           // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
