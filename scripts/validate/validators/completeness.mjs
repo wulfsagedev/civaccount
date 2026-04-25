@@ -316,6 +316,22 @@ export function validate(councils, _population, report) {
     'North Yorkshire|performance_kpis',           // Bradford strip-list — no per-page archived sources.
     'North Yorkshire|savings_target',             // £85.7m derived from GOV.UK RA, not council document.
     'North Yorkshire|budget_gap',                 // £95.2m derived from GOV.UK RA, not council document.
+    // 2026-04-25 Devon Batch-9 full-depth rollout (1/10).
+    'Devon|chief_executive',                       // Donna Manson not in archived Pay Policy/Budget Book sources.
+    'Devon|chief_executive_salary',                // PP grade L0 £212,175 ≠ actual remuneration; SoA on SharePoint not Wayback-archivable.
+    'Devon|councillor_basic_allowance',            // £15,082 not in archived sources.
+    'Devon|leader_allowance',                      // £37,705 not in archived sources.
+    'Devon|total_allowances_cost',                 // £1.2m not verbatim in Budget Book.
+    'Devon|councillor_allowances_detail',          // No archived per-cllr source.
+    'Devon|salary_bands',                          // Not in archived Pay Policy.
+    'Devon|top_suppliers',                         // No archived Spending CSV.
+    'Devon|grant_payments',                        // No archived grants source.
+    'Devon|performance_kpis',                      // Bradford strip-list.
+    'Devon|service_outcomes',                      // Bradford strip-list.
+    'Devon|waste_destinations',                    // No archived source.
+    'Devon|staff_fte',                             // 6,593 not in archived sources.
+    'Devon|savings_target',                        // £21.7m not verbatim.
+    'Devon|budget_gap',                            // £39m differs from Budget Book MTFP.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
