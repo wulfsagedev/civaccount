@@ -293,6 +293,11 @@ export function validate(councils, _population, report) {
     'Leicestershire|councillor_basic_allowance', // Note 33 publishes aggregate only; £12,779 needs Members' Allowance Scheme PDF.
     'Leicestershire|savings_target',         // TS £33m not in archived SoA narrative.
     'Leicestershire|budget_gap',             // TS £91m not verbatim in archived SoA.
+    // 2026-04-25 Cambridgeshire full-depth rollout (7/10 remediation).
+    'Cambridgeshire|councillor_basic_allowance', // Note 14 publishes aggregate only; £13,610 needs Members' Allowance Scheme PDF.
+    'Cambridgeshire|savings_target',             // TS £20m not in archived SoA narrative.
+    'Cambridgeshire|budget_gap',                 // TS £34.2m not verbatim in archived SoA.
+    'Cambridgeshire|councillor_allowances_detail', // 2025-26 scheme derived figures; sum exceeded the verbatim 2023-24 SoA Note 14 total. Re-introduce when scheme PDF archived.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
