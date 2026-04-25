@@ -298,6 +298,12 @@ export function validate(councils, _population, report) {
     'Cambridgeshire|savings_target',             // TS £20m not in archived SoA narrative.
     'Cambridgeshire|budget_gap',                 // TS £34.2m not verbatim in archived SoA.
     'Cambridgeshire|councillor_allowances_detail', // 2025-26 scheme derived figures; sum exceeded the verbatim 2023-24 SoA Note 14 total. Re-introduce when scheme PDF archived.
+    // 2026-04-25 Gloucestershire full-depth rollout (8/10 remediation).
+    'Gloucestershire|chief_executive_salary', // TS £191,371 not verbatim. SoA shows P Bungard 2023/24 £150,120 (29.6h/wk); new CE Jo Walker took post May 2025.
+    'Gloucestershire|councillor_basic_allowance', // Note 19 publishes only aggregate; £12,563 needs Members' Allowance Scheme PDF.
+    'Gloucestershire|savings_target',         // TS £24.5m not in archived SoA narrative.
+    'Gloucestershire|budget_gap',             // TS £31.7m not verbatim.
+    'Gloucestershire|councillor_allowances_detail', // 2025-26 scheme derived; sum exceeded SoA verbatim Note 19 total. Re-introduce when scheme PDF archived.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
