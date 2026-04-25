@@ -350,6 +350,22 @@ export function validate(councils, _population, report) {
     'East Sussex|staff_fte',                       // 7,246 not in archived SoA.
     'East Sussex|savings_target',                  // £13.5m not in archived SoA.
     'East Sussex|budget_gap',                      // £56m not in archived SoA.
+    // 2026-04-25 Oxfordshire Batch-9 full-depth rollout (3/10).
+    'Oxfordshire|cabinet',                         // No archived source for current cabinet (oxfordshire.gov.uk timeouts).
+    'Oxfordshire|councillor_basic_allowance',      // £15,420 not in archived SoA.
+    'Oxfordshire|leader_allowance',                // Not in archived sources.
+    'Oxfordshire|total_allowances_cost',           // Not in archived SoA.
+    'Oxfordshire|councillor_allowances_detail',    // No archived per-cllr source.
+    'Oxfordshire|salary_bands',                    // Not in archived SoA.
+    'Oxfordshire|top_suppliers',                   // No archived Spending CSV.
+    'Oxfordshire|grant_payments',                  // No archived grants source.
+    'Oxfordshire|performance_kpis',                // Bradford strip-list.
+    'Oxfordshire|service_outcomes',                // Bradford strip-list.
+    'Oxfordshire|service_spending',                // Bradford strip-list.
+    'Oxfordshire|waste_destinations',              // No archived source.
+    'Oxfordshire|staff_fte',                       // 4,606 not in archived SoA.
+    'Oxfordshire|savings_target',                  // £25m not in archived SoA.
+    'Oxfordshire|budget_gap',                      // £25m not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
