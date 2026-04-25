@@ -60,6 +60,8 @@ const NORTH_STAR_22 = [
   'Southwark', 'Barnet', 'Haringey', 'Merton',
   // Batch-16 (2026-04-26): UAs.
   'Cheshire East', 'Cheshire West & Chester', 'Buckinghamshire', 'Bedford',
+  // Batch-17 (2026-04-26): more LBs (Islington swapped for Kingston — Islington direct PDF blocked).
+  'Kingston upon Thames', 'Kensington & Chelsea', 'Redbridge', 'Waltham Forest',
 ];
 
 function slugify(n) {
