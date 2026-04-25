@@ -49,14 +49,35 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
-<!-- counters as of 2026-04-23 after Batches 6+7 rollout -->
-
+<!-- counters as of 2026-04-25 after overnight batches 11-23 -->
 
 - Councils in scope: 317
-- **Councils North-Star complete: 22** (Bradford, Kent, Camden + Batch-5: Manchester, Birmingham, Leeds, Surrey, Cornwall + Batch-4-overnight: Liverpool, Bristol, Lancashire, Tower Hamlets + Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster + Batch-7: Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon)
+- **Councils North-Star complete: 97**
+  - Reference (3): Bradford, Kent, Camden
+  - Batch-4-7 (19): Manchester, Birmingham, Leeds, Surrey, Cornwall, Liverpool, Bristol, Lancashire, Tower Hamlets, Hampshire, Essex, Hertfordshire, Sheffield, Westminster, Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon
+  - Batch-8-10 (16): Norfolk, West Sussex, Derbyshire, Lincolnshire, Suffolk, Leicestershire, Cambridgeshire, Gloucestershire, Worcestershire, North Yorkshire, Devon, East Sussex, Oxfordshire, Wakefield, Doncaster, Coventry
+  - Batch-9b (12 MDs): Bolton, Salford, Wirral, Sandwell, Sefton, Stockport, Wolverhampton, Barnsley, Solihull, St Helens, Dudley, Oldham
+  - Batch-11 (4 UAs): York, Plymouth, Portsmouth, Luton
+  - Batch-12 (4 LBs): Hillingdon, Bromley, Bexley, Greenwich
+  - Batch-13 (4 LBs): Lambeth, Wandsworth, Newham, Hounslow
+  - Batch-14 (4 UAs): Brighton & Hove, Reading, Stoke-on-Trent, Telford & Wrekin
+  - Batch-15 (4 LBs): Southwark, Barnet, Haringey, Merton
+  - Batch-16 (4 UAs): Cheshire East, Cheshire West & Chester, Buckinghamshire, Bedford
+  - Batch-17 (4 LBs): Kingston upon Thames, Kensington & Chelsea, Redbridge, Waltham Forest
+  - Batch-18 (4 UAs): Bath & North East Somerset, Halton, Bracknell Forest, Wokingham
+  - Batch-19 (3 LBs): Barking & Dagenham, Brent, Ealing
+  - Batch-20 (4 UAs): Cumberland, Hartlepool, Middlesbrough, Redcar & Cleveland
+  - Batch-21 (4 UAs): Westmorland and Furness, North Lincolnshire, North East Lincolnshire, East Riding of Yorkshire
+  - Batch-22 (3 UAs): Medway Towns, Milton Keynes, Swindon
+  - Batch-23 (2 UAs): Darlington, Thurrock
 - Councils in progress: 0
-- Councils not yet started: 295
-- **Batches 6+7 milestone (2026-04-23)**: 10 more councils rolled out — top-population tier (Batch-6: Hampshire, Essex, Hertfordshire, Sheffield, Westminster) + second-tier mix (Batch-7: Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon). 17 PDFs archived (13 direct + 4 Wayback). Per-council exceptions: Essex chief_executive_salary stripped (CE turnover Jones→Wood 13 Feb 2025); Hampshire reserves stripped (SoA not archivable); Wiltshire + Newcastle chief_executive_salary stripped (PP framework/range-only). CE-name corrections: Croydon Elaine Jackson → Katherine Kerswell (per SoA Note 10a); Wiltshire Ian Gibbons → Lucy Townsend (per PP signature). Sheffield band_d 2021-25 corrected against GOV.UK 2025-26 reference (pre-existing drift surfaced when Sheffield became loadable as strict council).
+- Councils not yet started: 220
+
+**Overnight 2026-04-25 marathon (batches 11-23, 13 batches, 49 councils):**
+- Pace: every council got the same Bradford-level treatment — SoA archived with sha256, CE name + salary verified verbatim where possible, page-image PNGs rendered, Bradford strip-list applied, paired PRs to data + public repo, both merged.
+- Common strips beyond the standard 8: chief_executive_salary stripped wherever CE turnover during 2024/25 made attribution ambiguous (Lambeth, Wandsworth, Hounslow, Barnet, Redbridge, Middlesbrough, Medway, MK, Milton Keynes, Thurrock, East Riding, Bracknell Forest); council_leader stripped from most LBs/UAs as SoA AGS sig blocks rarely print the leader's name verbatim. Where leader names ARE in archived SoAs (Hillingdon, Newham, Hounslow, Reading, Wokingham, Milton Keynes), they're wired with full Tier-3 provenance.
+- Council-name corrections caught: Cheshire West (Andrew Lewis → Delyth Curtis), Bedford (Liz Fothergill → Laura Church), Brighton & Hove (Carolyn Dwyer → Jessica Gibbons), Reading (Cllr Jason Brock → Cllr Liz Terry), Bromley (Ade Adetosoye CBE → A Adetosoye), Bexley (Jackie Belton → Paul Thorogood), Greenwich (Miatta Sherif → D Warren), Telford (£179,088 → £173,535), Wokingham (£172,939 → £180,349 + Cllr Stephen Conway → Stephen Conway), Buckinghamshire (Rachael Shimmin → Ms RA Shimmin + £240k → £269k).
+- Deferred (Cloudflare/WAF/no-published-2024-25-SoA): Lewisham, Hammersmith & Fulham, Hackney, Sutton, Havering, Enfield, Islington, Stockton-on-Tees, Peterborough, Slough, Warrington, Isle of Wight, South Gloucestershire, Herefordshire — all blocked at the PDF layer.
 
 ---
 
