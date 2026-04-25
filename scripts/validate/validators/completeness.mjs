@@ -332,6 +332,24 @@ export function validate(councils, _population, report) {
     'Devon|staff_fte',                             // 6,593 not in archived sources.
     'Devon|savings_target',                        // £21.7m not verbatim.
     'Devon|budget_gap',                            // £39m differs from Budget Book MTFP.
+    // 2026-04-25 East Sussex Batch-9 full-depth rollout (2/10).
+    'East Sussex|chief_executive_salary',          // Becky Shaw 50% shared with WSx; ESx-only verbatim £108,072 ≠ TS £206,174.
+    'East Sussex|council_leader',                  // Cllr Keith Glazier not in archived sources; eastsussex.gov.uk pages 404.
+    'East Sussex|cabinet',                         // Same — no archived source for current cabinet.
+    'East Sussex|councillor_basic_allowance',      // £14,672 not in archived SoA.
+    'East Sussex|leader_allowance',                // £41,084 not in archived SoA.
+    'East Sussex|total_allowances_cost',           // £998,264 not in archived SoA.
+    'East Sussex|councillor_allowances_detail',    // No archived per-cllr source.
+    'East Sussex|salary_bands',                    // Not in archived sources.
+    'East Sussex|top_suppliers',                   // No archived Spending CSV.
+    'East Sussex|grant_payments',                  // No archived grants source.
+    'East Sussex|performance_kpis',                // Bradford strip-list.
+    'East Sussex|service_outcomes',                // Bradford strip-list.
+    'East Sussex|service_spending',                // Bradford strip-list — sub-categories without page-level provenance.
+    'East Sussex|waste_destinations',              // No archived source.
+    'East Sussex|staff_fte',                       // 7,246 not in archived SoA.
+    'East Sussex|savings_target',                  // £13.5m not in archived SoA.
+    'East Sussex|budget_gap',                      // £56m not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
