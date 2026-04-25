@@ -517,6 +517,22 @@ export function validate(councils, _population, report) {
     'Stockport|staff_fte',                         // 5,306 not in archived SoA.
     'Stockport|savings_target',                    // Not in archived SoA.
     'Stockport|budget_gap',                        // Not in archived SoA.
+    // 2026-04-25 Wolverhampton Batch-10 full-depth rollout (7/10).
+    'Wolverhampton|reserves',                      // TS £51.2m doesn't match SoA narrative; only "earmarked reserves totalling £80.4 million" stated.
+    'Wolverhampton|cabinet',                       // No archived source.
+    'Wolverhampton|councillor_basic_allowance',    // £11,500 not verbatim.
+    'Wolverhampton|leader_allowance',              // £32,322 not verbatim.
+    'Wolverhampton|councillor_allowances_detail',  // No archived per-cllr source.
+    'Wolverhampton|salary_bands',                  // Not in archived SoA.
+    'Wolverhampton|top_suppliers',                 // No archived Spending CSV.
+    'Wolverhampton|grant_payments',                // No archived grants source.
+    'Wolverhampton|performance_kpis',              // Bradford strip-list.
+    'Wolverhampton|service_outcomes',              // Bradford strip-list.
+    'Wolverhampton|service_spending',              // Bradford strip-list.
+    'Wolverhampton|waste_destinations',            // No archived source.
+    'Wolverhampton|staff_fte',                     // 5,377 not in archived SoA.
+    'Wolverhampton|savings_target',                // Not in archived SoA.
+    'Wolverhampton|budget_gap',                    // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
