@@ -639,6 +639,23 @@ export function validate(councils, _population, report) {
     'York|staff_fte',                              // 2,841 not in archived SoA.
     'York|savings_target',                         // Not in archived SoA.
     'York|budget_gap',                             // Not in archived SoA.
+    // 2026-04-26 Plymouth Batch-11.
+    'Plymouth|reserves',                           // TS £53.9m doesn't match SoA.
+    'Plymouth|cabinet',                            // No archived source.
+    'Plymouth|councillor_basic_allowance',         // Not verbatim.
+    'Plymouth|leader_allowance',                   // £34,896 not verbatim.
+    'Plymouth|total_allowances_cost',              // Not verbatim.
+    'Plymouth|councillor_allowances_detail',       // No archived per-cllr source.
+    'Plymouth|salary_bands',                       // Not in archived SoA.
+    'Plymouth|top_suppliers',                      // No archived Spending CSV.
+    'Plymouth|grant_payments',                     // No archived grants source.
+    'Plymouth|performance_kpis',                   // Bradford strip-list.
+    'Plymouth|service_outcomes',                   // Bradford strip-list.
+    'Plymouth|service_spending',                   // Bradford strip-list.
+    'Plymouth|waste_destinations',                 // No archived source.
+    'Plymouth|staff_fte',                          // 3,193 not in archived SoA.
+    'Plymouth|savings_target',                     // Not in archived SoA.
+    'Plymouth|budget_gap',                         // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
