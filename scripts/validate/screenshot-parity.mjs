@@ -72,6 +72,8 @@ const NORTH_STAR_22 = [
   'Westmorland and Furness', 'North Lincolnshire', 'North East Lincolnshire', 'East Riding of Yorkshire',
   // Batch-22 (2026-04-26): 3 more UAs (Peterborough/Slough/Warrington/IoW Azure WAF blocked).
   'Medway Towns', 'Milton Keynes', 'Swindon',
+  // Batch-23 (2026-04-26): 2 more UAs (Darlington + Thurrock; South Glos + Herefordshire deferred).
+  'Darlington', 'Thurrock',
 ];
 
 function slugify(n) {
