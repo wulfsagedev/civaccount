@@ -498,6 +498,25 @@ export function validate(councils, _population, report) {
     'Sefton|staff_fte',                            // 5,082 not in archived SoA.
     'Sefton|savings_target',                       // Not in archived SoA.
     'Sefton|budget_gap',                           // Not in archived SoA.
+    // 2026-04-25 Stockport Batch-10 full-depth rollout (6/10).
+    'Stockport|reserves',                          // TS £74.7m doesn't match SoA; MIRS image-based.
+    'Stockport|chief_executive',                   // Michael Cullen replaced by Caroline Simpson 25/06/2024 per SoA p118.
+    'Stockport|chief_executive_salary',            // SoA Note 27 image-based.
+    'Stockport|cabinet',                           // No archived source for current cabinet.
+    'Stockport|councillor_basic_allowance',        // £10,716 not verbatim.
+    'Stockport|leader_allowance',                  // £32,150 not verbatim.
+    'Stockport|total_allowances_cost',             // Not verbatim in archived SoA.
+    'Stockport|councillor_allowances_detail',      // No archived per-cllr source.
+    'Stockport|salary_bands',                      // SoA image-based.
+    'Stockport|top_suppliers',                     // No archived Spending CSV.
+    'Stockport|grant_payments',                    // No archived grants source.
+    'Stockport|performance_kpis',                  // Bradford strip-list.
+    'Stockport|service_outcomes',                  // Bradford strip-list.
+    'Stockport|service_spending',                  // Bradford strip-list.
+    'Stockport|waste_destinations',                // No archived source.
+    'Stockport|staff_fte',                         // 5,306 not in archived SoA.
+    'Stockport|savings_target',                    // Not in archived SoA.
+    'Stockport|budget_gap',                        // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
