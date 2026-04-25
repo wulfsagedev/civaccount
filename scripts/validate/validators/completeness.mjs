@@ -550,6 +550,24 @@ export function validate(councils, _population, report) {
     'Barnsley|staff_fte',                          // 4,008 not in archived SoA.
     'Barnsley|savings_target',                     // Not in archived SoA.
     'Barnsley|budget_gap',                         // Not in archived SoA.
+    // 2026-04-25 Solihull Batch-10 full-depth rollout (9/10).
+    'Solihull|reserves',                           // TS £38.6m doesn't match SoA narrative.
+    'Solihull|council_leader',                     // Cllr Ian Courts not verbatim in archived SoA.
+    'Solihull|cabinet',                            // No archived source.
+    'Solihull|councillor_basic_allowance',         // £12,813 not verbatim.
+    'Solihull|leader_allowance',                   // Not verbatim.
+    'Solihull|total_allowances_cost',              // Not verbatim.
+    'Solihull|councillor_allowances_detail',       // No archived per-cllr source.
+    'Solihull|salary_bands',                       // Not in archived SoA.
+    'Solihull|top_suppliers',                      // No archived Spending CSV.
+    'Solihull|grant_payments',                     // No archived grants source.
+    'Solihull|performance_kpis',                   // Bradford strip-list.
+    'Solihull|service_outcomes',                   // Bradford strip-list.
+    'Solihull|service_spending',                   // Bradford strip-list.
+    'Solihull|waste_destinations',                 // No archived source.
+    'Solihull|staff_fte',                          // 3,414 not in archived SoA.
+    'Solihull|savings_target',                     // Not in archived SoA.
+    'Solihull|budget_gap',                         // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
