@@ -58,6 +58,8 @@ const NORTH_STAR_22 = [
   'Brighton & Hove', 'Reading', 'Stoke-on-Trent', 'Telford & Wrekin',
   // Batch-15 (2026-04-26): more LBs (Hackney+Hammersmith deferred — moderngov page-only links).
   'Southwark', 'Barnet', 'Haringey', 'Merton',
+  // Batch-16 (2026-04-26): UAs.
+  'Cheshire East', 'Cheshire West & Chester', 'Buckinghamshire', 'Bedford',
 ];
 
 function slugify(n) {
