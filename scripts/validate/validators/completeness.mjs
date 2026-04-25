@@ -273,6 +273,12 @@ export function validate(councils, _population, report) {
     'West Sussex|budget_gap',             // TS £38.5m not verbatim; same SoA range narrative.
     'West Sussex|councillor_basic_allowance', // £11,875 not on archived allowances landing page; needs Members' Allowance Scheme PDF.
     'West Sussex|total_allowances_cost',  // Derived estimate, no published aggregate.
+    // 2026-04-25 Derbyshire full-depth rollout (3/10 remediation).
+    'Derbyshire|chief_executive_salary', // SoA Note 31 senior officer table is image-based; pdftotext can't extract £191,480 verbatim.
+    'Derbyshire|councillor_basic_allowance', // £12,972 not on archived pages; needs Members' Allowance Scheme PDF.
+    'Derbyshire|savings_target',         // TS £18.6m not in archived SoA narrative.
+    'Derbyshire|savings_achieved',       // TS £70m not verbatim in SoA.
+    'Derbyshire|budget_gap',             // TS £37.8m not verbatim in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
