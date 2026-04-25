@@ -448,6 +448,25 @@ export function validate(councils, _population, report) {
     'Salford|staff_fte',                           // 5,554 not in archived SoA.
     'Salford|savings_target',                      // Not in archived SoA.
     'Salford|budget_gap',                          // Not in archived SoA.
+    // 2026-04-25 Wirral Batch-10 full-depth rollout (3/10).
+    'Wirral|chief_executive',                      // Matt Bennett not in archived SoA; Paul Satoor was CE until 23 Oct 2025, Jason Gooding interim from 13 Oct 2025.
+    'Wirral|chief_executive_salary',               // Multiple holders + interim arrangements.
+    'Wirral|council_leader',                       // Cllr Paul Stuart not verbatim in archived SoA.
+    'Wirral|cabinet',                              // No archived source for current cabinet.
+    'Wirral|councillor_basic_allowance',           // Not verbatim in archived SoA.
+    'Wirral|leader_allowance',                     // Not in archived SoA.
+    'Wirral|total_allowances_cost',                // Not verbatim in archived SoA.
+    'Wirral|councillor_allowances_detail',         // No archived per-cllr source.
+    'Wirral|salary_bands',                         // Not in archived SoA.
+    'Wirral|top_suppliers',                        // No archived Spending CSV.
+    'Wirral|grant_payments',                       // No archived grants source.
+    'Wirral|performance_kpis',                     // Bradford strip-list.
+    'Wirral|service_outcomes',                     // Bradford strip-list.
+    'Wirral|service_spending',                     // Bradford strip-list.
+    'Wirral|waste_destinations',                   // No archived source.
+    'Wirral|staff_fte',                            // 5,386 not in archived SoA.
+    'Wirral|savings_target',                       // Not in archived SoA.
+    'Wirral|budget_gap',                           // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
