@@ -399,6 +399,22 @@ export function validate(councils, _population, report) {
     'Doncaster|staff_fte',                         // 4,733 not in archived SoA.
     'Doncaster|savings_target',                    // Not in archived SoA.
     'Doncaster|budget_gap',                        // Not in archived SoA.
+    // 2026-04-25 Coventry Batch-9 full-depth rollout (10/10).
+    'Coventry|cabinet',                            // No archived source for current cabinet.
+    'Coventry|councillor_basic_allowance',         // £14,490 not verbatim.
+    'Coventry|leader_allowance',                   // Not in archived SoA.
+    'Coventry|total_allowances_cost',              // Members Allowances p88 image-based.
+    'Coventry|councillor_allowances_detail',       // No archived per-cllr source.
+    'Coventry|salary_bands',                       // Image-based.
+    'Coventry|top_suppliers',                      // No archived Spending CSV.
+    'Coventry|grant_payments',                     // No archived grants source.
+    'Coventry|performance_kpis',                   // Bradford strip-list.
+    'Coventry|service_outcomes',                   // Bradford strip-list.
+    'Coventry|service_spending',                   // Bradford strip-list.
+    'Coventry|waste_destinations',                 // No archived source.
+    'Coventry|staff_fte',                          // 6,980 not in archived SoA.
+    'Coventry|savings_target',                     // Not in archived SoA.
+    'Coventry|budget_gap',                         // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
