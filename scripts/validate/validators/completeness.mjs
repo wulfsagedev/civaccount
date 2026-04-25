@@ -283,6 +283,11 @@ export function validate(councils, _population, report) {
     'Lincolnshire|councillor_basic_allowance', // Note 32 publishes only aggregate; £12,157 not on archived pages.
     'Lincolnshire|savings_target',             // TS £8.1m not in archived SoA narrative.
     'Lincolnshire|budget_gap',                 // TS £9.7m not verbatim in archived SoA.
+    // 2026-04-25 Suffolk full-depth rollout (5/10 remediation).
+    'Suffolk|councillor_basic_allowance', // £12,541 not in archived SoA; needs Members' Allowance Scheme PDF.
+    'Suffolk|savings_target',             // TS £28.4m not in archived SoA narrative.
+    'Suffolk|budget_gap',                 // TS £6m not verbatim in archived SoA.
+    'Suffolk|total_allowances_cost',      // 2023-24 Members Allowances Statement PDF not directly archived.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
