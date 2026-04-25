@@ -621,6 +621,24 @@ export function validate(councils, _population, report) {
     'Oldham|staff_fte',                            // 3,968 not in archived SoA.
     'Oldham|savings_target',                       // Not in archived SoA.
     'Oldham|budget_gap',                           // Not in archived SoA.
+    // 2026-04-26 York Batch-11 first UA rollout (1/n).
+    'York|reserves',                               // TS £72.9m doesn't match SoA narrative.
+    'York|council_leader',                         // Cllr Claire Douglas not verbatim in archived SoA.
+    'York|cabinet',                                // No archived source.
+    'York|councillor_basic_allowance',             // Not verbatim.
+    'York|leader_allowance',                       // Not verbatim.
+    'York|total_allowances_cost',                  // Not verbatim.
+    'York|councillor_allowances_detail',           // No archived per-cllr source.
+    'York|salary_bands',                           // Not in archived SoA.
+    'York|top_suppliers',                          // No archived Spending CSV.
+    'York|grant_payments',                         // No archived grants source.
+    'York|performance_kpis',                       // Bradford strip-list.
+    'York|service_outcomes',                       // Bradford strip-list.
+    'York|service_spending',                       // Bradford strip-list.
+    'York|waste_destinations',                     // No archived source.
+    'York|staff_fte',                              // 2,841 not in archived SoA.
+    'York|savings_target',                         // Not in archived SoA.
+    'York|budget_gap',                             // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
