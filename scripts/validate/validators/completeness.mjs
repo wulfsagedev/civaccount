@@ -691,6 +691,69 @@ export function validate(councils, _population, report) {
     'Luton|staff_fte',                             // 4,543 not in archived SoA.
     'Luton|savings_target',                        // Not in archived SoA.
     'Luton|budget_gap',                            // Not in archived SoA.
+    // 2026-04-26 Batch-12 London Boroughs.
+    'Hillingdon|cabinet',                          // No archived source.
+    'Hillingdon|councillor_basic_allowance',       // Not verbatim in SoA.
+    'Hillingdon|total_allowances_cost',            // Not verbatim in SoA.
+    'Hillingdon|councillor_allowances_detail',     // No archived per-cllr source.
+    'Hillingdon|salary_bands',                     // No archived source.
+    'Hillingdon|top_suppliers',                    // No archived Spending CSV.
+    'Hillingdon|grant_payments',                   // No archived grants source.
+    'Hillingdon|performance_kpis',                 // Bradford strip-list.
+    'Hillingdon|service_outcomes',                 // Bradford strip-list.
+    'Hillingdon|service_spending',                 // Bradford strip-list.
+    'Hillingdon|waste_destinations',               // No archived source.
+    'Hillingdon|staff_fte',                        // Not verbatim in archived SoA.
+    'Hillingdon|savings_target',                   // Not in archived SoA.
+    'Hillingdon|budget_gap',                       // Not in archived SoA.
+    'Bromley|cabinet',
+    'Bromley|council_leader',                      // Not verbatim in archived SoA.
+    'Bromley|councillor_basic_allowance',
+    'Bromley|leader_allowance',
+    'Bromley|total_allowances_cost',
+    'Bromley|councillor_allowances_detail',
+    'Bromley|salary_bands',
+    'Bromley|top_suppliers',
+    'Bromley|grant_payments',
+    'Bromley|performance_kpis',
+    'Bromley|service_outcomes',
+    'Bromley|service_spending',
+    'Bromley|waste_destinations',
+    'Bromley|staff_fte',
+    'Bromley|savings_target',
+    'Bromley|budget_gap',
+    'Bexley|cabinet',
+    'Bexley|council_leader',                       // Not verbatim in archived SoA.
+    'Bexley|councillor_basic_allowance',
+    'Bexley|leader_allowance',
+    'Bexley|total_allowances_cost',
+    'Bexley|councillor_allowances_detail',
+    'Bexley|salary_bands',
+    'Bexley|top_suppliers',
+    'Bexley|grant_payments',
+    'Bexley|performance_kpis',
+    'Bexley|service_outcomes',
+    'Bexley|service_spending',
+    'Bexley|waste_destinations',
+    'Bexley|staff_fte',
+    'Bexley|savings_target',
+    'Bexley|budget_gap',
+    'Greenwich|cabinet',
+    'Greenwich|council_leader',                    // Not verbatim in archived SoA.
+    'Greenwich|councillor_basic_allowance',
+    'Greenwich|leader_allowance',
+    'Greenwich|total_allowances_cost',
+    'Greenwich|councillor_allowances_detail',
+    'Greenwich|salary_bands',
+    'Greenwich|top_suppliers',
+    'Greenwich|grant_payments',
+    'Greenwich|performance_kpis',
+    'Greenwich|service_outcomes',
+    'Greenwich|service_spending',
+    'Greenwich|waste_destinations',
+    'Greenwich|staff_fte',
+    'Greenwich|savings_target',
+    'Greenwich|budget_gap',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
