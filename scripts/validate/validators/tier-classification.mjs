@@ -32,7 +32,7 @@ const VALID_ARCHIVE_EXEMPT = new Set([
 // Strict enforcement councils — those that have been fully audited
 // under NORTH-STAR.md §6 and are expected to carry tier + extraction_method
 // on every entry.
-const STRICT_COUNCILS = new Set(['Bradford', 'Kent', 'Camden', 'Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall', 'Liverpool', 'Bristol', 'Lancashire', 'Tower Hamlets', 'Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster', 'Nottinghamshire', 'Staffordshire', 'Wiltshire', 'Newcastle upon Tyne', 'Croydon', 'Norfolk', 'West Sussex', 'Derbyshire', 'Lincolnshire', 'Suffolk', 'Leicestershire', 'Cambridgeshire', 'Gloucestershire', 'Worcestershire', 'North Yorkshire', 'Devon', 'East Sussex', 'Oxfordshire', 'Wakefield', 'Doncaster', 'Coventry', 'Bolton', 'Salford', 'Wirral', 'Sandwell', 'Sefton', 'Stockport']);
+const STRICT_COUNCILS = new Set(['Bradford', 'Kent', 'Camden', 'Manchester', 'Birmingham', 'Leeds', 'Surrey', 'Cornwall', 'Liverpool', 'Bristol', 'Lancashire', 'Tower Hamlets', 'Hampshire', 'Essex', 'Hertfordshire', 'Sheffield', 'Westminster', 'Nottinghamshire', 'Staffordshire', 'Wiltshire', 'Newcastle upon Tyne', 'Croydon', 'Norfolk', 'West Sussex', 'Derbyshire', 'Lincolnshire', 'Suffolk', 'Leicestershire', 'Cambridgeshire', 'Gloucestershire', 'Worcestershire', 'North Yorkshire', 'Devon', 'East Sussex', 'Oxfordshire', 'Wakefield', 'Doncaster', 'Coventry', 'Bolton', 'Salford', 'Wirral', 'Sandwell', 'Sefton', 'Stockport', 'Wolverhampton']);
 
 export function validate(councils, _population, report) {
   for (const c of councils) {
