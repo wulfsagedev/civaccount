@@ -467,6 +467,22 @@ export function validate(councils, _population, report) {
     'Wirral|staff_fte',                            // 5,386 not in archived SoA.
     'Wirral|savings_target',                       // Not in archived SoA.
     'Wirral|budget_gap',                           // Not in archived SoA.
+    // 2026-04-25 Sandwell Batch-10 full-depth rollout (4/10).
+    'Sandwell|reserves',                           // TS £155.2m doesn't match SoA narrative; only "increased by £0.103m" stated.
+    'Sandwell|cabinet',                            // No archived source for current cabinet.
+    'Sandwell|councillor_basic_allowance',         // £12,129 not verbatim.
+    'Sandwell|leader_allowance',                   // Not in archived SoA.
+    'Sandwell|councillor_allowances_detail',       // Sum doesn't match SoA verbatim total £1.368m.
+    'Sandwell|salary_bands',                       // Not in archived SoA.
+    'Sandwell|top_suppliers',                      // No archived Spending CSV.
+    'Sandwell|grant_payments',                     // No archived grants source.
+    'Sandwell|performance_kpis',                   // Bradford strip-list.
+    'Sandwell|service_outcomes',                   // Bradford strip-list.
+    'Sandwell|service_spending',                   // Bradford strip-list.
+    'Sandwell|waste_destinations',                 // No archived source.
+    'Sandwell|staff_fte',                          // 6,418 not in archived SoA.
+    'Sandwell|savings_target',                     // Not in archived SoA.
+    'Sandwell|budget_gap',                         // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
