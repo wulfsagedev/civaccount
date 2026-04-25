@@ -66,6 +66,8 @@ const NORTH_STAR_22 = [
   'Bath & North East Somerset', 'Halton', 'Bracknell Forest', 'Wokingham',
   // Batch-19 (2026-04-26): 3 more LBs (Hammersmith/Hackney/Sutton/Havering/Enfield/Lewisham all blocked or unpublished).
   'Barking & Dagenham', 'Brent', 'Ealing',
+  // Batch-20 (2026-04-26): NE UAs (Stockton swapped for Cumberland — Stockton 403).
+  'Cumberland', 'Hartlepool', 'Middlesbrough', 'Redcar & Cleveland',
 ];
 
 function slugify(n) {
