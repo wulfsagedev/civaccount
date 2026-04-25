@@ -56,6 +56,8 @@ const NORTH_STAR_22 = [
   'Lambeth', 'Wandsworth', 'Newham', 'Hounslow',
   // Batch-14 (2026-04-26): UAs (Bedford swapped for Brighton & Hove — Bedford SoA URL not findable).
   'Brighton & Hove', 'Reading', 'Stoke-on-Trent', 'Telford & Wrekin',
+  // Batch-15 (2026-04-26): more LBs (Hackney+Hammersmith deferred — moderngov page-only links).
+  'Southwark', 'Barnet', 'Haringey', 'Merton',
 ];
 
 function slugify(n) {
