@@ -54,6 +54,8 @@ const NORTH_STAR_22 = [
   'Hillingdon', 'Bromley', 'Bexley', 'Greenwich',
   // Batch-13 (2026-04-26): more LBs (Lewisham swapped for Hounslow — Lewisham Azure WAF blocked).
   'Lambeth', 'Wandsworth', 'Newham', 'Hounslow',
+  // Batch-14 (2026-04-26): UAs (Bedford swapped for Brighton & Hove — Bedford SoA URL not findable).
+  'Brighton & Hove', 'Reading', 'Stoke-on-Trent', 'Telford & Wrekin',
 ];
 
 function slugify(n) {
