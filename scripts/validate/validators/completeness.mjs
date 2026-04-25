@@ -656,6 +656,24 @@ export function validate(councils, _population, report) {
     'Plymouth|staff_fte',                          // 3,193 not in archived SoA.
     'Plymouth|savings_target',                     // Not in archived SoA.
     'Plymouth|budget_gap',                         // Not in archived SoA.
+    // 2026-04-26 Portsmouth Batch-11.
+    'Portsmouth|reserves',                         // TS £222.7m doesn't match SoA.
+    'Portsmouth|council_leader',                   // Cllr Steve Pitt not verbatim in archived SoA.
+    'Portsmouth|cabinet',                          // No archived source.
+    'Portsmouth|councillor_basic_allowance',       // Not verbatim.
+    'Portsmouth|leader_allowance',                 // Not verbatim.
+    'Portsmouth|total_allowances_cost',            // Not verbatim.
+    'Portsmouth|councillor_allowances_detail',     // No archived per-cllr source.
+    'Portsmouth|salary_bands',                     // Not in archived SoA.
+    'Portsmouth|top_suppliers',                    // No archived Spending CSV.
+    'Portsmouth|grant_payments',                   // No archived grants source.
+    'Portsmouth|performance_kpis',                 // Bradford strip-list.
+    'Portsmouth|service_outcomes',                 // Bradford strip-list.
+    'Portsmouth|service_spending',                 // Bradford strip-list.
+    'Portsmouth|waste_destinations',               // No archived source.
+    'Portsmouth|staff_fte',                        // 4,071 not in archived SoA.
+    'Portsmouth|savings_target',                   // Not in archived SoA.
+    'Portsmouth|budget_gap',                       // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
