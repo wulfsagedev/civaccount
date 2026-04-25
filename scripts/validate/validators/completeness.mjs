@@ -483,6 +483,21 @@ export function validate(councils, _population, report) {
     'Sandwell|staff_fte',                          // 6,418 not in archived SoA.
     'Sandwell|savings_target',                     // Not in archived SoA.
     'Sandwell|budget_gap',                         // Not in archived SoA.
+    // 2026-04-25 Sefton Batch-10 full-depth rollout (5/10).
+    'Sefton|cabinet',                              // No archived source for current cabinet.
+    'Sefton|councillor_basic_allowance',           // £11,426 not verbatim.
+    'Sefton|leader_allowance',                     // £28,532 not verbatim.
+    'Sefton|councillor_allowances_detail',         // No archived per-cllr source.
+    'Sefton|salary_bands',                         // Not in archived SoA.
+    'Sefton|top_suppliers',                        // No archived Spending CSV.
+    'Sefton|grant_payments',                       // No archived grants source.
+    'Sefton|performance_kpis',                     // Bradford strip-list.
+    'Sefton|service_outcomes',                     // Bradford strip-list.
+    'Sefton|service_spending',                     // Bradford strip-list.
+    'Sefton|waste_destinations',                   // No archived source.
+    'Sefton|staff_fte',                            // 5,082 not in archived SoA.
+    'Sefton|savings_target',                       // Not in archived SoA.
+    'Sefton|budget_gap',                           // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
