@@ -603,6 +603,24 @@ export function validate(councils, _population, report) {
     'Dudley|staff_fte',                            // 5,458 not in archived SoA.
     'Dudley|savings_target',                       // Not in archived SoA.
     'Dudley|budget_gap',                           // Not in archived SoA.
+    // 2026-04-26 Oldham Batch-10 full-depth rollout (12/10).
+    'Oldham|reserves',                             // TS £40.3m doesn't match SoA narrative.
+    'Oldham|chief_executive_salary',               // 3 holders during 2024/25.
+    'Oldham|cabinet',                              // No archived source.
+    'Oldham|councillor_basic_allowance',           // Not verbatim.
+    'Oldham|leader_allowance',                     // Not verbatim.
+    'Oldham|total_allowances_cost',                // Not verbatim.
+    'Oldham|councillor_allowances_detail',         // No archived per-cllr source.
+    'Oldham|salary_bands',                         // Not in archived SoA.
+    'Oldham|top_suppliers',                        // No archived Spending CSV.
+    'Oldham|grant_payments',                       // No archived grants source.
+    'Oldham|performance_kpis',                     // Bradford strip-list.
+    'Oldham|service_outcomes',                     // Bradford strip-list.
+    'Oldham|service_spending',                     // Bradford strip-list.
+    'Oldham|waste_destinations',                   // No archived source.
+    'Oldham|staff_fte',                            // 3,968 not in archived SoA.
+    'Oldham|savings_target',                       // Not in archived SoA.
+    'Oldham|budget_gap',                           // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
