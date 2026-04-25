@@ -64,6 +64,8 @@ const NORTH_STAR_22 = [
   'Kingston upon Thames', 'Kensington & Chelsea', 'Redbridge', 'Waltham Forest',
   // Batch-18 (2026-04-26): UAs.
   'Bath & North East Somerset', 'Halton', 'Bracknell Forest', 'Wokingham',
+  // Batch-19 (2026-04-26): 3 more LBs (Hammersmith/Hackney/Sutton/Havering/Enfield/Lewisham all blocked or unpublished).
+  'Barking & Dagenham', 'Brent', 'Ealing',
 ];
 
 function slugify(n) {
