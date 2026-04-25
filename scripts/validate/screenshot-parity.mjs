@@ -52,6 +52,8 @@ const NORTH_STAR_22 = [
   'York', 'Plymouth', 'Portsmouth', 'Luton',
   // Batch-12 (2026-04-26): London Boroughs.
   'Hillingdon', 'Bromley', 'Bexley', 'Greenwich',
+  // Batch-13 (2026-04-26): more LBs (Lewisham swapped for Hounslow — Lewisham Azure WAF blocked).
+  'Lambeth', 'Wandsworth', 'Newham', 'Hounslow',
 ];
 
 function slugify(n) {
