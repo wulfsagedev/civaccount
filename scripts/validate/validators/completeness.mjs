@@ -431,6 +431,23 @@ export function validate(councils, _population, report) {
     'Bolton|staff_fte',                            // 4,895 not in archived SoA.
     'Bolton|savings_target',                       // Not in archived SoA.
     'Bolton|budget_gap',                           // Not in archived SoA.
+    // 2026-04-25 Salford Batch-10 full-depth rollout (2/10).
+    'Salford|chief_executive_salary',              // 3 holders during 2024/25 (T Stannard leaving £180,623; M Caslake interim £155,023; Stephen Young current — no published 2024/25 figure for current CE).
+    'Salford|cabinet',                             // No archived source for current cabinet/mayoral team.
+    'Salford|councillor_basic_allowance',          // £12,790 not verbatim.
+    'Salford|leader_allowance',                    // £98,000 not verbatim.
+    'Salford|total_allowances_cost',               // £1.58m not verbatim; SoA Note 31 image-based.
+    'Salford|councillor_allowances_detail',        // No archived per-cllr source.
+    'Salford|salary_bands',                        // Not in archived SoA.
+    'Salford|top_suppliers',                       // No archived Spending CSV.
+    'Salford|grant_payments',                      // No archived grants source.
+    'Salford|performance_kpis',                    // Bradford strip-list.
+    'Salford|service_outcomes',                    // Bradford strip-list.
+    'Salford|service_spending',                    // Bradford strip-list.
+    'Salford|waste_destinations',                  // No archived source.
+    'Salford|staff_fte',                           // 5,554 not in archived SoA.
+    'Salford|savings_target',                      // Not in archived SoA.
+    'Salford|budget_gap',                          // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
