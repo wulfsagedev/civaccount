@@ -383,6 +383,22 @@ export function validate(councils, _population, report) {
     'Wakefield|waste_destinations',                // No archived source.
     'Wakefield|staff_fte',                         // 6,575 not in archived SoA.
     'Wakefield|savings_target',                    // £85.6m not verbatim in archived SoA.
+    // 2026-04-25 Doncaster Batch-9 full-depth rollout (9/10).
+    'Doncaster|reserves',                          // TS £73.3m doesn't match SoA p11 £182.4m usable / £94.5m GFB.
+    'Doncaster|cabinet',                           // No archived source for current cabinet.
+    'Doncaster|councillor_basic_allowance',        // £13,216 not verbatim.
+    'Doncaster|leader_allowance',                  // Not in archived SoA.
+    'Doncaster|councillor_allowances_detail',      // No archived per-cllr source.
+    'Doncaster|salary_bands',                      // SoA Table 1 not extractable.
+    'Doncaster|top_suppliers',                     // No archived Spending CSV.
+    'Doncaster|grant_payments',                    // No archived grants source.
+    'Doncaster|performance_kpis',                  // Bradford strip-list.
+    'Doncaster|service_outcomes',                  // Bradford strip-list.
+    'Doncaster|service_spending',                  // Bradford strip-list.
+    'Doncaster|waste_destinations',                // No archived source.
+    'Doncaster|staff_fte',                         // 4,733 not in archived SoA.
+    'Doncaster|savings_target',                    // Not in archived SoA.
+    'Doncaster|budget_gap',                        // Not in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
