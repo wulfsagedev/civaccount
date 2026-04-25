@@ -366,6 +366,23 @@ export function validate(councils, _population, report) {
     'Oxfordshire|staff_fte',                       // 4,606 not in archived SoA.
     'Oxfordshire|savings_target',                  // £25m not in archived SoA.
     'Oxfordshire|budget_gap',                      // £25m not in archived SoA.
+    // 2026-04-25 Wakefield Batch-9 full-depth rollout (8/10).
+    'Wakefield|reserves',                          // SoA p20 narrative £79.6m exceeds GOV.UK RA usable reserves reference £59.167m; figure semantics ambiguous.
+    'Wakefield|chief_executive',                   // SoA p41 says role "occupied by interim agency employee until 21/04/24"; Tony Reeves not verbatim in archived sources.
+    'Wakefield|chief_executive_salary',            // SoA Table 2 image-based, no pdftotext-extractable salary.
+    'Wakefield|cabinet',                           // No archived source for current cabinet.
+    'Wakefield|councillor_basic_allowance',        // £13,906 not verbatim in archived SoA.
+    'Wakefield|leader_allowance',                  // £41,802 not verbatim in archived SoA.
+    'Wakefield|councillor_allowances_detail',      // No archived per-cllr source.
+    'Wakefield|salary_bands',                      // SoA Table 1 image-based.
+    'Wakefield|top_suppliers',                     // No archived Spending CSV.
+    'Wakefield|grant_payments',                    // No archived grants source.
+    'Wakefield|performance_kpis',                  // Bradford strip-list.
+    'Wakefield|service_outcomes',                  // Bradford strip-list.
+    'Wakefield|service_spending',                  // Bradford strip-list.
+    'Wakefield|waste_destinations',                // No archived source.
+    'Wakefield|staff_fte',                         // 6,575 not in archived SoA.
+    'Wakefield|savings_target',                    // £85.6m not verbatim in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
