@@ -46,6 +46,8 @@ const NORTH_STAR_22 = [
   // blocks puppeteer fetch; Somerset 2023-24 SoA PDF not directly downloadable
   // from somerset.gov.uk (audit cycle unresolved).
   'Gloucestershire', 'Worcestershire', 'North Yorkshire',
+  // Batch-9-take-2 (2026-04-25): re-attempting the deferred ones via Wayback.
+  'Devon',
 ];
 
 function slugify(n) {
