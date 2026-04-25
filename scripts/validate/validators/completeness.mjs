@@ -279,6 +279,10 @@ export function validate(councils, _population, report) {
     'Derbyshire|savings_target',         // TS £18.6m not in archived SoA narrative.
     'Derbyshire|savings_achieved',       // TS £70m not verbatim in SoA.
     'Derbyshire|budget_gap',             // TS £37.8m not verbatim in archived SoA.
+    // 2026-04-25 Lincolnshire full-depth rollout (4/10 remediation).
+    'Lincolnshire|councillor_basic_allowance', // Note 32 publishes only aggregate; £12,157 not on archived pages.
+    'Lincolnshire|savings_target',             // TS £8.1m not in archived SoA narrative.
+    'Lincolnshire|budget_gap',                 // TS £9.7m not verbatim in archived SoA.
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
