@@ -76,6 +76,8 @@ const NORTH_STAR_22 = [
   'Darlington', 'Thurrock',
   // Batch-24 (2026-04-26): 3 more UAs (Blackburn/Blackpool/BCP/Central Beds deferred).
   'Derby', 'Leicester', 'Nottingham',
+  // Batch-25 (2026-04-26): 3 more UAs (Hull cmis URL too complex; Southampton azure-blocked).
+  'North Somerset', 'West Berkshire', 'Shropshire',
 ];
 
 function slugify(n) {
