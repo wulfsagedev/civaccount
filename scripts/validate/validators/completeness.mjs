@@ -1530,6 +1530,34 @@ export function validate(councils, _population, report) {
     'Torbay|staff_fte',
     'Torbay|savings_target',
     'Torbay|budget_gap',
+    // 2026-04-26 Batch-27 Cloudflare-bypass rollout: 7 councils whose SoAs
+    // were Cloudflare/Azure WAF-blocked on direct fetch, retrieved via
+    // Wayback /save/ endpoint (allowlisted crawler). Same Bradford strip
+    // checklist applied. CE name + salary verified verbatim from SoA
+    // (Lewisham p78, Islington p64, Havering p91, BCP p62, Central Beds p110,
+    // W&M p64). Isle of Wight CE name stripped (SoA p75 only labels role,
+    // doesn't name CE).
+    ...['Bournemouth, Christchurch & Poole', 'Lewisham', 'Islington', 'Havering',
+        'Isle of Wight', 'Central Bedfordshire', 'Windsor & Maidenhead'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // Isle of Wight: CE name stripped (SoA only labels role generically).
+    'Isle of Wight|chief_executive',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
