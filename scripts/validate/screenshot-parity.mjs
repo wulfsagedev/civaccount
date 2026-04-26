@@ -78,6 +78,8 @@ const NORTH_STAR_22 = [
   'Derby', 'Leicester', 'Nottingham',
   // Batch-25 (2026-04-26): 3 more UAs (Hull cmis URL too complex; Southampton azure-blocked).
   'North Somerset', 'West Berkshire', 'Shropshire',
+  // Batch-26 (2026-04-26): 1 UA (Torbay via Wayback — others blocked).
+  'Torbay',
 ];
 
 function slugify(n) {
