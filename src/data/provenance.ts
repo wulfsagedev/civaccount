@@ -38,18 +38,18 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     source_url: 'https://www.gov.uk/government/statistical-data-sets/live-tables-on-council-tax',
     source_title: 'Year-on-year change — calculated from Band D live tables',
     data_year: '2024-25 → 2025-26',
-    methodology: 'Difference between this year\'s and last year\'s MHCLG-published Band D for the same authority',
+    methodology: 'How much your Band D council tax went up compared to last year. Based on the rates the UK government publishes for every council each year.',
   },
   'tax_bands': {
     label: 'published',
     source_url: 'https://www.legislation.gov.uk/ukpga/1992/14/section/5',
     source_title: 'Council Tax Act 1992 s.5 — statutory band ratios',
     data_year: '2025-26',
-    methodology: 'Statutory calculation per Council Tax Act 1992 s.5: Band A = D×6/9, B = D×7/9, C = D×8/9, E = D×11/9, F = D×13/9, G = D×15/9, H = D×18/9. Every billing authority publishes these eight values on its own council-tax bills page — the numbers here match what the council publishes.',
+    methodology: 'The eight bands (A to H) are set by law. Each one is a fixed fraction of Band D — for example, Band A is two-thirds of Band D, and Band H is twice as much. Every council publishes these eight figures on its own bills page; ours match exactly.',
   },
   'vs_average': {
     label: 'comparison',
-    methodology: 'Difference between this council and the average for its type',
+    methodology: 'How this council compares to the average for similar councils.',
   },
 
   // ── Budget ──
@@ -317,7 +317,7 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   },
   'detailed.top_suppliers.description': {
     label: 'editorial',
-    methodology: 'Summary written by CivAccount based on published contract details. Not official text.',
+    methodology: 'A short description we wrote based on the public contract details. This is our wording, not the council\'s.',
   },
 
   // ── Grants (council-published on transparency pages; sometimes via 360Giving) ──
@@ -348,11 +348,11 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   // ── Per-capita calculations ──
   'per_capita_spend': {
     label: 'calculated',
-    methodology: 'Total service budget divided by population',
+    methodology: 'The total council spending divided by how many people live here — a rough figure for what each person costs.',
   },
   'per_capita_council_tax': {
     label: 'calculated',
-    methodology: 'Band D rate — actual household bill depends on property band',
+    methodology: 'Shown as the Band D rate. Your actual bill depends on your property\'s council tax band.',
   },
 };
 
@@ -498,7 +498,7 @@ export function getProvenance(
         source_url: verified.sourceUrl,
         source_title: verified.sourceTitle,
         data_year: verified.period,
-        methodology: `Aggregated from ${council.name}'s own published payments-over-£500 CSV. Net amount summed per supplier across all quarters of the period.`,
+        methodology: `Added up from ${council.name}'s own list of payments over £500. The total paid to this supplier across the whole year.`,
       };
     }
     const global = FIELD_PROVENANCE['detailed.top_suppliers.annual_spend'];
