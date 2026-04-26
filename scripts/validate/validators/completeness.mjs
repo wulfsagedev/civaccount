@@ -1513,6 +1513,23 @@ export function validate(councils, _population, report) {
     'Shropshire|staff_fte',
     'Shropshire|savings_target',
     'Shropshire|budget_gap',
+    // 2026-04-26 Batch-26.
+    'Torbay|cabinet',
+    'Torbay|council_leader',
+    'Torbay|councillor_basic_allowance',
+    'Torbay|leader_allowance',
+    'Torbay|total_allowances_cost',
+    'Torbay|councillor_allowances_detail',
+    'Torbay|salary_bands',
+    'Torbay|top_suppliers',
+    'Torbay|grant_payments',
+    'Torbay|performance_kpis',
+    'Torbay|service_outcomes',
+    'Torbay|service_spending',
+    'Torbay|waste_destinations',
+    'Torbay|staff_fte',
+    'Torbay|savings_target',
+    'Torbay|budget_gap',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
