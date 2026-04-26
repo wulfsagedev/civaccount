@@ -313,7 +313,7 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     source_url: 'https://www.contractsfinder.service.gov.uk/Search',
     source_title: 'Contracts Finder (OCDS)',
     data_year: '2024-25',
-    methodology: 'Annualised contract values aggregated from Contracts Finder OCDS data where the council is the buyer.',
+    methodology: 'The total yearly value of contracts where this council is named as the buyer. Comes from the UK government\'s Contracts Finder service.',
   },
   'detailed.top_suppliers.description': {
     label: 'editorial',
