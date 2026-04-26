@@ -74,6 +74,8 @@ const NORTH_STAR_22 = [
   'Medway Towns', 'Milton Keynes', 'Swindon',
   // Batch-23 (2026-04-26): 2 more UAs (Darlington + Thurrock; South Glos + Herefordshire deferred).
   'Darlington', 'Thurrock',
+  // Batch-24 (2026-04-26): 3 more UAs (Blackburn/Blackpool/BCP/Central Beds deferred).
+  'Derby', 'Leicester', 'Nottingham',
 ];
 
 function slugify(n) {
