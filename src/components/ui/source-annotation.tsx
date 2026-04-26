@@ -95,7 +95,7 @@ function computeStaleness(dataYear: string | undefined): { months: number; isSta
 
 const LABEL_CONFIG: Record<string, { text: string; className: string }> = {
   published: {
-    text: 'Published data',
+    text: 'From a public document',
     className: 'bg-navy-50 text-navy-600 border-navy-200',
   },
   calculated: {
@@ -107,11 +107,11 @@ const LABEL_CONFIG: Record<string, { text: string; className: string }> = {
     className: 'bg-muted text-muted-foreground border-border',
   },
   official: {
-    text: 'Council source',
+    text: 'From the council itself',
     className: 'bg-navy-50 text-navy-600 border-navy-200',
   },
   editorial: {
-    text: 'Editorial summary',
+    text: 'Our note',
     className: 'bg-muted text-muted-foreground border-border',
   },
 };
@@ -204,7 +204,7 @@ export default function SourceAnnotation({
           {provenance.data_year && (
             <div className="flex items-center gap-2 flex-wrap">
               <p className="type-caption text-muted-foreground">
-                Data year: {provenance.data_year}
+                Published {provenance.data_year}
               </p>
               {staleness?.isStale && (
                 <Badge
@@ -255,10 +255,10 @@ export default function SourceAnnotation({
                 <div className="min-w-0 flex-1">
                   <p className="type-caption font-medium text-foreground flex items-center gap-1">
                     <ImageIcon className="h-3 w-3 shrink-0" aria-hidden="true" />
-                    View source page
+                    See the original page
                   </p>
                   <p className="type-caption text-muted-foreground">
-                    Tap to enlarge
+                    Tap to read it
                   </p>
                 </div>
               </button>
@@ -295,7 +295,7 @@ export default function SourceAnnotation({
                 className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <Flag className="h-3 w-3 shrink-0" aria-hidden="true" />
-                Report incorrect data
+                Report a mistake
               </button>
             </div>
           )}
