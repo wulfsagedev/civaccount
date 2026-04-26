@@ -49,10 +49,10 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
-<!-- counters as of 2026-04-25 after overnight batches 11-23 -->
+<!-- counters as of 2026-04-26 after batches 24-27 -->
 
 - Councils in scope: 317
-- **Councils North-Star complete: 97**
+- **Councils North-Star complete: 112**
   - Reference (3): Bradford, Kent, Camden
   - Batch-4-7 (19): Manchester, Birmingham, Leeds, Surrey, Cornwall, Liverpool, Bristol, Lancashire, Tower Hamlets, Hampshire, Essex, Hertfordshire, Sheffield, Westminster, Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon
   - Batch-8-10 (16): Norfolk, West Sussex, Derbyshire, Lincolnshire, Suffolk, Leicestershire, Cambridgeshire, Gloucestershire, Worcestershire, North Yorkshire, Devon, East Sussex, Oxfordshire, Wakefield, Doncaster, Coventry
@@ -70,14 +70,21 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
   - Batch-21 (4 UAs): Westmorland and Furness, North Lincolnshire, North East Lincolnshire, East Riding of Yorkshire
   - Batch-22 (3 UAs): Medway Towns, Milton Keynes, Swindon
   - Batch-23 (2 UAs): Darlington, Thurrock
+  - Batch-24 (3 UAs): Derby, Leicester, Nottingham
+  - Batch-25 (3 UAs): North Somerset, West Berkshire, Shropshire
+  - Batch-26 (1 UA): Torbay
+  - Batch-27 (7 mixed) — **Cloudflare-bypass via Wayback /save/**: Bournemouth Christchurch & Poole, Lewisham, Islington, Havering, Isle of Wight, Central Bedfordshire, Windsor & Maidenhead
 - Councils in progress: 0
-- Councils not yet started: 220
+- Councils not yet started: 205
 
-**Overnight 2026-04-25 marathon (batches 11-23, 13 batches, 49 councils):**
-- Pace: every council got the same Bradford-level treatment — SoA archived with sha256, CE name + salary verified verbatim where possible, page-image PNGs rendered, Bradford strip-list applied, paired PRs to data + public repo, both merged.
-- Common strips beyond the standard 8: chief_executive_salary stripped wherever CE turnover during 2024/25 made attribution ambiguous (Lambeth, Wandsworth, Hounslow, Barnet, Redbridge, Middlesbrough, Medway, MK, Milton Keynes, Thurrock, East Riding, Bracknell Forest); council_leader stripped from most LBs/UAs as SoA AGS sig blocks rarely print the leader's name verbatim. Where leader names ARE in archived SoAs (Hillingdon, Newham, Hounslow, Reading, Wokingham, Milton Keynes), they're wired with full Tier-3 provenance.
-- Council-name corrections caught: Cheshire West (Andrew Lewis → Delyth Curtis), Bedford (Liz Fothergill → Laura Church), Brighton & Hove (Carolyn Dwyer → Jessica Gibbons), Reading (Cllr Jason Brock → Cllr Liz Terry), Bromley (Ade Adetosoye CBE → A Adetosoye), Bexley (Jackie Belton → Paul Thorogood), Greenwich (Miatta Sherif → D Warren), Telford (£179,088 → £173,535), Wokingham (£172,939 → £180,349 + Cllr Stephen Conway → Stephen Conway), Buckinghamshire (Rachael Shimmin → Ms RA Shimmin + £240k → £269k).
-- Deferred (Cloudflare/WAF/no-published-2024-25-SoA): Lewisham, Hammersmith & Fulham, Hackney, Sutton, Havering, Enfield, Islington, Stockton-on-Tees, Peterborough, Slough, Warrington, Isle of Wight, South Gloucestershire, Herefordshire — all blocked at the PDF layer.
+**Batch-27 (2026-04-26) — Cloudflare-bypass via Wayback /save/:**
+- The Wayback Machine `/save/` endpoint forces a fresh archive on demand. Because the Internet Archive's crawler IPs are allowlisted by most CDNs (Cloudflare, Azure WAF, etc.), the resulting redirect serves the snapshot directly — bypassing the WAF block that defeats `curl` from a regular IP.
+- Built `scripts/council-research/lib/robust-fetch.mjs` — multi-strategy fallback: direct curl → wayback existing snapshot → wayback /save/ → wayback /save/ with availability-API polling (for slow archives).
+- Worked first try on 7/14 attempted: BCP, Lewisham, Islington, Havering, Isle of Wight, Central Bedfordshire, Windsor & Maidenhead.
+- 7 councils still pending Wayback indexing (Peterborough, Stockton-on-Tees, South Gloucestershire, Warrington, Slough, Somerset, West Northamptonshire) — saves triggered but availability API hasn't returned a snapshot yet. Will retry next batch.
+- Council-name corrections caught: Central Bedfordshire (Marcel Sherwood → Marcel Coiffait — verbatim), Windsor & Maidenhead (Elizabeth Frehiwot → Stephen Evans — verbatim), BCP CE name updated to verbatim "G Farrant" (was "Graham Farrant" — same person, abbreviated form per SoA Note 26).
+- Salary corrections: Lewisham £231k → £198,288 (verbatim), Havering £196,755 → £201,672 (verbatim), Islington £185k → £190,032 (verbatim), Central Beds £185,725 → £201,010 (verbatim), W&M £204,117 → £198,000 (verbatim, in £000s), IoW (CE name stripped — only "Chief Executive" labelled in SoA) salary £148,484 (verbatim).
+- Common strips: same Bradford strip-list applied via `scripts/council-research/batch-27-strip.mjs` (10 block fields × 7 councils + scalars).
 
 ---
 

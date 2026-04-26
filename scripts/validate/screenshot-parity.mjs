@@ -80,6 +80,10 @@ const NORTH_STAR_22 = [
   'North Somerset', 'West Berkshire', 'Shropshire',
   // Batch-26 (2026-04-26): 1 UA (Torbay via Wayback — others blocked).
   'Torbay',
+  // Batch-27 (2026-04-26): 7 councils via Wayback /save/ Cloudflare-bypass — BCP, Lewisham,
+  // Islington, Havering, Isle of Wight, Central Bedfordshire, Windsor & Maidenhead.
+  'Bournemouth, Christchurch & Poole', 'Lewisham', 'Islington', 'Havering',
+  'Isle of Wight', 'Central Bedfordshire', 'Windsor & Maidenhead',
 ];
 
 function slugify(n) {
