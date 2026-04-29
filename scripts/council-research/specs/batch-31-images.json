@@ -1,0 +1,11 @@
+[
+  {"council": "Broxtowe", "slug": "broxtowe", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 86, "value": "Chief Executive | 126,226"},
+  {"council": "Stroud", "slug": "stroud", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 81, "value": "Chief Executive | 2024/25 | 129,574"},
+  {"council": "Stroud", "slug": "stroud", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 81, "value": "Chief Executive | 129,574"},
+  {"council": "Runnymede", "slug": "runnymede", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 75, "value": "Chief Executive | 152,675"},
+  {"council": "West Oxfordshire", "slug": "west-oxfordshire", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 23, "value": "Chief Executive | 111,382"},
+  {"council": "South Kesteven", "slug": "south-kesteven", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 34, "value": "Chief Executive | 2024/25 | 148"},
+  {"council": "South Oxfordshire", "slug": "south-oxfordshire", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 45, "value": "Head of Paid | 2024/25 | 184,576"},
+  {"council": "Epping Forest", "slug": "epping-forest", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 64, "value": "Chief Executive | Georgina Blakemore | 149,702"},
+  {"council": "Epping Forest", "slug": "epping-forest", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 64, "value": "Georgina Blakemore | 149,702"}
+]

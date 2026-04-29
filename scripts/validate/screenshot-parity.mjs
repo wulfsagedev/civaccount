@@ -90,6 +90,8 @@ const NORTH_STAR_22 = [
   'Durham', 'Northumberland', 'Harrow', 'Knowsley', 'Sutton', 'Richmond upon Thames',
   // Batch-30 (2026-04-29): 1 UA (Blackpool) + 6 SDs (first districts in the rollout).
   'Blackpool', 'East Hampshire', 'St Albans', 'West Lindsey', 'Pendle', 'Blaby', 'Erewash',
+  // Batch-31 (2026-04-29): 7 more districts.
+  'Broxtowe', 'Stroud', 'Runnymede', 'West Oxfordshire', 'South Kesteven', 'South Oxfordshire', 'Epping Forest',
 ];
 
 function slugify(n) {
