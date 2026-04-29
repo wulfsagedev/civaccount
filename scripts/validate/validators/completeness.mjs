@@ -1581,6 +1581,28 @@ export function validate(councils, _population, report) {
     ]),
     // North Tyneside: CE name stripped (Paul Hanson left mid-year, Jackie Laughton interim from Jan 2025; SoA p93 doesn't name CE).
     'North Tyneside|chief_executive',
+    // 2026-04-29 Batch-29: 2 UAs (Durham, Northumberland), 1 MD (Knowsley),
+    // 3 LBs (Harrow, Sutton, Richmond upon Thames). Same Bradford strip-list.
+    ...['Durham', 'Northumberland', 'Harrow', 'Knowsley', 'Sutton', 'Richmond upon Thames'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // Richmond upon Thames: CE name stripped — multiple holders mid-year transition (Reilly interim + Jackson former).
+    'Richmond upon Thames|chief_executive',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

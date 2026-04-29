@@ -1,0 +1,13 @@
+[
+  {"council": "Durham", "slug": "durham", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 102, "value": "Chief Executive | John Hewitt | 219,275"},
+  {"council": "Durham", "slug": "durham", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 102, "value": "John Hewitt | 219,275"},
+  {"council": "Northumberland", "slug": "northumberland", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 43, "value": "Chief Executive | Helen Paterson | 212,489"},
+  {"council": "Northumberland", "slug": "northumberland", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 43, "value": "Helen Paterson | 212,489"},
+  {"council": "Harrow", "slug": "harrow", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 67, "value": "Alex Dewsnap | Managing Director | 179,247"},
+  {"council": "Harrow", "slug": "harrow", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 67, "value": "Alex Dewsnap | 179,247"},
+  {"council": "Knowsley", "slug": "knowsley", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 101, "value": "Chief Executive | M Harden | 202,921"},
+  {"council": "Knowsley", "slug": "knowsley", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 101, "value": "M Harden | 202,921"},
+  {"council": "Sutton", "slug": "sutton", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 113, "value": "Chief Executive | Helen Bailey | 205,563"},
+  {"council": "Sutton", "slug": "sutton", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 113, "value": "Helen Bailey | 205,563"},
+  {"council": "Richmond upon Thames", "slug": "richmond-upon-thames", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 69, "value": "Interim Chief Executive | B. Reilly | 94,421"}
+]
