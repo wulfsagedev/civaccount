@@ -1,0 +1,15 @@
+[
+  {"council": "Bury", "slug": "bury", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 88, "value": "Chief Executive | L Ridsdale | 202"},
+  {"council": "Bury", "slug": "bury", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 88, "value": "L Ridsdale | 202"},
+  {"council": "Kirklees", "slug": "kirklees", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "Chief Executive | Steve Mawson | 173,855"},
+  {"council": "Kirklees", "slug": "kirklees", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "Steve Mawson | 173,855"},
+  {"council": "North Tyneside", "slug": "north-tyneside", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 93, "value": "Chief Executive | 140,058"},
+  {"council": "Rochdale", "slug": "rochdale", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "Chief Executive | S Rumbelow | 156"},
+  {"council": "Rochdale", "slug": "rochdale", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "S Rumbelow | 156"},
+  {"council": "Wigan", "slug": "wigan", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 123, "value": "Alison McKenzie-Folan | Chief Executive | 205,178"},
+  {"council": "Wigan", "slug": "wigan", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 123, "value": "Alison McKenzie-Folan | 205,178"},
+  {"council": "Rotherham", "slug": "rotherham", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 55, "value": "Sharon Kemp | Chief Executive | 185,899"},
+  {"council": "Rotherham", "slug": "rotherham", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 55, "value": "Sharon Kemp | 185,899"},
+  {"council": "Walsall", "slug": "walsall", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 60, "value": "Chief Executive | Emma Bennett | 193,615"},
+  {"council": "Walsall", "slug": "walsall", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 60, "value": "Emma Bennett | 193,615"}
+]

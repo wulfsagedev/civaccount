@@ -1558,6 +1558,29 @@ export function validate(councils, _population, report) {
     ]),
     // Isle of Wight: CE name stripped (SoA only labels role generically).
     'Isle of Wight|chief_executive',
+    // 2026-04-29 Batch-28 metropolitan districts via direct fetch + selective Wayback /save/:
+    // Bury, Kirklees, North Tyneside, Rochdale, Wigan, Rotherham, Walsall.
+    // Same Bradford strip-list applied via batch-27-strip.mjs.
+    ...['Bury', 'Kirklees', 'North Tyneside', 'Rochdale', 'Wigan', 'Rotherham', 'Walsall'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // North Tyneside: CE name stripped (Paul Hanson left mid-year, Jackie Laughton interim from Jan 2025; SoA p93 doesn't name CE).
+    'North Tyneside|chief_executive',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
