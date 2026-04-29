@@ -86,6 +86,8 @@ const NORTH_STAR_22 = [
   'Isle of Wight', 'Central Bedfordshire', 'Windsor & Maidenhead',
   // Batch-28 (2026-04-29): 7 metropolitan districts.
   'Bury', 'Kirklees', 'North Tyneside', 'Rochdale', 'Wigan', 'Rotherham', 'Walsall',
+  // Batch-29 (2026-04-29): 6 mixed (2 UAs, 1 MD, 3 LBs).
+  'Durham', 'Northumberland', 'Harrow', 'Knowsley', 'Sutton', 'Richmond upon Thames',
 ];
 
 function slugify(n) {
