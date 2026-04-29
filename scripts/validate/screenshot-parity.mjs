@@ -84,6 +84,8 @@ const NORTH_STAR_22 = [
   // Islington, Havering, Isle of Wight, Central Bedfordshire, Windsor & Maidenhead.
   'Bournemouth, Christchurch & Poole', 'Lewisham', 'Islington', 'Havering',
   'Isle of Wight', 'Central Bedfordshire', 'Windsor & Maidenhead',
+  // Batch-28 (2026-04-29): 7 metropolitan districts.
+  'Bury', 'Kirklees', 'North Tyneside', 'Rochdale', 'Wigan', 'Rotherham', 'Walsall',
 ];
 
 function slugify(n) {
