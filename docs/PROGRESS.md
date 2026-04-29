@@ -52,7 +52,7 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 <!-- counters as of 2026-04-26 after batches 24-27 -->
 
 - Councils in scope: 317
-- **Councils North-Star complete: 132**
+- **Councils North-Star complete: 139**
   - Reference (3): Bradford, Kent, Camden
   - Batch-4-7 (19): Manchester, Birmingham, Leeds, Surrey, Cornwall, Liverpool, Bristol, Lancashire, Tower Hamlets, Hampshire, Essex, Hertfordshire, Sheffield, Westminster, Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon
   - Batch-8-10 (16): Norfolk, West Sussex, Derbyshire, Lincolnshire, Suffolk, Leicestershire, Cambridgeshire, Gloucestershire, Worcestershire, North Yorkshire, Devon, East Sussex, Oxfordshire, Wakefield, Doncaster, Coventry
@@ -77,8 +77,9 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
   - Batch-28 (7 MDs) — **direct + Wayback bypass**: Bury, Kirklees, North Tyneside, Rochdale, Wigan, Rotherham, Walsall
   - Batch-29 (6 mixed) — direct fetch: Durham (UA), Northumberland (UA), Harrow (LB), Knowsley (MD), Sutton (LB), Richmond upon Thames (LB)
   - Batch-30 (7 mixed) — first districts: Blackpool (UA), East Hampshire (SD), St Albans (SD), West Lindsey (SD), Pendle (SD), Blaby (SD), Erewash (SD)
+  - Batch-31 (7 SDs): Broxtowe, Stroud, Runnymede, West Oxfordshire, South Kesteven, South Oxfordshire, Epping Forest
 - Councils in progress: 0
-- Councils not yet started: 185
+- Councils not yet started: 178
 
 **Batch-27 (2026-04-26) — Cloudflare-bypass via Wayback /save/:**
 - The Wayback Machine `/save/` endpoint forces a fresh archive on demand. Because the Internet Archive's crawler IPs are allowlisted by most CDNs (Cloudflare, Azure WAF, etc.), the resulting redirect serves the snapshot directly — bypassing the WAF block that defeats `curl` from a regular IP.
