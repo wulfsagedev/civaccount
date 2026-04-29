@@ -1603,6 +1603,34 @@ export function validate(councils, _population, report) {
     ]),
     // Richmond upon Thames: CE name stripped — multiple holders mid-year transition (Reilly interim + Jackson former).
     'Richmond upon Thames|chief_executive',
+    // 2026-04-29 Batch-30: 1 UA (Blackpool) + 6 SDs. First districts in rollout.
+    // SDs use a simpler structure but Bradford strip-list still applies; CE name
+    // stripped for districts whose SoA remuneration table only labels the role.
+    ...['Blackpool', 'East Hampshire', 'St Albans', 'West Lindsey', 'Pendle', 'Blaby', 'Erewash'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // Districts where SoA remuneration table doesn't name the CE.
+    'East Hampshire|chief_executive',
+    'St Albans|chief_executive',
+    'West Lindsey|chief_executive',
+    'Pendle|chief_executive',
+    'Blaby|chief_executive',
+    'Erewash|chief_executive',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

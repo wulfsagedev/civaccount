@@ -1,0 +1,10 @@
+[
+  {"council": "Blackpool", "slug": "blackpool", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 99, "value": "Chief Executive | Neil Jack | 160,127"},
+  {"council": "Blackpool", "slug": "blackpool", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 99, "value": "Neil Jack | 160,127"},
+  {"council": "East Hampshire", "slug": "east-hampshire", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 41, "value": "Chief Executive | 146,145"},
+  {"council": "St Albans", "slug": "st-albans", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 78, "value": "Chief Executive and Head of | Policy | 118,834"},
+  {"council": "West Lindsey", "slug": "west-lindsey", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 78, "value": "Chief Executive | 141,353"},
+  {"council": "Pendle", "slug": "pendle", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 80, "value": "Chief Executive | 2024/25 | 116,546"},
+  {"council": "Blaby", "slug": "blaby", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 98, "value": "Chief Executive | 2024/25 | 119,466"},
+  {"council": "Erewash", "slug": "erewash", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 93, "value": "Chief Executive | 2024/25 | 131,482"}
+]

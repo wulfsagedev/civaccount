@@ -88,13 +88,15 @@ const NORTH_STAR_22 = [
   'Bury', 'Kirklees', 'North Tyneside', 'Rochdale', 'Wigan', 'Rotherham', 'Walsall',
   // Batch-29 (2026-04-29): 6 mixed (2 UAs, 1 MD, 3 LBs).
   'Durham', 'Northumberland', 'Harrow', 'Knowsley', 'Sutton', 'Richmond upon Thames',
+  // Batch-30 (2026-04-29): 1 UA (Blackpool) + 6 SDs (first districts in the rollout).
+  'Blackpool', 'East Hampshire', 'St Albans', 'West Lindsey', 'Pendle', 'Blaby', 'Erewash',
 ];
 
 function slugify(n) {
   return n.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-const TS_FILES = ['county-councils.ts', 'metropolitan.ts', 'unitary.ts', 'london-boroughs.ts'];
+const TS_FILES = ['county-councils.ts', 'metropolitan.ts', 'unitary.ts', 'london-boroughs.ts', 'districts.ts'];
 
 // Canonicalise text so whitespace/punctuation variations don't break matching.
 // - Collapse all whitespace (\n, tabs, multi-space) to single space
