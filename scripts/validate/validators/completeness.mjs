@@ -1656,6 +1656,32 @@ export function validate(councils, _population, report) {
     'West Oxfordshire|chief_executive',
     'South Kesteven|chief_executive',
     'South Oxfordshire|chief_executive',
+    // 2026-04-29 Batch-32: 8 more districts. Direct fetch (5) + Wayback /save/ (1 — Bassetlaw).
+    // Same Bradford strip-list. CE name+salary stripped where SoA shows turnover or joint arrangement.
+    ...['Adur', 'Basildon', 'Bassetlaw', 'Braintree', 'Brentwood', 'Burnley', 'Cambridge', 'Cannock Chase'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // Where the SoA shows CE turnover or doesn't name the CE in the remuneration table:
+    'Basildon|chief_executive',         // Turnover during 2024/25 — Gary Jones (from 20.1.2025) + Scott Logan (to)
+    'Basildon|chief_executive_salary',  // Both partial-year amounts; no full-year figure
+    'Burnley|chief_executive',          // SoA Note 22a labels role only; doesn't name CE in archived doc
+    'Cannock Chase|chief_executive',         // Joint CE with Stafford BC — costs split, no isolated figure
+    'Cannock Chase|chief_executive_salary',  // Same — joint arrangement
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

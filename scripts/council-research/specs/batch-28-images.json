@@ -1,15 +1,13 @@
 [
-  {"council": "Bury", "slug": "bury", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 88, "value": "Chief Executive | L Ridsdale | 202"},
-  {"council": "Bury", "slug": "bury", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 88, "value": "L Ridsdale | 202"},
-  {"council": "Kirklees", "slug": "kirklees", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "Chief Executive | Steve Mawson | 173,855"},
-  {"council": "Kirklees", "slug": "kirklees", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "Steve Mawson | 173,855"},
-  {"council": "North Tyneside", "slug": "north-tyneside", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 93, "value": "Chief Executive | 140,058"},
-  {"council": "Rochdale", "slug": "rochdale", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "Chief Executive | S Rumbelow | 156"},
-  {"council": "Rochdale", "slug": "rochdale", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 106, "value": "S Rumbelow | 156"},
-  {"council": "Wigan", "slug": "wigan", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 123, "value": "Alison McKenzie-Folan | Chief Executive | 205,178"},
-  {"council": "Wigan", "slug": "wigan", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 123, "value": "Alison McKenzie-Folan | 205,178"},
-  {"council": "Rotherham", "slug": "rotherham", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 55, "value": "Sharon Kemp | Chief Executive | 185,899"},
-  {"council": "Rotherham", "slug": "rotherham", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 55, "value": "Sharon Kemp | 185,899"},
-  {"council": "Walsall", "slug": "walsall", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 60, "value": "Chief Executive | Emma Bennett | 193,615"},
-  {"council": "Walsall", "slug": "walsall", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 60, "value": "Emma Bennett | 193,615"}
+  {"council": "Adur", "slug": "adur", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 93, "value": "Dr Catherine Howe, Chief Executive"},
+  {"council": "Adur", "slug": "adur", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 94, "value": "Chief Executive 2024/25 166,626"},
+  {"council": "Bassetlaw", "slug": "bassetlaw", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 131, "value": "Mr David Armiger, Chief Executive"},
+  {"council": "Bassetlaw", "slug": "bassetlaw", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 85, "value": "Chief Executive 132,079"},
+  {"council": "Braintree", "slug": "braintree", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 43, "value": "Chief Executive - Dan Gascoyne 160,157"},
+  {"council": "Braintree", "slug": "braintree", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 43, "value": "Chief Executive - Dan Gascoyne 160,157"},
+  {"council": "Brentwood", "slug": "brentwood", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 8, "value": "Jonathan Stephenson Joint Chief Executive"},
+  {"council": "Brentwood", "slug": "brentwood", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 57, "value": "Chief Executive 171,779"},
+  {"council": "Burnley", "slug": "burnley", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 68, "value": "Chief Executive 2024/25 126,043"},
+  {"council": "Cambridge", "slug": "cambridge", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 6, "value": "the Chief Executive, Robert Pollock"},
+  {"council": "Cambridge", "slug": "cambridge", "field": "chief_executive_salary", "pdf": "statement-of-accounts-2024-25.pdf", "page": 54, "value": "Chief Executive 140,438"}
 ]
