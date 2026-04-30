@@ -104,6 +104,8 @@ const NORTH_STAR_22 = [
   'Guildford', 'Havant', 'High Peak',
   // Batch-37 (2026-04-29): 3 districts.
   'Mid Sussex', 'Norwich', 'North Norfolk',
+  // Batch-38 (2026-04-29): 2 districts.
+  'North Devon', 'Three Rivers',
 ];
 
 function slugify(n) {
