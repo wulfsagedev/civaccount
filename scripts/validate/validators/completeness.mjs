@@ -1705,6 +1705,27 @@ export function validate(councils, _population, report) {
     'Chesterfield|chief_executive',
     'Chorley|chief_executive',          // joint with South Ribble BC since 1 Jan 2023
     'Colchester|chief_executive',
+    // 2026-04-29 Batch-34: 2 districts. Direct fetch.
+    ...['Crawley', 'Eastleigh'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    'Crawley|chief_executive',     // turnover during 2023/24; SoA labels role only
+    'Eastleigh|chief_executive',   // SoA Note 25 labels role only
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

@@ -96,6 +96,8 @@ const NORTH_STAR_22 = [
   'Adur', 'Bassetlaw', 'Braintree', 'Brentwood', 'Burnley', 'Cambridge',
   // Batch-33 (2026-04-29): 5 more districts.
   'Chelmsford', 'Cherwell', 'Chesterfield', 'Chorley', 'Colchester',
+  // Batch-34 (2026-04-29): 2 districts (Crawley, Eastleigh).
+  'Crawley', 'Eastleigh',
 ];
 
 function slugify(n) {
