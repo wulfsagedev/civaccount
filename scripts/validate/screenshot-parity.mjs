@@ -106,6 +106,8 @@ const NORTH_STAR_22 = [
   'Mid Sussex', 'Norwich', 'North Norfolk',
   // Batch-38 (2026-04-29): 2 districts.
   'North Devon', 'Three Rivers',
+  // Batch-39 (2026-04-29): 2 districts.
+  'Winchester', 'Welwyn Hatfield',
 ];
 
 function slugify(n) {
