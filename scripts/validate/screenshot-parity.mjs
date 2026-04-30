@@ -100,6 +100,8 @@ const NORTH_STAR_22 = [
   'Crawley', 'Eastleigh',
   // Batch-35 (2026-04-29): 4 districts.
   'Fenland', 'Gedling', 'Stevenage', 'Staffordshire Moorlands',
+  // Batch-36 (2026-04-29): 3 districts.
+  'Guildford', 'Havant', 'High Peak',
 ];
 
 function slugify(n) {
