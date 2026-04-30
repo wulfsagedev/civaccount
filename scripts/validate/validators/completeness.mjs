@@ -1682,6 +1682,29 @@ export function validate(councils, _population, report) {
     'Burnley|chief_executive',          // SoA Note 22a labels role only; doesn't name CE in archived doc
     'Cannock Chase|chief_executive',         // Joint CE with Stafford BC — costs split, no isolated figure
     'Cannock Chase|chief_executive_salary',  // Same — joint arrangement
+    // 2026-04-29 Batch-33: 5 more districts. Direct fetch worked for all 5.
+    ...['Chelmsford', 'Cherwell', 'Chesterfield', 'Chorley', 'Colchester'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // CE name stripped where SoA labels role only or joint arrangement:
+    'Chesterfield|chief_executive',
+    'Chorley|chief_executive',          // joint with South Ribble BC since 1 Jan 2023
+    'Colchester|chief_executive',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

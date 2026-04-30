@@ -94,6 +94,8 @@ const NORTH_STAR_22 = [
   'Broxtowe', 'Stroud', 'Runnymede', 'West Oxfordshire', 'South Kesteven', 'South Oxfordshire', 'Epping Forest',
   // Batch-32 (2026-04-29): 8 districts via direct fetch + Wayback fallback.
   'Adur', 'Bassetlaw', 'Braintree', 'Brentwood', 'Burnley', 'Cambridge',
+  // Batch-33 (2026-04-29): 5 more districts.
+  'Chelmsford', 'Cherwell', 'Chesterfield', 'Chorley', 'Colchester',
 ];
 
 function slugify(n) {
