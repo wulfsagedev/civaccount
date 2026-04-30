@@ -92,6 +92,8 @@ const NORTH_STAR_22 = [
   'Blackpool', 'East Hampshire', 'St Albans', 'West Lindsey', 'Pendle', 'Blaby', 'Erewash',
   // Batch-31 (2026-04-29): 7 more districts.
   'Broxtowe', 'Stroud', 'Runnymede', 'West Oxfordshire', 'South Kesteven', 'South Oxfordshire', 'Epping Forest',
+  // Batch-32 (2026-04-29): 8 districts via direct fetch + Wayback fallback.
+  'Adur', 'Bassetlaw', 'Braintree', 'Brentwood', 'Burnley', 'Cambridge',
 ];
 
 function slugify(n) {
