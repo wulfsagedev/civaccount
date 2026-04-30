@@ -102,6 +102,8 @@ const NORTH_STAR_22 = [
   'Fenland', 'Gedling', 'Stevenage', 'Staffordshire Moorlands',
   // Batch-36 (2026-04-29): 3 districts.
   'Guildford', 'Havant', 'High Peak',
+  // Batch-37 (2026-04-29): 3 districts.
+  'Mid Sussex', 'Norwich', 'North Norfolk',
 ];
 
 function slugify(n) {
