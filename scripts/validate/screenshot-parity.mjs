@@ -108,6 +108,8 @@ const NORTH_STAR_22 = [
   'North Devon', 'Three Rivers',
   // Batch-39 (2026-04-29): 2 districts.
   'Winchester', 'Welwyn Hatfield',
+  // Batch-40 (2026-05-01): 3 districts.
+  'Sevenoaks', 'Spelthorne', 'Tewkesbury',
 ];
 
 function slugify(n) {
