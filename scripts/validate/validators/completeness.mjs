@@ -1887,6 +1887,28 @@ export function validate(councils, _population, report) {
       `${c}|documents`,
     ]),
     'North West Leicestershire|chief_executive',
+    // 2026-05-01 Batch-43: 3 districts.
+    ...['Forest of Dean', 'Hyndburn', 'Ipswich'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|waste_destinations`,
+      `${c}|staff_fte`,
+      `${c}|total_allowances_cost`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    'Forest of Dean|chief_executive',
+    'Hyndburn|chief_executive',
+    'Ipswich|chief_executive',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

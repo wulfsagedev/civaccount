@@ -114,6 +114,8 @@ const NORTH_STAR_22 = [
   'Stratford-on-Avon',
   // Batch-42 (2026-05-01): 1 district.
   'North West Leicestershire',
+  // Batch-43 (2026-05-01): 3 districts.
+  'Forest of Dean', 'Hyndburn', 'Ipswich',
 ];
 
 function slugify(n) {
