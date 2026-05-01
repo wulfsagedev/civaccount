@@ -112,6 +112,8 @@ const NORTH_STAR_22 = [
   'Sevenoaks', 'Spelthorne', 'Tewkesbury',
   // Batch-41 (2026-05-01): 1 district.
   'Stratford-on-Avon',
+  // Batch-42 (2026-05-01): 1 district.
+  'North West Leicestershire',
 ];
 
 function slugify(n) {
