@@ -1,0 +1,89 @@
+{
+  "council": "Adur",
+  "slug": "adur",
+  "ons_code": "E07000223",
+  "type": "SD",
+  "type_name": "District Council",
+  "methodology_version": "NORTH-STAR v1.3",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "13 sources mapped: 6 archived PDFs (SoA 2024-25 + 2023-24, Auditor Report, MAS 2024-25 + 2025-26, MA Payments 2024-25), 1 Cloudflare-blocked Pay Policy, 3 Tier-4 live pages (Senior Mgmt, Adur Cabinet, individual mgUserInfo), 3 Tier-1 internal CSVs."
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "6 PDFs sha256'd with _meta.json. Pay Policy and Cabinet pages Cloudflare-blocked → archive_exempt. Wayback snapshots used for Cabinet personnel."
+    },
+    "phase_1b_visual_evidence": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "11 page-image PNGs at 150 DPI rendered: SoA p13/14/17/20/57/93/94 + MAS 2024-25 + 2025-26 + MA Payments + 2 legacy CE files. Saved under pdfs/council-pdfs/adur/images/."
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "extracted-values.json lists 17 fields with file/page/sha256/extraction_method/excerpt for every value."
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "Bradford strip-list applied (16 fields previously stripped 2026-04-26). NEW strip: chief_executive_salary (postholder change Catherine Howe → Paul Brewer; cannot misattribute). UI strip: two-tier explainer callout in YourBillCard (£2,068 = totalBill - thisCouncilBandD derivation)."
+    },
+    "phase_3_5_tier1_drift": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "Population fix 64,200 → 64,889 in src/data/population.ts (verbatim ONS Mid-2024). All other Tier-1 values (council_tax_requirement, council_tax_base, reserves, capital_programme, total_band_d, total_councillors) reconciled to source-manifest.json sha256s."
+    },
+    "phase_3_6_tier4_personnel": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "CHIEF EXECUTIVE: Catherine Howe → Paul Brewer (per Senior Mgmt Structure page, last updated 13 Jan 2026). LEADER: stripped → Cllr Jeremy Gardner (per democracy.adur-worthing.gov.uk Cmt 138 via Wayback; Labour took control 23 May 2024). CABINET: empty → 6 members with verbatim portfolios (Gardner / Cowen / Allinson / A. Harvey / Jan / Sluman)."
+    },
+    "phase_4_populate_field_sources": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "12 field_sources entries written with NORTH-STAR §4 schema (tier + extraction_method + sha256_at_access OR archive_exempt + page + excerpt + page_image_url where applicable)."
+    },
+    "phase_5_structural_validators": {
+      "done": true,
+      "at": "2026-05-01",
+      "result": "0 errors for Adur. 5 pre-existing soft warnings (4 RA Part 1 budget-line drift at edge of 10% tolerance, 1 precept-sum vs total_band_d structural difference for parishes)."
+    },
+    "phase_5b_live_ux_sweep": {
+      "done": true,
+      "at": "2026-05-01",
+      "result": "0 / 0 violations (ux-audit.mjs against http://localhost:3001/council/adur)"
+    },
+    "phase_5c_live_site_reality_check": {
+      "done": true,
+      "at": "2026-05-01",
+      "result": "6 verbatim spot-checks all pass: chief_executive_salary, capital_programme, leader_allowance, councillor_basic_allowance, council_tax_base, council_leader (corroborated via MA Payments)."
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-05-01",
+      "result": "4 screenshots: 3 verbatim-1:1, 1 archival-only, 0 mismatched, 0 missing PNG"
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-05-01",
+      "note": "docs/ADUR-AUDIT.md (Datasheet for Datasets, 11 sections per Gebru 2021) + manifests/adur.json + status/adur.json (this file)."
+    },
+    "phase_7_ship": {
+      "done": false,
+      "pr_pending": true
+    }
+  },
+  "acceptance_gates": {
+    "north_star_audit_0_5_gaps": true,
+    "tier_classification_0_errors": true,
+    "ux_audit_0_0": true,
+    "screenshot_parity_0_mismatched": true,
+    "live_site_3plus_spot_checks": true,
+    "audit_md_shipped": true,
+    "manifest_shipped": true,
+    "paired_prs_merged": false
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "council": "Adur",
+  "council_slug": "adur",
+  "spec_date": "2026-05-01",
+  "purpose": "Phase 1b — page-image PNGs for every rendered Tier-3 value on the Adur page. Pairs with extracted-values.json.",
+  "output_root": "src/data/councils/pdfs/council-pdfs/adur/images",
+  "pages": [
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/statement-of-accounts-2024-25.pdf",
+      "page": 14,
+      "label": "soa-2024-25-p14-council-tax-base",
+      "fields": ["council_tax_base"]
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/statement-of-accounts-2024-25.pdf",
+      "page": 17,
+      "label": "soa-2024-25-p17-budget-requirement-and-funding",
+      "fields": ["total_budget_requirement_gross", "total_budget_outturn", "council_tax_requirement_net"]
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/statement-of-accounts-2024-25.pdf",
+      "page": 20,
+      "label": "soa-2024-25-p20-capital-programme",
+      "fields": ["capital_programme_actual"]
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/statement-of-accounts-2024-25.pdf",
+      "page": 57,
+      "label": "soa-2024-25-p57-reserves",
+      "fields": [
+        "general_fund_working_balance",
+        "hra_working_balance",
+        "general_fund_earmarked_reserves",
+        "hra_earmarked_reserves",
+        "capital_grants_reserve",
+        "capital_receipts_reserve"
+      ]
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/statement-of-accounts-2024-25.pdf",
+      "page": 94,
+      "label": "soa-2024-25-p94-senior-officer-remuneration",
+      "fields": ["chief_executive_salary", "chief_executive_total_remuneration_incl_pension"]
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/members-allowances-scheme-2025-26.pdf",
+      "page": 1,
+      "label": "mas-2025-26-p1-allowance-rates",
+      "fields": ["councillor_basic_allowance", "leader_allowance", "deputy_leader_allowance", "cabinet_member_allowance"]
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/members-allowances-scheme-2024-25.pdf",
+      "page": 1,
+      "label": "mas-2024-25-p1-prior-year-rates",
+      "fields": [],
+      "note": "Reference image — prior year scheme to support YoY context (no rendered field; provided for audit traceability)"
+    },
+    {
+      "pdf": "src/data/councils/pdfs/council-pdfs/adur/members-allowances-payments-2024-25.pdf",
+      "page": 1,
+      "label": "ma-payments-2024-25-p1-schedule",
+      "fields": ["councillor_allowances_total_paid", "council_leader"]
+    }
+  ]
+}
