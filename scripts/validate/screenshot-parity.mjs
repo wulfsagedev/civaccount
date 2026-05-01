@@ -110,6 +110,8 @@ const NORTH_STAR_22 = [
   'Winchester', 'Welwyn Hatfield',
   // Batch-40 (2026-05-01): 3 districts.
   'Sevenoaks', 'Spelthorne', 'Tewkesbury',
+  // Batch-41 (2026-05-01): 1 district.
+  'Stratford-on-Avon',
 ];
 
 function slugify(n) {
