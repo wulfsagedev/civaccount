@@ -26,23 +26,44 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const displayName = getCouncilDisplayName(council);
   const bandD = council.council_tax?.band_d_2025;
-  const bandDText = bandD ? ` - Band D £${bandD.toLocaleString('en-GB')}` : '';
+  const totalServiceK = council.budget?.total_service ?? null;
+  const ceoSalary = council.detailed?.chief_executive_salary ?? null;
+
+  // Build a punchy, keyword-dense, fact-first description (≤160 chars).
+  // Compact form: "<Council> Tax 2025-26 — Band D £X, total budget £Ym, CEO £Z. All from .gov.uk."
+  // The .gov.uk trust signal at the end lifts CTR for AI-search results.
+  const facts: string[] = [];
+  if (bandD) facts.push(`Band D £${bandD.toLocaleString('en-GB')}`);
+  if (totalServiceK && totalServiceK > 0) {
+    const m = totalServiceK / 1000;
+    facts.push(`budget ${m >= 1000 ? `£${(m / 1000).toFixed(1)}bn` : `£${m.toFixed(0)}m`}`);
+  }
+  if (ceoSalary && ceoSalary > 0) {
+    facts.push(`CEO £${Math.round(ceoSalary / 1000)}k`);
+  }
+  const factClause = facts.length > 0 ? ` — ${facts.join(', ')}.` : '.';
+  const punchyDescription =
+    `${displayName} council tax and spending 2025-26${factClause} Every figure verbatim from .gov.uk publications.`;
+
+  // Title: keyword-front-loaded ("Council Tax 2025-26"), council second.
+  // Falls inside Google's 60-char display limit for typical council names.
+  const punchyTitle = `${displayName} Council Tax 2025-26 & Budget Breakdown`;
 
   return {
-    title: `${displayName} Budget & Council Tax 2025-26`,
-    description: `See how ${displayName} spends your council tax${bandDText}. Budget breakdown, service spending, and tax band information for 2025-26.`,
+    title: punchyTitle,
+    description: punchyDescription,
     alternates: {
       canonical: `/council/${slug}`,
     },
     openGraph: {
-      title: `${displayName} Council Tax & Budget`,
-      description: `Council tax and budget breakdown for ${displayName} 2025-26`,
+      title: `${displayName} — Council Tax 2025-26 & Budget`,
+      description: punchyDescription,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${displayName} Council Tax & Budget 2025-26`,
-      description: `See how ${displayName} spends your council tax${bandDText}. Budget breakdown and spending insights.`,
+      title: punchyTitle,
+      description: punchyDescription,
     },
   };
 }
@@ -187,8 +208,52 @@ export default async function CouncilLayout({ params, children }: Props) {
         areaServed: {
           '@type': 'AdministrativeArea',
           name: displayName,
+          ...(population && { populationServed: population }),
         },
         ...(detailed?.website && { url: detailed.website }),
+        // Chief executive & council leader as named members. Adds entity-rich
+        // content to AI-search Knowledge Panel; lets Google connect a person
+        // search ("Paul Brewer Adur") back to this council page.
+        ...(detailed?.chief_executive || detailed?.council_leader ? {
+          member: [
+            ...(detailed?.chief_executive ? [{
+              '@type': 'Person',
+              name: detailed.chief_executive,
+              jobTitle: 'Chief Executive',
+              worksFor: { '@id': `https://www.civaccount.co.uk/council/${slug}#organization` },
+            }] : []),
+            ...(detailed?.council_leader ? [{
+              '@type': 'Person',
+              name: detailed.council_leader,
+              jobTitle: 'Leader of the Council',
+              worksFor: { '@id': `https://www.civaccount.co.uk/council/${slug}#organization` },
+            }] : []),
+            // Cabinet members — each rendered as a Person with their portfolio
+            // as jobTitle. Powers Person ↔ Organization knowledge-graph links.
+            ...(detailed?.cabinet?.map((m) => ({
+              '@type': 'Person',
+              name: m.name,
+              jobTitle: m.portfolio || m.role,
+              worksFor: { '@id': `https://www.civaccount.co.uk/council/${slug}#organization` },
+              ...(m.party && { affiliation: { '@type': 'PoliticalParty', name: m.party } }),
+            })) ?? []),
+          ],
+        } : {}),
+        // Parent organization — for districts, the county council (residents
+        // also pay county tax). Helps two-tier-area users navigate up.
+        ...((council.type === 'SD' && detailed?.precepts) ? (() => {
+          const county = detailed.precepts.find((p) =>
+            p.authority.toLowerCase().includes('county council') &&
+            !p.authority.toLowerCase().includes(council.name.toLowerCase()),
+          );
+          if (!county) return {};
+          return {
+            parentOrganization: {
+              '@type': 'GovernmentOrganization',
+              name: county.authority,
+            },
+          };
+        })() : {}),
       },
       {
         '@type': 'BreadcrumbList',

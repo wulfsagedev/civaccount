@@ -12,10 +12,15 @@ import { X, Plus, ArrowUpDown, ChevronRight, Vote } from 'lucide-react';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageShareButton } from '@/components/ui/page-share-button';
 import Link from 'next/link';
+import type { PopularMatchup } from './page';
 
 type SortField = 'band_d' | 'total_budget' | 'name';
 
-export default function CompareClient() {
+export default function CompareClient({
+  popularMatchups = [],
+}: {
+  popularMatchups?: PopularMatchup[];
+}) {
   const [selected, setSelected] = useState<Council[]>([]);
   const [search, setSearch] = useState('');
   const [sortField, setSortField] = useState<SortField>('band_d');
@@ -119,34 +124,64 @@ export default function CompareClient() {
         </div>
 
         {selected.length === 0 ? (
-          <div className={`${CARD_STYLES} p-6 sm:p-8`}>
-            <div className="max-w-md mx-auto text-center">
-              <p className="type-title-3 mb-2">Compare up to 5 councils</p>
-              <p className="type-body-sm text-muted-foreground mb-6">
-                See council tax, spending, and budget breakdowns side by side.
-              </p>
+          <>
+            <div className={`${CARD_STYLES} p-6 sm:p-8`}>
+              <div className="max-w-md mx-auto text-center">
+                <p className="type-title-3 mb-2">Compare up to 5 councils</p>
+                <p className="type-body-sm text-muted-foreground mb-6">
+                  See council tax, spending, and budget breakdowns side by side.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
+                {[
+                  { label: 'Council Tax', desc: 'Band D rates compared' },
+                  { label: 'Total Budget', desc: 'Service spending compared' },
+                  { label: 'Per Category', desc: 'Education, transport, housing...' },
+                ].map((item) => (
+                  <div key={item.label} className="p-3 rounded-lg bg-muted/30 text-center">
+                    <p className="type-body-sm font-semibold">{item.label}</p>
+                    <p className="type-caption text-muted-foreground">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 text-center">
+                <Link
+                  href="/townhall"
+                  className="type-body-sm text-muted-foreground hover:text-foreground transition-colors underline cursor-pointer"
+                >
+                  Or visit Town Hall to vote on how councils spend your money
+                </Link>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
-              {[
-                { label: 'Council Tax', desc: 'Band D rates compared' },
-                { label: 'Total Budget', desc: 'Service spending compared' },
-                { label: 'Per Category', desc: 'Education, transport, housing...' },
-              ].map((item) => (
-                <div key={item.label} className="p-3 rounded-lg bg-muted/30 text-center">
-                  <p className="type-body-sm font-semibold">{item.label}</p>
-                  <p className="type-caption text-muted-foreground">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 text-center">
-              <Link
-                href="/townhall"
-                className="type-body-sm text-muted-foreground hover:text-foreground transition-colors underline cursor-pointer"
-              >
-                Or visit Town Hall to vote on how councils spend your money
-              </Link>
-            </div>
-          </div>
+
+            {/* Popular comparisons — server-rendered crawlable list. Closes the
+                "0 council links on /compare" gap flagged by the 2026-05-02 SEO
+                audit. Each entry is a real <Link> anchor to /compare/<matchup>. */}
+            {popularMatchups.length > 0 && (
+              <section className={`${CARD_STYLES} p-5 sm:p-6 mt-4`}>
+                <h2 className="type-title-2 mb-1">Popular comparisons</h2>
+                <p className="type-body-sm text-muted-foreground mb-5">
+                  Pre-built side-by-side views readers visit most. Click any pair
+                  to skip the search.
+                </p>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                  {popularMatchups.map((m) => (
+                    <li key={m.slug}>
+                      <Link
+                        href={`/compare/${m.slug}`}
+                        className="flex items-center justify-between gap-3 py-3 -mx-2 px-2 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer min-h-11"
+                      >
+                        <span className="type-body-sm font-medium leading-tight group-hover:text-primary transition-colors truncate">
+                          {m.aName} <span className="text-muted-foreground">vs</span> {m.bName}
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </>
         ) : (
           <>
             {/* Sort controls */}

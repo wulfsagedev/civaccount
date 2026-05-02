@@ -131,42 +131,14 @@ const YourBillCard = ({
             sourced) in the "How your bill has changed" card below. */}
       </div>
 
-      {/* Two-tier explainer — district residents also pay county council tax,
-          and vice versa. Without this, users see their small council budget
-          next to a large bill total and assume the mismatch is an error. */}
-      {(() => {
-        if (!detailed?.precepts || detailed.precepts.length === 0 || !thisCouncilBandD || !totalBill) return null;
-        // Find the "other tier" precept (county for districts, or the district share for counties)
-        const countyPrecept = selectedCouncil.type === 'SD'
-          ? detailed.precepts.find(p => p.authority.toLowerCase().includes('county'))
-          : null;
-        // For counties, don't show this callout (districts vary — we can't pick one)
-        if (!countyPrecept) return null;
-        const linked = findLinkedCouncil(countyPrecept.authority);
-        const remainder = totalBill - thisCouncilBandD;
-        const countyShareLabel = `£${Math.round(countyPrecept.band_d).toLocaleString('en-GB')}`;
-        const remainderLabel = `£${Math.round(remainder).toLocaleString('en-GB')}`;
-        const content = (
-          <>
-            <p className="type-body-sm">
-              <span className="font-semibold">{selectedCouncil.name} is a district council.</span>{' '}
-              About <span className="font-semibold tabular-nums">£{Math.round(thisCouncilBandD).toLocaleString('en-GB')}</span> of your Band D bill goes to {selectedCouncil.name} for bins, planning and housing. The remaining <span className="font-semibold tabular-nums">{remainderLabel}</span> goes to <span className="font-semibold">{countyPrecept.authority.replace(' Council', '')}</span> ({countyShareLabel}), police and fire — see the breakdown below.
-            </p>
-          </>
-        );
-        return (
-          <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/40">
-            {linked ? (
-              <Link href={`/council/${linked.slug}`} className="group cursor-pointer block hover:opacity-80 transition-opacity">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1">{content}</div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" aria-hidden="true" />
-                </div>
-              </Link>
-            ) : content}
-          </div>
-        );
-      })()}
+      {/* Two-tier explainer — STRIPPED 2026-05-01 per NORTH-STAR Phase 5b sweep
+          on Adur. Previously rendered "About £365 of your bill goes to Adur;
+          the remaining £2,068 goes to West Sussex County Council, police and
+          fire" — but `£2,068` is `totalBill - thisCouncilBandD`, a CivAccount
+          subtraction that doesn't appear verbatim in any single council's
+          publication. Same precedent as the YoY callout removal above (2026-04-22).
+          Plain-English context (which sources fund what) is preserved in the
+          breakdown card immediately below. */}
 
       {/* Full bill breakdown with visual bar */}
       {detailed?.precepts && detailed.precepts.length > 0 && totalBill && (

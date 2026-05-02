@@ -22,10 +22,30 @@ export type CivAccountUpdate = {
 
 export const updates: CivAccountUpdate[] = [
   {
+    version: '3.1',
+    date: '2026-05-02',
+    label: 'May 2026',
+    isCurrent: true,
+    title: 'V3.1 — North-Star v1.3, Adur is the first compliant district, internal-linking overhaul',
+    summary:
+      "Adur becomes the fourth fully-compliant reference council and the first district under the v1.3 14-phase playbook. Major SEO upgrades: every council page now links to the national leaderboards it appears on, /compare exposes 30+ pre-built matchups, council JSON-LD now names the chief executive + leader + cabinet members, and the meta description leads with the Band D figure.",
+    changes: [
+      'Adur shipped to North-Star v1.3 — first district council with Datasheet-for-Datasets-grade transparency',
+      'Personnel currency fix: chief executive and council leader changes now flagged via Phase 3.6',
+      'Population fix: Adur 64,200 → 64,889 (verbatim ONS Mid-2024)',
+      'New "Featured on" card — every council page links to the national lists it appears on (CEO pay, biggest tax rises, money pressure, etc.)',
+      'New popular-comparisons list on /compare — 30+ pre-built matchups visible to crawlers',
+      'Council JSON-LD enriched: chief executive, council leader, and cabinet members now appear as named Person entities in schema.org graph',
+      'Meta descriptions rewritten — fact-first ("Band D £2,433, budget £26m, CEO £166k") with .gov.uk trust signal',
+      'Two-tier district explainer in YourBillCard stripped (rendered "remaining £2,068" — a CivAccount subtraction; failed verbatim-only standard)',
+      'PROGRESS.md flags 35 districts (batches 32-43) for v1.3 remediation, queued alphabetically',
+    ],
+  },
+  {
     version: '3.0',
     date: '2026-04-06',
     label: 'April 2026',
-    isCurrent: true,
+    isCurrent: false,
     title: 'V3.0 — Town Hall launches across all 317 English councils',
     summary:
       'Residents can now propose how their council should spend money, vote on ideas, and join the discussion. Full leadership, salary, and spending data for every English council.',

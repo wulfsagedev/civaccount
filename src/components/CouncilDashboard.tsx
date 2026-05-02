@@ -182,8 +182,11 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
             </p>
           </div>
 
-          {/* Single scrolling dashboard */}
-          <UnifiedDashboard />
+          {/* Single scrolling dashboard. `initialCouncil` is passed so the
+              dashboard's FeaturedOnCard + WhatChangedCard render in the SSR'd
+              HTML — load-bearing for crawlers + AI search engines that
+              don't execute client-side context hydration. */}
+          <UnifiedDashboard initialCouncil={initialCouncil} />
 
           {/* Related councils for internal linking */}
           <div className="mt-5">
