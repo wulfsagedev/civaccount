@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronUp } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, type ServiceSpendingDetail, type Council } from '@/data/councils';
 import ContributeBanner from '@/components/ContributeBanner';
 import YourBillCard from '@/components/dashboard/YourBillCard';
 import TaxBandsCard from '@/components/dashboard/TaxBandsCard';
@@ -15,12 +15,25 @@ import LeadershipCard from '@/components/dashboard/LeadershipCard';
 import PayAllowancesCard from '@/components/dashboard/PayAllowancesCard';
 import WhoToContactCard from '@/components/dashboard/WhoToContactCard';
 import ServiceOutcomesCard from '@/components/dashboard/ServiceOutcomesCard';
+import FeaturedOnCard from '@/components/dashboard/FeaturedOnCard';
+import WhatChangedCard from '@/components/dashboard/WhatChangedCard';
 import DataGapNotice from '@/components/ui/data-gap-notice';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 
-const UnifiedDashboard = () => {
-  const { selectedCouncil } = useCouncil();
+interface UnifiedDashboardProps {
+  /**
+   * Server-known council from the route slug. Used as the SSR fallback
+   * so the dashboard, including the FeaturedOnCard and WhatChangedCard,
+   * renders meaningful HTML even before CouncilContext hydrates from
+   * localStorage. Load-bearing for crawlers + AI search engines.
+   */
+  initialCouncil?: Council;
+}
+
+const UnifiedDashboard = ({ initialCouncil }: UnifiedDashboardProps = {}) => {
+  const { selectedCouncil: contextCouncil } = useCouncil();
+  const selectedCouncil = contextCouncil ?? initialCouncil ?? null;
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   // Back-to-top visibility
@@ -369,6 +382,16 @@ const UnifiedDashboard = () => {
           </div>
         </section>
       )}
+
+      {/* "What changed recently" — Phase B.4 + C.3. Renders only for
+          North-Star councils with documented manifest fixes. Provides
+          unique above-the-fold micro-content per council + a real
+          per-field freshness signal. */}
+      {selectedCouncil && <WhatChangedCard council={selectedCouncil} />}
+
+      {/* "Featured on" — internal SEO linking + UX launching pad. Closes
+          the council → insights link gap flagged by the 2026-05-02 live audit. */}
+      {selectedCouncil && <FeaturedOnCard council={selectedCouncil} />}
 
       {/* Data sources, documents, and methodology are consolidated in DataSourcesFooter */}
 

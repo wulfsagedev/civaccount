@@ -126,6 +126,17 @@ const sweepScript = `
     if (r.text === 'Staff earning £50,000 or more' || r.text === 'staff earn £50,000 or more') return false;
     if (/^In 20\\d\\d-\\d\\d,/.test(r.text)) return false;
     if (/^\\d\\d? [A-Z][a-z]+ \\d{4}$/.test(r.text)) return false;
+    // 2026-05-02: WhatChangedCard + FeaturedOnCard exemptions.
+    // "Source:" attribution lines, "What changed" prose ("corrected from
+    // X to Y"), and source-name strings like "parsed-population.csv
+    // (ONS Mid-2024)" describe data provenance — not data values that
+    // need their own SourceAnnotation. Exempting these prevents the
+    // sweep from flagging meta-content about how data is verified.
+    if (r.text.startsWith('Source: ')) return false;
+    if (/(corrected from|changed from|updated to|stripped|reinstated)/i.test(r.text)) return false;
+    if (/parsed-[a-z-]+\\.csv|ONS Mid-\\d{4}|RA Part \\d|via Wayback|last updated|verbatim ONS|Cabinet Cmt|democracy\\./i.test(r.text)) return false;
+    if (/^Most-recent verified data point: /i.test(r.text)) return false;
+    if (/across England.+317 councils/i.test(r.text)) return false;
     return true;
   });
 

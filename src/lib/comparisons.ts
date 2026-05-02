@@ -1,8 +1,12 @@
-import { councils, getCouncilSlug } from '@/data/councils';
+import { councils, getCouncilSlug, getCouncilPopulation } from '@/data/councils';
 
 /**
  * Generate popular comparison matchup slugs for static generation and sitemap.
- * Format: "council-a-vs-council-b" (alphabetical order for consistency)
+ * Format: "council-a-vs-council-b" (alphabetical order for consistency).
+ *
+ * Returns ~52 matchups: C(10,2) = 45 pairwise comparisons of the 10 most-
+ * populous councils + ~7 cheapest-vs-most-expensive-by-type. These render
+ * on /compare as crawler-visible <Link> anchors and ship in the sitemap.
  */
 export function getPopularComparisons(): string[] {
   const matchups: string[] = [];
@@ -18,15 +22,20 @@ export function getPopularComparisons(): string[] {
     }
   };
 
-  // Top 20 councils by population — pairwise comparisons of top 10
-  const byPopulation = councils
-    .filter((c) => c.population && c.population > 0)
-    .sort((a, b) => (b.population || 0) - (a.population || 0))
-    .slice(0, 10);
+  // Top 10 councils by population — pairwise comparisons (45 pairs).
+  // Population is keyed off the council *name* in `population.ts`, not the
+  // `Council.population` field (which is null for almost every council in
+  // the dataset). Using getCouncilPopulation() picks up the real ONS values.
+  const withPop = councils
+    .map((c) => ({ council: c, pop: getCouncilPopulation(c.name) ?? 0 }))
+    .filter((x) => x.pop > 0)
+    .sort((a, b) => b.pop - a.pop)
+    .slice(0, 10)
+    .map((x) => x.council);
 
-  for (let i = 0; i < byPopulation.length; i++) {
-    for (let j = i + 1; j < byPopulation.length; j++) {
-      addPair(getCouncilSlug(byPopulation[i]), getCouncilSlug(byPopulation[j]));
+  for (let i = 0; i < withPop.length; i++) {
+    for (let j = i + 1; j < withPop.length; j++) {
+      addPair(getCouncilSlug(withPop[i]), getCouncilSlug(withPop[j]));
     }
   }
 

@@ -3,6 +3,7 @@ import { councils, getCouncilSlug } from '@/data/councils'
 import { createClient } from '@/lib/supabase/server'
 import { getPopularComparisons } from '@/lib/comparisons'
 import { getDataLastVerified } from '@/lib/data-freshness'
+import { insightPosts } from '@/data/insights-posts'
 
 /**
  * sitemap.xml — 2026 best-practice configuration.
@@ -70,6 +71,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/insights/closest-to-bankruptcy`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/tax-cap-breakers`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/cap-every-year`, lastModified: dataDriven },
+    // Long reads (editorial posts) — hub tied to most-recent post date.
+    {
+      url: `${baseUrl}/insights/posts`,
+      lastModified: insightPosts.reduce((latest, p) => (p.date > latest ? p.date : latest), '2026-05-02'),
+    },
     // Trust & policy — tied to static content edits.
     { url: `${baseUrl}/about`, lastModified: STATIC_PAGE_LASTMOD },
     { url: `${baseUrl}/methodology`, lastModified: STATIC_PAGE_LASTMOD },
@@ -89,6 +95,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const comparisonPages: MetadataRoute.Sitemap = getPopularComparisons().map((matchup) => ({
     url: `${baseUrl}/compare/${matchup}`,
     lastModified: dataDriven,
+  }))
+
+  // Editorial long-read posts — each tied to its own publication date.
+  const insightPostPages: MetadataRoute.Sitemap = insightPosts.map((p) => ({
+    url: `${baseUrl}/insights/posts/${p.slug}`,
+    lastModified: p.date,
   }))
 
   // Council dashboard pages + Town Hall + Provenance pages.
@@ -135,5 +147,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Supabase unavailable at build time — skip proposals.
   }
 
-  return [...staticPages, ...comparisonPages, ...councilPages, ...proposalPages]
+  return [...staticPages, ...comparisonPages, ...insightPostPages, ...councilPages, ...proposalPages]
 }

@@ -245,6 +245,36 @@ For each extracted value that survives the strip:
 
 For every extracted value that survived Phase 3:
 
+### `last_verified` rule (FRESHNESS CREDIBILITY)
+
+**Added 2026-05-02 after the SEO audit found 153 councils sharing a
+single bulk-validator-run date for `last_verified`.**
+
+`detailed.last_verified` MUST be the date you actually changed a field
+value or wrote/refreshed a `field_sources` entry. NOT today's date if
+you only re-checked an existing value and confirmed it's unchanged.
+
+Why this matters: Google SpamBrain and AI search engines (OAI-SearchBot,
+Claude-SearchBot) cross-check sitemap `lastmod` against actual page
+content diffs. Bumping the date when nothing changed teaches their
+crawlers to ignore the date. The whole sitemap loses trust.
+
+**Audit before shipping:**
+
+```bash
+node scripts/validate/audit-last-verified-credibility.mjs --council=<Name>
+```
+
+The audit flags councils whose `last_verified` shares a bulk-run date
+AND whose `field_sources` entries have no `accessed` date that
+corroborates it. Fix flagged councils by either:
+- Setting `last_verified` to the latest real `field_sources[k].accessed`
+  date (the most recent thing you actually re-checked), or
+- If no `field_sources` entries exist at all: do a real Phase 4 (don't
+  fabricate a date).
+
+
+
 ### Full `field_sources` entry per NORTH-STAR §4
 
 ```typescript
