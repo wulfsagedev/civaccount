@@ -12,8 +12,16 @@
  *      TS scalar (`detailed.<key>`), the scalar value appears verbatim in
  *      the archived source (PDF via `pdftotext -layout`, or HTML via plain
  *      string search). This is the "1:1 matched data" invariant.
+ *   4. (Added 2026-05-31) The council has at least ONE entry that passes
+ *      check 3 — a genuine verbatim-1:1 match. `archival-only` results,
+ *      where the value could NOT be verified against the source (no sha256
+ *      to resolve the archive, no TS value to check, or an unsupported file
+ *      type), do NOT count as proof. This closes the loophole where a
+ *      council with only unverifiable archival-only entries (e.g.
+ *      "0 verbatim-1:1 · 2 archival-only") passed — ~130 councils read as
+ *      screenshot-proven when nothing had actually been verified.
  *
- * Exit code: 1 if any council fails any of the three checks.
+ * Exit code: 1 if any council fails any of the four checks.
  *
  * Background: added 2026-04-24 after the Bradford/Kent/Camden-only screenshot
  * regression revealed on the live site. The user's rule now: "every single
@@ -333,9 +341,17 @@ for (const name of NORTH_STAR_22) {
   const mismatches = perEntry.filter(p => p.verify.ok === false).length;
   const missingPng = perEntry.filter(p => !p.pngExists).length;
 
+  // LOOPHOLE CLOSED 2026-05-31: a council only passes if at least ONE screenshot
+  // is genuinely verbatim-verified against its archived source. An `archival-only`
+  // result (verify.ok === null) means we could NOT confirm the value appears in the
+  // document — that is not proof. Without this gate, "0 verbatim-1:1 · N archival-only"
+  // passed, letting ~130 councils read as screenshot-proven with nothing verified.
+  if (onesToOne < 1) councilOk = false;
+
   const icon = councilOk ? '✓' : '✗';
   console.log(`${icon} ${name}: ${pngs} screenshot(s) · ${onesToOne} verbatim-1:1 · ${archivalOnly} archival-only · ${mismatches} mismatched · ${missingPng} missing PNG`);
   if (!councilOk) {
+    if (onesToOne < 1) console.log(`     · no verbatim-1:1 screenshot — ${archivalOnly} archival-only entr${archivalOnly === 1 ? 'y' : 'ies'} cannot be verified against the source (not proof)`);
     for (const p of perEntry) {
       if (!p.pngExists) console.log(`     · ${p.field}: PNG missing on disk`);
       if (p.verify.ok === false) console.log(`     · ${p.field}: ${p.verify.reason}`);
