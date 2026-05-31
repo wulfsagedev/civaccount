@@ -1,0 +1,89 @@
+{
+  "council": "Bassetlaw",
+  "slug": "bassetlaw",
+  "ons_code": "E07000171",
+  "type": "SD",
+  "type_name": "District Council",
+  "methodology_version": "NORTH-STAR v1.3",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "13 sources mapped: 5 archived PDFs, 1 Cloudflare-blocked moderngov Cabinet page (read via Wayback), 8 Tier-1 national datasets."
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "5 PDFs sha256'd with _meta.json. Cabinet via Wayback (Cloudflare-blocked direct)."
+    },
+    "phase_1b_visual_evidence": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "6 page-image PNGs at 150 DPI: SoA p17 budget narrative, p29 reserves, p85 senior officer remuneration, p112 council tax base, p130 CE name + Members' Allowances p8 rates."
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "extracted-values.json covers 11 fields (CE, salary, total remuneration, council tax base, GF balance, earmarked reserves, basic + leader + deputy + portfolio holder allowances, council leader)."
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "Bradford strip-list applied. UI strip: two-tier explainer in YourBillCard re-applied (same precedent as Adur PR #118)."
+    },
+    "phase_3_5_tier1_drift": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "Population fix 118,800 → 124,937 (verbatim ONS Mid-2024). All other Tier-1 values match: council_tax_requirement 9,666,363 / council_tax_base 43,041.28 / reserves 4,232 (£'000) / capital_programme 21,083 (£'000) / total_councillors 48 / area band-d 2129/2210/2317/2424/2540/2645."
+    },
+    "phase_3_6_tier4_personnel": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "CE: David Armiger (no change — confirmed via SoA + 2 live pages). LEADER: stripped → Cllr Julie A Leigh (Cabinet Cmt 147 Chair via Wayback). CABINET: empty → 8 members with verbatim portfolios (Leigh/Slater/Adams/Evans/Pulk/Rhodes/Scotthorne/Schuller)."
+    },
+    "phase_4_populate_field_sources": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "12 field_sources entries with NORTH-STAR §4 schema (tier + extraction_method + sha256_at_access OR archive_exempt + page + excerpt + page_image_url where applicable)."
+    },
+    "phase_5_structural_validators": {
+      "done": true,
+      "at": "2026-05-04",
+      "result": "0 errors. 5 pre-existing soft warnings (cabinet placeholder portfolio for Adams, councillors_url moderngov subdomain, RA budget cultural/other drift at edge of 10% tolerance, parish precepts gap)."
+    },
+    "phase_5b_live_ux_sweep": {
+      "done": true,
+      "at": "2026-05-04",
+      "result": "0 / 0 violations (after stripping two-tier explainer in YourBillCard)"
+    },
+    "phase_5c_live_site_reality_check": {
+      "done": true,
+      "at": "2026-05-04",
+      "result": "6 verbatim spot-checks all pass: chief_executive name, chief_executive_salary, council_tax_base 2024/25, GF reserves balance, basic allowance, leader allowance."
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-05-04",
+      "result": "4/4 verbatim-1:1, 0 mismatched, 0 missing PNG (after fixing CE-name page 129→130 + tightening allowance excerpts to verbatim substrings)"
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-05-04",
+      "note": "docs/BASSETLAW-AUDIT.md (Datasheet for Datasets, 11 sections) + manifests/bassetlaw.json + status/bassetlaw.json (this file). councilChangelogData entry added in src/data/council-changelog-data.ts via the Adur SEO branch (PR #118)."
+    },
+    "phase_7_ship": {
+      "done": false,
+      "pr_pending": true
+    }
+  },
+  "acceptance_gates": {
+    "north_star_audit_0_5_gaps": true,
+    "tier_classification_0_errors": true,
+    "ux_audit_0_0": true,
+    "screenshot_parity_0_mismatched": true,
+    "live_site_3plus_spot_checks": true,
+    "audit_md_shipped": true,
+    "manifest_shipped": true,
+    "paired_prs_merged": false
+  }
+}

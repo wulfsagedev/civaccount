@@ -17,7 +17,7 @@ export const populationData: Record<string, number> = {
   "Barrow-in-Furness": 67400,
   "Basildon": 187800,
   "Basingstoke and Deane": 185600,
-  "Bassetlaw": 118800,
+  "Bassetlaw": 124937,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 118,800 (mid-2022 era).
   "Blaby": 102300,
   "Bolsover": 82400,
   "Boston": 72100,
