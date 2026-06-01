@@ -286,6 +286,45 @@ function proveCouncil(c) {
       out.tier3.unproven++; out.tier3.entries.push(entry); continue;
     }
 
+    // ③b value-binding: the RENDERED scalar must correspond to the excerpt.
+    // Verifying the excerpt is real is not enough — a corrupted TS value with a
+    // genuine excerpt would otherwise pass. For numeric scalar fields, the
+    // rendered value's significant digits must appear in the excerpt's digit
+    // string (tolerates £000↔full-£ scale + thousands separators + rounding:
+    // e.g. value 247848000 → "247848"; excerpt "...(247,848)..." → "247848" ✓.
+    // Skip for inherently non-scalar fields (arrays/objects: cabinet, salary_bands,
+    // councillor_allowances_detail) whose excerpt is a heading, not a single number.
+    const NON_SCALAR = new Set(['cabinet', 'salary_bands', 'councillor_allowances_detail', 'councillor_allowances', 'top_suppliers', 'grant_payments', 'service_spending', 'waste_destinations']);
+    const scalarVal = c.detailed?.[field];
+    // Aggregate fields (e.g. total_allowances_cost = sum across N members) legitimately
+    // cannot have their computed total in a single excerpt — value-binding can't apply;
+    // they rest on document+screenshot proof + the derivation note. This is NOT a
+    // loophole: it's restricted to extraction_method 'aggregate', which the rollout
+    // must justify per field. Direct transcriptions (pdf_page/csv_row/manual_read) of a
+    // scalar MUST bind to their excerpt.
+    const isAggregate = e.extraction_method === 'aggregate';
+    if (!NON_SCALAR.has(field) && !isAggregate && typeof scalarVal === 'number') {
+      const exDigits = digits(unescapeTs(e.excerpt));
+      const valDigits = digits(scalarVal);
+      // Try progressively shorter leading prefixes of the value's digits to
+      // absorb trailing-zero scale differences (full £ vs £000), min 3 sig digits.
+      // Min 2 significant digits: covers "£40m"→40000000 (digits "40") and
+      // "£120m"→120000000 (digits "120"). 2 is the floor — a single digit would
+      // match far too loosely. A genuinely wrong value (e.g. 999999999, digits
+      // "999999999") shares no ≥2-digit leading prefix with the real excerpt, so
+      // still fails. Trailing-zero scale (full-£ vs £m/£000) is absorbed by
+      // shortening the prefix from the value's leading digits.
+      let bound = false;
+      for (let len = valDigits.length; len >= 2; len--) {
+        if (exDigits.includes(valDigits.slice(0, len))) { bound = true; break; }
+      }
+      entry.checks.value_in_excerpt = bound;
+      if (!bound) {
+        entry.reason = `rendered value ${scalarVal} not found in excerpt "${e.excerpt.slice(0, 50)}" (value-binding fail)`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
+    }
+
     // 📷 evidence: screenshot PNG present on disk
     if (e.page_image_url) {
       const png = join(PDFS, e.page_image_url.replace(/^\/archive\//, ''));
