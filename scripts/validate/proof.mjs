@@ -143,6 +143,40 @@ function pdftext(docPath, page) {
   catch { return null; }
 }
 
+// Invariant ⑥ — bind the SCREENSHOT to the document page.
+// pdftoppm is byte-deterministic and content-addressed (output depends only on the
+// PDF's page content, not path/filename — verified empirically). So we re-render the
+// cited page from the already-sha-verified archive at the same DPI the stored PNG was
+// made, and require the stored screenshot to byte-match. A swapped / stale / wrong-page
+// / doctored PNG cannot match → the reader is guaranteed the popover image is an
+// unaltered render of the exact page the value was verified against.
+// Returns { ok, reason }. ok=null means "can't render this source type" (HTML/Wayback) —
+// caller decides (we keep existence-only for non-PDF, since there's no deterministic
+// re-render path for live-page captures).
+const RENDER_DPI = 150; // must match render-page-images.mjs / the Phase-1b PNGs
+function screenshotMatchesPage(docPath, page, pngPath) {
+  if (!docPath.endsWith('.pdf')) return { ok: null, reason: 'non-PDF source (no deterministic re-render)' };
+  if (!Number.isFinite(page)) return { ok: false, reason: 'no page number to re-render' };
+  if (!existsSync(pngPath)) return { ok: false, reason: 'screenshot PNG missing on disk' };
+  let tmp;
+  try {
+    tmp = join(REPORTS, `.proof-render-${process.pid}-${page}`);
+    execSync(`pdftoppm -png -r ${RENDER_DPI} -f ${page} -l ${page} "${docPath}" "${tmp}" 2>/dev/null`, { maxBuffer: 64 * 1024 * 1024 });
+    // pdftoppm zero-pads the page suffix to the doc's page-count width; find what it wrote.
+    const dir = dirname(tmp), base = tmp.split('/').pop();
+    const out = readdirSync(dir).find(f => f.startsWith(base) && f.endsWith('.png'));
+    if (!out) return { ok: false, reason: 'pdftoppm produced no output' };
+    const renderedSha = createHash('sha256').update(readFileSync(join(dir, out))).digest('hex');
+    const storedSha = createHash('sha256').update(readFileSync(pngPath)).digest('hex');
+    try { execSync(`rm -f "${join(dir, out)}"`); } catch { /* noop */ }
+    return renderedSha === storedSha
+      ? { ok: true, reason: `screenshot byte-matches fresh render of p${page}` }
+      : { ok: false, reason: `screenshot does NOT match fresh render of p${page} (swapped/stale/wrong-page)` };
+  } catch (err) {
+    return { ok: false, reason: `re-render failed: ${String(err.message || err).slice(0, 60)}` };
+  }
+}
+
 // ─── load reference data once ──────────────────────────────────────────────────
 const bandDIndex = buildOnsIndex(loadCsv('parsed-area-band-d.csv'));
 const councils = loadCouncils();
@@ -403,16 +437,35 @@ function proveCouncil(c) {
       }
     }
 
-    // 📷 evidence: screenshot PNG present on disk
-    if (e.page_image_url) {
-      const png = join(PDFS, e.page_image_url.replace(/^\/archive\//, ''));
-      entry.checks.screenshot = existsSync(png);
-    } else {
+    // 📷 ⑥ evidence: the screenshot must be a FRESH FAITHFUL RENDER of the cited page.
+    // Not just "a PNG exists" — we re-render the cited page from the sha-verified PDF
+    // and require the stored screenshot to byte-match (pdftoppm is deterministic +
+    // content-addressed). This guarantees the popover image is provably an unaltered
+    // picture of the exact page the value was verified against — a swapped/stale/
+    // wrong-page/doctored screenshot cannot match.
+    if (!e.page_image_url) {
       entry.checks.screenshot = false;
-    }
-    if (!entry.checks.screenshot) {
-      entry.reason = e.page_image_url ? `screenshot PNG missing: ${e.page_image_url}` : 'no page_image_url declared';
+      entry.reason = 'no page_image_url declared';
       out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+    }
+    const png = join(PDFS, e.page_image_url.replace(/^\/archive\//, ''));
+    const shot = screenshotMatchesPage(arch.docPath, e.page, png);
+    if (shot.ok === null) {
+      // Non-PDF source (HTML/Wayback live-page capture): no deterministic re-render
+      // path. Fall back to existence-only and record the weaker guarantee honestly.
+      entry.checks.screenshot = existsSync(png);
+      entry.checks.screenshot_rerender = 'n/a (non-pdf)';
+      if (!entry.checks.screenshot) {
+        entry.reason = `screenshot PNG missing: ${e.page_image_url}`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
+    } else {
+      entry.checks.screenshot = shot.ok;
+      entry.checks.screenshot_rerender = shot.ok;
+      if (!shot.ok) {
+        entry.reason = shot.reason;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
     }
 
     // All hard checks pass → PROVEN. 📅 year decides CURRENT vs STALE.

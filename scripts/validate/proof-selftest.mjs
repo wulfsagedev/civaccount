@@ -126,6 +126,22 @@ try {
   }
   restore();
 
+  // ── Attack 7: doctored SCREENSHOT — PNG no longer matches a fresh render of the page ──
+  // The data file is untouched (value + excerpt + sha all genuine); only the popover
+  // image is swapped/edited. Invariant ⑥ must catch it via byte re-render.
+  {
+    const RESERVES_PNG = join(REPO, 'src/data/councils/pdfs/council-pdfs/bradford/images/reserves-p31.png');
+    const pngOrig = readFileSync(RESERVES_PNG);
+    try {
+      writeFileSync(RESERVES_PNG, Buffer.concat([pngOrig, Buffer.from([0])])); // 1-byte corruption
+      const v = fieldVerdict('Bradford', 'reserves');
+      const caught = /reserves: UNPROVEN/.test(v.full) && /screenshot does NOT match/.test(v.full) && v.council_verdict !== 'FULLY-COVERED';
+      check('Tier-3: doctored screenshot (≠ fresh render) → UNPROVEN', caught, v.line);
+    } finally {
+      writeFileSync(RESERVES_PNG, pngOrig); // restore exact bytes
+    }
+  }
+
 } finally {
   restore(); // belt-and-braces: never leave the repo mutated
 }
