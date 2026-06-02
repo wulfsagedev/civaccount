@@ -51,11 +51,34 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
 ---
 
 ## Global counters
-<!-- counters as of 2026-04-26 after batches 24-27 -->
 
-- Councils in scope: 317
-- **Councils North-Star complete: 139**
-  - Reference (3): Bradford, Kent, Camden
+> ⚠️ **CORRECTED 2026-06-02 — read this.** The old counter below claimed "139
+> North-Star complete." That number was **hand-typed and never true** — it counted
+> councils that had been *batch-processed*, not independently verified. The proof
+> engine (`npm run proof`, built 2026-06) re-derives the truth from evidence on
+> disk and is now the ONLY authoritative scoreboard. Hand-typed counts are banned.
+
+### Computed truth (from `scripts/validate/reports/proof-latest.json`, run 2026-06-02)
+
+- Councils in scope: 317 (316 in TS data — 1 edge-case council not yet added)
+- **🟢 FULLY-COVERED (every rendered number proven 1:1): 1 — Bradford** (locked, `npm run proof:bradford` 17/17)
+- 🟡 EVIDENCE-CLEAN (all *declared* sources real, but unbacked holes remain): 88
+- Tier-1 safe (Band D byte-exact vs GOV.UK CSV): 296 / 316
+- Tier-1 Band D fields exact: 1762 / 1762 (0 drift)
+- Coverage: 727 / 3400 rendered numbers backed by evidence (~2,673 unbacked, still rendering)
+- National datasets verified vs manifest: 15 / 15
+
+**To see the live number any time: `npm run proof`. Do not hand-edit a count into this file.**
+
+---
+
+### Historical batch log (NOT a completion count — process record only)
+
+<!-- These councils were touched by the pre-proof batch rollouts. Being listed here
+     means work was attempted, NOT that the council is proven. Use `npm run proof
+     --council=<Name>` for any council's real status. Kept for provenance/history. -->
+
+- Reference (3): Bradford, Kent, Camden
   - Batch-4-7 (19): Manchester, Birmingham, Leeds, Surrey, Cornwall, Liverpool, Bristol, Lancashire, Tower Hamlets, Hampshire, Essex, Hertfordshire, Sheffield, Westminster, Nottinghamshire, Staffordshire, Wiltshire, Newcastle upon Tyne, Croydon
   - Batch-8-10 (16): Norfolk, West Sussex, Derbyshire, Lincolnshire, Suffolk, Leicestershire, Cambridgeshire, Gloucestershire, Worcestershire, North Yorkshire, Devon, East Sussex, Oxfordshire, Wakefield, Doncaster, Coventry
   - Batch-9b (12 MDs): Bolton, Salford, Wirral, Sandwell, Sefton, Stockport, Wolverhampton, Barnsley, Solihull, St Helens, Dudley, Oldham
@@ -80,8 +103,10 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
   - Batch-29 (6 mixed) — direct fetch: Durham (UA), Northumberland (UA), Harrow (LB), Knowsley (MD), Sutton (LB), Richmond upon Thames (LB)
   - Batch-30 (7 mixed) — first districts: Blackpool (UA), East Hampshire (SD), St Albans (SD), West Lindsey (SD), Pendle (SD), Blaby (SD), Erewash (SD)
   - Batch-31 (7 SDs): Broxtowe, Stroud, Runnymede, West Oxfordshire, South Kesteven, South Oxfordshire, Epping Forest
-- Councils in progress: 0
-- Councils not yet started: 178
+
+<!-- The "in progress / not yet started" tallies that used to live here were part of
+     the false 139 framing and have been removed. The proof engine is the scoreboard. -->
+- **Real status of every council above: run `npm run proof` — most are 🟡 evidence-clean with unbacked holes, NOT fully proven.**
 
 **Batch-27 (2026-04-26) — Cloudflare-bypass via Wayback /save/:**
 - The Wayback Machine `/save/` endpoint forces a fresh archive on demand. Because the Internet Archive's crawler IPs are allowlisted by most CDNs (Cloudflare, Azure WAF, etc.), the resulting redirect serves the snapshot directly — bypassing the WAF block that defeats `curl` from a regular IP.
