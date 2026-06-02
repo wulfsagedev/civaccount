@@ -45,7 +45,8 @@
  * (PIPELINE.md Stage 7).
  */
 
-import { loadCouncils, loadCsv, buildOnsIndex } from './load-councils.mjs';
+import { loadCouncils, loadCsv, buildOnsIndex, buildCsvIndex } from './load-councils.mjs';
+import { normalizeCouncilName } from './lib/normalize.mjs';
 import { readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'fs';
 import { createHash } from 'crypto';
 import { execSync } from 'child_process';
@@ -161,6 +162,54 @@ try {
   }
 } catch { /* manifest missing → no tier-1 csv lane; fields fall through to PDF lane */ }
 
+// Lane-A value re-read map: sha → how to look the council's cell up and compare it
+// to the RENDERED value. This is what makes Tier-1 a real check, not a faith-based
+// pass. Each entry: { file, col, scale } where scale converts the CSV cell to the
+// units the TS renders ('k' = CSV is £000 so ×1000; 'raw' = same units; 'int' =
+// integer count). A field whose sha is NATIONAL_CSV but is NOT in this map FAILS
+// CLOSED (UNPROVEN) — we never blind-pass a value we can't re-read.
+// Per-council scalar national datasets only (band_d billing-CSV is checked in the
+// dedicated Tier-1 Band D block; RA Part1/2 multi-column budgets are checked by
+// source-truth.mjs and are not single-cell csv_row field_sources).
+const LANE_A_CELL = new Map();
+(() => {
+  const byId = {};
+  try {
+    const man = JSON.parse(readFileSync(join(__dirname, 'source-manifest.json'), 'utf8'));
+    for (const s of man.sources || []) byId[s.id] = s;
+  } catch { return; }
+  // dataset id → { file, col, scale }
+  const spec = {
+    'capital-expenditure':   { file: 'parsed-capital-expenditure.csv',     col: 'capital_expenditure_k', scale: 'k'   },
+    'reserves':              { file: 'parsed-reserves.csv',                 col: 'reserves_k',            scale: 'k'   },
+    'council-tax-2025':      { file: 'parsed-council-tax-requirement.csv',  col: 'council_tax_requirement', scale: 'raw' },
+    'council-tax-base':      { file: 'parsed-council-tax-base.csv',         col: 'tax_base',              scale: 'raw' },
+    'lgbce-councillors':     { file: 'parsed-lgbce-councillors.csv',        col: 'total_councillors',     scale: 'int' },
+    'ons-population-mid2024':{ file: 'parsed-population.csv',               col: 'population',            scale: 'int' },
+  };
+  for (const [id, sp] of Object.entries(spec)) {
+    const s = byId[id];
+    if (!s) continue;
+    const idx = buildCsvIndex(loadCsv(sp.file)); // keyed by normalized council name
+    const shas = [s.parsed_csv_sha256, s.raw_file_sha256].filter(Boolean);
+    for (const sha of shas) LANE_A_CELL.set(sha, { ...sp, idx, id });
+  }
+})();
+
+// Compare a rendered numeric value to a CSV cell under a scale rule. Returns
+// { ok, cell } — cell is the raw CSV string (for the report). Tolerant only of
+// the documented £000↔full-£ scale + rounding to the nearest whole unit.
+function tier1ValueMatches(rendered, cellRaw, scale) {
+  if (cellRaw == null || cellRaw === '') return { ok: false, cell: cellRaw };
+  const cell = parseFloat(String(cellRaw).replace(/,/g, ''));
+  if (isNaN(cell)) return { ok: false, cell: cellRaw };
+  const r = Number(rendered);
+  if (scale === 'k') return { ok: Math.round(cell * 1000) === Math.round(r), cell };       // CSV £000 → full £
+  if (scale === 'int') return { ok: Math.round(cell) === Math.round(r), cell };            // exact integer
+  // 'raw': same units; allow <1 unit rounding (e.g. tax_base decimals)
+  return { ok: Math.abs(cell - r) < 1, cell };
+}
+
 // The per-council `detailed.*` numbers the dashboard renders that REQUIRE a field_source
 // to be trustworthy (national-CSV-backed ones are covered by the Tier-1 lane separately).
 // Coverage = of these a council actually renders, how many are proven? This is what
@@ -228,14 +277,43 @@ function proveCouncil(c) {
     if (e.sha256_at_access && NATIONAL_CSV_SHAS.has(e.sha256_at_access)) {
       out.tier3.checked++;
       const datasetId = NATIONAL_CSV_SHAS.get(e.sha256_at_access);
-      // Proven: cites a real, current national dataset. (Cell-exactness is enforced by
-      // source-truth.mjs in CI; here we confirm the citation resolves to a tracked source.)
-      const verdict = GOLD_YEARS.has(e.data_year) ? 'PROVEN_CURRENT' : 'PROVEN_STALE';
-      out.tier3.proven++;
-      out.tier3.entries.push({ field, tier: e.tier, data_year: e.data_year, verdict, lane: 'national_csv', reason: `GOV.UK dataset "${datasetId}"` });
-      // A county's Band D precept cited to a national CSV counts as Tier-1 proof.
+      const entry = { field, tier: e.tier, data_year: e.data_year, verdict: 'UNPROVEN', lane: 'national_csv', checks: {} };
+      const rendered = c.detailed?.[field];
+
+      // ③ alignment: RE-READ the council's CSV cell and bind the rendered value to it.
+      // No delegation, no faith. If we have no re-read spec for this dataset, FAIL CLOSED.
+      const spec = LANE_A_CELL.get(e.sha256_at_access);
+      if (!spec) {
+        // total_band_d / band_d_* cited to the billing CSV are handled by the dedicated
+        // Tier-1 Band D block; treat them as the county precept proof, not a hole.
+        if (/band_d|total_band_d/.test(field)) {
+          countyBandDProven = true;
+          entry.verdict = GOLD_YEARS.has(e.data_year) ? 'PROVEN_CURRENT' : 'PROVEN_STALE';
+          entry.reason = `Band D precept (checked in Tier-1 block) — GOV.UK "${datasetId}"`;
+          out.tier3.proven++; out.tier3.entries.push(entry); continue;
+        }
+        entry.reason = `national dataset "${datasetId}" has no value-reread spec — cannot bind value (fail-closed)`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
+      if (typeof rendered !== 'number') {
+        entry.reason = `rendered value is not numeric (${typeof rendered}) — cannot bind`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
+      const row = spec.idx.get(normalizeCouncilName(c.name));
+      if (!row) {
+        entry.reason = `no row for "${c.name}" in ${spec.file} (fail-closed)`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
+      const m = tier1ValueMatches(rendered, row[spec.col], spec.scale);
+      entry.checks.value_equals_cell = m.ok;
+      if (!m.ok) {
+        entry.reason = `rendered ${rendered} != ${spec.file} cell ${m.cell} (scale ${spec.scale}) — VALUE MISMATCH`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
+      entry.verdict = GOLD_YEARS.has(e.data_year) ? 'PROVEN_CURRENT' : 'PROVEN_STALE';
+      entry.reason = `value==cell ${m.cell} in ${spec.file} (GOV.UK "${datasetId}")`;
       if (/band_d|total_band_d/.test(field)) countyBandDProven = true;
-      continue;
+      out.tier3.proven++; out.tier3.entries.push(entry); continue;
     }
 
     // ── Lane C: live/bot-blocked (no archive possible) ──
