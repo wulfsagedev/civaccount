@@ -8,7 +8,7 @@ import {
 import { formatCurrency, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
-import { getProvenance } from '@/data/provenance';
+import { getProvenance, isProven } from '@/data/provenance';
 
 interface FinancialHealthCardProps {
   selectedCouncil: Council;
@@ -33,8 +33,11 @@ const FinancialHealthCard = ({
             councilName={selectedCouncil.name}
           />
 
-          {/* Primary metric - reserves */}
-          {detailed.reserves && (
+          {/* Primary metric - reserves.
+              RENDER GATE (Stage 5 default-deny): show the number ONLY if the proof
+              engine independently verified it for this council. Unproven → the number
+              is hidden, never shown wrong. */}
+          {detailed.reserves && isProven('detailed.reserves', selectedCouncil) && (
             <div className="mb-5">
               <p className="type-caption text-muted-foreground mb-1">Emergency reserves</p>
               <SourceAnnotation

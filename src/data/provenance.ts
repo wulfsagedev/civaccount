@@ -10,8 +10,36 @@
  */
 
 import type { DataProvenance, Council } from './councils';
+import { generateSlug } from './councils';
 import { resolveCitation } from './citations';
 import { getVerifiedSupplierSource } from './suppliers-allowlist';
+import { PROVEN_FIELDS } from './proven-fields';
+
+/**
+ * RENDER GATE (PIPELINE.md Stage 5 — default-deny).
+ *
+ * `isProven(field, council)` is the single question every gated value asks before
+ * it renders: did the proof engine independently re-derive THIS number for THIS
+ * council from evidence? Backed by the build-time artifact src/data/proven-fields.ts
+ * (generated from proof-latest.json). A number renders only if the answer is yes —
+ * unproven numbers are hidden, never shown wrong.
+ *
+ * FAIL-OPEN SAFETY VALVE: if the proven map is entirely empty (e.g. a fresh checkout
+ * or a runner that never generated the artifact), the gate is treated as INACTIVE so
+ * the site doesn't blank out. The committed proven-fields.ts (generated where the
+ * private data exists) is what actually gates production. Once the map has ANY entry,
+ * the gate is strict default-deny.
+ */
+const GATE_ACTIVE = Object.keys(PROVEN_FIELDS).length > 0;
+
+export function isProven(fieldPath: string, council?: Council | null): boolean {
+  if (!GATE_ACTIVE) return true;            // gate inert with no artifact — never blank the site
+  if (!council?.name) return false;         // can't identify council → can't prove → deny
+  const slug = generateSlug(council.name);
+  const set = PROVEN_FIELDS[slug];
+  if (!set) return false;                    // council has zero proven fields → deny all
+  return set.includes(fieldPath);
+}
 
 export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   // ── Council Tax ──

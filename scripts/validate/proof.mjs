@@ -660,7 +660,7 @@ const summary = {
   datasets_failed: DATASET_INTEGRITY.filter(d => !d.verified),
 };
 
-const report = { tool: 'proof', summary, dataset_integrity: DATASET_INTEGRITY, councils: results };
+const report = { tool: 'proof', generated: new Date().toISOString(), summary, dataset_integrity: DATASET_INTEGRITY, councils: results };
 
 // write report (skip when targeting a single council so we don't clobber the full run)
 if (!onlyCouncil) {

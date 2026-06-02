@@ -676,7 +676,7 @@ export function getCouncilByName(name: string): Council | undefined {
 }
 
 // Generate URL-friendly slug from council name
-function generateSlug(name: string): string {
+export function generateSlug(name: string): string {
   return name
     .toLowerCase()
     .replace(/['']/g, '')

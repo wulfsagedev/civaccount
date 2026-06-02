@@ -54,6 +54,7 @@ scripts/*
 !scripts/parse-area-band-d.py
 !scripts/sync-band-d.mjs
 !scripts/generate-coverage-stats.mjs
+!scripts/generate-proven-fields.mjs
 !scripts/generate-provenance.mjs
 !scripts/data-audit-log.mjs
 !scripts/requirements.txt
