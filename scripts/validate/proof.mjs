@@ -154,7 +154,20 @@ function pdftext(docPath, page) {
 // caller decides (we keep existence-only for non-PDF, since there's no deterministic
 // re-render path for live-page captures).
 const RENDER_DPI = 150; // must match render-page-images.mjs / the Phase-1b PNGs
-function screenshotMatchesPage(docPath, page, pngPath) {
+
+// G1 — poppler version awareness. pdftoppm output is byte-deterministic only WITHIN
+// one poppler version. The PNGs (and locks) were rendered with POPPLER_LOCK_VERSION.
+// On a machine with that version, byte-match is the strong proof. On a DIFFERENT
+// version (CI, another OS), bytes legitimately differ — so instead of failing every
+// screenshot, we fall back to a content check: re-extract the cited page's TEXT and
+// require the excerpt to be present (same ③ guarantee, minus pixel-exactness), and
+// flag it 'soft' so the discrepancy is visible, not silent.
+const POPPLER_LOCK_VERSION = '26.04.0';
+let POPPLER_VERSION = 'unknown';
+try { POPPLER_VERSION = (execSync('pdftoppm -v 2>&1', { encoding: 'utf8' }).match(/version ([\d.]+)/) || [])[1] || 'unknown'; } catch { /* no poppler */ }
+const POPPLER_MATCHES_LOCK = POPPLER_VERSION === POPPLER_LOCK_VERSION;
+
+function screenshotMatchesPage(docPath, page, pngPath, excerpt) {
   if (!docPath.endsWith('.pdf')) return { ok: null, reason: 'non-PDF source (no deterministic re-render)' };
   if (!Number.isFinite(page)) return { ok: false, reason: 'no page number to re-render' };
   if (!existsSync(pngPath)) return { ok: false, reason: 'screenshot PNG missing on disk' };
@@ -162,16 +175,26 @@ function screenshotMatchesPage(docPath, page, pngPath) {
   try {
     tmp = join(REPORTS, `.proof-render-${process.pid}-${page}`);
     execSync(`pdftoppm -png -r ${RENDER_DPI} -f ${page} -l ${page} "${docPath}" "${tmp}" 2>/dev/null`, { maxBuffer: 64 * 1024 * 1024 });
-    // pdftoppm zero-pads the page suffix to the doc's page-count width; find what it wrote.
     const dir = dirname(tmp), base = tmp.split('/').pop();
     const out = readdirSync(dir).find(f => f.startsWith(base) && f.endsWith('.png'));
     if (!out) return { ok: false, reason: 'pdftoppm produced no output' };
     const renderedSha = createHash('sha256').update(readFileSync(join(dir, out))).digest('hex');
     const storedSha = createHash('sha256').update(readFileSync(pngPath)).digest('hex');
     try { execSync(`rm -f "${join(dir, out)}"`); } catch { /* noop */ }
-    return renderedSha === storedSha
-      ? { ok: true, reason: `screenshot byte-matches fresh render of p${page}` }
-      : { ok: false, reason: `screenshot does NOT match fresh render of p${page} (swapped/stale/wrong-page)` };
+    if (renderedSha === storedSha) return { ok: true, reason: `screenshot byte-matches fresh render of p${page}` };
+    // Bytes differ. If we're on the canonical poppler version, that's a REAL mismatch
+    // (swapped/stale/wrong-page) → hard fail. If on a different version, fall back to
+    // a text-content check so a toolchain difference doesn't mass-fail valid evidence.
+    if (POPPLER_MATCHES_LOCK) {
+      return { ok: false, reason: `screenshot does NOT match fresh render of p${page} (swapped/stale/wrong-page)` };
+    }
+    if (excerpt) {
+      const txt = pdftext(docPath, page);
+      if (txt && excerptInSource(txt, excerpt)) {
+        return { ok: 'soft', reason: `poppler ${POPPLER_VERSION}≠lock ${POPPLER_LOCK_VERSION}: bytes differ but excerpt verbatim on p${page} (text-fallback)` };
+      }
+    }
+    return { ok: false, reason: `screenshot bytes differ AND excerpt not on p${page} (poppler ${POPPLER_VERSION})` };
   } catch (err) {
     return { ok: false, reason: `re-render failed: ${String(err.message || err).slice(0, 60)}` };
   }
@@ -195,6 +218,33 @@ try {
     if (s.raw_file_sha256) NATIONAL_CSV_SHAS.set(s.raw_file_sha256, s.id);
   }
 } catch { /* manifest missing → no tier-1 csv lane; fields fall through to PDF lane */ }
+
+// G2 — trust-root integrity: re-hash every parsed CSV vs its recorded manifest sha.
+// Lane A trusts a value because it == the CSV cell, and trusts the CSV because its
+// sha is in the manifest. But that's circular unless we confirm the CSV ON DISK still
+// matches the recorded hash. Here we do exactly that. A dataset whose file no longer
+// matches its manifest sha (parse drift, tamper, stale regen) is NOT trusted → its
+// Tier-1 fields FAIL CLOSED. This closes the gap between "GOV.UK .ods" and "parsed.csv".
+const VERIFIED_DATASET_IDS = new Set(); // dataset ids whose parsed CSV matches manifest
+const DATASET_INTEGRITY = []; // for the report
+(() => {
+  let man;
+  try { man = JSON.parse(readFileSync(join(__dirname, 'source-manifest.json'), 'utf8')); } catch { return; }
+  const BULK = join(DC, 'pdfs', 'gov-uk-bulk-data');
+  for (const s of man.sources || []) {
+    if (!s.parsed_csv || !s.parsed_csv_sha256) continue;
+    const p = s.parsed_csv.includes('/') ? join(DC, 'pdfs', s.parsed_csv) : join(BULK, s.parsed_csv);
+    let ok = false, reason = '';
+    if (!existsSync(p)) { reason = 'parsed CSV missing on disk'; }
+    else {
+      const actual = createHash('sha256').update(readFileSync(p)).digest('hex');
+      ok = actual === s.parsed_csv_sha256;
+      if (!ok) reason = `sha ${actual.slice(0, 12)}… ≠ manifest ${s.parsed_csv_sha256.slice(0, 12)}…`;
+    }
+    if (ok) VERIFIED_DATASET_IDS.add(s.id);
+    DATASET_INTEGRITY.push({ id: s.id, verified: ok, reason });
+  }
+})();
 
 // Lane-A value re-read map: sha → how to look the council's cell up and compare it
 // to the RENDERED value. This is what makes Tier-1 a real check, not a faith-based
@@ -329,6 +379,12 @@ function proveCouncil(c) {
         entry.reason = `national dataset "${datasetId}" has no value-reread spec — cannot bind value (fail-closed)`;
         out.tier3.unproven++; out.tier3.entries.push(entry); continue;
       }
+      // G2 trust-root gate: the CSV backing this dataset must still match its manifest
+      // sha. If parse drift / tamper changed the file, we do NOT trust any cell in it.
+      if (!VERIFIED_DATASET_IDS.has(spec.id)) {
+        entry.reason = `dataset "${spec.id}" CSV failed manifest-integrity check — not trusted (fail-closed)`;
+        out.tier3.unproven++; out.tier3.entries.push(entry); continue;
+      }
       if (typeof rendered !== 'number') {
         entry.reason = `rendered value is not numeric (${typeof rendered}) — cannot bind`;
         out.tier3.unproven++; out.tier3.entries.push(entry); continue;
@@ -449,7 +505,7 @@ function proveCouncil(c) {
       out.tier3.unproven++; out.tier3.entries.push(entry); continue;
     }
     const png = join(PDFS, e.page_image_url.replace(/^\/archive\//, ''));
-    const shot = screenshotMatchesPage(arch.docPath, e.page, png);
+    const shot = screenshotMatchesPage(arch.docPath, e.page, png, e.excerpt);
     if (shot.ok === null) {
       // Non-PDF source (HTML/Wayback live-page capture): no deterministic re-render
       // path. Fall back to existence-only and record the weaker guarantee honestly.
@@ -459,6 +515,12 @@ function proveCouncil(c) {
         entry.reason = `screenshot PNG missing: ${e.page_image_url}`;
         out.tier3.unproven++; out.tier3.entries.push(entry); continue;
       }
+    } else if (shot.ok === 'soft') {
+      // Different poppler version: bytes differ but page text still contains the
+      // excerpt. Accept (proven), but flag the toolchain mismatch so it's visible.
+      entry.checks.screenshot = true;
+      entry.checks.screenshot_rerender = 'soft (poppler version mismatch — text-verified)';
+      entry.screenshot_note = shot.reason;
     } else {
       entry.checks.screenshot = shot.ok;
       entry.checks.screenshot_rerender = shot.ok;
@@ -541,9 +603,15 @@ const summary = {
   fully_covered_list: results.filter(r => r.fully_covered).map(r => r.name).sort(),
   // alias retained
   fully_proven_councils: results.filter(r => r.fully_proven).length,
+  // G1/G2 trust-root health
+  poppler_version: POPPLER_VERSION,
+  poppler_matches_lock: POPPLER_MATCHES_LOCK,
+  datasets_verified: DATASET_INTEGRITY.filter(d => d.verified).length,
+  datasets_total: DATASET_INTEGRITY.length,
+  datasets_failed: DATASET_INTEGRITY.filter(d => !d.verified),
 };
 
-const report = { tool: 'proof', summary, councils: results };
+const report = { tool: 'proof', summary, dataset_integrity: DATASET_INTEGRITY, councils: results };
 
 // write report (skip when targeting a single council so we don't clobber the full run)
 if (!onlyCouncil) {

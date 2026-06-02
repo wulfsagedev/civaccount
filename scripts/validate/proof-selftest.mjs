@@ -142,6 +142,23 @@ try {
     }
   }
 
+  // ── Attack 8: tampered NATIONAL CSV — the trust root (G2) ──
+  // Data file untouched; we corrupt the parsed GOV.UK CSV that a Tier-1 value cites.
+  // Its manifest-integrity check must fail → the Tier-1 field FAILS CLOSED, even though
+  // Bradford's own row in the CSV is unchanged. Proves we don't trust an altered source.
+  {
+    const CSV = join(REPO, 'src/data/councils/pdfs/gov-uk-bulk-data/parsed-capital-expenditure.csv');
+    const csvOrig = readFileSync(CSV);
+    try {
+      writeFileSync(CSV, Buffer.concat([csvOrig, Buffer.from('\n')])); // sha changes, Bradford row intact
+      const v = fieldVerdict('Bradford', 'capital_programme');
+      const caught = /capital_programme: UNPROVEN/.test(v.full) && /manifest-integrity/.test(v.full) && v.council_verdict !== 'FULLY-COVERED';
+      check('Tier-1: tampered national CSV (G2 trust root) → UNPROVEN', caught, v.line);
+    } finally {
+      writeFileSync(CSV, csvOrig); // restore exact bytes
+    }
+  }
+
 } finally {
   restore(); // belt-and-braces: never leave the repo mutated
 }

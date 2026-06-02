@@ -15,7 +15,7 @@
  *   1 — at least one file changed or is missing
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { createHash } from 'crypto';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -77,22 +77,32 @@ function main() {
     has_drift: results.changed.length > 0 || results.missing.length > 0,
   };
 
-  try {
-    const { mkdirSync } = await import('fs');
-    // Reports dir should already exist from validate runs
-    const reportsDir = join(__dirname, 'reports');
-    if (!existsSync(reportsDir)) {
-      const fs = await import('fs');
-      fs.mkdirSync(reportsDir, { recursive: true });
-    }
-    const { writeFileSync } = await import('fs');
-    writeFileSync(reportPath, JSON.stringify(report, null, 2));
-    console.log(`\n  Report: ${reportPath}`);
-  } catch { /* ok if report write fails */ }
+  const reportsDir = join(__dirname, 'reports');
+  if (!existsSync(reportsDir)) mkdirSync(reportsDir, { recursive: true });
+  writeFileSync(reportPath, JSON.stringify(report, null, 2));
+  console.log(`\n  Report: ${reportPath}`);
 
-  if (results.changed.length > 0 || results.missing.length > 0) {
+  // G8 fix: a trust-root check must also confirm it actually CHECKED something.
+  // If zero CSVs were verified, the manifest/paths are wrong — that is a failure,
+  // not a silent pass. (Previously this script could no-op and exit 0.)
+  const totalChecked = results.matched.length + results.changed.length;
+  if (totalChecked === 0) {
+    console.error('\n  ✗ FAIL: 0 parsed CSVs were checked — manifest has no parsed_csv_sha256 entries, or paths are wrong.');
     process.exit(1);
   }
+
+  if (results.changed.length > 0 || results.missing.length > 0) {
+    console.error(`\n  ✗ FAIL: ${results.changed.length} changed, ${results.missing.length} missing vs manifest.`);
+    process.exit(1);
+  }
+  console.log('\n  ✓ All parsed CSVs match the manifest (trust root intact).');
 }
 
-main();
+// G8 fix: never let this safety check die silently. Any uncaught error must exit
+// NON-ZERO so CI goes red — a broken trust-root verifier that "passes" is the worst case.
+try {
+  main();
+} catch (err) {
+  console.error(`\n  ✗ FATAL: compare-checksums crashed — ${err && err.message ? err.message : err}`);
+  process.exit(1);
+}
