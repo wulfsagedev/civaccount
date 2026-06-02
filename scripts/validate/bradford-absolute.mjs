@@ -122,12 +122,21 @@ try {
   }
   restore();
 
-  // C4: doctor the screenshot (1 byte)
+  // C4: doctor the screenshot (1 byte).
+  // The POPPLER-INDEPENDENT guarantee is the lock: the PNG's own sha256 is pinned,
+  // so any byte change breaks the lock on ANY machine. The proof-engine re-render
+  // catch (invariant ⑥) is an ADDITIONAL guard that only bytes-matches on the
+  // canonical poppler version; on a different version it correctly falls back to
+  // text-verification (G1). So we always require the lock to catch it, and ALSO
+  // require the proof to fail only when running on the canonical poppler.
   writeFileSync(RESERVES_PNG, Buffer.concat([ORIG_PNG, Buffer.from([0])]));
   {
-    const broke = lockVerify().code !== 0;
-    const unproven = !/🟢/.test(proof().out);
-    assert('C4  doctored screenshot → breaks lock AND fails proof', broke && unproven);
+    const broke = lockVerify().code !== 0;                 // always — sha pinned in lock
+    const popplerCanonical = /poppler_matches_lock":\s*true/.test(
+      sh(`node "${join(__dirname, 'proof.mjs')}" --json-out=/dev/stdout 2>/dev/null`).out || '');
+    const proofFails = !/🟢/.test(proof().out);
+    const ok = broke && (popplerCanonical ? proofFails : true);
+    assert('C4  doctored screenshot → breaks lock' + (popplerCanonical ? ' AND fails proof (canonical poppler)' : ' (lock-pinned; poppler non-canonical, ⑥ soft)'), ok);
   }
   restore();
 

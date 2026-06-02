@@ -48,6 +48,19 @@ jobs:
             echo "::notice::Skipping Build step — private council data not present on this runner. Vercel deploys still build against the real dataset."
           fi
 
+      # Proof ratchet — verification may only climb, never silently rot.
+      # Fails the build if: the verifier loses a false-pass guard, the Bradford
+      # reference stops being proven+immutable, or the fully-covered count drops
+      # below the committed floor. Self-skips (exit 0) when the private data
+      # submodule isn't on the runner — so it enforces on data-present runs
+      # (and on the data repo's own CI / Vercel) without blocking code-only PRs.
+      # Needs poppler for the screenshot re-render invariant.
+      - name: Install poppler (proof screenshot re-render)
+        if: steps.data.outputs.present == 'true'
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Proof ratchet
+        run: npm run proof:ratchet
+
       - name: Build
         if: steps.data.outputs.present == 'true'
         run: npm run build

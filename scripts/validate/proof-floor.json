@@ -1,0 +1,4 @@
+{
+  "fully_covered_floor": 1,
+  "note": "The minimum number of FULLY-COVERED councils CI will accept. Raised only via `node scripts/validate/proof-ratchet.mjs --bump` after real verification progress. Lowering requires a deliberate, reviewed manual edit — that is the ratchet."
+}
