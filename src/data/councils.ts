@@ -278,6 +278,58 @@ export interface Accountability {
   intervention_reason?: string;
 }
 
+/**
+ * Per-field provenance record. One per rendered value (current or historical),
+ * carrying everything the proof engine needs to verify the value 1:1 against a
+ * real public document. See NORTH-STAR.md §4. Extracted to a named type
+ * 2026-06-02 so the multi-year `history` map can reuse the exact same shape.
+ */
+export interface FieldSource {
+  url: string;             // Direct URL to the source document/page
+  title: string;           // Human-readable source title
+  page?: number;           // Page number within a PDF (optional)
+  excerpt?: string;        // Verbatim quote of the line/row containing the value
+  accessed: string;        // ISO date when this source was last verified
+  data_year: string;       // Fiscal year the source covers: "2025-26", "2024-25", "mid-2024", "current", etc.
+  /**
+   * Source quality tier per NORTH-STAR.md §3:
+   *   1 — GOV.UK bulk CSV (automated cross-check possible)
+   *   2 — Council open-data portal, archived locally
+   *   3 — Council PDF, archived locally with sha256
+   *   4 — Reader-accessible but not archived (bot-blocked / live page)
+   *   5 — Primary confirmed via secondary source (last-resort)
+   */
+  tier?: 1 | 2 | 3 | 4 | 5;
+  /**
+   * How the value was obtained from the source — required for every
+   * Tier ≤ 3 entry. NORTH-STAR.md §4.
+   */
+  extraction_method?: 'csv_row' | 'pdf_page' | 'aggregate' | 'socrata_query' | 'manual_read';
+  sha256_at_access?: string; // SHA-256 of the fetched document at `accessed` (required for Tier ≤ 3)
+  /**
+   * When the document genuinely can't be fingerprinted: e.g. the
+   * council site blocks automated fetches (Cloudflare), or the data
+   * lives in a live web page with no downloadable document form.
+   * North-star audit accepts one of these values in lieu of sha256;
+   * documented in the council's AUDIT.md.
+   */
+  archive_exempt?: 'cloudflare_blocked' | 'bot_blocked' | 'no_document_form' | 'live_page';
+  /**
+   * Pre-generated PNG of the exact PDF page where this value appears.
+   * See NORTH-STAR.md §6 Phase 1b + §8. Served via /archive/<slug>/
+   * images/<file> route handler. Surfaced in SourceAnnotation popover
+   * as a thumbnail + lightbox.
+   */
+  page_image_url?: string;
+  /**
+   * Internet Archive Wayback URL for this source. Always populated
+   * when `archive_exempt` is set (Cloudflare-blocked domains etc.) so
+   * a reader with a different IP / UA can still reach a preserved
+   * copy even if the council's live URL 403s for them too.
+   */
+  wayback_url?: string;
+}
+
 export interface DetailedCouncilData {
   // Council tax breakdown by precepting authority
   precepts?: PreceptBreakdown[];
@@ -432,51 +484,39 @@ export interface DetailedCouncilData {
   // per-field-type defaults and rationale. `sha256_at_access` is a
   // hash of the fetched document bytes taken the last time we verified
   // the URL; lets a future release-watcher cron detect content drift.
-  field_sources?: Record<string, {
-    url: string;             // Direct URL to the source document/page
-    title: string;           // Human-readable source title
-    page?: number;           // Page number within a PDF (optional)
-    excerpt?: string;        // Verbatim quote of the line/row containing the value
-    accessed: string;        // ISO date when this source was last verified
-    data_year: string;       // Fiscal year the source covers: "2025-26", "2024-25", "mid-2024", "current", etc.
-    /**
-     * Source quality tier per NORTH-STAR.md §3:
-     *   1 — GOV.UK bulk CSV (automated cross-check possible)
-     *   2 — Council open-data portal, archived locally
-     *   3 — Council PDF, archived locally with sha256
-     *   4 — Reader-accessible but not archived (bot-blocked / live page)
-     *   5 — Primary confirmed via secondary source (last-resort)
-     */
-    tier?: 1 | 2 | 3 | 4 | 5;
-    /**
-     * How the value was obtained from the source — required for every
-     * Tier ≤ 3 entry. NORTH-STAR.md §4.
-     */
-    extraction_method?: 'csv_row' | 'pdf_page' | 'aggregate' | 'socrata_query' | 'manual_read';
-    sha256_at_access?: string; // SHA-256 of the fetched document at `accessed` (required for Tier ≤ 3)
-    /**
-     * When the document genuinely can't be fingerprinted: e.g. the
-     * council site blocks automated fetches (Cloudflare), or the data
-     * lives in a live web page with no downloadable document form.
-     * North-star audit accepts one of these values in lieu of sha256;
-     * documented in the council's AUDIT.md.
-     */
-    archive_exempt?: 'cloudflare_blocked' | 'bot_blocked' | 'no_document_form' | 'live_page';
-    /**
-     * Pre-generated PNG of the exact PDF page where this value appears.
-     * See NORTH-STAR.md §6 Phase 1b + §8. Served via /archive/<slug>/
-     * images/<file> route handler. Surfaced in SourceAnnotation popover
-     * as a thumbnail + lightbox.
-     */
-    page_image_url?: string;
-    /**
-     * Internet Archive Wayback URL for this source. Always populated
-     * when `archive_exempt` is set (Cloudflare-blocked domains etc.) so
-     * a reader with a different IP / UA can still reach a preserved
-     * copy even if the council's live URL 403s for them too.
-     */
-    wayback_url?: string;
-  }>;
+  field_sources?: Record<string, FieldSource>;
+
+  /**
+   * MULTI-YEAR HISTORY (added 2026-06-02). Immutability across time.
+   *
+   * The top-level scalar fields above (reserves, chief_executive_salary,
+   * capital_programme, …) always hold the CURRENT year's value — the live
+   * site reads them unchanged. `history` is an APPEND-ONLY archive of the
+   * same fields for OTHER years (past years we've verified, and future
+   * years that have been verified but aren't yet promoted to current).
+   *
+   * Shape: `history[fieldName][fiscalYear] = { value, field_source }`.
+   * Each historical entry carries its OWN field_source (url + sha256 +
+   * excerpt + page_image_url) so it is independently proof-verifiable and
+   * lockable — exactly like a current field. Nothing is ever overwritten:
+   * when a new year is verified, it is ADDED here; the prior year stays.
+   *
+   * The proof engine (proof.mjs) verifies every history entry with the
+   * same chain-of-custody invariants as current values. The year toggle
+   * in the UI reads the current scalar for "this year" and `history` for
+   * any other year.
+   *
+   * Example:
+   *   detailed.reserves = 247848000              // current (2024-25), unchanged
+   *   detailed.history.reserves = {
+   *     "2024-25": { value: 247848000, field_source: {...} },
+   *     "2025-26": { value: 251300000, field_source: {...} },
+   *   }
+   */
+  history?: Record<string, Record<string, {
+    value: number | string;
+    field_source: FieldSource;
+  }>>;
 }
 
 export interface Council {

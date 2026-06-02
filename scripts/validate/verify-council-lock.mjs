@@ -85,6 +85,25 @@ for (const f of [...allFields].sort()) {
   }
 }
 
+// MULTI-YEAR HISTORY diff (added 2026-06-02) — pin past years too.
+const histKey = h => `${h.field}@${h.year}`;
+const lockedHist = Object.fromEntries((locked.history || []).map(h => [histKey(h), h]));
+const currentHist = Object.fromEntries((current.history || []).map(h => [histKey(h), h]));
+const allHist = new Set([...Object.keys(lockedHist), ...Object.keys(currentHist)]);
+const HATTRS = ['value', 'archive_sha256', 'excerpt_sha256', 'screenshot_sha256', 'page', 'verdict'];
+for (const k of [...allHist].sort()) {
+  const L = lockedHist[k], C = currentHist[k];
+  if (!L) { console.log(`   ✗ history ${k}: NEW historical entry not in lock`); drift++; continue; }
+  if (!C) { console.log(`   ✗ history ${k}: historical entry REMOVED since lock`); drift++; continue; }
+  for (const a of HATTRS) {
+    if (JSON.stringify(L[a]) !== JSON.stringify(C[a])) {
+      const fmt = v => (typeof v === 'string' && v.length > 24) ? v.slice(0, 20) + '…' : JSON.stringify(v);
+      console.log(`   ✗ history ${k}.${a}: locked ${fmt(L[a])} → now ${fmt(C[a])}`);
+      drift++;
+    }
+  }
+}
+
 console.log(`\n🔴 ${drift} change(s) from the frozen lock. If this change is INTENTIONAL & re-proven,`);
 console.log(`   re-lock with: node scripts/validate/lock-council.mjs ${name}`);
 console.log(`   Otherwise the data has drifted from its verified state — investigate.\n`);

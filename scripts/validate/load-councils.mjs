@@ -347,6 +347,67 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
     }
   }
 
+  // Extract MULTI-YEAR HISTORY (added 2026-06-02). Shape:
+  //   history: {
+  //     reserves: {
+  //       "2023-24": { value: 220012000, field_source: { url, sha256_at_access, ... } },
+  //     },
+  //   }
+  // Brace-match the whole `history: {` block, then pull each
+  //   <field>: { "<year>": { value: X, field_source: { ... } } }
+  // entry. Each field_source uses the same inner keys as field_sources above.
+  const histIdx = section.indexOf('history: {');
+  if (histIdx !== -1) {
+    let depth = 0, histEnd = section.length;
+    for (let si = histIdx + 'history: '.length; si < section.length; si++) {
+      if (section[si] === '{') depth++;
+      else if (section[si] === '}') { depth--; if (depth === 0) { histEnd = si + 1; break; } }
+    }
+    const histBlock = section.substring(histIdx, histEnd);
+    const history = {};
+    // Each year-entry contains a `field_source: { ... }` sub-block. Match those, then
+    // walk outward to recover the enclosing field name + year + value. Simplest robust
+    // approach: regex for the year+value+field_source triple in document order.
+    //   "2023-24": { value: 220012000, field_source: { ...inner... } }
+    const yearRe = /"(\d{4}-\d{2}|mid-\d{4}|current)":\s*\{\s*value:\s*(-?[\d.]+|"[^"]*")\s*,\s*field_source:\s*\{([^{}]*)\}/g;
+    // To attach each year to its field, find field headers (e.g. `reserves: {`) and
+    // their spans, then bucket years by which field span they fall in.
+    const fieldHeaderRe = /([a-z_][a-z0-9_]*):\s*\{/g;
+    const fieldSpans = [];
+    let fh;
+    while ((fh = fieldHeaderRe.exec(histBlock)) !== null) {
+      if (fh[1] === 'history' || fh[1] === 'field_source') continue;
+      fieldSpans.push({ name: fh[1], start: fh.index });
+    }
+    let ym;
+    while ((ym = yearRe.exec(histBlock)) !== null) {
+      const year = ym[1];
+      const rawVal = ym[2];
+      const value = rawVal.startsWith('"') ? rawVal.slice(1, -1) : parseFloat(rawVal);
+      const inner = ym[3];
+      // which field span encloses this year match?
+      let fieldName = null;
+      for (const fs of fieldSpans) { if (fs.start < ym.index) fieldName = fs.name; else break; }
+      if (!fieldName) continue;
+      const tierMatch = inner.match(/\btier:\s*(\d)/)?.[1];
+      const fieldSource = {
+        url: inner.match(/\burl:\s*"([^"]+)"/)?.[1],
+        title: inner.match(/\btitle:\s*"([^"]*)"/)?.[1] || '',
+        accessed: inner.match(/\baccessed:\s*"([^"]*)"/)?.[1] || '',
+        data_year: inner.match(/\bdata_year:\s*"([^"]*)"/)?.[1] || '',
+        tier: tierMatch ? parseInt(tierMatch, 10) : undefined,
+        extraction_method: inner.match(/\bextraction_method:\s*"([^"]*)"/)?.[1],
+        sha256_at_access: inner.match(/\bsha256_at_access:\s*"([^"]*)"/)?.[1],
+        page: (() => { const m = inner.match(/\bpage:\s*(\d+)/); return m ? parseInt(m[1], 10) : undefined; })(),
+        excerpt: inner.match(/\bexcerpt:\s*"([^"]*)"/)?.[1],
+        page_image_url: inner.match(/\bpage_image_url:\s*"([^"]*)"/)?.[1],
+      };
+      if (!history[fieldName]) history[fieldName] = {};
+      history[fieldName][year] = { value, field_source: fieldSource };
+    }
+    if (Object.keys(history).length > 0) d.history = history;
+  }
+
   // Extract section_transparency URLs (shape:
   //   section_transparency: { finances: [{ label, url, ... }], outcomes: [...] }
   // ). Used by the finance footer and SuppliersGrantsCard "See the raw data" list.

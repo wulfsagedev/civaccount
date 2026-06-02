@@ -42,9 +42,18 @@ function sha256(buf) { return createHash('sha256').update(buf).digest('hex'); }
 function sha256str(s) { return createHash('sha256').update(s, 'utf8').digest('hex'); }
 
 // Pull the proof engine's structured verdict for this council.
+// Write to a temp FILE, not stdout — nested execSync stdout pipes truncate at 8KB,
+// and the per-council JSON now exceeds that (multi-year history added 2026-06-02).
 function getProof(council) {
-  const raw = execSync(`node "${join(__dirname, 'proof.mjs')}" --council="${council}" --json 2>/dev/null`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-  return JSON.parse(raw).councils[0];
+  const tmp = join(LOCKS, `.getproof-${slugify(council)}-${process.pid}.tmp.json`);
+  try {
+    if (!existsSync(LOCKS)) mkdirSync(LOCKS, { recursive: true });
+    execSync(`node "${join(__dirname, 'proof.mjs')}" --council="${council}" --json-out="${tmp}" 2>/dev/null`, { stdio: 'ignore' });
+    const parsed = JSON.parse(readFileSync(tmp, 'utf8'));
+    return parsed.councils[0];
+  } finally {
+    try { if (existsSync(tmp)) execSync(`rm -f "${tmp}"`); } catch { /* noop */ }
+  }
 }
 
 const slug = slugify(name);
@@ -95,6 +104,33 @@ for (const y of ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'ba
   if (council.council_tax?.[y] != null) bandD[y] = council.council_tax[y];
 }
 
+// MULTI-YEAR HISTORY (added 2026-06-02) — pin every historical value + its evidence
+// hashes + proof verdict, so a later change to ANY past year breaks the lock too.
+// This is what makes immutability span time: frozen years stay frozen.
+const history = [];
+const histProof = proof.history?.entries || [];
+for (const [field, byYear] of Object.entries(council.detailed?.history || {})) {
+  for (const [year, rec] of Object.entries(byYear || {})) {
+    const fsrc = rec.field_source || {};
+    let screenshot_sha256 = null;
+    if (fsrc.page_image_url) {
+      const png = join(REPO, 'src', 'data', 'councils', 'pdfs', 'council-pdfs', fsrc.page_image_url.replace(/^\/archive\//, ''));
+      screenshot_sha256 = existsSync(png) && statSync(png).isFile() ? sha256(readFileSync(png)) : null;
+    }
+    const v = histProof.find(h => h.field === field && h.year === year);
+    history.push({
+      field, year,
+      value: rec.value,
+      archive_sha256: fsrc.sha256_at_access ?? null,
+      excerpt_sha256: fsrc.excerpt ? sha256str(fsrc.excerpt) : null,
+      page: fsrc.page ?? null,
+      screenshot_sha256,
+      verdict: v ? v.verdict : 'UNKNOWN',
+    });
+  }
+}
+history.sort((a, b) => (a.field + a.year).localeCompare(b.field + b.year));
+
 const body = {
   council: council.name,
   ons_code: council.ons_code,
@@ -105,6 +141,7 @@ const body = {
   tier1_summary: { checked: proof.tier1.checked, exact: proof.tier1.exact, failed: proof.tier1.failed },
   coverage: proof.coverage,
   fields,
+  history,
 };
 
 // The lock hash = sha256 of the canonical JSON body. THIS is the immutability anchor.
@@ -127,7 +164,7 @@ if (printOnly) {
 if (!existsSync(LOCKS)) mkdirSync(LOCKS, { recursive: true });
 const out = join(LOCKS, `${slug}.lock.json`);
 writeFileSync(out, JSON.stringify(lock, null, 2) + '\n');
-console.log(`🔒 Locked ${council.name}: ${fields.length} fields + ${Object.keys(bandD).length} Band D years`);
+console.log(`🔒 Locked ${council.name}: ${fields.length} fields + ${Object.keys(bandD).length} Band D years + ${history.length} history entr${history.length === 1 ? 'y' : 'ies'}`);
 console.log(`   lock_sha256: ${lockHash}`);
 console.log(`   → ${out.replace(REPO + '/', '')}`);
 console.log(`   Verify anytime: node scripts/validate/verify-council-lock.mjs ${council.name}`);

@@ -1,6 +1,6 @@
 {
   "lock_version": 1,
-  "lock_sha256": "fc25bc11d33804154eeb5dac398d7f0d55bb11f2cb2e32878bb1d98352f7b50d",
+  "lock_sha256": "4bf037b6c295786ebf97ae1592366722d613fb780d0f35e6203393c4d8ed440a",
   "council": "Bradford",
   "ons_code": "E08000032",
   "type": "MD",
@@ -215,6 +215,18 @@
       "page": null,
       "page_image_url": null,
       "verdict": "PROVEN_CURRENT"
+    }
+  ],
+  "history": [
+    {
+      "field": "reserves",
+      "year": "2023-24",
+      "value": 220012000,
+      "archive_sha256": "afb85fa9a84c6446826a74874a23eeabdc019f102828c217740a35cb1184e25f",
+      "excerpt_sha256": "7bfeaaec4b4e4d2465ad78ffbd552b61efbd2090a261a59481cc218d954498cb",
+      "page": 31,
+      "screenshot_sha256": "eef274e5a096973f8f3652bbd4b759ab264f6d3d36c35d535b8c68dc2b48b676",
+      "verdict": "PROVEN"
     }
   ]
 }

@@ -68,6 +68,7 @@ const BAND_D_YEARS = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024'
 
 // ─── args ────────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
+const jsonOutArg = (args.find(a => a.startsWith('--json-out=')) || '').split('=')[1] || null;
 const onlyCouncil = (args.find(a => a.startsWith('--council=')) || '').split('=')[1] || null;
 const printJson = args.includes('--json');
 
@@ -198,6 +199,38 @@ function screenshotMatchesPage(docPath, page, pngPath, excerpt) {
   } catch (err) {
     return { ok: false, reason: `re-render failed: ${String(err.message || err).slice(0, 60)}` };
   }
+}
+
+// Verify one Tier-3 council-PDF evidence record against a value, applying the SAME
+// chain-of-custody invariants the current-field Lane B uses: ② archive re-hash,
+// ③ excerpt verbatim in PDF at page, ③b value binds to excerpt, 📷 screenshot
+// re-render. Used for MULTI-YEAR HISTORY entries so a historical value is held to
+// the identical bar as a current one. Returns { ok, reason }.
+function verifyTier3Evidence(slug, e, value) {
+  if (!e || !e.sha256_at_access) return { ok: false, reason: 'no sha256_at_access (history needs an archived Tier-3 source)' };
+  const arch = resolveArchive(slug, e.sha256_at_access);
+  if (!arch || !arch.docPath) return { ok: false, reason: arch?.reason || 'archive not found' };
+  if (sha256File(arch.docPath) !== e.sha256_at_access) return { ok: false, reason: 'TAMPER: archive sha mismatch' };
+  if (!e.excerpt) return { ok: false, reason: 'no excerpt' };
+  const isPdf = arch.docPath.endsWith('.pdf');
+  const sourceText = isPdf ? pdftext(arch.docPath, e.page)
+    : (/\.html?$/.test(arch.docPath) ? readFileSync(arch.docPath, 'utf8').replace(/<[^>]+>/g, ' ') : null);
+  if (sourceText == null) return { ok: false, reason: 'cannot read archive text' };
+  if (!excerptInSource(sourceText, e.excerpt)) return { ok: false, reason: `excerpt not verbatim in ${arch.docPath.split('/').pop()} p${e.page ?? '*'}` };
+  // value-binding (skip aggregates, same rule as current fields)
+  if (e.extraction_method !== 'aggregate' && typeof value === 'number') {
+    const exD = digits(unescapeTs(e.excerpt)), vD = digits(value);
+    let bound = false;
+    for (let len = vD.length; len >= 2; len--) { if (exD.includes(vD.slice(0, len))) { bound = true; break; } }
+    if (!bound) return { ok: false, reason: `value ${value} not found in excerpt (value-binding fail)` };
+  }
+  // screenshot re-render (if declared)
+  if (e.page_image_url) {
+    const png = join(PDFS, e.page_image_url.replace(/^\/archive\//, ''));
+    const shot = screenshotMatchesPage(arch.docPath, e.page, png, e.excerpt);
+    if (shot.ok === false) return { ok: false, reason: shot.reason };
+  }
+  return { ok: true, reason: `verbatim + value-bound on p${e.page ?? '*'}` };
 }
 
 // ─── load reference data once ──────────────────────────────────────────────────
@@ -537,6 +570,22 @@ function proveCouncil(c) {
     out.tier3.entries.push(entry);
   }
 
+  // ── MULTI-YEAR HISTORY verification (added 2026-06-02) ──
+  // Every history[field][year] entry is held to the SAME bar as a current value.
+  // This is what makes the multi-year model trustworthy: a past year isn't "trust us,
+  // it was right once" — it's re-proven from its own archived source every run.
+  out.history = { checked: 0, proven: 0, unproven: 0, entries: [] };
+  const hist = c.detailed?.history || {};
+  for (const [field, byYear] of Object.entries(hist)) {
+    for (const [year, rec] of Object.entries(byYear || {})) {
+      out.history.checked++;
+      const v = verifyTier3Evidence(slug, rec?.field_source, rec?.value);
+      const he = { field, year, value: rec?.value, verdict: v.ok ? 'PROVEN' : 'UNPROVEN', reason: v.reason };
+      if (v.ok) out.history.proven++; else out.history.unproven++;
+      out.history.entries.push(he);
+    }
+  }
+
   // ── Resolve county Tier-1 sentinel ──
   // Counties have no area-CSV row; their Band D is safe iff the precept is proven via
   // field_sources (national CSV cite, or council budget PDF carrying a band_d excerpt).
@@ -619,6 +668,12 @@ if (!onlyCouncil) {
   writeFileSync(join(REPORTS, 'proof-latest.json'), JSON.stringify(report, null, 2));
 }
 
+// --json-out=<file>: write full JSON to a file (no stdout pipe → avoids the 8KB
+// nested-execSync pipe-buffer truncation that callers like lock-council.mjs hit).
+if (jsonOutArg) {
+  writeFileSync(jsonOutArg, JSON.stringify(report, null, 2));
+  process.exit(0);
+}
 if (printJson) {
   console.log(JSON.stringify(report, null, 2));
   process.exit(0);

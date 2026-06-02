@@ -76,6 +76,11 @@ try {
     }
     assert('A5  all key fields carry their expected verdict', ok, bad || 'all match');
     assert('A6  Tier-4 live fields present & quarantined (not counted proven)', /cabinet: TIER4/.test(p.out) && /council_leader: TIER4/.test(p.out));
+    // A7: multi-year history present and independently proven
+    const pj = JSON.parse(sh(`node "${join(__dirname, 'proof.mjs')}" --council=Bradford --json-out=/dev/stdout 2>/dev/null`).out || '{"councils":[{}]}');
+    const h = pj.councils?.[0]?.history;
+    assert('A7  multi-year history present & every entry PROVEN', !!h && h.checked >= 1 && h.unproven === 0,
+      h ? `${h.proven}/${h.checked} history years proven` : 'no history');
   }
 
   // ── PART B: IMMUTABLE ───────────────────────────────────────────
@@ -143,6 +148,18 @@ try {
   {
     const broke = lockVerify().code !== 0;
     assert('C6  drifted Band D vs GOV.UK CSV → breaks lock', broke);
+  }
+  restore();
+
+  // C7: corrupt a HISTORICAL (past-year) value — multi-year immutability.
+  // A frozen past year must be tamper-evident too: changing 2023-24 reserves
+  // must break the lock AND fail history proof (value-binding).
+  mutateTs('value: 220012000,', 'value: 111111111,');
+  {
+    const broke = lockVerify().code !== 0;
+    const pj = JSON.parse(sh(`node "${join(__dirname, 'proof.mjs')}" --council=Bradford --json-out=/dev/stdout 2>/dev/null`).out || '{"councils":[{}]}');
+    const histUnproven = (pj.councils?.[0]?.history?.unproven || 0) >= 1;
+    assert('C7  corrupted HISTORY value → breaks lock AND fails history proof', broke && histUnproven);
   }
   restore();
 
