@@ -1,0 +1,37 @@
+{
+  "council": "Basildon",
+  "slug": "basildon",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-10T01:55:23.829Z",
+      "candidates": 10
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-10T01:56:08.637Z",
+      "results": {
+        "ok": 2,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-10T01:57:55.479Z",
+      "candidates": 17
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": false,
+      "at": "2026-06-10T02:00:16.509Z",
+      "drift": 4
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-10T01:59:05.454Z",
+      "images": 1
+    }
+  },
+  "last_session": "2026-06-10T02:00:16.509Z"
+}

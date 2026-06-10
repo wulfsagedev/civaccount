@@ -49,6 +49,15 @@ Companion docs:
 
 Total: ~4.5 hours per council for competent human-supervised run.
 
+**2026-06-10 — the mechanical phases are now scripted.** Phases 0, 1, 1b,
+2, 3.5 and 4 each have a one-command tool in `scripts/council-research/`
+(see its README for the sequence, and ROLLOUT-LESSONS.md §0 for what got
+encoded). Realistic supervised time per district is now ~1.5–2 h, almost
+all of it in the judgment steps: reviewing extraction candidates,
+cross-check/strip decisions, the live UX sweep, and the audit write-up.
+The scripts propose; the reviewer decides; nothing unreviewed reaches the
+data file.
+
 **CRITICAL**: Phases 3.5 + 3.6 + 5c were added 2026-04-23 after a Leeds spot-check surfaced
 widespread drift that passed the earlier structural audits. Phase 5d was added 2026-04-24
 after a live-site audit found only 3 of 22 councils had shipped screenshot evidence to

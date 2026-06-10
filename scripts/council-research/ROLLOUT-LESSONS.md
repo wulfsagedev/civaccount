@@ -8,6 +8,35 @@ Read this BEFORE starting a new batch.
 
 ---
 
+## 0. The pipeline is code now (2026-06-10)
+
+The six numbered scripts in this folder are implemented and e2e-tested
+(Basildon — a 100% WAF-blocked district). **Run them instead of
+hand-rolling** — see README.md for the sequence. What got encoded:
+
+- The §1 fetch-method decision tree below IS `lib/robust-fetch.mjs`, and
+  `02-archive` climbs it automatically (with the §1 "HTML pretending to
+  be a PDF" smoke check). *Bug fixed on the way: `isPdfFile()` used
+  `require()` inside an ESM module, so it returned false for every file
+  and the ladder always reported failure.*
+- Document discovery (`01-inventory`) reads WAF'd sites via the Wayback
+  copy of their landing pages, and sweeps the Wayback CDX index for
+  finance PDFs by domain — including non-.gov.uk ModernGov portals like
+  basildonmeetings.info. A fully bot-blocked council no longer needs a
+  manual document hunt.
+- The §2 reserves trap is surfaced in `03-extract-pdf` output: General
+  Fund candidates are labelled, Total-Usable candidates carry a ⚠, and
+  "Balance at 31 March" rows are flagged as page locators (the GF figure
+  usually sits in a column the line-based matcher can't attribute).
+- `04-extract-csv` is the per-council Tier-1 cross-check (the old
+  audit-tier1-drift.mjs is hardcoded to the original 22 list); populate
+  is blocked while any drift is unresolved.
+
+The judgment calls have NOT moved: candidates are reviewed by reading
+excerpts, `chosen` is set by hand, `05-populate` is dry-run by default.
+
+---
+
 ## 1. Fetch-method decision tree
 
 The `Statement of Accounts 2023-24` PDF is the single most important

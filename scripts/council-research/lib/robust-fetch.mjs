@@ -18,7 +18,7 @@
  *   node robust-fetch.mjs <url> <out-path>
  */
 
-import { writeFileSync, statSync, existsSync, unlinkSync } from 'node:fs';
+import { statSync, existsSync, unlinkSync, openSync, readSync, closeSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 
 const REALISTIC_UA =
@@ -29,11 +29,13 @@ function isPdfFile(path) {
   const sz = statSync(path).size;
   if (sz < 1024) return false; // too small to be a real PDF
   // Read first 5 bytes for %PDF-
+  // (was `require('node:fs')` — undefined in ESM, so the catch made this
+  // return false for EVERY file and the whole ladder silently failed.)
   try {
-    const fd = require('node:fs').openSync(path, 'r');
+    const fd = openSync(path, 'r');
     const buf = Buffer.alloc(5);
-    require('node:fs').readSync(fd, buf, 0, 5, 0);
-    require('node:fs').closeSync(fd);
+    readSync(fd, buf, 0, 5, 0);
+    closeSync(fd);
     return buf.toString('latin1').startsWith('%PDF-');
   } catch {
     return false;

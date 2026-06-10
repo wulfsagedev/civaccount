@@ -45,6 +45,23 @@ If time is constrained, do fewer councils — never cut phases.
 
 ---
 
+0. **Use the pipeline scripts for the mechanical phases — do not hand-roll them.**
+   All six are implemented and e2e-tested (see `scripts/council-research/README.md`):
+
+   ```bash
+   node scripts/council-research/01-inventory.mjs --council="$ARGUMENTS"     # Phase 0 (probes + wayback harvest + CDX sweep)
+   node scripts/council-research/02-archive.mjs --council="$ARGUMENTS"       # Phase 1 (fetch ladder + sha256 + wayback)
+   node scripts/council-research/03-extract-pdf.mjs --council="$ARGUMENTS"   # Phase 2 (candidates with page + verbatim excerpt)
+   node scripts/council-research/04-extract-csv.mjs --council="$ARGUMENTS"   # Phase 3.5 (Tier-1 cross-check — must be 0 drift)
+   # → REVIEW extracted-values.json: read every excerpt, set `chosen` (the judgment step — never skipped)
+   node scripts/council-research/06-audit-evidence.mjs --council="$ARGUMENTS" # Phase 1b/5d (render PNGs + fingerprint manifest)
+   node scripts/council-research/05-populate.mjs --council="$ARGUMENTS"       # Phase 4 dry-run; add --apply after reviewing the diff
+   ```
+
+   The scripts accelerate the mechanical work; every judgment call (which
+   candidate, GF vs usable reserves, CEO transitions, strip decisions)
+   remains yours — read ROLLOUT-LESSONS.md §0 + §2 before choosing.
+
 1. **Read these documents in full** (they supersede any prior conversation context):
    - [`/NORTH-STAR.md`](/NORTH-STAR.md) — the standard
    - [`/COUNCIL-ROLLOUT-PLAYBOOK.md`](/COUNCIL-ROLLOUT-PLAYBOOK.md) — the 14-phase process

@@ -3,45 +3,83 @@
 Toolkit for the per-council research pipeline defined in
 [`/NORTH-STAR.md`](../../NORTH-STAR.md) §6.
 
+**All six numbered scripts are implemented and tested** (2026-06-10,
+e2e-tested on Basildon — a fully WAF-blocked district). They automate the
+*mechanical* phases; every judgment call stays with the reviewer. The
+pipeline proposes, a human/agent decides, the scripts transcribe.
+
 Scripts are numbered because they're meant to be run in sequence, but
 each is idempotent — safe to re-run without duplicating work.
 
 ## Pipeline overview
 
 ```
-Phase 0 ── 01-inventory ──▶ inventory.json         (candidate URLs per council)
-Phase 1 ── 02-archive  ──▶ pdfs/council-pdfs/...   (local copies + _meta.json)
-Phase 2 ── 03-extract-pdf + 04-extract-csv
-                       ──▶ extracted-values.json   (values with source + method)
-Phase 3 ── (validators run cross-checks)
-Phase 4 ── 05-populate ──▶ data-file diff          (proposed changes)
-Phase 5 ── (CI validators run)
-Phase 6 ── (human writes AUDIT.md)
-Phase 7 ── (human ships PR)
-
-Audit evidence (on-demand):
-          06-audit-evidence  ──▶ PNG screenshots of PDF pages
+Phase 0   ── 01-inventory ──▶ inventory.json          discovery: known record URLs
+                                                       + pattern probes + landing-page
+                                                       harvest + Wayback CDX domain sweep
+                                                       (works even when the council WAFs
+                                                       every direct request)
+Phase 1   ── 02-archive   ──▶ pdfs/council-pdfs/...   sha256 + _meta.json + wayback;
+                                                       fetch ladder: direct → wayback
+                                                       snapshot → wayback save → poll
+                                                       (+ %PDF magic-byte smoke check)
+Phase 2   ── 03-extract-pdf ─▶ extracted-values.json  CANDIDATES per field with page +
+                                                       verbatim excerpt — never decides
+          ── 04-extract-csv ─▶ tier1_references       Tier-1 cross-check table (Phase
+                                                       3.5); exits 1 on any drift and
+                                                       blocks populate until resolved
+REVIEW    ── you read the excerpts, set `chosen` in extracted-values.json
+Phase 1b  ── 06-audit-evidence ─▶ images/*.png        renders chosen pages, regenerates
+                                                       image-manifest.json fingerprints,
+                                                       triggers wayback snapshots
+Phase 4   ── 05-populate  ──▶ TS data-file            dry-run diff by default; --apply
+                                                       writes scalar + full field_sources
+                                                       entry (#page anchor, sha256,
+                                                       excerpt, page_image_url)
+Phase 5+  ── npm run validate · screenshot-parity · ux-audit · live-site-reality-check
 ```
 
 ## Per-council usage
 
 ```bash
-# Phase 0: discover publications
-node scripts/council-research/01-inventory.mjs --council=Bradford
+# Phase 0: discover publications (probes + wayback harvest + CDX sweep)
+node scripts/council-research/01-inventory.mjs --council=Basildon
+#   → review inventory.json, prune to the docs worth archiving
 
-# Phase 1: archive them
-node scripts/council-research/02-archive.mjs --council=Bradford
+# Phase 1: archive them (fetch ladder handles WAF'd sites)
+node scripts/council-research/02-archive.mjs --council=Basildon
 
-# Phase 2: extract values
-node scripts/council-research/03-extract-pdf.mjs --council=Bradford
-node scripts/council-research/04-extract-csv.mjs --council=Bradford
+# Phase 2: locate candidate values + tier-1 cross-check
+node scripts/council-research/03-extract-pdf.mjs --council=Basildon
+node scripts/council-research/04-extract-csv.mjs --council=Basildon
 
-# Phase 4: propose data-file changes (dry-run by default)
-node scripts/council-research/05-populate.mjs --council=Bradford
+# REVIEW: read candidates' excerpts in extracted-values.json, set `chosen`.
+# This is the judgment step — General Fund vs usable reserves, CEO
+# transitions, current-year columns. Do not skip the read.
 
-# On-demand spot check:
-node scripts/council-research/06-audit-evidence.mjs --council=Bradford
+# Phase 1b: render evidence PNGs for the chosen values + fingerprint them
+node scripts/council-research/06-audit-evidence.mjs --council=Basildon
+
+# Phase 4: write the TS (dry-run first, always)
+node scripts/council-research/05-populate.mjs --council=Basildon
+node scripts/council-research/05-populate.mjs --council=Basildon --apply
+
+# Phase 5: gates
+npm run validate
+node scripts/validate/screenshot-parity.mjs
 ```
+
+## Guard rails the scripts enforce
+
+- `04-extract-csv` exits 1 on Tier-1 drift, and `05-populate` refuses to
+  run while `tier1_drift_count > 0` — zero-drift is a precondition, not
+  an afterthought.
+- `05-populate` only writes fields explicitly listed in `chosen`; an
+  unreviewed candidate cannot reach the data file.
+- `02-archive` never hashes a WAF bot-page: responses claiming to be a
+  PDF must start with `%PDF-` or the fetch ladder takes over.
+- `06-audit-evidence` re-fingerprints every screenshot into
+  `image-manifest.json` — CI fails if an evidence PNG changes later.
 
 ## Session continuity
 
@@ -52,9 +90,11 @@ reads this file and knows exactly what's done, what's next, what's blocked.
 
 `lib/` carries shared utilities:
 
-- `fetch.mjs` — fetch with UA / retry / Wayback fallback / archive.org SavePageNow
+- `fetch.mjs` — fetch with realistic UA / retry / Cloudflare detection
+- `robust-fetch.mjs` — the ROLLOUT-LESSONS §1 fetch ladder as code
+  (direct → wayback snapshot → wayback save → save+poll)
 - `pdf.mjs` — pdftotext + pdftoppm wrappers
 - `sha256.mjs` — content fingerprinting
 - `meta.mjs` — `_meta.json` schema + reader/writer
 - `wayback.mjs` — Internet Archive Memento protocol integration
-- `prov.mjs` — W3C PROV-compatible lineage emission
+- `prov.mjs` — W3C PROV lineage (scaffold; nothing consumes it yet)
