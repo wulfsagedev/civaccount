@@ -230,7 +230,7 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   },
   'budget.net_current': {
     label: 'published',
-    source_title: 'GOV.UK Revenue Account Part 2',
+    source_title: 'GOV.UK Revenue Account 2025-26',
     source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
     data_year: '2025-26',
   },
