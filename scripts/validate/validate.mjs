@@ -40,6 +40,7 @@ import { validate as validateCalculatedFields } from './validators/calculated-fi
 import { validate as validateFieldSourceYears } from './validators/field-source-years.mjs';
 import { validate as validateNorthStarGate } from './validators/north-star-gate.mjs';
 import { validate as validateTierClassification } from './validators/tier-classification.mjs';
+import { validate as validateForbiddenSourceScan } from './validators/forbidden-source-scan.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -105,6 +106,7 @@ async function main() {
     ['calculated-fields', validateCalculatedFields],
     ['field-source-years', validateFieldSourceYears],
     ['tier-classification', validateTierClassification],
+    ['forbidden-source-scan', validateForbiddenSourceScan],
     ['north-star-gate', validateNorthStarGate],
   ];
 

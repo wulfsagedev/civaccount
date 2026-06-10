@@ -38,6 +38,7 @@ import { dirname, join } from 'node:path';
 
 import { normalizeCouncilName } from '../validate/lib/normalize.mjs';
 import { startRun } from './lib/journal.mjs';
+import { loadSimpleCsv, loadRaRow, RA1_COLUMNS } from './lib/tier1-refs.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -64,33 +65,11 @@ function slugify(n) {
 const slug = slugify(councilName);
 const councilDir = join(DATA_DIR, 'pdfs', 'council-pdfs', slug);
 
-// ── CSV plumbing (same semantics as validators/source-truth.mjs) ─────
-function parseCsvLine(line) {
-  const result = [];
-  let cur = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') inQuotes = !inQuotes;
-    else if (ch === ',' && !inQuotes) { result.push(cur); cur = ''; }
-    else cur += ch;
-  }
-  result.push(cur);
-  return result;
-}
-
-function loadSimpleCsv(filename) {
-  const path = join(BULK_DIR, filename);
-  if (!existsSync(path)) return null;
-  const lines = readFileSync(path, 'utf-8').split('\n').filter((l) => l.trim());
-  const header = parseCsvLine(lines[0]).map((h) => h.trim());
-  return lines.slice(1).map((l) => {
-    const row = parseCsvLine(l);
-    const o = {};
-    header.forEach((h, i) => { o[h] = (row[i] || '').trim(); });
-    return o;
-  });
-}
+// ── CSV plumbing ─────────────────────────────────────────────────────
+// Loaders + RA column mappings come from lib/tier1-refs.mjs — the SAME
+// module render-csv-evidence uses, and the mappings mirror
+// validators/source-truth.mjs. (This file used to carry its own copies;
+// they drifted, which is how net_current pointed at the wrong RA file.)
 
 /** name-keyed lookup using the shared normaliser. */
 function byName(rows) {
@@ -100,46 +79,6 @@ function byName(rows) {
   }
   return (name) => idx.get(normalizeCouncilName(name)) || null;
 }
-
-/** RA CSVs: header at line 9, data from line 10, ONS code in col 1. */
-function loadRaRow(filename, valueColumns, ons) {
-  const path = join(RA_DIR, filename);
-  if (!existsSync(path)) return null;
-  const lines = readFileSync(path, 'utf-8').split('\n');
-  if (lines.length < 12) return null;
-  const header = parseCsvLine(lines[9]);
-  const colMap = {};
-  for (let i = 0; i < header.length; i++) {
-    const h = header[i].trim();
-    if (valueColumns[h]) colMap[valueColumns[h]] = i;
-  }
-  for (let r = 10; r < lines.length; r++) {
-    const row = parseCsvLine(lines[r]);
-    if ((row[1] || '').trim() !== ons) continue;
-    const entry = {};
-    for (const [field, col] of Object.entries(colMap)) {
-      const v = parseFloat((row[col] || '').trim());
-      if (!isNaN(v)) entry[field] = v;
-    }
-    return entry;
-  }
-  return null;
-}
-
-const RA1_COLUMNS = {
-  'TOTAL EDUCATION SERVICES': 'education',
-  'TOTAL HIGHWAYS AND TRANSPORT SERVICES': 'transport',
-  "TOTAL CHILDREN'S SOCIAL CARE": 'childrens_social_care',
-  'TOTAL ADULT SOCIAL CARE': 'adult_social_care',
-  'TOTAL PUBLIC HEALTH': 'public_health',
-  'TOTAL HOUSING SERVICES (GFRA only)': 'housing',
-  'TOTAL CULTURAL AND RELATED SERVICES': 'cultural',
-  'TOTAL ENVIRONMENTAL AND REGULATORY SERVICES': 'environmental',
-  'TOTAL PLANNING AND DEVELOPMENT SERVICES': 'planning',
-  'TOTAL CENTRAL SERVICES': 'central_services',
-  'TOTAL OTHER SERVICES': 'other',
-  'TOTAL SERVICE EXPENDITURE': 'total_service',
-};
 
 // ── Current TS values ────────────────────────────────────────────────
 function currentTs() {
@@ -164,7 +103,7 @@ function currentTs() {
         ]),
       ),
       budget: Object.fromEntries(
-        Object.values(RA1_COLUMNS).concat(['net_current']).map((f) => [
+        Object.values(RA1_COLUMNS).map((f) => [
           f, get(new RegExp(`\\n\\s{6}${f}:\\s*(-?[\\d.]+)`)),
         ]),
       ),
@@ -225,13 +164,13 @@ function main() {
     }
   }
 
-  // RA budgets (±10% per source-truth)
+  // RA budgets (±10% per source-truth) — all 13 columns incl. the
+  // NET CURRENT EXPENDITURE bottom line live in RA Part 1.
   const ra1 = loadRaRow('RA_Part1_LA_Data.csv', RA1_COLUMNS, ons);
-  const ra2 = loadRaRow('RA_Part2_LA_Data.csv', { 'NET CURRENT EXPENDITURE': 'net_current' }, ons);
   if (ra1) {
-    refs.budget = { ...ra1, ...(ra2 || {}) };
+    refs.budget = { ...ra1 };
     for (const [field, ref] of Object.entries(refs.budget)) {
-      rows.push({ field: `budget.${field}`, ts: ts.budget[field], ref, tol: '±10%', src: 'RA Part 1/2' });
+      rows.push({ field: `budget.${field}`, ts: ts.budget[field], ref, tol: '±10%', src: 'RA Part 1' });
     }
   }
 

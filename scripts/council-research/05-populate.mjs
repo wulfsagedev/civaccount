@@ -53,6 +53,7 @@ import {
   verifyBlockContains,
 } from './lib/populate-logic.mjs';
 import { startRun } from './lib/journal.mjs';
+import { classifySourceUrl } from '../validate/lib/source-licence.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -156,6 +157,18 @@ function main() {
     if (value == null) {
       skipped.push(`${field}: candidate has no scalar value (page-location only)`);
       continue;
+    }
+
+    // SOURCE-LICENCE GATE (zero tolerance): refuse to write a citation
+    // whose source is not ONS / GOV.UK / a named OGL publisher. This is
+    // the last line before the data file — it must hard-fail, not skip.
+    const licence = classifySourceUrl(cand.source_url);
+    if (!licence.allowed) {
+      console.error(`✗ ${field}: SOURCE-LICENCE VIOLATION — refusing to write.`);
+      console.error(`    ${cand.source_url}`);
+      console.error(`    ${licence.reason}`);
+      run.finish('failed', { reason: 'source licence violation', field, url: cand.source_url });
+      process.exit(1);
     }
 
     const kind = FIELD_KIND[field];

@@ -42,7 +42,6 @@ import {
   loadRaRowDisplay,
   manifestFor,
   RA1_COLUMNS,
-  RA2_COLUMNS,
 } from './lib/tier1-refs.mjs';
 import { normalizeCouncilName } from '../validate/lib/normalize.mjs';
 import { startRun } from './lib/journal.mjs';
@@ -155,11 +154,11 @@ async function main() {
     }
   }
 
-  // ── Budget categories (RA Part 1 + Part 2) — identity cols + the one column
+  // ── Budget categories (RA Part 1, incl. net_current bottom line) —
+  //    identity cols + the one column
   {
     const ra = [
       { file: 'RA_Part1_LA_Data.csv', cols: RA1_COLUMNS },
-      { file: 'RA_Part2_LA_Data.csv', cols: RA2_COLUMNS },
     ];
     for (const { file, cols } of ra) {
       const man = manifestFor(file);

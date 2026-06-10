@@ -52,7 +52,7 @@
     },
     "phase_3_5_tier1_crosscheck": {
       "done": true,
-      "at": "2026-06-10T04:35:37.912Z",
+      "at": "2026-06-10T04:51:53.834Z",
       "drift": 0
     }
   },
@@ -60,7 +60,7 @@
   "integrity_score": 100,
   "benford_z": null,
   "last_verified": "2026-04-22",
-  "last_session": "2026-06-10T04:35:37.912Z",
+  "last_session": "2026-06-10T04:51:53.834Z",
   "audit_doc": "src/data/councils/docs/BRADFORD-AUDIT.md",
   "manifest": "src/data/councils/manifests/bradford.json",
   "page_image_count": 7,

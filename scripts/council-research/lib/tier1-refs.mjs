@@ -31,8 +31,22 @@ export const RA1_COLUMNS = {
   'TOTAL CENTRAL SERVICES': 'central_services',
   'TOTAL OTHER SERVICES': 'other',
   'TOTAL SERVICE EXPENDITURE': 'total_service',
+  // Bottom-line column of the SAME Part 1 file. Part 2 holds only
+  // reserves / HRA / investment-property columns — a Part 2 lookup for
+  // this header matches nothing and silently drops the field.
+  'NET CURRENT EXPENDITURE': 'net_current',
 };
-export const RA2_COLUMNS = { 'NET CURRENT EXPENDITURE': 'net_current' };
+
+/** Fail loud when a requested column is absent from the header row —
+ *  a renamed GOV.UK column must never silently shrink the checks. */
+function warnMissingColumns(filename, missing) {
+  if (missing.length === 0) return;
+  console.warn(
+    `⚠ ${filename}: column(s) not found in header row (file line 10): ` +
+    `${missing.map((h) => `"${h}"`).join(', ')} — these fields are SKIPPED. ` +
+    'The GOV.UK file layout may have changed; fix the column mapping.',
+  );
+}
 
 export function parseCsvLine(line) {
   const result = [];
@@ -86,6 +100,9 @@ export function loadRaRow(filename, valueColumns, ons) {
     const h = header[i].trim();
     if (valueColumns[h]) colMap[valueColumns[h]] = i;
   }
+  warnMissingColumns(filename, Object.entries(valueColumns)
+    .filter(([, field]) => colMap[field] === undefined)
+    .map(([h]) => h));
   for (let r = 10; r < lines.length; r++) {
     const row = parseCsvLine(lines[r]);
     if ((row[1] || '').trim() !== ons) continue;
@@ -106,6 +123,7 @@ export function loadRaRowDisplay(filename, ons, wantedHeaders) {
   const lines = readFileSync(path, 'utf-8').split('\n');
   if (lines.length < 12) return null;
   const header = parseCsvLine(lines[9]).map((h) => h.trim());
+  warnMissingColumns(filename, wantedHeaders.filter((w) => header.indexOf(w) === -1));
   for (let r = 10; r < lines.length; r++) {
     const row = parseCsvLine(lines[r]);
     if ((row[1] || '').trim() !== ons) continue;

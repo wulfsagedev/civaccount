@@ -41,6 +41,7 @@ import { dirname, join } from 'node:path';
 import { fetchUrl } from './lib/fetch.mjs';
 import { classifyDoc, guessFiscalYear, isCurrentEnough, harvestLinks } from './lib/discovery.mjs';
 import { startRun } from './lib/journal.mjs';
+import { classifySourceUrl } from '../validate/lib/source-licence.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -201,9 +202,18 @@ async function main() {
   const sources = new Map(); // url → source entry
   const landingPages = [];   // 200 HTML pages to harvest
   const botBlocked = [];
+  const rejectedSources = []; // source-licence gate refusals (recorded, never inventoried)
 
   function addSource(url, type, via, extra = {}) {
     if (sources.has(url)) return;
+    // SOURCE-LICENCE GATE (zero tolerance): only ONS / GOV.UK / named
+    // OGL publishers may enter an inventory. Anything else is recorded
+    // as rejected — visible, never silently citable downstream.
+    const licence = classifySourceUrl(url);
+    if (!licence.allowed) {
+      rejectedSources.push({ url, document_type: type || 'unknown', discovered_via: via, reason: licence.reason });
+      return;
+    }
     sources.set(url, {
       id: `${type || 'document'}-${sources.size + 1}`,
       url,
@@ -211,6 +221,7 @@ async function main() {
       document_type: type || 'unknown',
       fiscal_year: extra.fiscal_year || guessFiscalYear(url),
       tier_guess: 3,
+      licence_basis: licence.basis,
       discovered_via: via,
       ...(extra.link_text ? { link_text: extra.link_text } : {}),
     });
@@ -336,6 +347,7 @@ async function main() {
         ? 'Some probes were WAF-blocked. 02-archive falls back to the Wayback ladder (ROLLOUT-LESSONS §1) automatically.'
         : 'All probes fetched without bot blocking.',
     },
+    rejected_sources: rejectedSources,
     sources: sourceList,
   };
   const outPath = join(councilDir, 'inventory.json');
@@ -361,6 +373,11 @@ async function main() {
   for (const s of sourceList) byType[s.document_type] = (byType[s.document_type] || 0) + 1;
   for (const [t, n] of Object.entries(byType)) console.log(`  ${t}: ${n} candidate(s)`);
   if (botBlocked.length) console.log(`  ⚠ ${botBlocked.length} URL(s) bot-blocked — 02-archive will use the Wayback ladder`);
+  if (rejectedSources.length) {
+    console.log(`  ⛔ ${rejectedSources.length} candidate(s) REJECTED by the source-licence gate (not ONS/GOV.UK/OGL):`);
+    for (const r of rejectedSources.slice(0, 6)) console.log(`     · ${r.url.slice(0, 90)}`);
+    if (rejectedSources.length > 6) console.log(`     · …and ${rejectedSources.length - 6} more (see inventory.json rejected_sources)`);
+  }
   if (sourceList.length === 0) {
     console.log('  ✗ No candidate documents found automatically — supplement inventory.json by hand (web search), then run 02-archive.');
     run.finish('failed', { reason: 'no candidates found', bot_blocked: botBlocked.length });

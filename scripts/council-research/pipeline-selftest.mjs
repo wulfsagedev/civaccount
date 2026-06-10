@@ -24,6 +24,7 @@ import { join } from 'node:path';
 import { parseAmounts, DETECTORS } from './lib/detectors.mjs';
 import { classifyDoc, guessFiscalYear, isCurrentEnough, harvestLinks } from './lib/discovery.mjs';
 import { isPdfFile } from './lib/robust-fetch.mjs';
+import { classifySourceUrl, collectCouncilUrls, unwrapWayback } from '../validate/lib/source-licence.mjs';
 import {
   buildFieldSourceEntry,
   upsertScalar,
@@ -198,6 +199,50 @@ function check(name, cond, detail = '') {
   check('round-trip: unapplied block FAILS verification', vBad.ok === false);
   const vMangled = verifyBlockContains(f.block.replace('sha256_at_access', 'sha256_at_acce55'), 'chief_executive_salary', '141324');
   check('round-trip: mangled entry FAILS verification', vMangled.ok === false, vMangled.reason);
+}
+
+// ════ 5b. Source-licence rule (zero tolerance — owner directive) ══════
+{
+  const allowed = (u) => classifySourceUrl(u).allowed;
+
+  // Sovereign .gov.uk — councils, GOV.UK, ONS, legislation, services.
+  check('licence: bradford.gov.uk allowed', allowed('https://www.bradford.gov.uk/media/x.pdf') === true);
+  check('licence: ons.gov.uk allowed', allowed('https://www.ons.gov.uk/peoplepopulationandcommunity/x') === true);
+  check('licence: legislation.gov.uk allowed', allowed('https://www.legislation.gov.uk/ukpga/1992/14/section/5') === true);
+  check('licence: contractsfinder.service.gov.uk allowed', allowed('https://www.contractsfinder.service.gov.uk/Search') === true);
+  check('licence: gov.uk.evil.com DENIED (no substring tricks)', allowed('https://www.gov.uk.evil.com/x') === false);
+
+  // Named OGL publishers — each carries a written justification.
+  check('licence: bradford.moderngov.co.uk allowed (ModernGov)', classifySourceUrl('https://bradford.moderngov.co.uk/documents/s50461/Doc%20AY.pdf').basis === 'ogl-publisher');
+  check('licence: cmis.uk.com allowed (CMIS committee system)', allowed('https://cambridgeshire.cmis.uk.com/x/Document.ashx') === true);
+  check('licence: lgbce.org.uk allowed', allowed('https://www.lgbce.org.uk/electoral-data') === true);
+  check('licence: cqc.org.uk allowed (statutory regulator, OGL)', allowed('https://www.cqc.org.uk/location/1-1234') === true);
+
+  // Default deny + explicit forbidden list.
+  const wiki = classifySourceUrl('https://en.wikipedia.org/wiki/Bradford');
+  check('licence: Wikipedia DENIED with explicit message', wiki.allowed === false && /forbidden/i.test(wiki.reason), wiki.reason);
+  check('licence: TPA DENIED', allowed('https://www.taxpayersalliance.com/town_hall_rich_list') === false);
+  check('licence: news site DENIED (default deny)', allowed('https://www.expressandstar.com/news/local') === false);
+  check('licence: contractor site DENIED', allowed('https://www.balfourbeatty.com/projects') === false);
+  check('licence: empty URL DENIED', allowed('') === false);
+
+  // Wayback wrapper: judged by what it preserves.
+  check('licence: wayback OF gov.uk allowed', classifySourceUrl('https://web.archive.org/web/20250101000000/https://www.bradford.gov.uk/x.pdf').basis === 'wayback-of-allowed');
+  check('licence: wayback OF wikipedia DENIED', allowed('https://web.archive.org/web/20250101000000/https://en.wikipedia.org/wiki/X') === false);
+  check('licence: unwrapWayback extracts original', unwrapWayback('https://web.archive.org/web/20250101if_/https://x.gov.uk/a.pdf') === 'https://x.gov.uk/a.pdf');
+
+  // Collector walks every URL-bearing field on a council record.
+  const urls = collectCouncilUrls({
+    detailed: {
+      budget_url: 'https://x.gov.uk/budget',
+      field_sources: { reserves: { url: 'https://x.gov.uk/soa.pdf', wayback_url: 'https://web.archive.org/web/2025/https://x.gov.uk/soa.pdf' } },
+      documents: [{ title: 'SoA', url: 'https://x.gov.uk/doc.pdf' }],
+      sources: [{ title: 'Wiki', url: 'https://en.wikipedia.org/wiki/X' }],
+      open_data_links: [{ theme: 'Spending', links: [{ label: 'Data', url: 'https://data.example.com/x' }] }],
+    },
+  });
+  check('licence: collector finds all 6 URL-bearing fields', urls.length === 6, JSON.stringify(urls.map((u) => u.where)));
+  check('licence: collector tags locations actionably', urls.some((u) => u.where === 'field_sources.reserves.wayback_url') && urls.some((u) => u.where.startsWith('sources[0]')));
 }
 
 // ════ 6. Run journal ══════════════════════════════════════════════════

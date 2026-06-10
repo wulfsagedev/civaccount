@@ -1,0 +1,5 @@
+{
+  "max_violations": 43,
+  "note": "Ratchet floor — source-licence violations may only decrease. Lower this number as rollouts/audits clean councils; the validator errors if the live count ever exceeds it.",
+  "set_at": "2026-06-10"
+}

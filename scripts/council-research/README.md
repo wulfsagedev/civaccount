@@ -94,6 +94,14 @@ Three mechanisms make every run traceable and every failure loud:
 
 ## Guard rails the scripts enforce
 
+- **Source-licence gate (zero tolerance)**: every source must be ONS /
+  GOV.UK / a named OGL publisher (`scripts/validate/lib/source-licence.mjs`
+  — additions require a written justification in that file).
+  `01-inventory` refuses to inventory anything else (recorded in
+  `rejected_sources`), `05-populate` hard-fails rather than write a
+  violating citation, the `forbidden-source-scan` validator errors on
+  zero-tolerance councils (Bradford) and ratchets the global violation
+  count so it can only fall (`source-licence-floor.json`).
 - `04-extract-csv` exits 1 on Tier-1 drift, and `05-populate` refuses to
   run while `tier1_drift_count > 0` — zero-drift is a precondition, not
   an afterthought.
