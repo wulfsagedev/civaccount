@@ -2,7 +2,7 @@
   "generated_at": "2026-06-10T05:25:16.516Z",
   "north_star_complete": 174,
   "total_councils": 317,
-  "remaining": 139,
+  "remaining": 138,
   "queue": [
     {
       "name": "Amber Valley",
@@ -40,8 +40,9 @@
       "name": "Babergh",
       "ons_code": "E07000200",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-10"
     },
     {
       "name": "Basildon",

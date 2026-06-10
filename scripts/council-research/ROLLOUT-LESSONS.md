@@ -491,3 +491,67 @@ good — don't re-do them; extend from there to the other fields.
   figure includes Returning Officer election fees per the pay-policy
   page, so title the citation "pay & expenses", not "salary scale" (the
   April 2025 structure chart carries the MG1 scale for context).
+
+### Batch-44-5 / Babergh (2026-06-10) — shared-services scoping, the MIRS pure-GF counterexample, leadership rotations
+
+- **Shared-services councils need a scoping line per citation**: Babergh
+  shares its ENTIRE staff structure with Mid Suffolk (joint CE, joint
+  SLT, since 2013) but publishes its own SoA/notice/budget. The rule
+  that worked: a joint document may source a value ONLY at a line that
+  states Babergh-specific scope. Babergh's SoA Note 24 hands these over
+  explicitly — "applies to Babergh District Council employees only",
+  bandings "exclude any officers who received more than £50,000 from
+  Mid Suffolk" — and the joint AGS signature reads "Chief Executive of
+  Babergh and Mid Suffolk District Councils" (the exact shared-officer
+  line). The joint CE's FULL salary sits in Babergh's SoA because the
+  CE is a Babergh employee (postholders stay employed by their
+  pre-integration council; the partner's 50% reimbursement is disclosed
+  separately, incl. employer NI — don't confuse the £232k reimbursement
+  row with the £166,742 salary row). The CDX sweep surfaces the partner
+  council's papers (MSDC budget reports) — prune them with a written
+  reason; partner documents are out of scope even when they look useful.
+- **Reserves trap, FIFTH council in a row — but the opposite MIRS
+  shape**: legacy TS again held exactly the parsed-reserves.csv RA
+  Part 2 reference (10,819,000) as the GF balance. Babergh's MIRS,
+  unlike Arun's/Ashford's, has a PURE "General Fund Balance" column
+  ((1,200) at 31 March 2025) with earmarked GF a separate column
+  ((10,674)) — narrative p7 confirms ("working balance of £1.2m").
+  So check the MIRS column headers FIRST: if "General Fund Balance"
+  and "Earmarked General Fund Reserves" are separate columns, the GF
+  column is directly usable; only when there's a single combined column
+  do you need the Note-split arithmetic.
+- **Annual leadership rotations make signed AGS evidence stale within
+  weeks**: Babergh's coalition rotates the leadership EVERY May. The
+  AGS (Amended) signed 24/02/2026 names John Ward as Leader; the 12 May
+  2026 Annual Council Meeting elected Deborah Saw. For rotating-
+  leadership councils, check the council's news for the latest Annual
+  Council Meeting BEFORE trusting any signed document's leader name —
+  the council's own news page (Tier-4 live_page + Wayback snapshot) is
+  the only current primary until the next signed document. The CE
+  scalar is unaffected (officers don't rotate).
+- **budget_gap is shippable when the budget report IS the MTFS
+  carrier**: Babergh's "2026/27 GF Budget & Medium-Term Financial
+  Position" report (Full Council, 24 Feb 2026) contains a statutory
+  Section 25 (S151) statement with a verbatim cumulative figure ("The
+  cumulative budget gap over the MTFP totals £9.656m") — first Batch-44
+  council to ship budget_gap. Pattern: look for the Section 25 /
+  robustness-of-estimates appendix in the budget report; it speaks in
+  single quotable sentences, unlike the MTFP tables (whose "Remaining
+  Budget Gap" rows split across years and column headers). Ignore
+  newer news-page figures (£7.7m) that don't match an archived
+  approved document.
+- **Liferay `/documents/d/` stores serve PDFs without extensions**:
+  babergh.gov.uk document URLs carry no `.pdf` but return
+  `application/pdf` directly with no WAF. Give 02-archive explicit
+  `filename:` fields in inventory.json so `expectsPdf` kicks in and
+  files land with proper names.
+- **`06-audit-evidence` wayback step can report ✓ without persisting**:
+  the four "✓ wayback" lines did not write `wayback_url` into the
+  `_meta.json` files. After 06, grep the metas for `"wayback_url": null`
+  and run `ensureSnapshot` directly to backfill (worked first try here —
+  SPN healthy today, unlike 44-3's full outage).
+- **Python strip scripts: 6-space `'      },'` is a substring of the
+  8-space inner closer** — `block.index('      },', start)` matches an
+  inner nested object's `        },` two chars in, leaving a stray
+  closing brace behind (tsc caught it). Anchor structural searches to
+  `'\n      },'` (newline-prefixed) or use the populate-logic helpers.
