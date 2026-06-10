@@ -528,7 +528,9 @@ export function loadCouncils() {
     const filePath = join(COUNCILS_DIR, file);
     const content = readFileSync(filePath, 'utf-8');
 
-    const entryRe = /\n  \{\n    ons_code: "([^"]+)",\n    name: "([^"]+)"/g;
+    // Comment lines may sit between "{" and ons_code (e.g. Barnsley's ONS-code
+    // reissue note) — tolerate them, or the entry silently drops out of validation.
+    const entryRe = /\n  \{\n(?:    \/\/[^\n]*\n)*    ons_code: "([^"]+)",\n    name: "([^"]+)"/g;
     const entries = [];
     let match;
     while ((match = entryRe.exec(content)) !== null) {

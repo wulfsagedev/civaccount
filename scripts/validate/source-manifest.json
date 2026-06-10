@@ -1,10 +1,10 @@
 {
   "description": "Canonical registry of all gov.uk source data files used by CivAccount. Single source of truth for: CI checksum validation, UI source annotations, methodology page, and monthly freshness checks.",
-  "last_full_check": "2026-04-13",
+  "last_full_check": "2026-06-10",
   "sources": [
     {
       "id": "area-council-tax",
-      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields. Refreshed 2026-04-21 to the 2026-27 release published by MHCLG on 25 March 2026.",
+      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields. Refreshed 2026-04-21 to the 2026-27 release published by MHCLG on 25 March 2026. Upstream note: MHCLG silently re-published this asset at the same URL (workbook re-saved 2026-04-22; upstream sha256 140bcae84f4d8dbb7ffc58a4b0b7cc931a5610933b4038e7f07c13f65fdaa322 as of 2026-06-10). The revision touches only the exc_PP / exc_PP_(%) tables (Boston and North Kesteven special-expenses corrections), cover and notes; the Area_CT sheet we parse is cell-identical, so parsed values are unaffected and the archived raw file remains the original 25 March release (raw_file_sha256 below). parsed-area-band-d.csv is source-exact as of 2026-06-10: North Kesteven 2022-26 carries pence per the source's own cell text (previously hand-rounded to integers).",
       "raw_file": "Band_D_2026-27.ods",
       "raw_file_sha256": "22cbe7df6c344eaa6dae9ef6fecc949ba6dd5707c9cba4bdd1fe786db71d67a7",
       "raw_file_url": "https://assets.publishing.service.gov.uk/media/69de2101961ff0ba6bff8e07/Band_D_2026-27.ods",
@@ -25,7 +25,7 @@
       ],
       "spot_check_tolerance": "0",
       "sync_command": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
-      "parsed_csv_sha256": "66250aa56c7b2a641f5107fa73b7f0961896e238250c9b70aed8e92880e0c6f2"
+      "parsed_csv_sha256": "c01c66b1fb8c95686349daac4837d81b3004455ec90c42563e548f7a51b39f5a"
     },
     {
       "id": "council-tax-2025",
