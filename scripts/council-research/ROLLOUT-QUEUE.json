@@ -1,0 +1,1009 @@
+{
+  "generated_at": "2026-06-10T05:25:16.516Z",
+  "north_star_complete": 174,
+  "total_councils": 317,
+  "remaining": 143,
+  "queue": [
+    {
+      "name": "Amber Valley",
+      "ons_code": "E07000032",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Arun",
+      "ons_code": "E07000224",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Ashfield",
+      "ons_code": "E07000170",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Ashford",
+      "ons_code": "E07000105",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Babergh",
+      "ons_code": "E07000200",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Basildon",
+      "ons_code": "E07000066",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Basingstoke & Deane",
+      "ons_code": "E07000084",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Bolsover",
+      "ons_code": "E07000033",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Boston",
+      "ons_code": "E07000136",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Breckland",
+      "ons_code": "E07000143",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Broadland",
+      "ons_code": "E07000144",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Bromsgrove",
+      "ons_code": "E07000234",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Broxbourne",
+      "ons_code": "E07000095",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Cannock Chase",
+      "ons_code": "E07000192",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Canterbury",
+      "ons_code": "E07000106",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Castle Point",
+      "ons_code": "E07000069",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Charnwood",
+      "ons_code": "E07000130",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Cheltenham",
+      "ons_code": "E07000078",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Chichester",
+      "ons_code": "E07000225",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Cotswold",
+      "ons_code": "E07000079",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Dacorum",
+      "ons_code": "E07000096",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Dartford",
+      "ons_code": "E07000107",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Derbyshire Dales",
+      "ons_code": "E07000035",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Dover",
+      "ons_code": "E07000108",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "East Cambridgeshire",
+      "ons_code": "E07000009",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "East Devon",
+      "ons_code": "E07000040",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "East Hertfordshire",
+      "ons_code": "E07000242",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "East Lindsey",
+      "ons_code": "E07000137",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "East Staffordshire",
+      "ons_code": "E07000193",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "East Suffolk",
+      "ons_code": "E07000244",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Eastbourne",
+      "ons_code": "E07000061",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Elmbridge",
+      "ons_code": "E07000207",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Epsom & Ewell",
+      "ons_code": "E07000208",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Exeter",
+      "ons_code": "E07000041",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Fareham",
+      "ons_code": "E07000087",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Folkestone & Hythe",
+      "ons_code": "E07000112",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Fylde",
+      "ons_code": "E07000119",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Gloucester",
+      "ons_code": "E07000081",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Gosport",
+      "ons_code": "E07000088",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Gravesham",
+      "ons_code": "E07000109",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Great Yarmouth",
+      "ons_code": "E07000145",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Harborough",
+      "ons_code": "E07000131",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Harlow",
+      "ons_code": "E07000073",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Hart",
+      "ons_code": "E07000089",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Hastings",
+      "ons_code": "E07000062",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Hertsmere",
+      "ons_code": "E07000098",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Hinckley & Bosworth",
+      "ons_code": "E07000132",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Horsham",
+      "ons_code": "E07000227",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Huntingdonshire",
+      "ons_code": "E07000011",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "King's Lynn & West Norfolk",
+      "ons_code": "E07000146",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Lancaster",
+      "ons_code": "E07000121",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Lewes",
+      "ons_code": "E07000063",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Lichfield",
+      "ons_code": "E07000194",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Lincoln",
+      "ons_code": "E07000138",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Maidstone",
+      "ons_code": "E07000110",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Maldon",
+      "ons_code": "E07000074",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Malvern Hills",
+      "ons_code": "E07000235",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Mansfield",
+      "ons_code": "E07000174",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Melton",
+      "ons_code": "E07000133",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Mid Devon",
+      "ons_code": "E07000042",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Mid Suffolk",
+      "ons_code": "E07000203",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Mole Valley",
+      "ons_code": "E07000210",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "New Forest",
+      "ons_code": "E07000091",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Newark & Sherwood",
+      "ons_code": "E07000175",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Newcastle-under-Lyme",
+      "ons_code": "E07000195",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "North East Derbyshire",
+      "ons_code": "E07000038",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "North Hertfordshire",
+      "ons_code": "E07000099",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "North Kesteven",
+      "ons_code": "E07000139",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "North Warwickshire",
+      "ons_code": "E07000218",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Nuneaton & Bedworth",
+      "ons_code": "E07000219",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Oadby & Wigston",
+      "ons_code": "E07000135",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Oxford",
+      "ons_code": "E07000178",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Preston",
+      "ons_code": "E07000123",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Redditch",
+      "ons_code": "E07000236",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Reigate & Banstead",
+      "ons_code": "E07000211",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Ribble Valley",
+      "ons_code": "E07000124",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rochford",
+      "ons_code": "E07000075",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rossendale",
+      "ons_code": "E07000125",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rother",
+      "ons_code": "E07000064",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rugby",
+      "ons_code": "E07000220",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rushcliffe",
+      "ons_code": "E07000176",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rushmoor",
+      "ons_code": "E07000092",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Cambridgeshire",
+      "ons_code": "E07000012",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Derbyshire",
+      "ons_code": "E07000039",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Hams",
+      "ons_code": "E07000044",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Holland",
+      "ons_code": "E07000140",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Norfolk",
+      "ons_code": "E07000149",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Ribble",
+      "ons_code": "E07000126",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Staffordshire",
+      "ons_code": "E07000196",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Stafford",
+      "ons_code": "E07000197",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Surrey Heath",
+      "ons_code": "E07000214",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Swale",
+      "ons_code": "E07000113",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Tamworth",
+      "ons_code": "E07000199",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Tandridge",
+      "ons_code": "E07000215",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Teignbridge",
+      "ons_code": "E07000045",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Tendring",
+      "ons_code": "E07000076",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Test Valley",
+      "ons_code": "E07000093",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Thanet",
+      "ons_code": "E07000114",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Tonbridge & Malling",
+      "ons_code": "E07000115",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Torridge",
+      "ons_code": "E07000046",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Tunbridge Wells",
+      "ons_code": "E07000116",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Uttlesford",
+      "ons_code": "E07000077",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Vale of White Horse",
+      "ons_code": "E07000180",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Warwick",
+      "ons_code": "E07000222",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Watford",
+      "ons_code": "E07000103",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Waverley",
+      "ons_code": "E07000216",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Wealden",
+      "ons_code": "E07000065",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "West Devon",
+      "ons_code": "E07000047",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "West Lancashire",
+      "ons_code": "E07000127",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "West Suffolk",
+      "ons_code": "E07000245",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Woking",
+      "ons_code": "E07000217",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Worcester",
+      "ons_code": "E07000237",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Worthing",
+      "ons_code": "E07000229",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Wychavon",
+      "ons_code": "E07000238",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Wyre",
+      "ons_code": "E07000128",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Wyre Forest",
+      "ons_code": "E07000239",
+      "type": "District Councils",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Blackburn with Darwen",
+      "ons_code": "E06000008",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Dorset UA",
+      "ons_code": "E06000059",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Herefordshire",
+      "ons_code": "E06000019",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Isles of Scilly",
+      "ons_code": "E06000053",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Kingston upon Hull",
+      "ons_code": "E06000010",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "North Northamptonshire",
+      "ons_code": "E06000061",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Peterborough",
+      "ons_code": "E06000031",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Rutland",
+      "ons_code": "E06000017",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Slough",
+      "ons_code": "E06000039",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Somerset",
+      "ons_code": "E06000066",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Gloucestershire",
+      "ons_code": "E06000025",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Southampton",
+      "ons_code": "E06000045",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Southend-on-Sea",
+      "ons_code": "E06000033",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Stockton-on-Tees",
+      "ons_code": "E06000004",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Warrington",
+      "ons_code": "E06000007",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "West Northamptonshire",
+      "ons_code": "E06000062",
+      "type": "Unitary Authorities",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Calderdale",
+      "ons_code": "E08000033",
+      "type": "Metropolitan Districts",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Gateshead",
+      "ons_code": "E08000037",
+      "type": "Metropolitan Districts",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "South Tyneside",
+      "ons_code": "E08000023",
+      "type": "Metropolitan Districts",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Sunderland",
+      "ons_code": "E08000024",
+      "type": "Metropolitan Districts",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Tameside",
+      "ons_code": "E08000008",
+      "type": "Metropolitan Districts",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Trafford",
+      "ons_code": "E08000009",
+      "type": "Metropolitan Districts",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "City of London",
+      "ons_code": "E09000001",
+      "type": "London Boroughs",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Enfield",
+      "ons_code": "E09000010",
+      "type": "London Boroughs",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Hackney",
+      "ons_code": "E09000012",
+      "type": "London Boroughs",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Hammersmith & Fulham",
+      "ons_code": "E09000013",
+      "type": "London Boroughs",
+      "status": "queued",
+      "attempts": 0
+    },
+    {
+      "name": "Warwickshire",
+      "ons_code": "E10000031",
+      "type": "County Councils",
+      "status": "queued",
+      "attempts": 0
+    }
+  ]
+}
