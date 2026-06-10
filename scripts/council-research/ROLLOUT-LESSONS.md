@@ -351,3 +351,39 @@ good — don't re-do them; extend from there to the other fields.
   retired Nov 2023 (SoA AGS p148). Simon Gladwin became CE 13 Dec 2023
   (new post). Always ground CE names in the AGS "Statutory Roles" section
   — the remuneration table often doesn't carry names for districts.
+
+### Batch-44-2 / Arun (2026-06-10) — committee attachments, MIRS combined column, part-year CE pay
+
+- **democracy.\*.gov.uk attachments vs HTML**: the ModernGov HTML pages
+  (mgMemberIndex, ieListDocuments) 403 bots, but `/documents/sNNNNN/…`
+  and `/documents/gNNNN/…` PDF attachments are immutable per-document IDs
+  (capture digests stable 2024→2025) and fetch cleanly via the ladder's
+  wayback-snapshot step — the living-slot trap does NOT apply to them.
+  Bonus pattern: the **printed minutes PDF** (`g<MId>`) grounds scheme
+  approvals ("RESOLVED That the new scheme … be approved for final
+  adoption", recorded vote) — archive it alongside the IRP/covering
+  report so the rates aren't just "recommended".
+- **MIRS "General Fund Balances" column can BE the combined figure**: in
+  Arun's SoA 2024-25 the MIRS GF column (19,222) is GF + earmarked
+  (5,000 + 14,223, Note 10) — there is no pure-GF MIRS column at all.
+  The Narrative Report ("General Fund Revenue balance £5.0m") was the
+  only pure-GF statement in the document. Check Note 10/earmarked
+  arithmetic against the MIRS column before assuming it's the GF balance
+  (extends §2 / Amber Valley both-directions trap).
+- **Part-year CE remuneration is not a salary**: when the CE joined
+  in-year (Dawn Hudd, appointed 9 May 2024, joined later in 2024), the
+  SoA Note 31 row (£97k) is a part-year amount, and an HTML pay-policy
+  "highest paid employee £182,564" incl. allowances + 17.5% employer
+  pension is a package, not a base rate. If no full-year RATE is
+  published anywhere archivable, **strip chief_executive_salary** with a
+  watch item for the next SoA — don't ship a misleading verbatim number.
+- **`cross_check_ref` nested objects fail field-source-years**: the
+  validator requires data_year on every object under field_sources and
+  chokes on the NORTH-STAR §4 `cross_check_ref` sub-object (no council
+  ships one). Put Tier-4 corroboration in a `//` comment above the entry
+  instead, and keep the citation flat.
+- **SPN/CDX availability**: both were 429/503/unreachable for stretches;
+  the availability API (`archive.org/wayback/available`) succeeded where
+  CDX 503'd. If no API answers, record the Memento TimeGate form
+  (`web.archive.org/web/2024/<url>`) in `_meta.json` with a note and let
+  the monthly job resolve the exact timestamp.
