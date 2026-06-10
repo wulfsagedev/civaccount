@@ -35,6 +35,15 @@ hand-rolling** — see README.md for the sequence. What got encoded:
 The judgment calls have NOT moved: candidates are reviewed by reading
 excerpts, `chosen` is set by hand, `05-populate` is dry-run by default.
 
+**Hardened same day (no-silent-failure pass):** every run journals to
+`status/runs.jsonl` (append-only, crash-safe); `pipeline-selftest.mjs`
+(49 fixture checks, real document lines) runs in CI on every push;
+`03` exits 1 if any PDF fails text extraction (explicit
+`--allow-parse-failures` records the gap instead); `04` refuses to run
+a weakened cross-check when reference CSVs are missing; `05 --apply`
+re-reads the file from disk and round-trip-verifies its own write.
+Monitor with `npm run pipeline:status` (or `--failures`).
+
 ---
 
 ## 1. Fetch-method decision tree

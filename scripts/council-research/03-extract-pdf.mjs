@@ -13,27 +13,24 @@
  * ranked candidate list per field; a human/agent reviews the excerpts,
  * sets `chosen`, and only then does 05-populate write anything.
  *
- * Detected fields:
- *   chief_executive_salary, chief_executive, councillor_basic_allowance,
- *   total_allowances_cost, reserves (with the GF-vs-usable trap labelled),
- *   budget_gap, savings_target, salary_bands (page locations only)
+ * FAIL-LOUD CONTRACT: if ANY archived PDF cannot be text-extracted, the
+ * run exits 1 and the phase is marked not-done. A run that silently
+ * skipped a document used to look identical to a complete one — that is
+ * exactly the class of failure that produces untrustworthy data. The
+ * explicit escape hatch is --allow-parse-failures (e.g. for a known
+ * scanned-image PDF), which records WHICH documents were skipped in the
+ * output and the run journal.
+ *
+ * Detection logic lives in lib/detectors.mjs (pure, self-tested by
+ * pipeline-selftest.mjs — change a regex there and the fixtures must
+ * still pass).
  *
  * Output: pdfs/council-pdfs/<slug>/extracted-values.json
- *   {
- *     council, slug, generated_at,
- *     current_values: { ... },          // what the TS holds today
- *     candidates: { field: [ {value, raw, page, excerpt, pdf, sha256,
- *                              source_url, document_type, fiscal_year,
- *                              confidence, matched} ] },
- *     chosen: {},                        // ← reviewer fills: field → index
- *     warnings: [ ... ]                  // judgment traps to read first
- *   }
- *
- * After review:  node 06-audit-evidence.mjs --council=X   (render PNGs)
- *                node 05-populate.mjs --council=X         (dry-run diff)
+ * Journal: scripts/council-research/status/runs.jsonl (every run, append-only)
  *
  * Usage:
  *   node scripts/council-research/03-extract-pdf.mjs --council=Basildon
+ *   node scripts/council-research/03-extract-pdf.mjs --council=Basildon --allow-parse-failures
  *
  * Spec: NORTH-STAR.md §6 Phase 2; ROLLOUT-LESSONS §2 (reserves discipline)
  */
@@ -44,6 +41,8 @@ import { dirname, join } from 'node:path';
 
 import { extractText } from './lib/pdf.mjs';
 import { readMeta } from './lib/meta.mjs';
+import { DETECTORS, clean } from './lib/detectors.mjs';
+import { startRun } from './lib/journal.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -57,7 +56,7 @@ const args = Object.fromEntries(
 );
 
 if (!args.council) {
-  console.error('Usage: node 03-extract-pdf.mjs --council=<name>');
+  console.error('Usage: node 03-extract-pdf.mjs --council=<name> [--allow-parse-failures]');
   process.exit(2);
 }
 
@@ -67,128 +66,7 @@ function slugify(n) {
 }
 const slug = slugify(councilName);
 const councilDir = join(DATA_DIR, 'pdfs', 'council-pdfs', slug);
-
-// ── Amount parsing ───────────────────────────────────────────────────
-// "£141,324" / "141,324" / "£1.2m" / "£950k" / "£1,234,567"
-function parseAmounts(line) {
-  const out = [];
-  for (const m of line.matchAll(/£?\s?(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?\s?[km])\b/gi)) {
-    const raw = m[1];
-    let value;
-    if (/[km]$/i.test(raw.replace(/\s/g, ''))) {
-      const n = parseFloat(raw);
-      value = /m$/i.test(raw.replace(/\s/g, '')) ? n * 1_000_000 : n * 1_000;
-    } else {
-      value = parseInt(raw.replace(/,/g, ''), 10);
-    }
-    if (!isNaN(value)) out.push({ value, raw: m[0].trim() });
-  }
-  return out;
-}
-
-const clean = (s) => s.replace(/\s+/g, ' ').trim().slice(0, 180);
-
-// ── Field detectors ──────────────────────────────────────────────────
-// Each takes (line, context) → array of {value, raw, matched, confidence}.
-// `context.docType` boosts confidence when the document type is the
-// canonical home for that field.
-const DETECTORS = {
-  chief_executive_salary(line, ctx) {
-    if (!/chief\s+executive/i.test(line)) return [];
-    return parseAmounts(line)
-      .filter((a) => a.value >= 80_000 && a.value <= 350_000)
-      .map((a) => ({
-        ...a,
-        matched: 'chief executive + salary-range amount',
-        confidence: ctx.docType === 'pay-policy' || ctx.docType === 'statement-of-accounts' ? 0.85 : 0.5,
-      }));
-  },
-
-  chief_executive(line) {
-    if (!/chief\s+executive/i.test(line)) return [];
-    const m =
-      line.match(/((?:Dr|Mr|Mrs|Ms|Miss|Professor)\.?\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-zA-Z'\-]+){1,3})\s*[,–—\-|(]?\s*Chief\s+Executive/) ||
-      line.match(/Chief\s+Executive\s*[,:–—\-|)]?\s*((?:Dr|Mr|Mrs|Ms|Miss|Professor)\.?\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-zA-Z'\-]+){1,3})/);
-    if (!m) return [];
-    let name = `${(m[1] || '').trim()} ${m[2].trim()}`.trim();
-    // Remuneration tables append column words to the name — strip them.
-    name = name.replace(/\s+(?:From|To|Note|Notes|Salary|Total|Left|Joined)$/i, '');
-    // Filter obvious non-names that satisfy the capitalised pattern.
-    if (/Officer|Council|Director|Statement|Accounts|Executive|Remuneration|Salary|Pension/i.test(name)) return [];
-    return [{ value: name, raw: name, matched: 'name adjacent to "Chief Executive"', confidence: 0.5 }];
-  },
-
-  councillor_basic_allowance(line, ctx) {
-    if (!/basic\s+allowance/i.test(line)) return [];
-    return parseAmounts(line)
-      .filter((a) => a.value >= 1_500 && a.value <= 25_000)
-      .map((a) => ({
-        ...a,
-        matched: 'basic allowance + amount',
-        confidence: ctx.docType === 'councillor-allowances' || ctx.docType === 'councillors-earnings' ? 0.85 : 0.6,
-      }));
-  },
-
-  total_allowances_cost(line, ctx) {
-    if (!(/allowance/i.test(line) && /total/i.test(line))) return [];
-    return parseAmounts(line)
-      .filter((a) => a.value >= 30_000 && a.value <= 3_000_000)
-      .map((a) => ({
-        ...a,
-        matched: 'total + allowances + amount',
-        confidence: ctx.docType === 'councillor-allowances' || ctx.docType === 'councillors-earnings' ? 0.8 : 0.5,
-      }));
-  },
-
-  reserves(line, ctx) {
-    const isGF = /general\s+fund/i.test(line) && /balance|reserve/i.test(line);
-    const isUsable = /total\s+usable\s+reserves/i.test(line);
-    // The actual GF balance usually sits in a "Balance at 31 March 20XX"
-    // ROW under a "General Fund" COLUMN — line-based matching can't see
-    // the column, so flag the row as a page locator for the reviewer.
-    if (/balance\s+(?:at|as\s+at)\s+31\s+march/i.test(line)) {
-      return [{
-        value: null,
-        raw: clean(line),
-        matched: 'balance-at-31-March row (read the General Fund COLUMN on this page — likely the real reserves figure)',
-        confidence: ctx.docType === 'statement-of-accounts' ? 0.7 : 0.4,
-      }];
-    }
-    if (!isGF && !isUsable) return [];
-    return parseAmounts(line)
-      .filter((a) => a.value >= 100 && a.value <= 2_000_000_000)
-      .map((a) => ({
-        ...a,
-        matched: isGF ? 'GENERAL FUND balance/reserve (the correct field)' : 'TOTAL USABLE reserves (⚠ NOT the field we render — see ROLLOUT-LESSONS §2)',
-        confidence: isGF ? (ctx.docType === 'statement-of-accounts' ? 0.75 : 0.5) : 0.2,
-      }));
-  },
-
-  budget_gap(line, ctx) {
-    if (!/budget\s+gap|funding\s+gap/i.test(line)) return [];
-    return parseAmounts(line).map((a) => ({
-      ...a,
-      matched: 'budget/funding gap + amount',
-      confidence: ctx.docType === 'mtfs' ? 0.8 : 0.55,
-    }));
-  },
-
-  savings_target(line, ctx) {
-    if (!/savings?\s+(?:target|requirement|programme|plan)/i.test(line)) return [];
-    return parseAmounts(line).map((a) => ({
-      ...a,
-      matched: 'savings target/requirement + amount',
-      confidence: ctx.docType === 'mtfs' ? 0.8 : 0.5,
-    }));
-  },
-
-  salary_bands(line) {
-    if (/remuneration\s+band|salary\s+band|(?:salaries|remuneration)\s+(?:over|above|exceeding)\s+£?50/i.test(line)) {
-      return [{ value: null, raw: clean(line), matched: 'salary-band table marker (page location only)', confidence: 0.6 }];
-    }
-    return [];
-  },
-};
+const run = startRun('03-extract-pdf', councilName);
 
 // ── Current TS values for side-by-side comparison ────────────────────
 function currentValuesFromTs() {
@@ -215,6 +93,7 @@ function currentValuesFromTs() {
 function main() {
   if (!existsSync(councilDir)) {
     console.error(`✗ No archive folder at ${councilDir} — run 01-inventory + 02-archive first.`);
+    run.finish('blocked', { reason: 'no archive folder' });
     process.exit(2);
   }
 
@@ -233,6 +112,7 @@ function main() {
 
   if (pdfs.length === 0) {
     console.error(`✗ No archived PDFs with meta at ${councilDir} — run 02-archive first.`);
+    run.finish('blocked', { reason: 'no archived PDFs' });
     process.exit(2);
   }
 
@@ -240,6 +120,7 @@ function main() {
 
   const candidates = {};
   for (const field of Object.keys(DETECTORS)) candidates[field] = [];
+  const parseFailures = [];
 
   for (const { pdfFile, meta } of pdfs) {
     const pdfPath = join(councilDir, pdfFile);
@@ -247,7 +128,8 @@ function main() {
     try {
       fullText = extractText(pdfPath); // -layout, \f between pages
     } catch (e) {
-      console.warn(`  ! ${pdfFile}: pdftotext failed (${e.message}) — skipping`);
+      console.error(`  ✗ ${pdfFile}: pdftotext FAILED (${e.message})`);
+      parseFailures.push({ pdf: pdfFile, error: String(e.message) });
       continue;
     }
     const pages = fullText.split('\f');
@@ -298,6 +180,13 @@ function main() {
   }
 
   const warnings = [];
+  if (parseFailures.length > 0) {
+    warnings.push(
+      `${parseFailures.length} archived PDF(s) could NOT be text-extracted: ` +
+      parseFailures.map((p) => p.pdf).join(', ') +
+      ' — their values are NOT in the candidate list. Extract them manually or fix the PDFs.',
+    );
+  }
   if (candidates.reserves.length > 0) {
     warnings.push(
       'reserves: the rendered field is the GENERAL FUND reserve, NOT Total Usable Reserves. ' +
@@ -310,29 +199,44 @@ function main() {
   }
   warnings.push('Every chosen value must be re-read in the excerpt by a human/agent before 05-populate — this file proposes, it never decides.');
 
+  // Preserve a reviewer's existing chosen/warnings notes on re-runs.
+  const outPath = join(councilDir, 'extracted-values.json');
+  let prior = {};
+  if (existsSync(outPath)) { try { prior = JSON.parse(readFileSync(outPath, 'utf8')); } catch {} }
+
   const out = {
     council: councilName,
     slug,
     generated_at: new Date().toISOString(),
     current_values: currentValuesFromTs(),
     candidates,
-    chosen: {},
+    chosen: prior.chosen ?? {},
+    parse_failures: parseFailures,
+    tier1_references: prior.tier1_references,
+    tier1_drift_count: prior.tier1_drift_count,
     warnings,
   };
-
-  const outPath = join(councilDir, 'extracted-values.json');
   writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
 
-  // Status
+  // Status + journal
+  const totalCands = Object.values(candidates).reduce((n, c) => n + c.length, 0);
+  const hardFail = parseFailures.length > 0 && !args['allow-parse-failures'];
   const statusDir = join(REPO_ROOT, 'scripts', 'council-research', 'status');
   mkdirSync(statusDir, { recursive: true });
   const statusPath = join(statusDir, `${slug}.json`);
   let current = {};
   if (existsSync(statusPath)) { try { current = JSON.parse(readFileSync(statusPath, 'utf8')); } catch {} }
-  const totalCands = Object.values(candidates).reduce((n, c) => n + c.length, 0);
   writeFileSync(statusPath, JSON.stringify({
     council: councilName, slug, ...current,
-    phases: { ...(current.phases || {}), phase_2_extract: { done: totalCands > 0, at: new Date().toISOString(), candidates: totalCands } },
+    phases: {
+      ...(current.phases || {}),
+      phase_2_extract: {
+        done: totalCands > 0 && !hardFail,
+        at: new Date().toISOString(),
+        candidates: totalCands,
+        parse_failures: parseFailures.length,
+      },
+    },
     last_session: new Date().toISOString(),
   }, null, 2) + '\n');
 
@@ -343,10 +247,26 @@ function main() {
     const top = cands[0];
     console.log(`  ${field}: ${cands.length} candidate(s) — top: ${JSON.stringify(top.value ?? top.raw)} (p${top.page} ${top.pdf}, conf ${top.confidence})`);
   }
+
+  if (hardFail) {
+    console.error('');
+    console.error(`✗ ${parseFailures.length} PDF(s) failed text extraction — refusing to report success.`);
+    console.error('  Fix the documents, or re-run with --allow-parse-failures to explicitly accept the gap');
+    console.error('  (the gap is recorded in extracted-values.json `parse_failures` either way).');
+    run.finish('failed', { candidates: totalCands, parse_failures: parseFailures });
+    process.exit(1);
+  }
+
   console.log('');
   console.log('Next: review excerpts, set `chosen` in extracted-values.json, then:');
   console.log(`  node scripts/council-research/06-audit-evidence.mjs --council="${councilName}"`);
   console.log(`  node scripts/council-research/05-populate.mjs --council="${councilName}"`);
+  run.finish('ok', {
+    candidates: totalCands,
+    pdfs_scanned: pdfs.length,
+    parse_failures: parseFailures,
+    ...(parseFailures.length > 0 ? { note: 'parse failures explicitly accepted via --allow-parse-failures' } : {}),
+  });
 }
 
 main();

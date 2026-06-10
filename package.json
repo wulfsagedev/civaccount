@@ -26,6 +26,8 @@
     "generate:dataset-version": "node scripts/build-dataset-version.mjs",
     "wayback:backfill": "node scripts/wayback-backfill.mjs",
     "wayback:save": "node scripts/wayback-backfill.mjs --save",
+    "pipeline:selftest": "node scripts/council-research/pipeline-selftest.mjs",
+    "pipeline:status": "node scripts/council-research/pipeline-status.mjs",
     "audit:data": "node scripts/data-audit-log.mjs",
     "indexnow:ping": "node scripts/indexnow-ping.mjs",
     "indexnow:ping-all": "node scripts/indexnow-ping.mjs --all",

@@ -19,12 +19,13 @@
     },
     "phase_2_extract": {
       "done": true,
-      "at": "2026-06-10T01:57:55.479Z",
-      "candidates": 17
+      "at": "2026-06-10T04:00:00.585Z",
+      "candidates": 17,
+      "parse_failures": 0
     },
     "phase_3_5_tier1_crosscheck": {
       "done": false,
-      "at": "2026-06-10T02:00:16.509Z",
+      "at": "2026-06-10T04:00:00.630Z",
       "drift": 4
     },
     "phase_1b_page_images": {
@@ -33,5 +34,5 @@
       "images": 1
     }
   },
-  "last_session": "2026-06-10T02:00:16.509Z"
+  "last_session": "2026-06-10T04:00:00.630Z"
 }

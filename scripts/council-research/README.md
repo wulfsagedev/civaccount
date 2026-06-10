@@ -69,6 +69,23 @@ npm run validate
 node scripts/validate/screenshot-parity.mjs
 ```
 
+## Failure visibility — no silent working failures
+
+Three mechanisms make every run traceable and every failure loud:
+
+1. **Run journal** — every script appends every run (ok / failed /
+   blocked / crashed, with counts and reasons) to
+   `status/runs.jsonl`. Append-only, committed. A crash before the
+   script finishes still leaves a journal line (exit hooks).
+2. **Self-test in CI** — `npm run pipeline:selftest` exercises every
+   pure module (detectors, discovery parsing, TS surgery, PDF
+   magic-byte check, journal) against real-document fixtures. Runs on
+   every push; a regex or surgery regression cannot land silently.
+3. **Status dashboard** — `npm run pipeline:status` shows every
+   council's phase state and recent failures in one table;
+   `--council=<Name>` gives one council's full run history;
+   `--failures` lists every non-ok run ever recorded.
+
 ## Guard rails the scripts enforce
 
 - `04-extract-csv` exits 1 on Tier-1 drift, and `05-populate` refuses to

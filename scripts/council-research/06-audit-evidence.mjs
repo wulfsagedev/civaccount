@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import { ensureSnapshot } from './lib/wayback.mjs';
+import { startRun } from './lib/journal.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -49,10 +50,13 @@ function slugify(n) {
 const slug = slugify(councilName);
 const councilDir = join(DATA_DIR, 'pdfs', 'council-pdfs', slug);
 
+const run = startRun('06-audit-evidence', councilName);
+
 async function main() {
   const evPath = join(councilDir, 'extracted-values.json');
   if (!existsSync(evPath)) {
     console.error(`✗ ${evPath} not found — run 03-extract-pdf and choose candidates first.`);
+    run.finish('blocked', { reason: 'no extracted-values.json' });
     process.exit(2);
   }
   const ev = JSON.parse(readFileSync(evPath, 'utf8'));
@@ -60,6 +64,7 @@ async function main() {
   const fields = Object.keys(chosen);
   if (fields.length === 0) {
     console.error('✗ No `chosen` entries in extracted-values.json — review candidates first.');
+    run.finish('blocked', { reason: 'nothing chosen' });
     process.exit(1);
   }
 
@@ -106,6 +111,7 @@ async function main() {
   });
   if (render.status !== 0) {
     console.error('✗ render-page-images failed — fix and re-run.');
+    run.finish('failed', { reason: 'render-page-images failed', spec: specPath });
     process.exit(1);
   }
 
@@ -115,6 +121,7 @@ async function main() {
   });
   if (manifest.status !== 0) {
     console.error('✗ generate-image-manifest failed — evidence PNGs are unfingerprinted; fix before shipping.');
+    run.finish('failed', { reason: 'image-manifest regeneration failed' });
     process.exit(1);
   }
 
@@ -140,6 +147,7 @@ async function main() {
 
   console.log('');
   console.log(`✓ Evidence ready. Next: node scripts/council-research/05-populate.mjs --council="${councilName}"`);
+  run.finish('ok', { images: spec.length, wayback_attempted: args['skip-wayback'] ? 0 : sourceUrls.size });
 }
 
-main().catch((e) => { console.error('Fatal:', e); process.exit(2); });
+main().catch((e) => { console.error('Fatal:', e); run.finish('crashed', { error: String(e?.stack || e) }); process.exit(2); });

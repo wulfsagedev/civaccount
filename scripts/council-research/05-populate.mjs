@@ -11,8 +11,19 @@
  * DRY-RUN BY DEFAULT. Prints exactly what would change; nothing is
  * written without --apply. Refuses to act on fields whose candidate
  * wasn't explicitly chosen — extraction proposes, a human/agent
- * decides, this script merely transcribes. That's the whole reason it
- * can be trusted to touch districts.ts.
+ * decides, this script merely transcribes.
+ *
+ * FAIL-LOUD CONTRACT:
+ *   - refuses to run while extracted-values.json records unresolved
+ *     Tier-1 drift (re-run 04-extract-csv after fixing);
+ *   - after --apply it RE-READS the file from disk and verifies the
+ *     scalar and a complete field_sources entry are actually present
+ *     (round-trip check) — a surgery bug exits 1 and tells you to
+ *     inspect `git diff`, it can never pass silently;
+ *   - every run (dry or applied) is recorded in status/runs.jsonl.
+ *
+ * Surgery logic lives in lib/populate-logic.mjs (pure, self-tested by
+ * pipeline-selftest.mjs).
  *
  * Choosing: edit extracted-values.json
  *   "chosen": {
@@ -32,6 +43,16 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+
+import {
+  FIELD_KIND,
+  esc,
+  buildFieldSourceEntry,
+  upsertScalar,
+  upsertFieldSources,
+  verifyBlockContains,
+} from './lib/populate-logic.mjs';
+import { startRun } from './lib/journal.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -57,94 +78,34 @@ function slugify(n) {
 }
 const slug = slugify(councilName);
 const councilDir = join(DATA_DIR, 'pdfs', 'council-pdfs', slug);
-
-const TITLE_LABEL = {
-  'statement-of-accounts': 'Statement of Accounts',
-  'pay-policy': 'Pay Policy Statement',
-  'councillor-allowances': "Members' Allowances Scheme",
-  'councillors-earnings': "Members' Allowances Scheme",
-  mtfs: 'Medium Term Financial Strategy',
-  'budget-book': 'Budget Book',
-  budget: 'Budget',
-  unknown: 'Council publication',
-};
-
-// Scalar type per field — numbers are written bare, strings quoted.
-const FIELD_KIND = {
-  chief_executive: 'string',
-  chief_executive_salary: 'number',
-  councillor_basic_allowance: 'number',
-  total_allowances_cost: 'number',
-  reserves: 'number',
-  budget_gap: 'number',
-  savings_target: 'number',
-};
+const run = startRun('05-populate', councilName);
 
 const today = new Date().toISOString().slice(0, 10);
 
-const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-
-/** "…/Basildon_Draft_Annual_Financial_Report_2024_25_v3.pdf" →
- *  "Basildon Draft Annual Financial Report 2024 25" — used when the
- *  archived meta carries no recognised document_type. */
-function titleFromUrl(url) {
-  try {
-    const seg = decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).pop() || '');
-    return seg
-      .replace(/\.[a-z0-9]+$/i, '')
-      .replace(/_v\d+$/i, '')
-      .replace(/[_-]+/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  } catch {
-    return '';
+function locateCouncil() {
+  const TS_FILES = ['county-councils.ts', 'districts.ts', 'metropolitan.ts', 'unitary.ts', 'london-boroughs.ts'];
+  for (const f of TS_FILES) {
+    const path = join(DATA_DIR, f);
+    if (!existsSync(path)) continue;
+    const s = readFileSync(path, 'utf8');
+    const nameIdx = s.indexOf(`\n    name: "${councilName}",`);
+    if (nameIdx === -1) continue;
+    const nextIdx = s.indexOf('\n  },\n  {\n    ons_code:', nameIdx);
+    return {
+      tsFile: path,
+      src: s,
+      blockStart: nameIdx,
+      blockEnd: nextIdx === -1 ? s.length : nextIdx,
+    };
   }
-}
-
-function buildFieldSourceEntry(field, cand) {
-  const isPdf = /\.pdf(\?|$)/i.test(cand.source_url) || true; // archived docs are PDFs here
-  const url = cand.source_url.includes('#') || !cand.page || !isPdf
-    ? cand.source_url
-    : `${cand.source_url}#page=${cand.page}`;
-  const label = TITLE_LABEL[cand.document_type];
-  const fromUrl = label ? null : titleFromUrl(cand.source_url);
-  const title = fromUrl && fromUrl.length >= 12
-    ? fromUrl
-    : `${councilName} ${label || TITLE_LABEL.unknown}${cand.fiscal_year && cand.fiscal_year !== 'unknown' ? ` ${cand.fiscal_year}` : ''}`;
-  const pngName = `${field}-p${cand.page}.png`;
-  const pngOnDisk = existsSync(join(councilDir, 'images', pngName));
-
-  const lines = [
-    `        ${field}: {`,
-    `          url: "${esc(url)}",`,
-    `          title: "${esc(title)}",`,
-    `          accessed: "${today}",`,
-    `          data_year: "${esc(cand.fiscal_year || 'unknown')}",`,
-    `          tier: 3,`,
-    `          extraction_method: "pdf_page",`,
-    `          sha256_at_access: "${cand.sha256}",`,
-  ];
-  if (cand.page) lines.push(`          page: ${cand.page},`);
-  if (cand.excerpt) lines.push(`          excerpt: "${esc(cand.excerpt)}",`);
-  if (pngOnDisk) lines.push(`          page_image_url: "/archive/${slug}/images/${pngName}",`);
-  lines.push('        },');
-  return { text: lines.join('\n'), pngOnDisk, pngName };
-}
-
-// ── TS surgery helpers ───────────────────────────────────────────────
-function braceMatch(src, openIdx) {
-  let depth = 0;
-  for (let i = openIdx; i < src.length; i++) {
-    if (src[i] === '{') depth++;
-    else if (src[i] === '}') { depth--; if (depth === 0) return i; }
-  }
-  return -1;
+  return null;
 }
 
 function main() {
   const evPath = join(councilDir, 'extracted-values.json');
   if (!existsSync(evPath)) {
     console.error(`✗ ${evPath} not found — run 03-extract-pdf first.`);
+    run.finish('blocked', { reason: 'no extracted-values.json' });
     process.exit(2);
   }
   const ev = JSON.parse(readFileSync(evPath, 'utf8'));
@@ -154,42 +115,31 @@ function main() {
   if (fields.length === 0) {
     console.error('✗ Nothing chosen. Review candidates in extracted-values.json, set `chosen`, re-run.');
     console.error('  (salary_bands has no scalar — populate it by hand if the table is worth shipping.)');
+    run.finish('blocked', { reason: 'nothing chosen' });
     process.exit(1);
   }
   if (ev.tier1_drift_count > 0) {
     console.error(`✗ extracted-values.json records ${ev.tier1_drift_count} unresolved Tier-1 drift(s) — run 04-extract-csv and resolve first.`);
+    run.finish('blocked', { reason: 'tier1 drift unresolved', drift: ev.tier1_drift_count });
     process.exit(1);
   }
 
-  // Locate the council in its TS file.
-  const TS_FILES = ['county-councils.ts', 'districts.ts', 'metropolitan.ts', 'unitary.ts', 'london-boroughs.ts'];
-  let tsFile = null, src = null, blockStart = -1, blockEnd = -1;
-  for (const f of TS_FILES) {
-    const path = join(DATA_DIR, f);
-    if (!existsSync(path)) continue;
-    const s = readFileSync(path, 'utf8');
-    const nameIdx = s.indexOf(`\n    name: "${councilName}",`);
-    if (nameIdx === -1) continue;
-    tsFile = path;
-    src = s;
-    blockStart = nameIdx;
-    const nextIdx = s.indexOf('\n  },\n  {\n    ons_code:', nameIdx);
-    blockEnd = nextIdx === -1 ? s.length : nextIdx;
-    break;
-  }
-  if (!tsFile) {
+  const loc = locateCouncil();
+  if (!loc) {
     console.error(`✗ Council "${councilName}" not found in any data file.`);
+    run.finish('failed', { reason: 'council not found in TS' });
     process.exit(2);
   }
-
+  const { tsFile, src, blockStart, blockEnd } = loc;
   let block = src.slice(blockStart, blockEnd);
+
   const changes = [];
   const skipped = [];
+  const applied = []; // [{field, valueText}] for round-trip verification
 
-  // Bounds of detailed: { ... } within the block.
-  const detailedIdx = block.indexOf('detailed: {');
-  if (detailedIdx === -1) {
+  if (block.indexOf('detailed: {') === -1) {
     console.error('✗ Council block has no `detailed: {` — populate by hand (unexpected shape).');
+    run.finish('failed', { reason: 'no detailed block' });
     process.exit(2);
   }
 
@@ -211,63 +161,27 @@ function main() {
     const kind = FIELD_KIND[field];
     const valueText = kind === 'string' ? `"${esc(value)}"` : String(value);
 
-    // 1. Scalar upsert (6-space indent inside detailed).
-    const scalarRe = new RegExp(`(\\n {6}${field}: )("[^"]*"|-?[\\d.]+)(,)`);
-    const scalarMatch = block.match(scalarRe);
-    if (scalarMatch) {
-      if (scalarMatch[2] !== valueText) {
-        block = block.replace(scalarRe, `$1${valueText}$3`);
-        changes.push(`${field}: ${scalarMatch[2]} → ${valueText}`);
-      } else {
-        changes.push(`${field}: unchanged (${valueText}) — citation refreshed`);
-      }
-    } else {
-      // Insert scalar right after `detailed: {`.
-      block = block.replace('detailed: {', `detailed: {\n      ${field}: ${valueText},`);
-      changes.push(`${field}: (new) ${valueText}`);
-    }
+    // 1. Scalar upsert.
+    const s = upsertScalar(block, field, valueText);
+    block = s.block;
+    changes.push(s.change);
 
     // 2. field_sources upsert.
-    const entry = buildFieldSourceEntry(field, cand);
+    const pngName = `${field}-p${cand.page}.png`;
+    const pngOnDisk = existsSync(join(councilDir, 'images', pngName));
+    const entry = buildFieldSourceEntry(field, cand, { councilName, slug, pngOnDisk, today });
+    if (!pngOnDisk) {
+      skipped.push(`${field}: no page-image PNG at images/${pngName} — run 06-audit-evidence first for screenshot evidence (entry written without page_image_url)`);
+    }
     if (!APPLY) {
       console.log(`  ── proposed field_sources entry for ${field}: ──`);
       console.log(entry.text.split('\n').map((l) => `  │ ${l}`).join('\n'));
     }
-    if (!entry.pngOnDisk) {
-      skipped.push(`${field}: no page-image PNG at images/${entry.pngName} — run 06-audit-evidence first for screenshot evidence (entry written without page_image_url)`);
-    }
-    const fsIdx = block.indexOf('field_sources: {');
-    if (fsIdx === -1) {
-      // No field_sources map yet — create one at the end of detailed,
-      // just before last_verified if present.
-      const insertion = `field_sources: {\n${entry.text}\n      },\n      `;
-      if (block.includes('\n      last_verified:')) {
-        block = block.replace(/\n {6}last_verified:/, `\n      ${insertion.trimEnd()}\n      last_verified:`);
-      } else {
-        // Append before detailed's closing brace.
-        const dIdx = block.indexOf('detailed: {');
-        const dEnd = braceMatch(block, block.indexOf('{', dIdx));
-        block = `${block.slice(0, dEnd)}  ${insertion.trimEnd()}\n    ${block.slice(dEnd)}`;
-      }
-      changes.push(`${field}: field_sources map created with entry`);
-    } else {
-      const keyRe = new RegExp(`\\n {8}${field}: \\{`);
-      const keyMatch = block.slice(fsIdx).match(keyRe);
-      if (keyMatch) {
-        // Replace the existing entry block.
-        const keyStart = fsIdx + keyMatch.index + 1; // skip leading \n
-        const openBrace = block.indexOf('{', keyStart);
-        const closeBrace = braceMatch(block, openBrace);
-        // Entry ends after the trailing comma if present.
-        const after = block[closeBrace + 1] === ',' ? closeBrace + 2 : closeBrace + 1;
-        block = `${block.slice(0, keyStart)}${entry.text.trimStart()}${block.slice(after)}`;
-        changes.push(`${field}: field_sources entry replaced`);
-      } else {
-        // Insert as the first entry in the map.
-        block = block.replace('field_sources: {', `field_sources: {\n${entry.text}`);
-        changes.push(`${field}: field_sources entry added`);
-      }
-    }
+    const fsr = upsertFieldSources(block, field, entry.text);
+    block = fsr.block;
+    changes.push(fsr.change);
+
+    applied.push({ field, valueText });
   }
 
   // 3. last_verified bump.
@@ -286,12 +200,35 @@ function main() {
   if (!APPLY) {
     console.log('Dry-run only — nothing written. Re-run with --apply to write, then:');
     console.log('  npm run validate');
+    run.finish('ok', { mode: 'dry-run', fields: applied.map((a) => a.field), skipped });
     return;
   }
 
   writeFileSync(tsFile, src.slice(0, blockStart) + block + src.slice(blockEnd));
 
-  // Status
+  // ── ROUND-TRIP VERIFICATION ─────────────────────────────────────────
+  // Re-read the file FROM DISK and prove every applied field is present
+  // with the expected value and a complete field_sources entry. A
+  // surgery bug must fail here, loudly — never downstream, never silently.
+  const reread = readFileSync(tsFile, 'utf8');
+  const rNameIdx = reread.indexOf(`\n    name: "${councilName}",`);
+  const rNextIdx = reread.indexOf('\n  },\n  {\n    ons_code:', rNameIdx);
+  const rBlock = reread.slice(rNameIdx, rNextIdx === -1 ? reread.length : rNextIdx);
+  const verifyFailures = [];
+  for (const { field, valueText } of applied) {
+    const v = verifyBlockContains(rBlock, field, valueText);
+    if (!v.ok) verifyFailures.push(`${field}: ${v.reason}`);
+  }
+  if (verifyFailures.length > 0) {
+    console.error('✗ ROUND-TRIP VERIFICATION FAILED — the write did not produce the expected result:');
+    for (const f of verifyFailures) console.error(`    ${f}`);
+    console.error(`  Inspect with: git -C src/data/councils diff ${tsFile.split('/').pop()}`);
+    run.finish('failed', { mode: 'apply', verify_failures: verifyFailures });
+    process.exit(1);
+  }
+  console.log(`✓ Round-trip verified: ${applied.length} field(s) present on re-read with full citations.`);
+
+  // Status + journal
   const statusDir = join(REPO_ROOT, 'scripts', 'council-research', 'status');
   mkdirSync(statusDir, { recursive: true });
   const statusPath = join(statusDir, `${slug}.json`);
@@ -299,11 +236,12 @@ function main() {
   if (existsSync(statusPath)) { try { current = JSON.parse(readFileSync(statusPath, 'utf8')); } catch {} }
   writeFileSync(statusPath, JSON.stringify({
     council: councilName, slug, ...current,
-    phases: { ...(current.phases || {}), phase_4_populate: { done: true, at: new Date().toISOString(), fields: fields.length } },
+    phases: { ...(current.phases || {}), phase_4_populate: { done: true, at: new Date().toISOString(), fields: applied.map((a) => a.field) } },
     last_session: new Date().toISOString(),
   }, null, 2) + '\n');
 
   console.log(`✓ Written. Now run: npm run validate && node scripts/validate/screenshot-parity.mjs`);
+  run.finish('ok', { mode: 'apply', fields: applied.map((a) => a.field), skipped, round_trip: 'verified' });
 }
 
 main();

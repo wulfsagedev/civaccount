@@ -39,6 +39,7 @@ import { robustFetchPdf } from './lib/robust-fetch.mjs';
 import { hashBuffer, hashFile } from './lib/sha256.mjs';
 import { readMeta, writeMeta, validateMeta } from './lib/meta.mjs';
 import { ensureSnapshot } from './lib/wayback.mjs';
+import { startRun } from './lib/journal.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -63,6 +64,8 @@ const councilDir = join(REPO_ROOT, 'src', 'data', 'councils', 'pdfs', 'council-p
 function slugify(n) {
   return n.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
+
+const run = startRun('02-archive', councilName);
 
 // ── Main ─────────────────────────────────────────────────────────
 
@@ -117,6 +120,10 @@ async function main() {
   // Update status file
   updateStatus(slug, { phase_1_archive: { done: failed === 0, at: new Date().toISOString(), results: { ok, skipped, blocked, failed } } });
 
+  run.finish(failed > 0 ? 'failed' : 'ok', {
+    ok, skipped, blocked, failed,
+    failed_urls: entries.filter((_, i) => results[i]?.status === 'failed').map((e) => e.source_url),
+  });
   process.exit(failed > 0 ? 1 : 0);
 }
 
@@ -346,5 +353,6 @@ function updateStatus(slug, patch) {
 
 main().catch((e) => {
   console.error('Fatal:', e);
+  run.finish('crashed', { error: String(e?.stack || e) });
   process.exit(2);
 });

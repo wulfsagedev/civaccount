@@ -35,6 +35,13 @@ jobs:
       - name: Validate council data
         run: npm run validate
 
+      # Pure-function tests for the research pipeline (detectors,
+      # discovery, TS surgery, journal, PDF smoke check). No network,
+      # no poppler, no private data — runs on every push so a regex or
+      # surgery regression can never land silently.
+      - name: Pipeline self-test
+        run: npm run pipeline:selftest
+
       - name: Regenerate coverage stats
         run: npm run generate:coverage
 

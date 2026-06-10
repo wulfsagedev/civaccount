@@ -24,7 +24,7 @@ import { execSync } from 'node:child_process';
 const REALISTIC_UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15';
 
-function isPdfFile(path) {
+export function isPdfFile(path) {
   if (!existsSync(path)) return false;
   const sz = statSync(path).size;
   if (sz < 1024) return false; // too small to be a real PDF

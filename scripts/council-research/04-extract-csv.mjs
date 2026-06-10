@@ -37,6 +37,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import { normalizeCouncilName } from '../validate/lib/normalize.mjs';
+import { startRun } from './lib/journal.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -175,16 +176,40 @@ function currentTs() {
 }
 
 // ── Main ─────────────────────────────────────────────────────────────
+const run = startRun('04-extract-csv', councilName);
+
 function main() {
+  // FAIL-LOUD: the core reference files are preconditions, not options.
+  // A missing CSV silently shrinks the cross-check table — fewer checks
+  // must never read as "zero drift".
+  const REQUIRED = [
+    join(BULK_DIR, 'parsed-area-band-d.csv'),
+    join(RA_DIR, 'RA_Part1_LA_Data.csv'),
+  ];
+  const missingRequired = REQUIRED.filter((p) => !existsSync(p));
+  if (missingRequired.length > 0) {
+    console.error('✗ Required Tier-1 reference file(s) missing — refusing to run a weakened cross-check:');
+    for (const p of missingRequired) console.error(`    ${p}`);
+    console.error('  Restore the parsed GOV.UK data (see scripts/parse-area-band-d.py / source-manifest.json).');
+    run.finish('failed', { reason: 'required reference CSVs missing', missing: missingRequired });
+    process.exit(2);
+  }
+  const SUPPLEMENTARY = ['parsed-population.csv', 'parsed-lgbce-councillors.csv', 'parsed-capital-expenditure.csv', 'parsed-waste.csv'];
+  const missingSupplementary = SUPPLEMENTARY.filter((f) => !existsSync(join(BULK_DIR, f)));
+  for (const f of missingSupplementary) {
+    console.warn(`  ⚠ supplementary reference missing: ${f} — its rows are OMITTED from this table`);
+  }
+
   const ts = currentTs();
   if (!ts) {
     console.error(`✗ Council "${councilName}" not found in data files.`);
+    run.finish('failed', { reason: 'council not found in TS' });
     process.exit(2);
   }
   const ons = ts.ons_code;
   console.log(`Tier-1 references: ${councilName} (${ons})`);
 
-  const refs = { _meta: { generated_at: new Date().toISOString(), ons_code: ons } };
+  const refs = { _meta: { generated_at: new Date().toISOString(), ons_code: ons, missing_supplementary: missingSupplementary } };
   const rows = [];
 
   // Band D (ons-keyed, exact match expected)
@@ -273,9 +298,11 @@ function main() {
   console.log('');
   if (drift > 0) {
     console.log(`✗ ${drift} field(s) drift from Tier-1 references — resolve before 05-populate (fix the TS or document why).`);
+    run.finish('failed', { drift, checks: rows.length, missing_supplementary: missingSupplementary });
     process.exit(1);
   }
-  console.log(`✓ Zero Tier-1 drift. References merged into ${evPath}`);
+  console.log(`✓ Zero Tier-1 drift across ${rows.length} checks. References merged into ${evPath}`);
+  run.finish('ok', { drift: 0, checks: rows.length, missing_supplementary: missingSupplementary });
 }
 
 main();
