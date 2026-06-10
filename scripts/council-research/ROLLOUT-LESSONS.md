@@ -333,8 +333,10 @@ good — don't re-do them; extend from there to the other fields.
   as raw line breaks inside a double-quoted string — a syntax error the
   round-trip check does NOT catch (substring search, not a parse). House
   style is the literal two-char `\n` (screenshot-parity canonicalises
-  it). Worked around by hand; fix + selftest fixture flagged as a
-  background task.
+  it). Worked around by hand. **Fixed 2026-06-10**: `esc()` now escapes
+  every control character, and the post-apply round trip parses the
+  entry (object-literal eval) instead of substring-scanning, so an
+  unparseable entry can no longer pass. pipeline-selftest covers both.
 - **Dataset-stamp false positive in ux-audit**: the DataSourcesFooter
   dataset-version commit SHA ("a8e6133") tripped the unwrapped-numbers
   sweep on EVERY council (confirmed on Ipswich). Filter now excludes
@@ -419,8 +421,12 @@ good — don't re-do them; extend from there to the other fields.
 - **05-populate replace-path indentation bug**: replacing a legacy
   field_sources entry writes the new entry without its leading 8-space
   indent, so the round-trip check fails ("entry not found after write")
-  even though content landed. Hand-fix the indent; pipeline fix flagged
-  as a background task alongside the esc() newline bug.
+  even though content landed. Hand-fixed in districts.ts at the time.
+  **Fixed 2026-06-10**: the replace path no longer strips the entry's
+  own indent (the replaced range already swallows the old one);
+  pipeline-selftest now round-trips replace-with-existing-entry against
+  a legacy short-form fixture (url/title/accessed/data_year only), so
+  this can't regress silently.
 - **SPN fully down ≠ rollout blocked**: SavePageNow 520'd (×3, spread
   over ~40 min) and the availability API 429'd all session; s32550
   (budget/MTFS — would have grounded budget_gap) could not be archived
@@ -428,3 +434,60 @@ good — don't re-do them; extend from there to the other fields.
   council still shipped — strip + watch item + monthly retry beats
   holding a finished council hostage to IA uptime. (Arun's monthly-job
   pattern, extended to a whole document.)
+
+### Batch-44-4 / Ashford (2026-06-10) — SPN self-poisoning, restricted ModernGov docs, run the proof engine
+
+- **Your own SavePageNow can poison the ladder's wayback-snapshot step**:
+  Ashford's Constitution Part 6 scheme (s27021, a "LATESTVERSION"-named
+  attachment) now redirects automated fetchers to `ieLogon.aspx`. The
+  ladder's SPN step captured that redirect, so "latest capture" became
+  the logon page and the snapshot step kept failing. Recovery: fetch the
+  **exact pre-existing CDX timestamp** (`/web/<ts>if_/<url>`) — the
+  2024-05-30 capture was the real 12-page PDF. Rule: when a ModernGov
+  `/documents/` URL fails the ladder, query CDX history BEFORE letting
+  SPN run; if SPN already captured a redirect, go straight to the older
+  timestamp and record the situation in `_meta.json`.
+- **ModernGov attachments can become login-restricted in place**: a 403
+  on HEAD is the normal UA bot-block (cite freely — works in-browser),
+  but a **redirect to ieLogon** means the document itself is now
+  restricted. Archive it from the old capture for corroboration, and do
+  NOT cite it as any field's primary url — pick a sibling document whose
+  live URL still serves (Ashford: the s28448 amounts notice carried the
+  same £5,286.79 basic-allowance figure).
+- **Reserves trap, FOURTH council in a row**: legacy TS held 35,321,000
+  — again exactly the parsed-reserves.csv RA Part 2 reference. And the
+  MIRS "General Fund Balance" column (36,515) is again the combined
+  figure: SoA 2024-25 Note 13 splits "General fund general reserves"
+  £3,265k from earmarked £33,251k, and 3,265 + 33,251 = 36,516 ≈ 36,515
+  (£'000 rounding). When the SoA has a "General Fund Reserves" note with
+  a pure-GF row, that row is the scalar; prove the MIRS column is
+  combined by adding the note's two parts.
+- **BOTH personnel scalars stale, grounded by one AGS page**: legacy CE
+  "Elizabeth Chicken" matched no Ashford publication (real CE: Tracey
+  Kerly, since 2016) and legacy leader "Cllr Gerry Clarkson" left in
+  May 2023 (and has since died). The AGS 2024-25 signature page (p26,
+  signed 27 June 2025) names both Leader and CE — one PNG grounds two
+  fields. Extends the Ashfield rule: a FRESH signed AGS makes
+  `council_leader` keepable (Ashfield's "reinstate from the next signed
+  AGS" condition, satisfied here); a 2-year-old AGS does not.
+- **salary_bands is keepable when the banding table has a text layer**
+  (Bradford precedent): Ashford's SoA Note 9 "Other Employee
+  Remuneration by Band" extracts cleanly (unlike Ashfield's
+  image-embedded Note 26), and the legacy TS counts matched the 2024/25
+  column exactly — keep, with page + excerpt + PNG. Check
+  text-extractability before reflex-stripping bands.
+- **Run `npm run proof` + `npm run generate:proven` at the end of every
+  rollout**: the Stage-5 render gate (PROVEN_FIELDS) hides gated values
+  (e.g. the reserves hero) until the proof engine has re-derived them.
+  Batch-44-1/2/3 shipped without regenerating the artifact, so their
+  reserves numbers were silently gate-hidden on the live page; this
+  session's full proof run + regen surfaced them all (and Ashford's 7
+  proven fields — the largest Batch-44 set). The ux-audit can't catch
+  a value that doesn't render — re-run it AFTER the regen, not before.
+- **Ashford fetch profile**: `www.ashford.gov.uk` does not bot-block at
+  all (first such council in Batch-44) — every /media/ asset fetched
+  directly. Pay Policy is HTML-only (no PDF form, no salary figure) —
+  the audited SoA Note 9 is the CE-pay source; its "Pay & expenses"
+  figure includes Returning Officer election fees per the pay-policy
+  page, so title the citation "pay & expenses", not "salary scale" (the
+  April 2025 structure chart carries the MG1 scale for context).

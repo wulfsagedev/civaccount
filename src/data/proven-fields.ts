@@ -126,7 +126,13 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2023",
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
+    "council_tax.band_d_2026",
+    "detailed.chief_executive",
+    "detailed.chief_executive_salary",
+    "detailed.councillor_basic_allowance",
+    "detailed.leader_allowance",
+    "detailed.reserves",
+    "detailed.total_allowances_cost"
   ],
   "arun": [
     "council_tax.band_d_2021",
@@ -134,7 +140,11 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2023",
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
+    "council_tax.band_d_2026",
+    "detailed.councillor_basic_allowance",
+    "detailed.leader_allowance",
+    "detailed.reserves",
+    "detailed.total_allowances_cost"
   ],
   "ashfield": [
     "council_tax.band_d_2021",
@@ -142,7 +152,11 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2023",
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
+    "council_tax.band_d_2026",
+    "detailed.chief_executive",
+    "detailed.chief_executive_salary",
+    "detailed.reserves",
+    "detailed.total_allowances_cost"
   ],
   "ashford": [
     "council_tax.band_d_2021",
@@ -150,7 +164,14 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2023",
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
+    "council_tax.band_d_2026",
+    "detailed.chief_executive",
+    "detailed.chief_executive_salary",
+    "detailed.council_leader",
+    "detailed.councillor_basic_allowance",
+    "detailed.reserves",
+    "detailed.salary_bands",
+    "detailed.total_allowances_cost"
   ],
   "babergh": [
     "council_tax.band_d_2021",
@@ -911,14 +932,6 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2025",
     "council_tax.band_d_2026"
   ],
-  "north-kesteven": [
-    "council_tax.band_d_2021",
-    "council_tax.band_d_2022",
-    "council_tax.band_d_2023",
-    "council_tax.band_d_2024",
-    "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
-  ],
   "north-norfolk": [
     "council_tax.band_d_2021",
     "council_tax.band_d_2022",
@@ -1488,6 +1501,17 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
     "council_tax.band_d_2026"
+  ],
+  "barnsley": [
+    "council_tax.band_d_2021",
+    "council_tax.band_d_2022",
+    "council_tax.band_d_2023",
+    "council_tax.band_d_2024",
+    "council_tax.band_d_2025",
+    "council_tax.band_d_2026",
+    "detailed.chief_executive",
+    "detailed.chief_executive_salary",
+    "detailed.reserves"
   ],
   "birmingham": [
     "council_tax.band_d_2021",
@@ -2660,4 +2684,4 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
   ]
 };
 
-export const PROVEN_GENERATED_AT = "2026-06-02T11:55:17.629Z";
+export const PROVEN_GENERATED_AT = "2026-06-10T10:57:07.724Z";
