@@ -16,9 +16,12 @@
  * FAIL-LOUD CONTRACT:
  *   - refuses to run while extracted-values.json records unresolved
  *     Tier-1 drift (re-run 04-extract-csv after fixing);
- *   - after --apply it RE-READS the file from disk and verifies the
- *     scalar and a complete field_sources entry are actually present
- *     (round-trip check) — a surgery bug exits 1 and tells you to
+ *   - after --apply it RE-READS the file from disk, verifies the
+ *     scalar and a complete field_sources entry are actually present,
+ *     PARSES each entry as an object literal, and syntax-checks the
+ *     whole edited file with the TypeScript compiler — a surgery bug
+ *     or a control character smuggled into a string literal (the
+ *     Amber Valley excerpt bug, 2026-06-10) exits 1 and tells you to
  *     inspect `git diff`, it can never pass silently;
  *   - every run (dry or applied) is recorded in status/runs.jsonl.
  *
@@ -43,6 +46,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { createRequire } from 'node:module';
 
 import {
   FIELD_KIND,
@@ -239,7 +243,30 @@ function main() {
     run.finish('failed', { mode: 'apply', verify_failures: verifyFailures });
     process.exit(1);
   }
-  console.log(`✓ Round-trip verified: ${applied.length} field(s) present on re-read with full citations.`);
+
+  // The per-field checks prove presence; this proves the WHOLE FILE
+  // still parses as TypeScript. A raw control character inside a string
+  // literal or a botched brace splice is a syntax error here — fail at
+  // populate time, not at the next build.
+  let ts = null;
+  try { ts = createRequire(import.meta.url)('typescript'); } catch { /* not installed — per-field parse checks above still ran */ }
+  if (ts) {
+    const syntaxErrors = (ts.transpileModule(reread, { reportDiagnostics: true, fileName: tsFile }).diagnostics || [])
+      .filter((d) => d.category === ts.DiagnosticCategory.Error);
+    if (syntaxErrors.length > 0) {
+      console.error('✗ SYNTAX CHECK FAILED — the edited file no longer parses as TypeScript:');
+      for (const d of syntaxErrors.slice(0, 5)) {
+        const line = d.start != null ? reread.slice(0, d.start).split('\n').length : '?';
+        console.error(`    ${tsFile.split('/').pop()}:${line} — ${ts.flattenDiagnosticMessageText(d.messageText, ' ')}`);
+      }
+      console.error(`  Inspect with: git -C src/data/councils diff ${tsFile.split('/').pop()}`);
+      run.finish('failed', { mode: 'apply', verify_failures: syntaxErrors.map((d) => `syntax: ${ts.flattenDiagnosticMessageText(d.messageText, ' ')}`) });
+      process.exit(1);
+    }
+  } else {
+    console.log('  ⚠ typescript not importable — whole-file syntax check skipped (per-field checks passed)');
+  }
+  console.log(`✓ Round-trip verified: ${applied.length} field(s) present on re-read with full citations${ts ? ', file parses as TypeScript' : ''}.`);
 
   // Status + journal
   const statusDir = join(REPO_ROOT, 'scripts', 'council-research', 'status');
