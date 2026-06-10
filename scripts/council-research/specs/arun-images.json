@@ -1,0 +1,31 @@
+[
+  {
+    "council": "Arun",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 15,
+    "value": "5000000"
+  },
+  {
+    "council": "Arun",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-allowances-review-2024.pdf",
+    "page": 4,
+    "value": "6638"
+  },
+  {
+    "council": "Arun",
+    "field": "total_allowances_cost",
+    "pdf": "members-allowances-paid-2023-24.pdf",
+    "page": 2,
+    "value": "459906"
+  },
+  {
+    "council": "Arun",
+    "field": "leader_allowance",
+    "pdf": "members-allowances-review-2024.pdf",
+    "page": 4,
+    "value": "8000",
+    "note": "Leader of the Council SRA £8,000 — same approved-scheme table as councillor_basic_allowance (covering report p4); approved Full Council 13 March 2024"
+  }
+]

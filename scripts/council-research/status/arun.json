@@ -1,0 +1,112 @@
+{
+  "council": "Arun",
+  "slug": "arun",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-10T06:45:22.036Z",
+      "candidates": 14,
+      "note": "auto-probe found 14 (origin NOT bot-blocked); pruned to 5 docs + minutes PDF added by hand (approval grounding)"
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-10T07:08:22.960Z",
+      "results": {
+        "ok": 1,
+        "skipped": 5,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-10T06:52:47.882Z",
+      "candidates": 15,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-10T06:54:33.207Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-10T07:18:03.562Z",
+      "images": 4
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-10T07:15:57.238Z",
+      "fields": [
+        "reserves",
+        "councillor_basic_allowance",
+        "total_allowances_cost"
+      ]
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-06-10T07:14:00.000Z",
+      "stripped": [
+        "performance_kpis",
+        "service_spending",
+        "service_outcomes",
+        "top_suppliers",
+        "staff_fte",
+        "salary_bands",
+        "councillor_allowances_detail",
+        "documents",
+        "budget_gap",
+        "savings_target",
+        "council_leader",
+        "cabinet",
+        "grant_payments",
+        "chief_executive_salary"
+      ],
+      "note": "chief_executive_salary stripped: no full-year rate published (SoA Note 31 CE row is part-year; pay-policy HTML figure is pension-inclusive package)"
+    },
+    "phase_3_6_tier4_links": {
+      "done": true,
+      "at": "2026-06-10T07:20:00.000Z",
+      "broken": 0,
+      "note": "8/9 live URLs 200; councillors_url (democracy mgMemberIndex) 403 HEAD-bot block documented, works in-browser. CE verified current: Dawn Hudd (live page + council news 9 May 2024)"
+    },
+    "phase_5_validators": {
+      "done": true,
+      "at": "2026-06-10T07:30:00.000Z",
+      "errors": 0,
+      "note": "0 errors with Arun in STRICT_COUNCILS; 1 expected warning (precept_sum_drift \u2014 parish element, present on 307 councils); audit-north-star 0/5 gaps"
+    },
+    "phase_5b_ux_audit": {
+      "done": true,
+      "at": "2026-06-10T07:33:00.000Z",
+      "violations": 0,
+      "note": "0 unwrapped / 0 derived"
+    },
+    "phase_5c_reality_check": {
+      "done": true,
+      "at": "2026-06-10T07:35:00.000Z",
+      "verbatim": "4/4",
+      "note": "manual pdftotext+grep (script list doesn't cover Arun): 'General Fund Revenue balance \u00a35.0m', '6,638', '8,000', '459,905.85' \u2014 each 1+ hit in cited archived PDF"
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-06-10T07:36:00.000Z",
+      "result": "4 screenshots \u00b7 4 verbatim-1:1 \u00b7 0 archival-only \u00b7 0 mismatched \u00b7 0 missing PNG"
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-06-10T07:45:00.000Z",
+      "audit_doc": "docs/ARUN-AUDIT.md",
+      "manifest": "manifests/arun.json"
+    },
+    "phase_7_ship": {
+      "done": true,
+      "at": "2026-06-10T07:50:00.000Z",
+      "strict_councils": true,
+      "screenshot_parity_list": "Batch-44 (2026-06-10)"
+    }
+  },
+  "last_session": "2026-06-10T07:50:00.000Z",
+  "north_star_complete": true,
+  "batch": "44-2"
+}
