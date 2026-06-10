@@ -8,7 +8,7 @@
 export const populationData: Record<string, number> = {
   // District Councils (SD)
   "Adur": 64200,
-  "Amber Valley": 128900,
+  "Amber Valley": 130451,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 128,900 (mid-2022 era).
   "Arun": 165500,
   "Ashfield": 128500,
   "Ashford": 134200,

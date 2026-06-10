@@ -304,3 +304,50 @@ not Bradford-level:
 one at a time, starting with Norfolk. Before starting Batch-11 or
 anything else. The reserves screenshots we've already shipped are still
 good — don't re-do them; extend from there to the other fields.
+
+### Batch-44 / Amber Valley (2026-06-10) — living-slot GUIDs, SPN retries, two new traps
+
+- **Fetch**: `ambervalley.gov.uk` + `info.ambervalley.gov.uk` (141.0.55.x)
+  drop TCP entirely from this network (not a UA-WAF — `nc` to :443 fails).
+  Document discovery worked via Wayback copies of the landing pages;
+  documents via the ladder. Add to the §1 table: *origin TCP-blocked →
+  read landing pages from Wayback, fetch docs from existing captures,
+  SavePageNow for the rest.*
+- **Living-slot document GUIDs (new trap)**: Amber Valley's
+  `docarc/docviewer.aspx?docguid=…` store reuses ONE GUID for "current"
+  documents (pay policy, allowances scheme) and replaces the content in
+  place. The ladder's wayback-snapshot step serves the **latest existing
+  capture**, which for these slots was 2016/2021 vintage — archiving it
+  would have shipped a five-year-old pay policy as current. Rule: for any
+  URL whose content is replaced in place, check capture dates BEFORE
+  letting the ladder run; if stale, trigger SavePageNow first so "latest"
+  = today, then archive, then **verify the document's own stated period**
+  (ours read "PAY POLICY STATEMENT MARCH 2025" / "approved 20 Nov 2024").
+  Year-stamped documents (SoA 2023-24, allowances-paid 2022-23) are safe
+  from existing captures.
+- **SavePageNow returns 520 under load — retry**: first SPN round failed
+  (520 ×3); the second round ~9 min later returned 302 and all three
+  captures landed. Don't conclude "origin down for IA" from one 520.
+- **`esc()` newline bug in populate-logic**: hand-added multi-line
+  excerpts (real `\n` in extracted-values.json) are written into the TS
+  as raw line breaks inside a double-quoted string — a syntax error the
+  round-trip check does NOT catch (substring search, not a parse). House
+  style is the literal two-char `\n` (screenshot-parity canonicalises
+  it). Worked around by hand; fix + selftest fixture flagged as a
+  background task.
+- **Dataset-stamp false positive in ux-audit**: the DataSourcesFooter
+  dataset-version commit SHA ("a8e6133") tripped the unwrapped-numbers
+  sweep on EVERY council (confirmed on Ipswich). Filter now excludes
+  hex-only tokens containing ≥1 a-f letter — rendered data numbers always
+  carry £/commas, so no collision.
+- **Reserves trap, both directions**: prior TS held 21,200,000 — exactly
+  the parsed-reserves.csv (RA Part 2, usable+earmarked) reference
+  presented as GF balance. The SoA ALSO offers a wrong-scope figure the
+  other way: the EFA's "Closing General Fund Balance 23,650" is GF +
+  earmarked (9,079 + 14,571). The MIRS GF column (p20) is the only
+  correct scope. Check the arithmetic (GF + earmarked = EFA figure) when
+  two "General Fund Balance" labels disagree inside one SoA.
+- **CE identity**: legacy TS said "Sylvia Delahaye" — she was the CFO who
+  retired Nov 2023 (SoA AGS p148). Simon Gladwin became CE 13 Dec 2023
+  (new post). Always ground CE names in the AGS "Statutory Roles" section
+  — the remuneration table often doesn't carry names for districts.
