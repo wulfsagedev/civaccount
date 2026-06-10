@@ -27,6 +27,7 @@ import { isPdfFile } from './lib/robust-fetch.mjs';
 import { classifySourceUrl, collectCouncilUrls, unwrapWayback } from '../validate/lib/source-licence.mjs';
 import {
   buildFieldSourceEntry,
+  esc,
   upsertScalar,
   upsertFieldSources,
   verifyBlockContains,
@@ -174,6 +175,22 @@ function check(name, cond, detail = '') {
   const entryUnknown = buildFieldSourceEntry('reserves', { ...cand, document_type: 'unknown', source_url: 'https://www.example.gov.uk/media/9/Annual_Financial_Report_2024_25_v3.pdf' }, opts);
   check('entry: unknown doc type falls back to filename-derived title', entryUnknown.text.includes('Annual Financial Report 2024 25'), entryUnknown.text);
 
+  // Batch-44 / Amber Valley: a real line break in a hand-added excerpt
+  // must be written as the two-char \n or the TS string won't parse.
+  check('esc: real newline → two-char \\n', esc('Balance b/f\n8,123') === 'Balance b/f\\n8,123', JSON.stringify(esc('Balance b/f\n8,123')));
+  check('esc: CRLF canonicalised to a single \\n', esc('a\r\nb') === 'a\\nb', JSON.stringify(esc('a\r\nb')));
+  check('esc: quotes/backslashes still escaped', esc('say "hi" \\ bye') === 'say \\"hi\\" \\\\ bye', JSON.stringify(esc('say "hi" \\ bye')));
+  const entryNl = buildFieldSourceEntry('reserves', { ...cand, excerpt: 'Balance b/f\n8,123' }, opts);
+  check('entry: newline excerpt stays a one-line TS string', entryNl.text.includes('excerpt: "Balance b/f\\n8,123",'), JSON.stringify(entryNl.text.match(/.*excerpt.*/)?.[0]));
+  // Prove the generated entry PARSES — the JS engine is the arbiter, not
+  // a substring check. A raw control char anywhere is a SyntaxError here.
+  const mlCand = { ...cand, excerpt: 'Chief Executive\r\n141,324\tper annum' };
+  const entryML = buildFieldSourceEntry('chief_executive_salary', mlCand, opts);
+  let parsedML = null;
+  try { parsedML = new Function(`return {\n${entryML.text}\n}`)(); } catch { /* SyntaxError = the bug */ }
+  check('entry: multi-line-excerpt entry parses as an object literal', !!parsedML, 'raw control character in string literal');
+  check('entry: excerpt round-trips escape → parse to canonical LF form', parsedML?.chief_executive_salary?.excerpt === 'Chief Executive\n141,324\tper annum', JSON.stringify(parsedML?.chief_executive_salary?.excerpt));
+
   // Scalar upsert: new + existing
   let r = upsertScalar(FIXTURE_BLOCK, 'chief_executive_salary', '141324');
   check('scalar: new field inserted into detailed', /\n {6}chief_executive_salary: 141324,/.test(r.block), r.change);
@@ -186,6 +203,8 @@ function check(name, cond, detail = '') {
   const replacement = buildFieldSourceEntry('reserves', cand, opts);
   f = upsertFieldSources(f.block, 'reserves', replacement.text);
   check('fs: existing entry replaced (old sha gone)', !f.block.includes('oldsha') && f.block.includes(cand.sha256), f.change);
+  const vReplaced = verifyBlockContains(f.block, 'reserves', '2000000');
+  check('round-trip: REPLACED entry verifies (indent kept)', vReplaced.ok === true, vReplaced.reason);
 
   // No-map case: create map before last_verified
   const noMap = FIXTURE_BLOCK.replace(/ {6}field_sources: \{[\s\S]*?\n {6}\},\n/, '');
@@ -199,6 +218,41 @@ function check(name, cond, detail = '') {
   check('round-trip: unapplied block FAILS verification', vBad.ok === false);
   const vMangled = verifyBlockContains(f.block.replace('sha256_at_access', 'sha256_at_acce55'), 'chief_executive_salary', '141324');
   check('round-trip: mangled entry FAILS verification', vMangled.ok === false, vMangled.reason);
+
+  // Ashfield (2026-06-10): replacing a legacy short-form entry
+  // (url/title/accessed/data_year only) must keep the 8-space indent —
+  // the bug wrote the key at column 0 and the post-apply round trip
+  // failed with "entry not found after write".
+  const LEGACY_BLOCK = `
+    name: "Legacyshire",
+    type: "SD",
+    detailed: {
+      chief_executive_salary: 120000,
+      field_sources: {
+        chief_executive_salary: {
+          url: "https://old.example.gov.uk/pay-policy-2023.pdf",
+          title: "Pay Policy Statement 2023",
+          accessed: "2024-06-01",
+          data_year: "2022-23",
+        },
+      },
+      last_verified: "2024-06-01",
+    },
+  },`;
+  const legacyScalar = upsertScalar(LEGACY_BLOCK, 'chief_executive_salary', '141324');
+  const legacy = upsertFieldSources(legacyScalar.block, 'chief_executive_salary', entry.text);
+  const legacyFs = legacy.block.slice(legacy.block.indexOf('field_sources: {'));
+  check('fs: legacy short-form entry took the replace path', /replaced/.test(legacy.change) && !legacy.block.includes('Pay Policy Statement 2023'), legacy.change);
+  check('fs: replaced entry keeps its 8-space indent', /\n {8}chief_executive_salary: \{/.test(legacyFs), JSON.stringify(legacyFs.slice(0, 60)));
+  const vLegacy = verifyBlockContains(legacy.block, 'chief_executive_salary', '141324');
+  check('round-trip: replaced legacy entry verifies', vLegacy.ok === true, vLegacy.reason);
+  const rawBreak = legacy.block.replace('Chief Executive | 141,324', 'Chief Executive |\n141,324');
+  const vRaw = verifyBlockContains(rawBreak, 'chief_executive_salary', '141324');
+  check('round-trip: raw line break inside a quoted string FAILS', vRaw.ok === false && /does not parse/.test(vRaw.reason || ''), vRaw.reason);
+  // Braces inside an excerpt must not derail the entry brace-match.
+  const braceEntry = buildFieldSourceEntry('chief_executive_salary', { ...cand, excerpt: 'Total } cost { per table' }, opts);
+  const vBrace = verifyBlockContains(upsertFieldSources(r.block, 'chief_executive_salary', braceEntry.text).block, 'chief_executive_salary', '141324');
+  check('round-trip: braces inside excerpt still verify ok', vBrace.ok === true, vBrace.reason);
 }
 
 // ════ 5b. Source-licence rule (zero tolerance — owner directive) ══════

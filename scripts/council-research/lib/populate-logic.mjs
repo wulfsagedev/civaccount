@@ -29,7 +29,18 @@ export const FIELD_KIND = {
   savings_target: 'number',
 };
 
-export const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+// A raw LF/CR inside a double-quoted TS literal is a SYNTAX ERROR in the
+// generated data file (bit the Amber Valley rollout, 2026-06-10 — hand-added
+// multi-line excerpts). Escape every control character so the output is
+// always a single-line, parseable literal. The two-char \n sequence is the
+// house style for multi-line excerpts; screenshot-parity canonicalises it.
+export const esc = (s) => String(s)
+  .replace(/\\/g, '\\\\')
+  .replace(/"/g, '\\"')
+  .replace(/\r\n?/g, '\n') // canonicalise CRLF / lone CR to LF first
+  .replace(/\n/g, '\\n')
+  .replace(/\t/g, '\\t')
+  .replace(/[\u0000-\u001f]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`);
 
 /** "…/Basildon_Draft_Annual_Financial_Report_2024_25_v3.pdf" →
  *  "Basildon Draft Annual Financial Report 2024 25" — used when the
@@ -48,11 +59,20 @@ export function titleFromUrl(url) {
   }
 }
 
+/** Find the matching `}` for the `{` at openIdx. Skips the contents of
+ *  double-quoted strings (including \" escapes) — an excerpt containing
+ *  a brace must not derail the match. */
 export function braceMatch(src, openIdx) {
   let depth = 0;
+  let inStr = false;
   for (let i = openIdx; i < src.length; i++) {
-    if (src[i] === '{') depth++;
-    else if (src[i] === '}') { depth--; if (depth === 0) return i; }
+    const ch = src[i];
+    if (inStr) {
+      if (ch === '\\') i++;
+      else if (ch === '"') inStr = false;
+    } else if (ch === '"') inStr = true;
+    else if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) return i; }
   }
   return -1;
 }
@@ -136,13 +156,16 @@ export function upsertFieldSources(block, field, entryText) {
   const keyRe = new RegExp(`\\n {8}${field}: \\{`);
   const keyMatch = block.slice(fsIdx).match(keyRe);
   if (keyMatch) {
-    // Replace the existing entry block.
+    // Replace the existing entry block. keyStart sits on the first char
+    // of the old entry's 8-space indent, so the replaced range swallows
+    // that indent — entryText must keep its own (a trimStart() here put
+    // the key at column 0; bit the Ashfield rollout, 2026-06-10).
     const keyStart = fsIdx + keyMatch.index + 1; // skip leading \n
     const openBrace = block.indexOf('{', keyStart);
     const closeBrace = braceMatch(block, openBrace);
     const after = block[closeBrace + 1] === ',' ? closeBrace + 2 : closeBrace + 1;
     return {
-      block: `${block.slice(0, keyStart)}${entryText.trimStart()}${block.slice(after)}`,
+      block: `${block.slice(0, keyStart)}${entryText}${block.slice(after)}`,
       change: `${field}: field_sources entry replaced`,
     };
   }
@@ -170,9 +193,18 @@ export function verifyBlockContains(block, field, valueText) {
   const openBrace = block.indexOf('{', keyStart);
   const closeBrace = braceMatch(block, openBrace);
   if (closeBrace === -1) return { ok: false, reason: `field_sources.${field} entry has unbalanced braces` };
-  const entry = block.slice(openBrace, closeBrace);
-  for (const required of ['url:', 'sha256_at_access:', 'accessed:', 'tier:']) {
-    if (!entry.includes(required)) return { ok: false, reason: `field_sources.${field} missing ${required.replace(':', '')}` };
+  // PARSE the entry instead of substring-scanning it: a raw newline
+  // inside a string literal is a TS syntax error that substring checks
+  // sail straight past (the Amber Valley excerpt bug, 2026-06-10). The
+  // entry is plain object-literal syntax, so the JS engine is the parser.
+  let entry;
+  try {
+    entry = new Function(`"use strict"; return (${block.slice(openBrace, closeBrace + 1)});`)();
+  } catch (e) {
+    return { ok: false, reason: `field_sources.${field} entry does not parse: ${e.message}` };
+  }
+  for (const required of ['url', 'sha256_at_access', 'accessed', 'tier']) {
+    if (entry[required] == null) return { ok: false, reason: `field_sources.${field} missing ${required}` };
   }
   return { ok: true };
 }
