@@ -1,0 +1,118 @@
+{
+  "council": "Ashfield",
+  "slug": "ashfield",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-10T07:37:47.878Z",
+      "candidates": 9,
+      "note": "auto-probe (origin WAF-403s most paths; landing pages harvested via Wayback) pruned to SoA 2023-24 four parts; added by targeted search: Pay Policy Statement 2025-26 (s32156), Annual Budget & Council Tax 2025/26 + MTFS Update (s32550), members' allowances paid 2022-23 DOCX, Senior Management Structure Nov 2025"
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-10T07:52:42.170Z",
+      "results": {
+        "ok": 7,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 1
+      },
+      "note": "7/8 archived with sha256 + _meta.json. The 1 failure is s32550 (budget/MTFS 2025-26) — origin 403 (Azure WAF), no existing Wayback capture, SavePageNow 520 x3, availability API 429; its dependent fields (budget_gap/savings_target) are STRIPPED, so no rendered value relies on it. Monthly Wayback retry job to pick it up. 3/4 snapshot confirmations landed (pay-policy SPN pending same outage)."
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-10T07:53:57.655Z",
+      "candidates": 2,
+      "parse_failures": 0,
+      "note": "auto-detectors found only 2 weak CE candidates; all shipped fields located by manual pdftotext read (pay-policy p3/p6, SoA notes p45 Note 25, AGS p15/p20/p24, org chart p1, DOCX table) and added as hand-verified candidates before choosing"
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-10T08:05:40.223Z",
+      "drift": 0,
+      "note": "initial run found 5 drifted budget cells (stale RA year: transport 122→1768, cultural 91→259, planning 1413→2170, central_services 5456→6066, total_service 19544→22894; housing/environmental/net_current also re-synced exactly) + population 128,500 → ONS Mid-2024 129,572; re-run = 0 drift across 23 checks"
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-10T08:07:10.079Z",
+      "images": 4,
+      "note": "+ 22 tier-1 row-evidence PNGs via render-csv-evidence; all fingerprinted into image-manifest.json"
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-10T08:10:00.000Z",
+      "fields": [
+        "chief_executive_salary",
+        "chief_executive",
+        "total_allowances_cost",
+        "reserves",
+        "councillor_basic_allowance"
+      ],
+      "note": "05 --apply round-trip flagged an indentation-loss bug on the REPLACED chief_executive_salary entry (content correct, leading 8 spaces lost) — hand-fixed in TS; pipeline bug flagged as background task. councillor_basic_allowance field_source hand-written (DOCX source has no page form; manual_read). chief_executive excerpt hand-finalised to multi-line literal-\\n form (name wraps in the org chart)."
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-06-10T08:12:00.000Z",
+      "stripped": [
+        "performance_kpis",
+        "service_spending",
+        "service_outcomes",
+        "top_suppliers",
+        "staff_fte",
+        "salary_bands",
+        "councillor_allowances_detail",
+        "documents",
+        "budget_gap",
+        "savings_target",
+        "council_leader",
+        "cabinet",
+        "grant_payments"
+      ],
+      "note": "budget_gap/savings_target were 'derived from GOV.UK Revenue Account' = banned derivation; reinstate only from archived s32550 if it states verbatim figures. salary_bands: SoA Note 26 banding tables are image-embedded in the PDF (not text-extractable). council_leader: Cllr Jason Zadrozny verified still current (AGS p24 signature + May 2026 Annual Council press) but live membership pages are bot-blocked HTML with no archivable document form — reinstate from next signed AGS. top_suppliers row 'Seddon £380.8m annual spend' was ~9x the council's entire budget."
+    },
+    "phase_3_6_tier4_links": {
+      "done": true,
+      "at": "2026-06-10T08:20:00.000Z",
+      "broken": 0,
+      "note": "Ashfield now has ZERO Tier-4 field_sources (all five citations Tier-3 archived). CE verified current: Theresa Hodgkinson (live org-structure page accessed 2026-06-10 + Senior Management Structure chart Nov 2025 + Mid-Notts PBP chair news Jan 2025). Navigational URLs covered by global link-check."
+    },
+    "phase_5_validators": {
+      "done": true,
+      "at": "2026-06-10T08:25:00.000Z",
+      "errors": 0,
+      "note": "0 errors with Ashfield in STRICT_COUNCILS; 1 expected warning (precept sum £2,329.98 vs area Band D £2,507 — parish/special-expenses element, same class as 306 other councils); audit-north-star 0/5 gaps (50 renderable fields)"
+    },
+    "phase_5b_ux_audit": {
+      "done": true,
+      "at": "2026-06-10T08:30:00.000Z",
+      "violations": 0,
+      "note": "0 unwrapped / 0 derived; popover spot-check: CE salary opens Pay Policy p3 with page image, verbatim excerpt, #page=3 deep link, sha256 fingerprint, provenance link"
+    },
+    "phase_5c_reality_check": {
+      "done": true,
+      "at": "2026-06-10T08:32:00.000Z",
+      "verbatim": "5/5",
+      "note": "manual pdftotext+grep (script's hardcoded list doesn't cover Ashfield): '£132,387' x3 pay-policy, '£492,427' x1 SoA notes p45, '£9.999m' x2 AGS, 'Theresa Hodgkinson' x1 AGS p24, '7427.04' x39 allowances DOCX"
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-06-10T08:33:00.000Z",
+      "result": "4 screenshots · 4 verbatim-1:1 · 0 archival-only · 0 mismatched · 0 missing PNG"
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-06-10T08:45:00.000Z",
+      "audit_doc": "docs/ASHFIELD-AUDIT.md",
+      "manifest": "manifests/ashfield.json"
+    },
+    "phase_7_ship": {
+      "done": true,
+      "at": "2026-06-10T08:55:00.000Z",
+      "strict_councils": true,
+      "screenshot_parity_list": "Batch-44 (2026-06-10)"
+    }
+  },
+  "last_session": "2026-06-10T08:55:00.000Z",
+  "north_star_complete": true,
+  "batch": "44-3"
+}

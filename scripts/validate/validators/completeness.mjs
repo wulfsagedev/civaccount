@@ -1909,6 +1909,31 @@ export function validate(councils, _population, report) {
     'Forest of Dean|chief_executive',
     'Hyndburn|chief_executive',
     'Ipswich|chief_executive',
+    // 2026-06-10 Batch-44 (queue-driven full-depth rollouts): Amber Valley,
+    // Arun, Ashfield. Bradford strip checklist; per-council reasons in
+    // AMBER-VALLEY-AUDIT.md / ARUN-AUDIT.md / ASHFIELD-AUDIT.md (data repo)
+    // and inline comments in districts.ts. Recorded here so the honest
+    // removals never read as drift regardless of baseline state (Amber
+    // Valley + Arun strips were previously absorbed by the rolling
+    // baseline rather than declared — declared now).
+    ...['Amber Valley', 'Arun', 'Ashfield'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|staff_fte`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // Arun-only: no published full-year CE salary RATE (SoA Note 31 is
+    // part-year; pay-policy HTML figure is a pension-inclusive package).
+    'Arun|chief_executive_salary',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

@@ -2,7 +2,7 @@
   "generated_at": "2026-06-10T05:25:16.516Z",
   "north_star_complete": 174,
   "total_councils": 317,
-  "remaining": 141,
+  "remaining": 140,
   "queue": [
     {
       "name": "Amber Valley",
@@ -24,8 +24,9 @@
       "name": "Ashfield",
       "ons_code": "E07000170",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-10"
     },
     {
       "name": "Ashford",

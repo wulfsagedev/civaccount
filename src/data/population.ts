@@ -10,7 +10,7 @@ export const populationData: Record<string, number> = {
   "Adur": 64200,
   "Amber Valley": 130451,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 128,900 (mid-2022 era).
   "Arun": 170064,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 165,500 (mid-2022 era).
-  "Ashfield": 128500,
+  "Ashfield": 129572,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 128,500 (mid-2022 era).
   "Ashford": 134200,
   "Babergh": 93500,
   "Barnsley": 246400,

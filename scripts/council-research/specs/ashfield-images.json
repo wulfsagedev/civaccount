@@ -1,0 +1,30 @@
+[
+  {
+    "council": "Ashfield",
+    "field": "chief_executive_salary",
+    "pdf": "pay-policy-statement-2025-26.pdf",
+    "page": 3,
+    "value": "132387"
+  },
+  {
+    "council": "Ashfield",
+    "field": "chief_executive",
+    "pdf": "senior-management-structure-november-2025.pdf",
+    "page": 1,
+    "value": "Theresa Hodgkinson"
+  },
+  {
+    "council": "Ashfield",
+    "field": "total_allowances_cost",
+    "pdf": "statement-of-accounts-2023-to-2024-notes-to-the-core-financial-statements-disclaimered.pdf",
+    "page": 45,
+    "value": "492427"
+  },
+  {
+    "council": "Ashfield",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2023-to-2024-annual-governance-statement.pdf",
+    "page": 20,
+    "value": "9999000"
+  }
+]

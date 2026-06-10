@@ -387,3 +387,44 @@ good — don't re-do them; extend from there to the other fields.
   CDX 503'd. If no API answers, record the Memento TimeGate form
   (`web.archive.org/web/2024/<url>`) in `_meta.json` with a note and let
   the monthly job resolve the exact timestamp.
+
+### Batch-44-3 / Ashfield (2026-06-10) — image-scan SoA volumes, DOCX year misprints, scale-top salaries
+
+- **Part-PDF SoAs can hide the MIRS from pdftotext**: Ashfield publishes
+  the SoA 2023-24 as separate volumes, and the main volume + the MIRS
+  tables in the core-statements volume are image-scans with NO text
+  layer (the notes volume and AGS are text). When the MIRS GF column is
+  unreachable, the **AGS "Significant Governance Issues" narrative** can
+  carry the only text-extractable GF balance ("The Council's General
+  Reserve at the 31st March 2024 was £9.999m") — and the AGS signature
+  page grounds CE + Leader names. Check the AGS before declaring a GF
+  figure unextractable. Same trap hit `salary_bands`: Note 26's banding
+  tables are images → no verbatim excerpt → strip.
+- **Reserves trap, third council in a row**: legacy TS again held the RA
+  Part 2 usable reference (28,239k) as the GF balance. Assume every
+  pre-pipeline `reserves:` value is wrong until reconciled (§2).
+- **Annual allowances notices can misprint their own year**: Ashfield's
+  "Members' allowances 2022 to 2023" DOCX says "in 2021/22" in its body
+  text. The audited SoA's Note 25 comparative pinned it: notice TOTALS
+  £486,739.08 = Note 25's stated 2022/23 figure to the pound. Pattern:
+  **anchor a notice's year against the SoA members'-allowances note
+  before trusting either label.** (Also: DOCX sources have no page form —
+  manual_read, no PNG, parity skips them; keep ≥1 PDF-backed field for
+  the verbatim-1:1 requirement.)
+- **CE salary published as a scale**: when the pay policy gives a range
+  (CEOP1-CEOP3 "£118,214 - £132,387"), look for the **pay-ratio section** —
+  Ashfield's §8.1 states the top earner is £132,387, proving the scale
+  top is actually paid. Range top + top-earner corroboration in the same
+  statutory document = shippable single value; range alone would not be.
+- **05-populate replace-path indentation bug**: replacing a legacy
+  field_sources entry writes the new entry without its leading 8-space
+  indent, so the round-trip check fails ("entry not found after write")
+  even though content landed. Hand-fix the indent; pipeline fix flagged
+  as a background task alongside the esc() newline bug.
+- **SPN fully down ≠ rollout blocked**: SavePageNow 520'd (×3, spread
+  over ~40 min) and the availability API 429'd all session; s32550
+  (budget/MTFS — would have grounded budget_gap) could not be archived
+  by any ladder step. Because its dependent fields are strippable, the
+  council still shipped — strip + watch item + monthly retry beats
+  holding a finished council hostage to IA uptime. (Arun's monthly-job
+  pattern, extended to a whole document.)
