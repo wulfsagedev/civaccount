@@ -137,11 +137,26 @@ export function loadRaRowDisplay(filename, ons, wantedHeaders) {
   return null;
 }
 
-/** source-manifest.json lookup by parsed_csv or raw_file name. */
+/** source-manifest.json lookup by parsed_csv or raw_file name.
+ *  Manifest entries may carry a directory prefix (e.g.
+ *  'gov-uk-ra-data/RA_Part1_LA_Data.csv') while callers pass the bare
+ *  filename — so match on basename, never exact path only. A miss is
+ *  LOUD: a null here strips the publisher and official-file fingerprint
+ *  from rendered evidence captions, which must never happen silently. */
 export function manifestFor(filename) {
-  if (!existsSync(SOURCE_MANIFEST)) return null;
+  const base = (p) => String(p).split('/').pop();
+  if (!existsSync(SOURCE_MANIFEST)) {
+    console.warn(`⚠ manifestFor("${filename}"): ${SOURCE_MANIFEST} not found — captions will lack publisher + official fingerprint.`);
+    return null;
+  }
   const m = JSON.parse(readFileSync(SOURCE_MANIFEST, 'utf-8'));
-  return (m.sources || []).find(
-    (s) => s.parsed_csv === filename || s.raw_file === filename,
+  const want = base(filename);
+  const hit = (m.sources || []).find(
+    (s) => (s.parsed_csv && base(s.parsed_csv) === want) ||
+           (s.raw_file && base(s.raw_file) === want),
   ) || null;
+  if (!hit) {
+    console.warn(`⚠ manifestFor("${filename}"): no source-manifest.json entry matches — captions will lack publisher + official fingerprint.`);
+  }
+  return hit;
 }
