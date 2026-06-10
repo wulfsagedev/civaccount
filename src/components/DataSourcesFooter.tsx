@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ExternalLink, ChevronDown, Calendar, Shield, ListTree } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilDisplayName, getCouncilSlug, councilStats } from '@/data/councils';
+import DATASET_VERSION from '@/data/dataset-version.json';
 
 function formatCheckedDate(isoDate: string): string {
   const date = new Date(isoDate);
@@ -199,12 +200,18 @@ export default function DataSourcesFooter() {
           </Link>
         </div>
 
-        {/* Last checked */}
-        {lastChecked && (
-          <div className="flex items-center justify-center gap-2 mt-3">
+        {/* Last checked + dataset version stamp */}
+        {(lastChecked || DATASET_VERSION.data_commit) && (
+          <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
             <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
             <p className="type-caption text-muted-foreground">
-              Data last checked {formatCheckedDate(lastChecked)}
+              {lastChecked && <>Data last checked {formatCheckedDate(lastChecked)}</>}
+              {lastChecked && DATASET_VERSION.data_commit && <> · </>}
+              {DATASET_VERSION.data_commit && (
+                <span title="Every figure on this page comes from this exact, version-controlled dataset snapshot.">
+                  dataset <span className="font-mono">{DATASET_VERSION.data_commit}</span>
+                </span>
+              )}
             </p>
           </div>
         )}

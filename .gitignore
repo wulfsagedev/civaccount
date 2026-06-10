@@ -56,6 +56,9 @@ scripts/*
 !scripts/generate-coverage-stats.mjs
 !scripts/generate-proven-fields.mjs
 !scripts/generate-provenance.mjs
+!scripts/generate-image-manifest.mjs
+!scripts/build-dataset-version.mjs
+!scripts/wayback-backfill.mjs
 !scripts/data-audit-log.mjs
 !scripts/requirements.txt
 !scripts/fetch-private-data.mjs

@@ -73,6 +73,23 @@ export interface DataProvenance {
    * appears — lets a reader verify without downloading the PDF.
    */
   page_image_url?: string;
+  /**
+   * Evidence pass-through from FieldSource (NORTH-STAR §4). Lets the
+   * SourceAnnotation popover show the exact page, the verbatim line,
+   * the date we checked it, the document fingerprint, and a preserved
+   * archive copy — so a reader can verify 1:1 without leaving the page.
+   */
+  page?: number;
+  excerpt?: string;
+  accessed?: string;
+  sha256_at_access?: string;
+  wayback_url?: string;
+  tier?: 1 | 2 | 3 | 4 | 5;
+  /** Key into council.detailed.field_sources — doubles as the anchor id
+   * (`#field-<key>`) on the per-council provenance page. */
+  field_key?: string;
+  /** Council slug, so the popover can deep-link to /council/<slug>/provenance. */
+  council_slug?: string;
 }
 
 /**

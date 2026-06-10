@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, Flag, Clock, ShieldCheck, ImageIcon, X } from 'lucide-react';
+import Link from 'next/link';
+import { ExternalLink, Flag, Clock, ShieldCheck, ImageIcon, X, CalendarCheck, Landmark, Fingerprint } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -93,6 +94,13 @@ function computeStaleness(dataYear: string | undefined): { months: number; isSta
   };
 }
 
+/** "2026-04-29" → "29 Apr 2026" — plain-English date for the popover. */
+function formatAccessedDate(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
 const LABEL_CONFIG: Record<string, { text: string; className: string }> = {
   published: {
     text: 'From a public document',
@@ -169,7 +177,7 @@ export default function SourceAnnotation({
         </span>
       </PopoverTrigger>
       <PopoverContent
-        className="w-64 p-3"
+        className="w-72 p-3"
         side="top"
         align="center"
         sideOffset={6}
@@ -228,6 +236,28 @@ export default function SourceAnnotation({
             </p>
           )}
 
+          {/* The exact spot in the document (NORTH-STAR §8): page number
+              plus the verbatim line the value was read from. The source
+              link above already opens at this page (#page=N) or highlights
+              this sentence (#:~:text=) where the browser supports it. */}
+          {(provenance.page || provenance.excerpt) && (
+            <div className="pt-2 mt-1 border-t border-border/50 space-y-1.5">
+              {provenance.page && (
+                <p className="type-caption font-medium text-foreground">
+                  Page {provenance.page} of the document
+                </p>
+              )}
+              {provenance.excerpt && (
+                <blockquote
+                  className="type-caption text-muted-foreground border-l-2 border-border pl-2 break-words line-clamp-5"
+                  title={provenance.excerpt}
+                >
+                  &ldquo;{provenance.excerpt}&rdquo;
+                </blockquote>
+              )}
+            </div>
+          )}
+
           {/* Page-image thumbnail — pre-generated PNG of the exact PDF
               page where the value appears (NORTH-STAR §6 Phase 1b, §8).
               Tap expands to full-screen lightbox. Non-dev users can
@@ -284,19 +314,71 @@ export default function SourceAnnotation({
             </div>
           )}
 
-          {reportContext && (
-            <div className="pt-2 mt-1 border-t border-border/50">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openReportFeedback(reportContext, provenance);
-                }}
-                className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer"
-              >
-                <Flag className="h-3 w-3 shrink-0" aria-hidden="true" />
-                Report a mistake
-              </button>
+          {/* Trust footer: when we checked it, a preserved copy that can
+              never change, and the document's fingerprint (SHA-256 of the
+              file as fetched — proves our archived copy is the one cited). */}
+          {(provenance.accessed || provenance.wayback_url || provenance.sha256_at_access) && (
+            <div className="pt-2 mt-1 border-t border-border/50 space-y-1.5">
+              {provenance.accessed && (
+                <p className="type-caption text-muted-foreground flex items-center gap-1.5">
+                  <CalendarCheck className="h-3 w-3 shrink-0" aria-hidden="true" />
+                  <span>
+                    We checked this on{' '}
+                    <span className="tabular-nums">{formatAccessedDate(provenance.accessed)}</span>
+                  </span>
+                </p>
+              )}
+              {provenance.wayback_url && (
+                <a
+                  href={provenance.wayback_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="type-caption text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors"
+                >
+                  <Landmark className="h-3 w-3 shrink-0" aria-hidden="true" />
+                  Archived copy (Wayback Machine)
+                  <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                  <span className="sr-only"> (opens in new tab)</span>
+                </a>
+              )}
+              {provenance.sha256_at_access && (
+                <p
+                  className="type-caption text-muted-foreground flex items-center gap-1.5"
+                  title={`SHA-256 of the document when we fetched it: ${provenance.sha256_at_access}`}
+                >
+                  <Fingerprint className="h-3 w-3 shrink-0" aria-hidden="true" />
+                  <span>
+                    Document fingerprint{' '}
+                    <span className="font-mono">{provenance.sha256_at_access.slice(0, 12)}…</span>
+                  </span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {(reportContext || (provenance.council_slug && provenance.field_key)) && (
+            <div className="pt-2 mt-1 border-t border-border/50 flex items-center justify-between gap-3 flex-wrap">
+              {reportContext && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openReportFeedback(reportContext, provenance);
+                  }}
+                  className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <Flag className="h-3 w-3 shrink-0" aria-hidden="true" />
+                  Report a mistake
+                </button>
+              )}
+              {provenance.council_slug && provenance.field_key && (
+                <Link
+                  href={`/council/${provenance.council_slug}/provenance#field-${provenance.field_key}`}
+                  className="type-caption text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors"
+                >
+                  Full record →
+                </Link>
+              )}
             </div>
           )}
         </div>

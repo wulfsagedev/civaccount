@@ -9,11 +9,12 @@
  * The getProvenance() helper resolves paths with fallback to council-specific sources.
  */
 
-import type { DataProvenance, Council } from './councils';
+import type { DataProvenance, Council, FieldSource } from './councils';
 import { generateSlug } from './councils';
 import { resolveCitation } from './citations';
 import { getVerifiedSupplierSource } from './suppliers-allowlist';
 import { PROVEN_FIELDS } from './proven-fields';
+import WAYBACK_FALLBACKS from './wayback-fallbacks.json';
 
 /**
  * RENDER GATE (PIPELINE.md Stage 5 — default-deny).
@@ -39,6 +40,51 @@ export function isProven(fieldPath: string, council?: Council | null): boolean {
   const set = PROVEN_FIELDS[slug];
   if (!set) return false;                    // council has zero proven fields → deny all
   return set.includes(fieldPath);
+}
+
+/**
+ * Build the most precise link we can to the exact spot in the source
+ * document where a value appears (NORTH-STAR §8 — "link to the specific
+ * part of the doc, not the doc").
+ *
+ *   - PDF + known page          → append `#page=N` (opens at that page in
+ *     every major browser's PDF viewer)
+ *   - HTML page + verbatim quote → append a text fragment (`#:~:text=…`)
+ *     so supporting browsers scroll to and highlight the exact line
+ *   - URL already carries a hand-authored fragment → trust it as-is
+ */
+export function buildEvidenceUrl(
+  src: Pick<FieldSource, 'url' | 'page' | 'excerpt' | 'extraction_method'>,
+): string {
+  const { url, page, excerpt } = src;
+  if (!url || url.includes('#')) return url;
+
+  const isPdf = /\.pdf(\?|$)/i.test(url) || src.extraction_method === 'pdf_page';
+  if (isPdf) {
+    return page ? `${url}#page=${page}` : url;
+  }
+
+  // HTML page with a verbatim excerpt → text fragment. Dashes and commas
+  // are structural characters in text-fragment syntax, so encode them.
+  if (excerpt) {
+    const snippet = excerpt.trim().split(/\s+/).slice(0, 8).join(' ');
+    if (snippet.length >= 4) {
+      const encoded = encodeURIComponent(snippet).replace(/-/g, '%2D');
+      return `${url}#:~:text=${encoded}`;
+    }
+  }
+  return url;
+}
+
+/** Wayback fallback for a source URL: the field's own `wayback_url` wins;
+ * otherwise look the URL up in the build-time sidecar map populated by
+ * scripts/wayback-backfill.mjs. */
+export function waybackFor(url?: string, own?: string): string | undefined {
+  if (own) return own;
+  if (!url) return undefined;
+  // Sidecar is keyed by the raw URL without any display fragment.
+  const bare = url.split('#')[0];
+  return (WAYBACK_FALLBACKS as Record<string, string>)[bare];
 }
 
 export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
@@ -492,10 +538,14 @@ export function getProvenance(
       .replace('council_tax.', '')
       .replace('detailed.', '')
       .replace('budget.', '');
-    const fieldSource = council.detailed.field_sources[fieldPath]
-      || council.detailed.field_sources[simpleKey];
+    const matchedKey = council.detailed.field_sources[fieldPath]
+      ? fieldPath
+      : council.detailed.field_sources[simpleKey]
+        ? simpleKey
+        : null;
+    const fieldSource = matchedKey ? council.detailed.field_sources[matchedKey] : undefined;
 
-    if (fieldSource) {
+    if (fieldSource && matchedKey) {
       // Merge with global FIELD_PROVENANCE for label/methodology.
       // Per-council data_year wins over the global default — the value
       // we render is the value that council published, and the year
@@ -505,11 +555,22 @@ export function getProvenance(
       const global = FIELD_PROVENANCE[fieldPath] || FIELD_PROVENANCE[fieldPath.split('.')[0]];
       return {
         label: global?.label || 'official',
-        source_url: fieldSource.url,
+        source_url: buildEvidenceUrl(fieldSource),
         source_title: fieldSource.title,
         data_year: fieldSource.data_year || global?.data_year,
         methodology: global?.methodology,
         page_image_url: fieldSource.page_image_url,
+        // Evidence pass-through (NORTH-STAR §4 → §8): the popover shows
+        // the page, the verbatim line, when we checked it, the document
+        // fingerprint, and a preserved copy.
+        page: fieldSource.page,
+        excerpt: fieldSource.excerpt,
+        accessed: fieldSource.accessed,
+        sha256_at_access: fieldSource.sha256_at_access,
+        wayback_url: waybackFor(fieldSource.url, fieldSource.wayback_url),
+        tier: fieldSource.tier,
+        field_key: matchedKey,
+        council_slug: council.name ? generateSlug(council.name) : undefined,
       };
     }
   }
@@ -554,6 +615,7 @@ export function getProvenance(
         source_title: `${council.name} ${rule.titleSuffix}`,
         data_year: global?.data_year,
         methodology: global?.methodology,
+        wayback_url: waybackFor(url),
       };
     }
   }
@@ -580,6 +642,7 @@ export function getProvenance(
       if (citation) prov.citation = citation;
     }
 
+    prov.wayback_url = waybackFor(prov.source_url, prov.wayback_url);
     return prov;
   }
 
@@ -591,6 +654,7 @@ export function getProvenance(
       const citation = resolveCitation(fieldPath, council);
       if (citation) prov.citation = citation;
     }
+    prov.wayback_url = waybackFor(prov.source_url, prov.wayback_url);
     return prov;
   }
 
