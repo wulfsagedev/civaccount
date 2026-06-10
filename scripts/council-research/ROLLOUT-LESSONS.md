@@ -44,6 +44,15 @@ a weakened cross-check when reference CSVs are missing; `05 --apply`
 re-reads the file from disk and round-trip-verifies its own write.
 Monitor with `npm run pipeline:status` (or `--failures`).
 
+**Visual evidence for tier-1 stats (added same day):** spreadsheet-sourced
+stats (band D, budgets, population) have no "page" to photograph, so they
+had zero visual evidence. `render-csv-evidence.mjs --council=X` renders
+the council's actual row from each archived GOV.UK file as a captioned
+PNG (file name + official sha256 + highlighted cell), fingerprints it
+into image-manifest.json, and updates `src/data/evidence-images.json` so
+the popover shows it automatically. Run it as part of Phase 1b on every
+rollout. Bradford was the first: 10 photo-backed stats → 31.
+
 ---
 
 ## 1. Fetch-method decision tree

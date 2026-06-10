@@ -60,6 +60,12 @@ node scripts/council-research/04-extract-csv.mjs --council=Basildon
 # Phase 1b: render evidence PNGs for the chosen values + fingerprint them
 node scripts/council-research/06-audit-evidence.mjs --council=Basildon
 
+# Phase 1b (tier-1): visual evidence for spreadsheet-sourced stats —
+# renders the council's actual row from each archived GOV.UK file
+# (band D, budgets, population, councillors, capital) as a captioned,
+# fingerprinted PNG. The popover picks these up automatically.
+node scripts/council-research/render-csv-evidence.mjs --council=Basildon
+
 # Phase 4: write the TS (dry-run first, always)
 node scripts/council-research/05-populate.mjs --council=Basildon
 node scripts/council-research/05-populate.mjs --council=Basildon --apply
