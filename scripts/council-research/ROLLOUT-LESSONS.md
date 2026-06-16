@@ -615,3 +615,62 @@ good — don't re-do them; extend from there to the other fields.
   appeared in neither the archived budgets nor the SoA. A catalogue URL is
   not a fingerprintable source — strip + watch item (archive the actual
   Members' Allowances Scheme PDF and reinstate with page/excerpt/PNG).
+
+### Batch-45-2 / Basingstoke & Deane (2026-06-16) — open-doclib fetch, deputy-CE trap, post-election leader strip, the completeness mid-session gotcha
+
+- **First Batch-45 council whose origin is fully open**: `www.basingstoke.gov.uk`
+  has TCP :443 open AND its `/content/doclib/<id>.pdf` store serves
+  `application/pdf` directly to a Chrome UA (HTTP 200, no WAF). The CDX sweep
+  found nothing (origin not in IA's recent index), but document discovery was
+  trivial off the live `/finance` + `/accounts` pages (each doclib `<a>` carries
+  its title in adjacent text — parse `href + visible text` to map IDs). Give
+  02-archive explicit `filename:` fields in inventory.json. The ModernGov portal
+  (`democracy.*`) 403s bots but is irrelevant — every finance doc is mirrored in
+  the council's own doclib store.
+- **Reserves trap, SEVENTH council in a row — combined-MIRS-column variant.**
+  Legacy `reserves 45,233,000` was a stale usable/combined figure. The MIRS
+  "General Fund Reserves" column is £48.5M (= £1.5M working balance + ~£47.0M
+  earmarked); "Total Usable Reserves" £100.4M. The pure GF working balance is
+  £1.5M — proven THREE ways in the SoA: Note 8 ("General Fund Balance Reserve …
+  the council's working balance"), the reserves note's "General Fund Balance
+  (Unearmarked) (1.5)" split, and the narrative p70 ("a General Fund Balance of
+  £1.5M and risk reserves of £15.4M"). Use the p70 narrative sentence as the
+  excerpt (single line, contains "£1.5M General Fund balance").
+- **Legacy CE scalar was the DEPUTY CE.** TS said "Rebecca Emmett"; the
+  council's live `/slt` page lists her as **Deputy** Chief Executive and
+  **Russell O'Keefe** as Chief Executive / head of paid service (SoA Note 23
+  p60 corroborates with his £157,581 salary row). Always confirm the CE against
+  the council's OWN senior-leadership page — the legacy scalar can be the wrong
+  person on the same page, not just a stale name. (Internal record contradiction
+  was the tell: the CE-salary comment already said "Russell O'Keefe".)
+- **Post-election No-Overall-Control → strip council_leader + cabinet.** B&D
+  went to NOC at the 7 May 2026 election (~6 weeks pre-rollout); the new Leader
+  was unconfirmed by any reachable primary (ModernGov 403s; no live leader page;
+  no recent Wayback of the member index). This is the Babergh rotating-leadership
+  rule taken to its conclusion: when the election is recent AND the leader is
+  unreachable, strip both fields with a watch item rather than ship a stale name.
+  The CE is unaffected (officers don't rotate). Legacy "Cllr Phil North" was
+  wrong anyway (he leads Test Valley BC — a copy-paste artefact).
+- **budget_gap: beware the COUNTY's gap in a district MTFS.** B&D's MTFS p9
+  prominently quotes "Hampshire HCC has identified a budget gap of £102M …
+  £180M" — that's the upper-tier county, NOT the district. B&D's own figure is
+  on p15 §2.7: "indicative budget gap of £1.93M in the final year … 2029/30".
+  In two-tier areas, grep for the district's OWN name / "the council" near the
+  gap sentence; the highest number on the page is often the county's.
+- **completeness.mjs regression gotcha — declare strips BEFORE a baseline run,
+  or after.** The completeness validator compares against the *previous* run's
+  `validation-latest.json`. Fields stripped BEFORE your first validate are
+  absorbed silently; fields stripped AFTER a validate run (here top_suppliers +
+  grant_payments, stripped mid-session to clear a ux-audit false-positive) read
+  as `regression_field_lost` ERRORS until declared in `INTENTIONAL_REMOVALS`.
+  Add the council's strip block there (Batch-44/45 blocks already exist) — then
+  validate returns 0 errors. The SuppliersGrantsCard helper text contains
+  "spending-over-£500", whose "500" trips the ux-audit `\d{3,}` sweep; that's
+  why every recent district strips top_suppliers (Contracts Finder OCDS values
+  are annualised CEILINGS, not actual spend — fails §2 anyway).
+- **salary_bands keepable here** (Ashford precedent): SoA Note 21 banding table
+  has a clean text layer and the 2024/25 column matched the legacy counts
+  exactly — kept with page + excerpt + PNG. B&D ended richer than the Batch-44/45
+  districts: it KEEPS chief_executive_salary, total_allowances_cost, AND
+  salary_bands (full SoA Note 23 + Note 20 + Note 21), where Basildon/Arun had to
+  strip the pay fields for lack of a full-year named rate.
