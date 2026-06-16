@@ -367,7 +367,11 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2023",
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
+    "council_tax.band_d_2026",
+    "detailed.chief_executive_salary",
+    "detailed.councillor_basic_allowance",
+    "detailed.reserves",
+    "detailed.total_allowances_cost"
   ],
   "canterbury": [
     "council_tax.band_d_2021",
@@ -2733,4 +2737,4 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
   ]
 };
 
-export const PROVEN_GENERATED_AT = "2026-06-16T14:41:28.118Z";
+export const PROVEN_GENERATED_AT = "2026-06-16T15:26:09.353Z";

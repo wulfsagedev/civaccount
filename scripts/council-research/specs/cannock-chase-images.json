@@ -1,0 +1,30 @@
+[
+  {
+    "council": "Cannock Chase",
+    "field": "chief_executive_salary",
+    "pdf": "09b-pay-20policy-20statement-202026-27-20rpt-20appx-201.pdf",
+    "page": 4,
+    "value": "153838"
+  },
+  {
+    "council": "Cannock Chase",
+    "field": "reserves",
+    "pdf": "cannock-statement-of-accounts-2024-25.pdf",
+    "page": 18,
+    "value": "2410000"
+  },
+  {
+    "council": "Cannock Chase",
+    "field": "total_allowances_cost",
+    "pdf": "cannock-statement-of-accounts-2024-25.pdf",
+    "page": 61,
+    "value": "328611"
+  },
+  {
+    "council": "Cannock Chase",
+    "field": "councillor_basic_allowance",
+    "pdf": "ccdc-members-allowances-2025-26-notice.pdf",
+    "page": 1,
+    "value": "5706"
+  }
+]
