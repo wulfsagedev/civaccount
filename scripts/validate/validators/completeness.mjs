@@ -1973,6 +1973,33 @@ export function validate(councils, _population, report) {
     'Basildon|leader_allowance',
     'Basildon|total_allowances_cost',
     'Basildon|salary_bands',
+    // 2026-06-16 Batch-45-3 (Bolsover, queue-driven full-depth rollout). Bradford strip
+    // checklist; per-field reasons in BOLSOVER-AUDIT.md (data repo) + inline comments in
+    // districts.ts. Bolsover shares a Joint Officer Team / CE with North East Derbyshire.
+    // KEPT (richer than Basildon): chief_executive, chief_executive_salary,
+    // councillor_basic_allowance, total_allowances_cost (full Pay Policy + Allowances Scheme
+    // + 2023-24 Reg-15 notice). STRIPPED: budget_gap + savings_target (MTFP is balanced via
+    // reserve transfers — only a £953k FY28/29 table cell, no quotable headline gap; legacy
+    // £17.6m/£15.9m were fabricated 'derived from RA' values); salary_bands (full SoA
+    // Appendix 1 not Wayback-archivable; covering report has no banding table);
+    // council_leader + cabinet (committees portal TCP-blocked, 2026 elections imminent + LGR
+    // pending — no fingerprintable current primary; legacy cabinet held a cross-council
+    // Boston artefact); leader_allowance (not rendered in UI).
+    ...['Bolsover'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|salary_bands`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|leader_allowance`,
+      `${c}|staff_fte`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

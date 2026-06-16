@@ -674,3 +674,54 @@ good — don't re-do them; extend from there to the other fields.
   districts: it KEEPS chief_executive_salary, total_allowances_cost, AND
   salary_bands (full SoA Note 23 + Note 20 + Note 21), where Basildon/Arun had to
   strip the pay fields for lack of a full-year named rate.
+
+### Batch-45-3 / Bolsover (2026-06-16) — reserves can live in the MTFP not the SoA; full SoA un-archivable; joint-officer scoping; the "balanced MTFP" gap honesty
+
+- **Reserves trap, EIGHTH council in a row — and the GF figure was in the MTFP,
+  not the SoA.** Legacy `reserves 25,015,000` was *exactly* the parsed-reserves.csv
+  RA Part 2 total-usable reference. The full Statement of Accounts 2024-25 (the
+  usual reserves source) is circulated as "Appendix 1" on the ModernGov portal and
+  has NO Wayback capture (the s30075 gap), and the origin WAF-blocks automated
+  clients — so the SoA MIRS was unreachable. The fix: the **MTFP / budget-setting
+  report** carries the same pure-GF figure in narrative form — Bolsover's MTFP p8
+  "Financial Reserves – General Fund / … General Fund Working Balance of £2.001m",
+  explicitly distinct from earmarked (Transformation £0.682m, NNDR Growth
+  Protection £14.211m). Rule: when the full SoA is unreachable, the council's MTFP/
+  budget report almost always states the GF working balance in a quotable sentence
+  — check it before declaring reserves unsourceable. (03-extract's auto-candidate
+  was the wrong £0.049m NNDR transfer — read the excerpt, never trust the top hit.)
+- **Joint Officer Team scoping (like Babergh/Mid-Suffolk).** Bolsover shares its CE
+  (Karen Hanson) + officer team with North East Derbyshire DC. The rule that worked:
+  the CE salary comes from **Bolsover's OWN Pay Policy** (§4.1.2 "a single point
+  salary of £137,078" — Bolsover's establishment), not a joint document or an NED
+  figure. Pruned NED documents from the CDX sweep with a written reason.
+- **CE name had no archived PDF — used a council-news Tier-4 live_page.** No archived
+  finance PDF named the CE (the Pay Policy says "Chief Executive Officer Post"; the
+  SoA covering report names only the S151 Officer). The council news page
+  ("Council Chief Executive, Karen Hanson said…") is a clean .gov.uk primary — saved
+  the Wayback id_ capture locally + fingerprinted, cited chief_executive as Tier-4
+  live_page (Bradford CE precedent). screenshot-parity is satisfied by the 4 Tier-3
+  PDF fields, so the Tier-4 name needs no PNG. Confirmed CURRENT via theOrg/LinkedIn
+  (CEO since Aug 2021); she is NOT a deputy (Basingstoke deputy-CE trap didn't apply).
+- **The "balanced MTFP" budget_gap honesty — strip, don't force-fit.** Unlike
+  Basildon/Babergh (which had a quotable single-sentence gap), Bolsover's MTFP runs
+  a BALANCED budget through 2027/28 (funded by NNDR-reserve transfers); the only
+  shortfall is £953k in 2028/29 — a multi-column Table-1 cell, year-4 projection, no
+  quotable headline. The legacy budget_gap £17.6m / savings_target £15.9m were
+  fabricated "derived from RA" values (absurd for a £16m-net-cost district). Both
+  STRIPPED (no force-fit; the £953k table cell would fail screenshot-parity and
+  isn't a current gap). When an MTFP is balanced-via-reserves, there often is no
+  shippable budget_gap — that's a valid conclusion, not a gap to paper over.
+- **01-inventory auto-discovery surfaced only ancient docs (2014-2019).** For a
+  small district on a TCP-blocked ModernGov portal, the auto-probe + landing-page
+  harvest found nothing current. Document discovery was a manual **Wayback CDX sweep
+  of `committees.<council>.gov.uk/documents`** (4,554 captures) — grep for
+  statement-of-accounts / pay-policy / MTFP / members-allowances by filename. The
+  s-attachment IDs (`/documents/sNNNNN/…`) fetch cleanly via the ladder's
+  wayback-snapshot step. Note the CDX `collapse=urlkey&limit=N` truncates
+  alphabetically (b-IDs before s/g-IDs) — fetch the full list to a temp file and
+  grep offline rather than relying on a limited query.
+- **Bolsover ended mid-rich**: KEEPS chief_executive (Tier-4), chief_executive_salary,
+  councillor_basic_allowance, total_allowances_cost (4 Tier-3 + 1 Tier-4); STRIPS
+  salary_bands (full SoA un-archivable), budget_gap/savings_target (balanced MTFP),
+  council_leader + cabinet (TCP-blocked portal + 2026 elections + Derbyshire LGR).

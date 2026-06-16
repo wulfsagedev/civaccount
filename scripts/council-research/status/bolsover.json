@@ -1,0 +1,48 @@
+{
+  "council": "Bolsover",
+  "slug": "bolsover",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-16T09:10:44.713Z",
+      "candidates": 9
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-16T09:38:32.508Z",
+      "results": {
+        "ok": 0,
+        "skipped": 5,
+        "blocked": 1,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-16T09:31:29.548Z",
+      "candidates": 3,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-16T09:35:54.729Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-16T09:42:16.915Z",
+      "images": 4
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T09:42:31.268Z",
+      "fields": [
+        "chief_executive_salary",
+        "reserves",
+        "councillor_basic_allowance",
+        "total_allowances_cost"
+      ]
+    }
+  },
+  "last_session": "2026-06-16T09:42:31.268Z"
+}
