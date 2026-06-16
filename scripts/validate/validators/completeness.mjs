@@ -2174,6 +2174,39 @@ export function validate(councils, _population, report) {
       `${c}|budget_gap`,
       `${c}|savings_target`,
     ]),
+    // 2026-06-16 Batch-47-1 (Castle Point E07000069, queue-driven full-depth rollout). Stock-holding
+    // district (HRA), Essex. reserves CORRECTED (§2 trap, ~16th council in a row): legacy 25,461,000
+    // was exactly the GOV.UK RA Part 2 total-usable reference; the SoA 2024-25 MIRS p25 pure General
+    // Fund (GF) Balance is £5.803m (a SEPARATE column from the HRA £1.557m + Earmarked £20.633m;
+    // Total Usable £31.665m), confirmed by the Narrative "General Reserves (£5.8m at 31 March 2025)",
+    // well below the RA reference so it passes spot-check (Babergh/Basildon/Boston/Broadland/Broxbourne
+    // smaller-than-reference shape, NOT the Bromsgrove exceeds-reference strip). chief_executive
+    // CORRECTED (fabricated "Daniel Sexton" → Angela Hutchings, AGS p141 signature 27-Feb-2026 +
+    // verified current as Deputy RO on 27-Mar-2026 election notice). council_leader CORRECTED (wrong
+    // "Cllr Andrew Sherwin", contradicted cabinet[0] → Cllr Dave Blackwell, AGS p141 + Dec-2025 leader
+    // statement; no May-2026 borough election, only Essex CC). chief_executive_salary CORRECTED
+    // £137,304→£138,960 (Pay Scales 2025/26 CEX1, proven paid by SoA Note 9.2.1 actual £139k).
+    // councillor_basic_allowance £3,550→£4,414 + total_allowances_cost £238,660→£301,492 (re-sourced to
+    // the current 2025-26 Members' Allowances notice). salary_bands rebuilt to the SoA Note 9.1 2024/25
+    // column (legacy array was stale + conflated senior officers). STRIPPED: budget_gap + savings_target
+    // (legacy £13.753m/£12.378m fabricated 'derived from RA' — the SoA narrative states 2025/26 is
+    // balanced, the only verbatim gap (£285k/£852k, SoA 2023-24) is since closed; Bolsover/Boston/
+    // Breckland/Broxbourne/Canterbury no-force-fit); leader_allowance (only an SRA range £982–£25,129 in
+    // the notice, no single published Leader rate — Cannock un-archivable-rate strip); cabinet (Tier-4
+    // agendas-page only, not fingerprintable, LGR/devolution churn); grant_payments (UKSPF, landing-page
+    // only, not fingerprintable); + Bradford strip-list. KEEPS chief_executive, council_leader, reserves,
+    // chief_executive_salary, councillor_basic_allowance, total_allowances_cost, salary_bands, documents.
+    ...['Castle Point'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

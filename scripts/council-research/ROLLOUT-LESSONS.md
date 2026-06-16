@@ -1086,3 +1086,63 @@ good — don't re-do them; extend from there to the other fields.
   (post split, part-year only), councillor_basic_allowance/leader_allowance (HTML-only),
   budget_gap (unprovable £0.5m) + savings_target, salary_bands (stale column), cabinet,
   + Bradford strip-list. 3 Tier-3 PROVEN + 1 Tier-4 personnel, evidence-clean.
+
+### Batch-47-1 / Castle Point (2026-06-16) — fully-open Liferay district; stock-holding HRA with a CLEAN pure-GF MIRS column; both personnel scalars wrong + one AGS page grounds both; the "new CEO" news red herring; CE scale point proven by the SoA actual
+
+- **First fully-open district in this sequence** — `www.castlepoint.gov.uk` (a Liferay
+  site) serves its `/documents/d/guest/<friendly-name>` PDF store directly to a Chrome UA
+  (HTTP 200, application/pdf, NO WAF). The CDX sweep's `/download/*.pdf` hits were all stale
+  404s (superseded by the `/documents/d/guest/` friendly URLs) — **prune the CDX candidates
+  and discover live** off `/accounts/`, `/data-transparency`, `/w/members-allowances`,
+  `/w/council-tax-2025-2026` (each `<a href>` carries its title). The CMIS portal
+  (`castlepoint.cmis.uk.com`) holds only the councillors directory, not finance PDFs —
+  irrelevant. Reject the parish (`canveyisland-tc.gov.uk`, non-.gov.uk) at inventory.
+- **Reserves trap, ~16th council in a row — stock-holding district, but the CLEAN-pure-GF-
+  MIRS-column variant (Babergh/Boston shape, NOT the Cannock/Canterbury HRA-combined-EFA
+  trap).** Legacy `reserves 25,461,000` was *exactly* the parsed-reserves.csv RA Part 2
+  total-usable reference. Castle Point HAS an HRA, BUT its MIRS (p25) has a PURE "General
+  Fund (GF) Balance" first column (5,803) that is SEPARATE from the "Housing Revenue Account"
+  column (1,557), "Earmarked Reserves" (20,633) and "Total Usable Reserves" (31,665) — so the
+  GF column is directly usable with no note arithmetic and no EFA-combined confusion. The
+  Narrative confirms ("General Reserves (£5.8m at 31 March 2025)" vs the s151 £2.5m minimum).
+  Corrected to £5.803m (smaller-than-reference → passes spot-check). Lesson: a district
+  having an HRA does NOT automatically mean the HRA-combined-EFA trap — READ THE MIRS COLUMN
+  HEADERS FIRST; if "General Fund Balance" and "Housing Revenue Account" are separate columns,
+  the GF column is the scalar (only a single combined "GF & HRA" column forces the EFA/note
+  arithmetic). 03-extract's auto top-candidate was the £2.5m s151 *minimum level*, not the
+  balance — read the excerpt.
+- **BOTH personnel scalars were wrong, and one AGS page grounded both (Broxbourne precedent).**
+  Legacy CE "Daniel Sexton" matched NO Castle Point publication (fabricated); legacy Leader
+  "Cllr Andrew Sherwin" was wrong AND contradicted the legacy cabinet[0] (which already said
+  Dave Blackwell as Leader — the internal contradiction was the tell). The SoA Note 9.2
+  remuneration table lists senior officers by POSITION only (no current CE name in text — the
+  deputy-CE-certifies pattern, here an Assistant Director S151 signs). Both real names are on
+  the SoA 2024-25 **Annual Governance Statement signature page (p141, 27 Feb 2026)**: "Ms.
+  Angela Hutchings / Chief Executive" + "Councillor Dave Blackwell / Leader of the Council" —
+  one PNG grounds two fields.
+- **The "Castle Point's New CEO to be appointed" news item is a RED HERRING from 2022 — the
+  live-site gate resolved it.** WebSearch surfaced a council news item that *looked* like a
+  current CEO transition, but cross-referencing (LGC "Newly NOC council names chief 12-05-2022")
+  showed it was Angela Hutchings's OWN 2022 appointment story. She's still CE in 2026 (Deputy
+  Returning Officer on the 27 Mar 2026 notice-of-election). Lesson: a "new CEO" headline isn't
+  proof of a *recent* change — date it and check for an actual successor before stripping/editing.
+- **The 7 May 2026 election was the COUNTY's, not the district's — don't strip the leader.**
+  Castle Point's own page is "2026 Essex County Council election results"; Castle Point BOROUGH
+  had no May-2026 election (all-out 2024). So unlike B&D/Basingstoke (post-election NOC strip),
+  the borough leadership (Dave Blackwell) is undisturbed — keep. In two-tier areas, confirm
+  WHICH tier's election ran in May before applying the post-election strip rule.
+- **CE-salary scale point proven by the SoA actual (Ashfield/Ashford/Breckland, cleanest yet).**
+  Pay Scales 2025/26 give CEX1 £138,960; the SoA Note 9.2.1 (named by POSITION) shows the CE's
+  actual 2024/25 salary £139k (£000s) — rounds to the CEX1 point exactly. Range top + same-
+  document actual = shippable single value. (The senior-salaries doc's "£125-£129,999" band is a
+  PRIOR-YEAR part-year disclosure — note 1 "joined during the financial year" — don't use it.)
+- **Castle Point fetch profile**: fully open, no WAF. budget block needed a full RA 2025-26
+  re-sync (7 cells); population 91,400→90,581.
+- **Castle Point ended RICH (richest district of this run)**: KEEPS chief_executive (Angela
+  Hutchings, AGS p141), council_leader (Cllr Dave Blackwell, AGS p141), reserves (£5.803m pure-GF
+  MIRS p25), chief_executive_salary (£138,960 Pay Scales CEX1, proven SoA Note 9.2.1), 
+  councillor_basic_allowance (£4,414, Allowances 2025/26), total_allowances_cost (£301,492,
+  Allowances 2025/26), salary_bands (2024/25 SoA Note 9.1 column). STRIPS budget_gap/savings_target
+  (balanced budget, fabricated legacy, no-force-fit), leader_allowance (SRA range only), cabinet
+  (Tier-4 agendas, LGR churn), + Bradford strip-list. 13 PROVEN fields (7 Tier-3 + 6 band_d),
+  evidence-clean. Note Essex LGR/devolution in progress (re-home to successor unitary if abolished).

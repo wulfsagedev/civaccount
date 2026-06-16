@@ -1,0 +1,73 @@
+{
+  "council": "Castle Point",
+  "slug": "castle-point",
+  "ons_code": "E07000069",
+  "type": "SD",
+  "batch": "47-1",
+  "north_star_complete": true,
+  "done": true,
+  "phases": {
+    "phase_0_inventory": { "done": true, "candidates": 8, "note": "CDX sweep found 4 SoA candidates; pruned + replaced with live landing-page discovery (8 canonical: SoA 2024-25 audited/2023-24, Pay Policy 2026-27, Pay Scales 2025/26, Members' Allowances 2025/26 + 2024/25, senior-salaries, financial-information). Stale CDX /download/*.pdf paths 404. Rejected Canvey Island TC (parish, non-.gov.uk). No WAF on www.castlepoint.gov.uk (Liferay /documents/d/guest/ store)." },
+    "phase_1_archive": { "done": true, "results": { "ok": 8, "skipped": 0, "blocked": 0, "failed": 0 }, "note": "All 8 PDFs fetched direct (Chrome UA, 200, application/pdf); sha256 + _meta.json + Wayback. %PDF smoke check passed on all." },
+    "phase_1b_page_images": { "done": true, "page_pngs": 7, "csv_row_pngs": 22 },
+    "phase_2_extract": { "done": true, "parse_failures": 0, "note": "reserves pure-GF candidate hand-authored from MIRS p25 wide column (auto top-candidate was the £2.5m s151 minimum-level, not the balance)" },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_crosscheck": { "done": true, "drift": 0, "checks": 23, "note": "budget block re-synced to RA 2025-26 (transport 489->552, housing 2679->3126, cultural 2017->1396, environmental 3922->4593, planning 1094->1079, central_services 3315->3190, other 125->381, total_service 13641->14317, net_current 27394->28061); revenue_budget->28,061,000; population 91400->90581" },
+    "phase_3_6_tier4_links": { "done": true, "tier4_field_sources": 0, "ce_leader_verified_current": true, "note": "all citations Tier-3 (site fully fetchable). CE Angela Hutchings + Leader Dave Blackwell grounded in SoA AGS p141, verified current via live-site/WebSearch cross-checks." },
+    "phase_4_populate": { "done": true, "method": "05-populate --apply (reserves + chief_executive_salary + councillor_basic_allowance + total_allowances_cost; round-trip + tsc); chief_executive + council_leader + salary_bands field_sources + strips hand-edited (line-range scoped, no global regex)" },
+    "phase_5_validators": { "done": true, "errors": 0, "regressions": 0, "north_star_gaps": 0 },
+    "phase_5b_ux_audit": { "done": true, "violations": "0 / 0" },
+    "phase_5c_reality_check": { "done": true, "result": "6/6 verbatim (manual — Castle Point not in the script's fixed BATCH list)" },
+    "phase_5d_screenshot_parity": { "done": true, "result": "7 screenshots · 7 verbatim-1:1 · 0 mismatched · 0 missing PNG" },
+    "phase_6_document": { "done": true, "files": ["docs/CASTLE-POINT-AUDIT.md", "manifests/castle-point.json"] },
+    "phase_7_ship": { "done": true }
+  },
+  "gates": {
+    "validate": "0 errors, 0 regressions",
+    "audit_north_star": "0 / 5 gaps",
+    "tier1_drift": "0 cells (23 checks)",
+    "ux_audit": "0 / 0",
+    "live_site_reality": "6/6 verbatim",
+    "screenshot_parity": "7 screenshots · 7 verbatim-1:1 · 0 mismatched · 0 missing PNG",
+    "proof_engine": "13 PROVEN fields (6 band_d + 7 Tier-3 detailed: chief_executive, chief_executive_salary, council_leader, councillor_basic_allowance, reserves, salary_bands, total_allowances_cost) · evidence-clean"
+  },
+  "kept_fields": [
+    "chief_executive (Angela Hutchings — SoA AGS p141, verified current)",
+    "council_leader (Cllr Dave Blackwell — SoA AGS p141, verified current)",
+    "reserves (£5,803,000 — SoA 2024-25 MIRS p25, PURE General Fund; HRA/earmarked separate)",
+    "chief_executive_salary (£138,960 — Pay Scales 2025/26 CEX1; proven paid SoA Note 9.2.1 actual £139k)",
+    "councillor_basic_allowance (£4,414 — Members' Allowances 2025/26 p1)",
+    "total_allowances_cost (£301,492 — Members' Allowances 2025/26 p3)",
+    "salary_bands (12/9/2/8/1 total 32 — SoA Note 9.1 2024/25 column p57)",
+    "documents",
+    "council_tax band_d 2021-26 (Tier-1)",
+    "budget RA 2025-26 (Tier-1)"
+  ],
+  "stripped_fields": [
+    "budget_gap (£13.753m fabricated 'derived from RA'; current SoA says 2025/26 balanced, only verbatim gap (£285k/£852k SoA 2023-24) since closed; watch)",
+    "savings_target (£12.378m fabricated; no candidates)",
+    "leader_allowance (£14,200; notice gives only SRA range £982-£25,129, no single Leader rate; watch — archivable Scheme PDF)",
+    "cabinet (Tier-4 agendas-page only; not fingerprintable; LGR/devolution churn)",
+    "councillor_allowances_detail (synthetic per-member 2023-24; stale)",
+    "performance_kpis (RAG/targets set by CivAccount)",
+    "service_spending (per-category sub-amounts; landing-page only)",
+    "top_suppliers (Contracts Finder OCDS ceilings; non-OGL per-value source)",
+    "grant_payments (UKSPF; landing-page only)",
+    "service_outcomes.population_served (dupe of population)",
+    "service_outcomes.housing (not Tier-1)"
+  ],
+  "corrections": {
+    "reserves": "25,461,000 (RA Part 2 total-usable ref — section-2 trap, ~16th council) -> 5,803,000 (SoA 2024-25 MIRS p25 pure General Fund Balance; HRA 1,557 + Earmarked 20,633 are separate columns; Narrative 'General Reserves (£5.8m at 31 March 2025)'; smaller-than-reference -> passes spot-check)",
+    "chief_executive": "Daniel Sexton (fabricated, matches no publication) -> Angela Hutchings (SoA AGS p141, 27 Feb 2026; verified current — Deputy RO on 27 Mar 2026 election notice)",
+    "council_leader": "Cllr Andrew Sherwin (wrong; contradicted cabinet[0]) -> Cllr Dave Blackwell (SoA AGS p141; Dec 2025 leader statement; no May-2026 borough election — only Essex CC)",
+    "chief_executive_salary": "137,304 (prior-year CEX1) -> 138,960 (Pay Scales 2025/26 CEX1; proven paid SoA Note 9.2.1 actual £139k)",
+    "councillor_basic_allowance": "3,550 (2024/25) -> 4,414 (Members' Allowances 2025/26 p1)",
+    "total_allowances_cost": "238,660 (2024/25) -> 301,492 (Members' Allowances 2025/26 p3)",
+    "salary_bands": "stale array total 28 (incl. £130-135k band, conflated senior officers) -> 2024/25 SoA Note 9.1 column 12/9/2/8/1 (total 32)",
+    "population": "91,400 -> 90,581 (parsed-population.csv)",
+    "budget": "stale 2024-25 cells -> RA 2025-26 (transport 489->552, housing 2679->3126, cultural 2017->1396, environmental 3922->4593, planning 1094->1079, central_services 3315->3190, other 125->381, total_service 13641->14317, net_current 27394->28061); revenue_budget -> 28,061,000"
+  },
+  "audit_date": "2026-06-16",
+  "last_verified": "2026-06-16",
+  "last_session": "2026-06-16"
+}
