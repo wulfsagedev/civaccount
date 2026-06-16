@@ -2139,6 +2139,41 @@ export function validate(councils, _population, report) {
       `${c}|budget_gap`,
       `${c}|savings_target`,
     ]),
+    // 2026-06-16 Batch-46-5 (Canterbury, queue-driven full-depth rollout). Canterbury is a
+    // stock-holding district (HRA). reserves CORRECTED (§2 trap, 14th/15th council in a row):
+    // legacy 23,842,000 was exactly the GOV.UK RA Part 2 total-usable reference; the SoA 2024-25
+    // Balance Sheet p13 + MIRS p14 pure General Fund Balance is £2.070m (the HRA £8.300m is a
+    // SEPARATE column — NOT the combined "General Fund and HRA balances" EFA line), well below the
+    // RA reference so it passes spot-check (Babergh/Basildon/Boston/Broadland/Cannock smaller-than-
+    // reference shape). chief_executive CORRECTED (fabricated "William Hatchett" → Joint Chief
+    // Executives Peter Davies & Suzi Wakeham, senior-management-structure chart Jan 2025 p1 + live
+    // page; a 1-Jan-2025 restructure replaced the single Head of Paid Service with two Joint CEs).
+    // council_leader CORRECTED (stale "Cllr Alan Sheridan" → Cllr Alan Baldock, leader page +
+    // ModernGov, current). total_allowances_cost £373,929 re-sourced to SoA Note 22 p58 (year label
+    // corrected to 2024-25). budget_gap CORRECTED £26.6m→£0.5m (Financial Outlook 2025-26 report p2,
+    // verbatim; legacy was fabricated 'derived from RA'). STRIPPED: chief_executive_salary (Joint CEs
+    // — SoA Note 23 shows only part-year £33k each post-restructure, old £121k defunct, Senior
+    // Salaries page gives grade ranges with no named figure; Arun/Cannock part-year/shared-CE strip);
+    // councillor_basic_allowance + leader_allowance (HTML-only members-allowances page, no archivable
+    // scheme/notice PDF — Basildon/Broxbourne/Cannock un-archivable-rate strip); savings_target (no
+    // quotable headline; legacy fabricated — Bolsover/Boston no-force-fit); salary_bands (legacy was
+    // the SoA's stale 2023/24 column, out of field set); cabinet (stale line-up, not fingerprintable
+    // to one doc — Broxbourne/Cannock); + Bradford strip-list.
+    ...['Canterbury'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|chief_executive_salary`,
+      `${c}|salary_bands`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

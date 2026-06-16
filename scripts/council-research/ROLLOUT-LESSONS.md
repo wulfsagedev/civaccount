@@ -1021,3 +1021,68 @@ good — don't re-do them; extend from there to the other fields.
   Note 34), councillor_basic_allowance (£5,706 Notice). STRIPS leader_allowance (Constitution-
   only SRA rate), budget_gap/savings_target (no archivable MTFS), salary_bands (ambiguous
   two-year banding), + Bradford strip-list. 4 Tier-3 PROVEN + 2 Tier-4 personnel, evidence-clean.
+
+### Batch-46-5 / Canterbury (2026-06-16) — HRA-combined reserves trap; the post is now TWO Joint CEs; £0.5m can't bind the proof engine
+
+- **Reserves trap, ~15th council in a row — HRA-combined-EFA variant (the brief
+  warned exactly this).** Legacy `reserves 23,842,000` was *exactly* the
+  parsed-reserves.csv RA Part 2 total-usable reference. Canterbury is a STOCK-HOLDING
+  district (HRA), so EVERY 03-extract auto-candidate was the EFA "Opening/Closing
+  General Fund and HRA balances" COMBINED line (p17: 2,638 / 2,867 / 10,370 …) — the
+  HRA-combined trap. The pure General Fund Balance is **£2.070m**, in the SoA 2024-25
+  Balance Sheet (p13, "General Fund (2,070)" — a SEPARATE column from "Housing Revenue
+  Account (8,300)" and "Earmarked reserves (35,913)") and the MIRS (p14, "Balance at
+  31 March 2025 carried forward (2,070)", first column). Smaller-than-reference →
+  passes spot-check. Rule for HRA districts: the EFA "General Fund and HRA balances"
+  line is combined; go to the Balance Sheet Usable-Reserves note OR the MIRS GF column
+  for the pure figure, and read the column header — never the first number 03-extract
+  surfaces. The pure-GF figure sits in a wide MIRS column the line-matcher can't
+  attribute, so hand-author it from the Balance Sheet line (Basildon wide-table). The
+  excerpt "General Fund                                     (2,070)" needs the
+  multi-space run so screenshot-parity's `\s{2,}` splitter makes label+value two
+  verbatim chunks (2/2 pass).
+- **The single-CE post had become TWO Joint CEs — the brief's "verify CE live" caught
+  it.** Legacy `chief_executive "William Hatchett"` matched no Canterbury publication.
+  A 1-Jan-2025 senior-management restructure (SoA 2024-25 Note 23) replaced the single
+  Head of Paid Service with two **Joint Chief Executives, Peter Davies & Suzi Wakeham**.
+  The SoA does NOT name a current CE in text (Note 23 shows only PART-YEAR £33k rows
+  for the two new Joint CXs, marked "costs from 1 January 2025") — ground the names in
+  the council's **senior-management-structure org chart PDF** (Jan 2025, p1: "Joint CX
+  Peter Davies / Joint CX Suzi Wakeham") + the live structure page (Bromsgrove
+  single-management-chart precedent). Render chief_executive as the combined string
+  "Peter Davies and Suzi Wakeham (Joint Chief Executives)". Lesson: a "Joint CE" pair
+  is not the same trap as a shared CE (Cannock/Bromsgrove) — here BOTH postholders are
+  Canterbury's own, the post itself was split; the structure chart is the cleanest
+  Tier-3 source when the SoA's remuneration note only carries part-year rows.
+- **chief_executive_salary STRIP when the post split mid-year with no full-year rate.**
+  The old single-CE £121k is defunct; the two Joint CEs show only ~3-month £33k each in
+  SoA Note 23; the Senior Salaries transparency page gives grade RANGES (top CCC-22 max
+  £143,555) with no named figure; no Pay Policy Statement PDF exists. No archivable
+  full-year RATE → strip + watch (Arun part-year / Cannock shared-CE precedent).
+- **The £0.5m budget_gap is verbatim but UNPROVABLE — the proof value-binding fails on
+  a leading-zero decimal.** proof.mjs binds value→excerpt by checking that a ≥2-char
+  prefix of `digits(value)` appears in `digits(excerpt)`. For budget_gap=500000 vs
+  excerpt "£0.5m": digits(value)="50…", digits(excerpt)="05" → "50" not in "05" → FAIL
+  (whereas Bromsgrove's £1.03m→1030000: "103" ∈ "103" → binds). So a £0.X m figure
+  whose first significant digit follows a "0." can NEVER bind. Since budget_gap's
+  FinancialHealthCard sibling mtfs_deficit was also absent (renders nothing), shipping
+  it would be a permanently gate-hidden UNPROVEN claim → STRIP (Broxbourne
+  strip-when-unprovable). Keep the budget report archived as the documentary basis;
+  watch to reinstate a current-year gap that's a clean round figure (the £1.6m 2026/27
+  forecast would bind once it's the current year). **General rule: "£0.Xm" excerpts
+  don't value-bind — prefer a figure ≥£1m or one whose excerpt carries the full digits
+  ("£500,000"/"500k" would bind; "£0.5m" won't).**
+- **Canterbury fetch profile**: `www.canterbury.gov.uk/sites/default/files/` + `/media/`
+  serve PDFs directly to a Chrome UA (HTTP 200, no WAF). `democracy.canterbury.gov.uk/
+  documents/sNNNNN/` 403s bots AND SavePageNow can't reach the origin — the 02-archive
+  SPN poll loop HUNG ~ minutes on the ModernGov budget docs (Breckland precedent); kill
+  it (journals on exit), then fetch each needed budget doc from its existing CDX capture
+  via `/web/<ts>if_/<url>` (all three Financial Outlook reports had clean 200 captures).
+  06-audit-evidence's "✓ wayback" lines did NOT persist to the SoA-2024-25/structure-
+  chart metas (Babergh trap) — backfill via the availability API after SPN lands.
+- **Canterbury ended lean-but-clean**: KEEPS chief_executive (Tier-3 structure chart,
+  Joint CEs), council_leader (Tier-4 leader page, Cllr Alan Baldock), reserves (£2.070m
+  pure-GF), total_allowances_cost (£373,929 SoA Note 22). STRIPS chief_executive_salary
+  (post split, part-year only), councillor_basic_allowance/leader_allowance (HTML-only),
+  budget_gap (unprovable £0.5m) + savings_target, salary_bands (stale column), cabinet,
+  + Bradford strip-list. 3 Tier-3 PROVEN + 1 Tier-4 personnel, evidence-clean.
