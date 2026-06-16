@@ -956,3 +956,68 @@ good — don't re-do them; extend from there to the other fields.
   Note 6), total_allowances_cost (£325k SoA Note 26), salary_bands (2024/25 SoA Note 27), documents.
   STRIPS councillor_basic_allowance (XLSX-only → gate-hidden), budget_gap/savings_target (balanced
   budget), cabinet, councillor_allowances_detail, + Bradford strip-list. 6 Tier-3 PROVEN, evidence-clean.
+
+### Batch-46-4 / Cannock Chase (2026-06-16) — shared CE EMPLOYED BY the partner (salary in OUR Pay Policy not SoA); HRA-combined MIRS; reachable post-election leader; un-archivable Constitution allowances
+
+- **Reserves trap, FOURTEENTH council in a row — HRA-combined-MIRS variant.** Legacy
+  `reserves 16,652,000` was *exactly* the parsed-reserves.csv RA Part 2 total-usable
+  reference. Cannock is a STOCK-HOLDING district (has an HRA), so 03-extract's auto top
+  candidate (£3,925k) was the wrong "Opening General Fund & HRA Balance" line from the
+  EFA (Note 6, p36) — a COMBINED GF+HRA figure whose footnote literally says "For a split
+  of this balance between the General Fund and the HRA - see the Movement in Reserves
+  Statement". The real MIRS (p18) has a clean PURE-GF "General Fund Balance" column:
+  "Balance at 31 March 2025 (2,410)" + narrative "comprising a working balance of £2.410
+  million and earmarked reserves of £21.941 million" (HRA working balance £2.671m + HRA
+  earmarked £16.322m are SEPARATE columns; total usable £67.121m). Corrected to £2.410m
+  (smaller-than-reference → re-point, passes spot-check; NOT the Bromsgrove exceeds-ref
+  strip). Rule for HRA districts: the EFA/Note-6 "General Fund & HRA Balance" line is the
+  combined figure — go to the MIRS for the pure-GF column, and read the GF-column header,
+  not the first number 03-extract surfaces.
+- **Shared CE EMPLOYED BY the partner → the full salary is in OUR Pay Policy, not our SoA
+  (the THIRD shared-CE shape).** Cannock shares its whole SLT with Stafford BC (joint team
+  since April 2023). Unlike Broadland (joint MD = a BDC *employee*, full salary in BDC's
+  SoA) and Bromsgrove (50/50 scale published in BDC's Pay Policy with a "cost to BDC 50%"
+  column), Cannock's Shared CE is a **Stafford employee** (Pay Policy Note 1b: "employed by
+  our Shared Service partner, Stafford Borough Council"). So the CE salary does NOT appear
+  in Cannock's SoA Note 35 at all (which shows only the Deputy CE that Cannock employs +
+  an employer table confirming "Joint Chief Executive — Stafford Borough Council"). The
+  full single fixed salary (£153,838, Note 1 "single fixed salary pay point") is published
+  ONLY in Cannock's own statutory Pay Policy — which IS a Cannock publication, so it ships.
+  Proven paid by the same document's pay-ratio section ("(£153,838.00) as 1:5.92"). All
+  three shapes ship the FULL salary; the discriminator is WHICH council's document carries
+  it (employer's SoA if employee-of-this-council; either council's Pay Policy if the scale
+  is jointly published). Read Note 1a vs 1b to find who employs the post.
+- **CE name: SoA names neither (deputy-CE certifies) → Tier-4 leadership page.** The SoA is
+  certified by the Deputy CE/S151 (C Forrester) and never names the Shared CE. Tim Clegg is
+  named only on the council's Leadership Team page (the only named officer, with photo) —
+  Tier-4 live_page, no PNG needed (4 Tier-3 PDF fields satisfy screenshot-parity). Verified
+  current (theOrg). NOT a deputy. (Brief said "Joint CE arrangement … no isolated figure" —
+  the prior strip was over-cautious; the full salary IS published, just in the Pay Policy.)
+- **Reachable post-election leader → reinstate, don't strip (Boston/Broxbourne variant).**
+  Cannock went to the polls 7 May 2026 and Reform took control; Cllr Paul Jones was elected
+  Leader at the 20 May 2026 AGM (~4 weeks pre-rollout). Unlike B&D/Basingstoke (post-election
+  NOC + unreachable leader → strip), the council's OWN news article ("New leader takes the
+  reigns…") names him → set the scalar (Tier-4 live_page + Wayback). The allowances Notice
+  cross-confirms the mid-year leadership churn (two leaders' part-year SRAs).
+- **leader_allowance STRIP: the Notice shows PAID amounts, the full-year RATE is in the
+  un-archived Constitution.** The 2025-26 Members' Allowances **Notice of Amounts Paid** PDF
+  (archivable, fingerprintable) carries the basic-allowance standard rate (£5,706.72, repeated
+  for every member) → councillor_basic_allowance ships cleanly. But the full-year Leader SRA
+  rate (legacy £19,403) is only in the Members' Allowances SCHEME (Constitution Part 6 §42),
+  which the council only links to and which isn't separately archived; the Notice shows only
+  part-year amounts across two mid-year leaders (no full-year £19,403). Strip leader_allowance
+  + watch item (the Basildon/Breckland un-archivable-scheme strip). Lesson: a "Notice of
+  Amounts Paid" gives you the BASIC rate (uniform across members) for free, but NOT
+  responsibility-allowance RATES (those are scheme figures, often part-year in the notice).
+- **Cannock fetch profile**: `www.cannockchasedc.gov.uk/sites/default/files/{document-library,
+  2026-06}/…` serves PDFs directly to a Chrome UA (HTTP 200, no WAF). One legacy slot
+  (`_allowances_report.pdf`) 404'd every ladder step (removed/old — not needed). CDX sweep ran;
+  document discovery trivial off the live finance / transparency / members-allowances pages.
+  The current allowances Notice (the CE-pay-adjacent doc) was found live, not by the probe —
+  add it to inventory + write its meta by hand so it's tracked + proof-resolvable.
+- **Cannock ended rich**: KEEPS chief_executive (Tier-4 leadership page, Tim Clegg),
+  council_leader (Tier-4 news, Cllr Paul Jones), chief_executive_salary (£153,838 Pay Policy
+  2026-27 Shared CE), reserves (£2.410m SoA MIRS p18), total_allowances_cost (£328,611 SoA
+  Note 34), councillor_basic_allowance (£5,706 Notice). STRIPS leader_allowance (Constitution-
+  only SRA rate), budget_gap/savings_target (no archivable MTFS), salary_bands (ambiguous
+  two-year banding), + Bradford strip-list. 4 Tier-3 PROVEN + 2 Tier-4 personnel, evidence-clean.
