@@ -126,6 +126,8 @@ const NORTH_STAR_22 = [
   'Forest of Dean', 'Hyndburn', 'Ipswich',
   // Batch-44 (2026-06-10): queue-driven full-depth rollouts.
   'Amber Valley', 'Arun', 'Ashfield', 'Ashford', 'Babergh',
+  // Batch-45 (2026-06-10): queue-driven full-depth rollouts.
+  'Basildon',
 ];
 
 function slugify(n) {

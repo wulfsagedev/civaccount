@@ -4,35 +4,45 @@
   "phases": {
     "phase_0_inventory": {
       "done": true,
-      "at": "2026-06-10T01:55:23.829Z",
+      "at": "2026-06-16T07:38:32.472Z",
       "candidates": 10
     },
     "phase_1_archive": {
       "done": true,
-      "at": "2026-06-10T01:56:08.637Z",
+      "at": "2026-06-16T07:40:58.026Z",
       "results": {
-        "ok": 2,
-        "skipped": 0,
+        "ok": 6,
+        "skipped": 4,
         "blocked": 0,
         "failed": 0
       }
     },
     "phase_2_extract": {
       "done": true,
-      "at": "2026-06-10T04:00:00.585Z",
+      "at": "2026-06-16T07:42:52.696Z",
       "candidates": 17,
       "parse_failures": 0
     },
     "phase_3_5_tier1_crosscheck": {
-      "done": false,
-      "at": "2026-06-10T04:00:00.630Z",
-      "drift": 4
+      "done": true,
+      "at": "2026-06-16T07:50:35.580Z",
+      "drift": 0
     },
     "phase_1b_page_images": {
       "done": true,
-      "at": "2026-06-10T01:59:05.454Z",
-      "images": 1
+      "at": "2026-06-16T07:51:14.805Z",
+      "images": 4
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T07:52:00.247Z",
+      "fields": [
+        "chief_executive",
+        "reserves",
+        "budget_gap",
+        "savings_target"
+      ]
     }
   },
-  "last_session": "2026-06-10T04:00:00.630Z"
+  "last_session": "2026-06-16T07:52:00.247Z"
 }

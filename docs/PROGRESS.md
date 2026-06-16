@@ -103,6 +103,8 @@ A council is **North-Star complete** when all 7 phases = ✓ AND `status/<slug>.
   - Batch-29 (6 mixed) — direct fetch: Durham (UA), Northumberland (UA), Harrow (LB), Knowsley (MD), Sutton (LB), Richmond upon Thames (LB)
   - Batch-30 (7 mixed) — first districts: Blackpool (UA), East Hampshire (SD), St Albans (SD), West Lindsey (SD), Pendle (SD), Blaby (SD), Erewash (SD)
   - Batch-31 (7 SDs): Broxtowe, Stroud, Runnymede, West Oxfordshire, South Kesteven, South Oxfordshire, Epping Forest
+  - Batch-44 (5 SDs) — queue-driven full-depth: Amber Valley, Arun, Ashfield, Ashford, Babergh
+  - Batch-45 (1 SD) — queue-driven full-depth: Basildon (E07000066; pipeline e2e-test council, completed to North-Star. reserves corrected 40.424m→6.307m GF; CE Scott Logan→Gary Jones verified live; budget block re-synced to RA 2025-26; budget_gap £1.7m + savings £4.7m from archived MTFS; CE salary + allowances + leader stripped as unverifiable/rotated. 0/5 north-star · 0/0 ux-audit · 4/4 screenshot parity · 4 Tier-3 PROVEN evidence-clean)
 
 <!-- The "in progress / not yet started" tallies that used to live here were part of
      the false 139 framing and have been removed. The proof engine is the scoreboard. -->

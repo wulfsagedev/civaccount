@@ -3,7 +3,28 @@
     "council": "Basildon",
     "field": "chief_executive",
     "pdf": "statement-of-accounts-2024-25.pdf",
-    "page": 65,
-    "value": "Scott Logan"
+    "page": 3,
+    "value": "Gary Jones"
+  },
+  {
+    "council": "Basildon",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 50,
+    "value": "6307000"
+  },
+  {
+    "council": "Basildon",
+    "field": "budget_gap",
+    "pdf": "draft-20budget-20report-20202526.pdf",
+    "page": 3,
+    "value": "1700000"
+  },
+  {
+    "council": "Basildon",
+    "field": "savings_target",
+    "pdf": "draft-20budget-20report-20202526.pdf",
+    "page": 4,
+    "value": "4700000"
   }
 ]

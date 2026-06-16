@@ -194,7 +194,11 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
     "council_tax.band_d_2023",
     "council_tax.band_d_2024",
     "council_tax.band_d_2025",
-    "council_tax.band_d_2026"
+    "council_tax.band_d_2026",
+    "detailed.budget_gap",
+    "detailed.chief_executive",
+    "detailed.reserves",
+    "detailed.savings_target"
   ],
   "basingstoke-and-deane": [
     "council_tax.band_d_2021",
@@ -2691,4 +2695,4 @@ export const PROVEN_FIELDS: Record<string, string[]> = {
   ]
 };
 
-export const PROVEN_GENERATED_AT = "2026-06-10T11:59:08.688Z";
+export const PROVEN_GENERATED_AT = "2026-06-16T07:58:44.583Z";
