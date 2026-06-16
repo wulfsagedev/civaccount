@@ -1934,6 +1934,45 @@ export function validate(councils, _population, report) {
     // Arun-only: no published full-year CE salary RATE (SoA Note 31 is
     // part-year; pay-policy HTML figure is a pension-inclusive package).
     'Arun|chief_executive_salary',
+    // 2026-06-10 Batch-44 (cont.): Ashford, Babergh. Bradford strip checklist;
+    // per-council reasons in ASHFORD-AUDIT.md / BABERGH-AUDIT.md (data repo).
+    ...['Ashford', 'Babergh'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|staff_fte`,
+      `${c}|documents`,
+    ]),
+    // 2026-06-16 Batch-45 (queue-driven full-depth rollouts): Basildon, Basingstoke
+    // & Deane. Bradford strip checklist; per-council reasons in BASILDON-AUDIT.md /
+    // BASINGSTOKE-AND-DEANE-AUDIT.md (data repo) and inline comments in districts.ts.
+    // B&D went to No Overall Control at the 7 May 2026 election, so cabinet +
+    // council_leader are stale-until-next-signed-AGS (Babergh rotating-leadership rule).
+    ...['Basildon', 'Basingstoke & Deane'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|savings_target`,
+      `${c}|staff_fte`,
+      `${c}|documents`,
+    ]),
+    // Basildon-only: no full-year CE salary RATE, no atomic allowances total/basic
+    // (see BASILDON-AUDIT.md). B&D keeps all three (full SoA Note 23 + 2026/27 scheme).
+    'Basildon|chief_executive_salary',
+    'Basildon|councillor_basic_allowance',
+    'Basildon|leader_allowance',
+    'Basildon|total_allowances_cost',
+    'Basildon|salary_bands',
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

@@ -1,0 +1,51 @@
+{
+  "council": "Basingstoke & Deane",
+  "slug": "basingstoke-and-deane",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-16T08:17:48.386Z",
+      "candidates": 6,
+      "note": "CDX sweep found nothing automatically (origin not in IA's recent index); inventory curated by hand from the live /finance + /accounts pages — the council's /content/doclib store fetches direct (no WAF)."
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-16T08:24:15.196Z",
+      "results": {
+        "ok": 6,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-16T08:24:30.801Z",
+      "candidates": 35,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-16T08:24:57.564Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-16T08:29:52.796Z",
+      "images": 6
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T08:32:27.806Z",
+      "fields": [
+        "chief_executive",
+        "chief_executive_salary",
+        "reserves",
+        "councillor_basic_allowance",
+        "total_allowances_cost",
+        "budget_gap"
+      ]
+    }
+  },
+  "last_session": "2026-06-16T08:32:27.806Z"
+}

@@ -145,6 +145,11 @@ const CHECKS = {
     { value: 'Lutfur Rahman', where: 'statement-of-accounts-2024-25.pdf', note: 'Executive Mayor' },
     { value: 'General Fund', where: 'statement-of-accounts-2024-25.pdf', note: 'Section exists' },
   ],
+  'basingstoke-and-deane': [
+    { value: 'Russell O\'Keefe', where: 'statement-of-accounts-2024-25.pdf', note: 'CE name (Note 23 remuneration)' },
+    { value: '157,581', where: 'statement-of-accounts-2024-25.pdf', note: 'CE salary 2024/25 (Note 23)' },
+    { value: '£1.5M General Fund balance', where: 'statement-of-accounts-2024-25.pdf', note: 'GF working balance narrative p70' },
+  ],
 };
 
 function pdfGrep(pdfPath, needle) {
