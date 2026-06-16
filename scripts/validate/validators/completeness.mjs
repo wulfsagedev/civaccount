@@ -2065,6 +2065,27 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-16 Batch-46-1 (Broadland, queue-driven full-depth rollout). Broadland shares its
+    // joint Managing Director + officer team with South Norfolk DC; every kept value is Broadland's
+    // OWN figure (full MD salary sits in BDC's own SoA Note 24 because the postholder is a BDC
+    // employee — the "BDC Share" £96,005 column is South Norfolk's recharge, not the salary).
+    // Bradford strip-list + no-force-fit budget_gap (balanced 2025-26 budget, no quotable headline)
+    // + salary_bands (joint BDC+SNC pool "by employing Authority before recharges", not Broadland's
+    // own workforce). KEEPS documents + councillor_basic_allowance + leader_allowance (sourced to
+    // the archived Constitution Part 4.4).
+    ...['Broadland'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

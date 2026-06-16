@@ -1,0 +1,45 @@
+[
+  {
+    "council": "Broadland",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-202425-bdc-final-with-signatures.pdf",
+    "page": 13,
+    "value": "11060000"
+  },
+  {
+    "council": "Broadland",
+    "field": "chief_executive_salary",
+    "pdf": "statement-of-accounts-202425-bdc-final-with-signatures.pdf",
+    "page": 59,
+    "value": "185518"
+  },
+  {
+    "council": "Broadland",
+    "field": "total_allowances_cost",
+    "pdf": "statement-of-accounts-202425-bdc-final-with-signatures.pdf",
+    "page": 57,
+    "value": "374129"
+  },
+  {
+    "council": "Broadland",
+    "field": "councillor_basic_allowance",
+    "pdf": "bdc-constitution-2025.pdf",
+    "page": 45,
+    "value": "5983"
+  },
+  {
+    "council": "Broadland",
+    "field": "chief_executive",
+    "pdf": "statement-of-accounts-202425-bdc-final-with-signatures.pdf",
+    "page": 83,
+    "value": "Trevor Holden"
+  },
+  {
+    "council": "Broadland",
+    "field": "council_leader",
+    "pdf": "statement-of-accounts-202425-bdc-final-with-signatures.pdf",
+    "page": 83,
+    "value": "Cllr Susan Inwards Holland",
+    "note": "AGS Certification page signature — Leader of the Council"
+  }
+]

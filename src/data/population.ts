@@ -24,7 +24,7 @@ export const populationData: Record<string, number> = {
   "Braintree": 155600,
   "Breckland": 146620,
   "Brentwood": 78200,
-  "Broadland": 132700,
+  "Broadland": 138157,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 132,700 (mid-2022 era).
   "Bromsgrove": 100400,
   "Broxbourne": 98100,
   "Broxtowe": 114400,
