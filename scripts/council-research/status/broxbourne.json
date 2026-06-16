@@ -1,0 +1,70 @@
+{
+  "council": "Broxbourne",
+  "slug": "broxbourne",
+  "ons_code": "E07000095",
+  "type": "SD",
+  "batch": "46-3",
+  "north_star_complete": true,
+  "done": true,
+  "phases": {
+    "phase_0_inventory": { "done": true, "note": "auto-discovery empty; documents found off live finance/transparency/allowances landing pages (no WAF)" },
+    "phase_1_archive": { "done": true, "results": { "ok": 4, "skipped": 0, "blocked": 0, "failed": 0 } },
+    "phase_1b_page_images": { "done": true, "page_pngs": 5, "csv_row_pngs": 22 },
+    "phase_2_extract": { "done": true },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_crosscheck": { "done": true, "drift": 0, "checks": 23 },
+    "phase_3_6_tier4_links": { "done": true, "tier4_field_sources": 0, "ce_leader_verified_current": true },
+    "phase_4_populate": { "done": true, "method": "hand-edit (line-range scoped); tsc clean; round-trip via re-validate" },
+    "phase_5_validators": { "done": true, "errors": 0, "regressions": 0, "north_star_gaps": 0 },
+    "phase_5b_ux_audit": { "done": true, "violations": "0 / 0" },
+    "phase_5c_reality_check": { "done": true, "result": "3/3 verbatim" },
+    "phase_5d_screenshot_parity": { "done": true, "result": "6 screenshots · 6 verbatim-1:1 · 0 mismatched · 0 missing PNG" },
+    "phase_6_document": { "done": true, "files": ["docs/BROXBOURNE-AUDIT.md", "manifests/broxbourne.json"] },
+    "phase_7_ship": { "done": true }
+  },
+  "gates": {
+    "validate": "0 errors, 0 regressions",
+    "audit_north_star": "0 / 5 gaps",
+    "tier1_drift": "0 cells (23 checks)",
+    "ux_audit": "0 / 0",
+    "live_site_reality": "3/3 verbatim",
+    "screenshot_parity": "6 screenshots · 6 verbatim-1:1 · 0 mismatched · 0 missing PNG",
+    "proof_engine": "6 tier-3 PROVEN · 0 unproven · 0 tier4-unverifiable · evidence-clean"
+  },
+  "kept_fields": [
+    "chief_executive (Jeff Stack — AGS p8)",
+    "council_leader (Cllr Corina Gander — AGS p8)",
+    "chief_executive_salary (£136,508 — SoA Note 27 p43)",
+    "reserves (£6,572,000 — SoA Note 6 p25)",
+    "total_allowances_cost (£325,000 — SoA Note 26 p42)",
+    "salary_bands (2024/25 — SoA Note 27 p43)",
+    "documents",
+    "council_tax band_d 2021-26 (Tier-1)",
+    "budget RA 2025-26 (Tier-1)"
+  ],
+  "stripped_fields": [
+    "councillor_basic_allowance (XLSX-only -> gate-hidden; watch: archivable scheme PDF)",
+    "budget_gap / savings_target (fabricated; balanced budget, no quotable gap)",
+    "cabinet",
+    "councillor_allowances_detail",
+    "top_suppliers",
+    "grant_payments",
+    "performance_kpis",
+    "service_outcomes",
+    "service_spending",
+    "staff_fte"
+  ],
+  "corrections": {
+    "reserves": "28,763,000 (RA Part 2 usable ref — section-2 trap, 13th council) -> 6,572,000 (SoA Note 6 GF)",
+    "chief_executive": "Amanda Maybury (fabricated) -> Jeff Stack (AGS p8, verified current 2026)",
+    "council_leader": "Cllr Lewis Sherwin (Interim) (wrong) -> Cllr Corina Gander (AGS p8, retained post-2026-election)",
+    "chief_executive_salary": "117,689 (Tier-4 transparency page) -> 136,508 (SoA Note 27 audited)",
+    "total_allowances_cost": "289,000 (2023/24 stale) -> 325,000 (SoA Note 26 2024/25)",
+    "salary_bands": "2023/24 column (24) -> 2024/25 column (28)",
+    "budget": "stale 2024-25 cells -> RA 2025-26; revenue_budget -> 32,017,000",
+    "population": "98,100 -> 101,900 (ONS Mid-2024)"
+  },
+  "audit_date": "2026-06-16",
+  "last_verified": "2026-06-16",
+  "last_session": "2026-06-16"
+}

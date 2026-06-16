@@ -1,0 +1,39 @@
+[
+  {
+    "council": "Broxbourne",
+    "field": "chief_executive",
+    "pdf": "annual-governance-statement-2024-25.pdf",
+    "page": 8,
+    "value": "J T Stack",
+    "note": "AGS 2024-25 signature page — Chief Executive J T Stack / Leader Cllr C Gander"
+  },
+  {
+    "council": "Broxbourne",
+    "field": "chief_executive_salary",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 43,
+    "value": "136508"
+  },
+  {
+    "council": "Broxbourne",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 25,
+    "value": "572000"
+  },
+  {
+    "council": "Broxbourne",
+    "field": "total_allowances_cost",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 42,
+    "value": "325",
+    "note": "Note 26 Members' Allowances — Balance at 31 March 2024/25 £325k"
+  },
+  {
+    "council": "Broxbourne",
+    "field": "salary_bands",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 43,
+    "value": "Remuneration Band Number of Employees"
+  }
+]

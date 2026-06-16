@@ -44,6 +44,7 @@ const BATCH_67 = [
   { name: 'Bristol', slug: 'bristol' },
   { name: 'Lancashire', slug: 'lancashire' },
   { name: 'Tower Hamlets', slug: 'tower-hamlets' },
+  { name: 'Broxbourne', slug: 'broxbourne' },
 ];
 
 // For each council, the 3 key values we expect to find verbatim.
@@ -69,6 +70,11 @@ const CHECKS = {
     { value: '213,454', where: 'statement-of-accounts-2023-24.pdf', note: 'CE Kate Josephs Note 10a' },
     { value: 'Kate Josephs', where: 'statement-of-accounts-2023-24.pdf', note: 'CE name' },
     { value: '557,970', where: 'statement-of-accounts-2023-24.pdf', note: 'Total usable reserves' },
+  ],
+  broxbourne: [
+    { value: '136,508', where: 'statement-of-accounts-2024-25.pdf', note: 'CE salary Note 27 (p43)' },
+    { value: 'J T Stack', where: 'annual-governance-statement-2024-25.pdf', note: 'CE name AGS signature (p8)' },
+    { value: '6,572', where: 'statement-of-accounts-2024-25.pdf', note: 'General Fund Reserve Note 6 (p25)' },
   ],
   westminster: [
     { value: '232,389', where: 'annual-accounts-2023-24.pdf', note: 'CE Stuart Love Note 10a' },

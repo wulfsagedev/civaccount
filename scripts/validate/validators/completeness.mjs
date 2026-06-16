@@ -2109,6 +2109,36 @@ export function validate(councils, _population, report) {
       `${c}|performance_kpis`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-16 Batch-46-3 (Broxbourne, queue-driven full-depth rollout). All kept values are
+    // grounded in the council's OWN archived publications. reserves CORRECTED (§2 trap, 13th
+    // council in a row): legacy 28,763,000 was exactly the GOV.UK RA Part 2 total-usable reference;
+    // the SoA 2024-25 Note 6 (p25) pure General Fund Reserve is £6,572k (Narrative p6 "£6.6 million"),
+    // well below the RA reference so it passes spot-check (Babergh/Basildon/Boston/Broadland shape,
+    // NOT the Bromsgrove exceeds-reference strip case). chief_executive CORRECTED (fabricated
+    // "Amanda Maybury" → Jeff Stack, AGS p8 + verified current 2026, CE since 2013); council_leader
+    // CORRECTED (stale "Cllr Lewis Sherwin (Interim)" → Cllr Corina Gander, AGS p8 + verified
+    // retained after the 7 May 2026 election). chief_executive_salary £136,508 (SoA Note 27 p43),
+    // total_allowances_cost £325k (SoA Note 26 p42), salary_bands 2024/25 column (SoA Note 27 p43).
+    // KEEPS documents. STRIPPED: budget_gap + savings_target (legacy £14.678m/£13.210m fabricated
+    // 'derived from RA' — 2026/27 budget report is a balanced budget, no quotable headline gap;
+    // Bolsover/Boston/Breckland no-force-fit); councillor_basic_allowance (the £6,638 rate is only
+    // in the Allowances-Paid XLSX — no PDF/HTML page form, can't carry a PNG or be proof-verified, so
+    // it would be gate-hidden; SoA Note 26 publishes only the total — Basildon catalogue-strip
+    // precedent, watch item to reinstate from an archivable Members' Allowances Scheme PDF) + Bradford
+    // strip-list.
+    ...['Broxbourne'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

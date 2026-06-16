@@ -890,3 +890,69 @@ good — don't re-do them; extend from there to the other fields.
   (£5,826) + leader_allowance (£17,478) (Members' Scheme 2025-26), total_allowances_cost (£268k SoA
   Note B7), budget_gap (£1.03m) + savings_target (£1.213m) (MTFS). STRIPS reserves (correct GF
   exceeds stale reference → no-force-fit), salary_bands (joint pool), + Bradford strip-list.
+
+### Batch-46-3 / Broxbourne (2026-06-16) — both personnel scalars wrong (1 fabricated, 1 stale); the AGS grounds both; XLSX-only allowance must STRIP (gate-hidden), not ship
+
+- **Reserves trap, THIRTEENTH council in a row — clean smaller-than-reference variant.** Legacy
+  `reserves 28,763,000` was *exactly* the parsed-reserves.csv RA Part 2 total-usable reference. The
+  SoA Note 6 (p25) states the pure GF figure in ONE quotable line: "the Council also has a General
+  Fund Reserve of £6,572k … which results in total usable revenue reserves of £48,387k" (Narrative
+  p6: "general fund balance is £6.6 million"). £6.572m << £28.763m ref → passes spot-check cleanly
+  (Babergh/Basildon/Boston/Broadland shape — NOT the Bromsgrove exceeds-reference strip). 03-extract's
+  auto top-candidate was the wrong £16,133k "Contribution to General Fund Reserve" movement line, and
+  it MIS-PARSED the £6,572k as "572000" (dropped the leading 6 across the column gap) — read the
+  excerpt, hand-author the value + excerpt when the parser splits a figure.
+- **Both personnel scalars were wrong, in two different ways, and the SoA does NOT name the CE.**
+  Legacy CE "Amanda Maybury" matched NO Broxbourne publication (fabricated/legacy); legacy Leader
+  "Cllr Lewis Sherwin (Interim)" was stale AND contradicted the legacy cabinet[0] (which already said
+  Corina Gander). The SoA is certified by the **Deputy** Chief Executive (S151) and never names the CE
+  in text (deputy-CE trap live) — so BOTH names come from the **AGS signature page** (p8: "J T Stack /
+  Chief Executive" + "Cllr C Gander / Leader of the Council"). One PNG grounds two fields. CE Jeff
+  Stack verified current (CE since 2013, LinkedIn + Companies House + e-claim directive); NOT a deputy
+  (org chart "Chief Exec" box distinct from "Deputy CE", and the chart has NO names — structure only).
+  Leader Corina Gander verified RETAINED after the 7 May 2026 election (Conservatives kept control) —
+  the inverse of the B&D/Basingstoke post-election NOC-strip: control retained → keep, don't strip.
+  Lesson reinforced (Basildon/Bromsgrove): treat EVERY legacy personnel scalar as suspect; the AGS
+  signature page is the most reliable district CE+Leader source when the SoA omits the CE.
+- **XLSX-only councillor_basic_allowance → STRIP (it would be gate-hidden), don't ship.** The current
+  rate (£6,638.47) is published ONLY in the Allowances-Paid-2025-26 **XLSX** — no PDF/HTML page form.
+  The proof engine's `resolveArchive` only resolves `.pdf/.html/.htm/.csv` (NOT `.xlsx`), so a field
+  cited to the XLSX (even with a matching sha256 in `_meta.json`) reports UNPROVEN → it is NOT added to
+  PROVEN_FIELDS → default-deny hides it → the number never renders. Shipping it = a permanently
+  gate-hidden value (pointless). The SoA Note 26 publishes only the allowances TOTAL, not the
+  per-member rate. So STRIP with a watch item (reinstate from an archivable Members' Allowances SCHEME
+  PDF). This extends the Basildon "catalogue-URL → strip" rule: a fingerprinted-but-unrenderable
+  spreadsheet source is also a strip, for the proof-gate reason. (NB: stripping it bumped Broxbourne
+  from 🟡-with-1-unproven to fully EVIDENCE-CLEAN — the proof engine rewards removing unverifiable
+  claims.) — Possible future fix: teach `resolveArchive` + `render-csv-evidence` to render a row PNG
+  from an XLSX (xlsx→csv→PNG) so spreadsheet rates become Tier-3-renderable; out of scope this session.
+- **chief_executive_salary: audited SoA Note 27 "Salary" beats the Tier-4 transparency-page figure.**
+  The council's live transparency page states "Chief Executive £117,689" (a pay-multiple basis, no
+  year, Tier-4 HTML, no fingerprint/PNG); the SoA Note 27 (p43) shows the audited Salary column
+  £136,508 (2024/25), with Expenses/Fees £109 and pension £25,940 in SEPARATE columns (so the £136,508
+  is salary, not a fee-inflated package). Ship the Tier-3 fingerprintable audited figure over the
+  Tier-4 unfingerprintable HTML scrape, titled "Note 27 Officers' Remuneration … Salary". Watch: the
+  two bases disagree (£117,689 vs £136,508) — reconcile if a single authoritative scale is published.
+- **total_allowances_cost: SoA Note 26 "Balance at 31 March" is the clean published total.** Legacy
+  £289,000 was the 2023/24 balance (stale by one year); the 2024/25 "Balance at 31 March" is £325k
+  (allowances incl NI £323k + expenses £2k). Prefer the SoA Note published total (Bromsgrove rule).
+- **salary_bands were stale by exactly one year — the legacy column WAS the SoA's prior-year column.**
+  Legacy 11/4/5/2/1/1 (total 24) matched the SoA Note 27 **2023/24** column exactly; the current
+  **2024/25** column is 16/4/4/2/2 (total 28). Always check which column the legacy counts came from.
+- **budget_gap/savings_target STRIP (balanced budget, no quotable gap).** Legacy £14.678m/£13.210m were
+  fabricated 'derived from RA' (absurd for a £17.16m-service district). The archived 2026/27 GF
+  Budget-setting report (ModernGov s9691; 403 to bots → SavePageNow + Wayback ladder, immutable
+  attachment) presents a BALANCED budget — cost increases (+£2.1m services, £605k pay, £1.2m BEST
+  uplift) funded by council tax + fees + reserves; no headline gap. The full MTFS 2026/27-2030/31 is a
+  separate doc. No-force-fit (Bolsover/Boston/Breckland). NB: it also flags Hertfordshire LGR — the
+  council is expected to be abolished in 2028 (re-home the dataset to the successor unitary then).
+- **Broxbourne fetch profile**: `www.broxbourne.gov.uk/downloads/file/<id>/` serves PDFs + XLSX
+  directly to a Chrome UA (HTTP 200, no WAF); ModernGov portal 403s bots (irrelevant — every finance
+  doc is in the council's own download store). CDX sweep found nothing (origin not in IA recent index);
+  document discovery was trivial off the live finance / transparency / members-allowances landing pages
+  (the transparency-information/7 HTML page is the CE-pay disclosure, links the org-chart + SoA PDFs).
+- **Broxbourne ended rich**: KEEPS chief_executive (Tier-3 AGS p8, Jeff Stack), council_leader (Tier-3
+  AGS p8, Cllr Corina Gander), chief_executive_salary (£136,508 SoA Note 27), reserves (£6.572m SoA
+  Note 6), total_allowances_cost (£325k SoA Note 26), salary_bands (2024/25 SoA Note 27), documents.
+  STRIPS councillor_basic_allowance (XLSX-only → gate-hidden), budget_gap/savings_target (balanced
+  budget), cabinet, councillor_allowances_detail, + Bradford strip-list. 6 Tier-3 PROVEN, evidence-clean.
