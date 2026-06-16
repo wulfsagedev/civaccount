@@ -555,3 +555,63 @@ good — don't re-do them; extend from there to the other fields.
   inner nested object's `        },` two chars in, leaving a stray
   closing brace behind (tsc caught it). Anchor structural searches to
   `'\n      },'` (newline-prefixed) or use the populate-logic helpers.
+
+### Batch-45-1 / Basildon (2026-06-16) — the brief can be wrong; verify the CEO live anyway
+
+- **Reserves trap, SIXTH council in a row** — legacy TS held 40,424,000,
+  *exactly* the parsed-reserves.csv RA Part 2 total-usable reference, as
+  the GF balance. By now: assume EVERY pre-pipeline `reserves:` is the
+  usable reference until proven otherwise. Basildon's MIRS is the *pure-GF*
+  shape (Babergh variant): "Balance at 31 March 2025 carried forward / Of
+  which: Earmarked Reserves 38,658 / General Reserves 6,307" — the General
+  Reserves row is directly usable (no note arithmetic), and it matches the
+  Balance Sheet "General Fund Balance" line (6,307) exactly. Corrected to
+  £6.307m.
+- **The brief stated the CEO transition backwards — the live-site check is
+  what caught it.** Prompt said "Gary Jones → Scott Logan"; the SoA shows
+  the reverse: **Scott Logan "To"** (previous CE, in the 2023/24 comparative
+  table) and **Gary Jones "From 20.1.2025"** (incoming, part-year). The SoA
+  CEO-introduction signature (p3) is "Gary Jones / Chief Executive", and
+  the live basildon.gov.uk site confirms Gary Jones current as of April 2026
+  (Returning Officer on the 10-Apr-2026 nomination statements + council news
+  "approves appointment of Gary Jones as new Chief Executive"). Lesson:
+  treat the brief's personnel direction as a hint, not fact — the live-site
+  gate exists precisely because anyone (including the task author) can have
+  it stale/reversed. Ground the CE in the SoA's own signed introduction, not
+  the Note-17 remuneration row (which shows part-year names without making
+  clear who is current).
+- **Wide-table reserves excerpt fails screenshot-parity as a single chunk.**
+  "General Reserves" (label row) and "6,307" (value, 18 lines down the same
+  column block) are non-adjacent in `pdftotext -layout`. The excerpt
+  `"General Reserves 6,307"` (single spaces) is treated as ONE chunk and
+  isn't a contiguous substring → 0/1, fails. Fix: author the excerpt with a
+  multi-space run between label and value (`"General Reserves       6,307"`)
+  so the matcher's `\s{2,}` splitter makes them TWO chunks, both verbatim
+  substrings of the canonicalised page → 2/2 pass. Faithful to §3 (preserve
+  column spacing). Confirmed by mini-testing the matcher before committing.
+- **budget_gap/savings_target shippable from a DRAFT MTFS** — Basildon's
+  "Draft General Fund MTFS & HRA Business Plan 2025/26-2028/29" (Cabinet
+  23 Jan 2025) carries verbatim single-sentence figures ("gap … of £1.7m in
+  2025/26"; "already includes £4.7m of savings for 2025/26"). The Babergh
+  precedent (Section-25 statement) extends to any archived MTFS with a
+  quotable sentence; draft status is fine if the document is the council's
+  own published committee paper. NB these render via FinancialHealthCard,
+  which wires their provenance onto the `savings_achieved`/`mtfs_deficit`
+  display fields — if those siblings are absent the popover-anchored value
+  doesn't surface, which is harmless (ux-audit 0/0 — a non-rendered value
+  can't be unwrapped) and matches Ashford/Babergh.
+- **`/council/[slug]` 404s under the Claude_Preview launcher (Next 16) but
+  serves 200 under a plain `npm run dev`** — ALL councils (incl. Bradford)
+  404'd via the preview tool, and `preview_eval` is CSP-blocked
+  (`unsafe-eval`), so popover inspection through it is unreliable. Run
+  `ux-audit.mjs` against a Bash-launched `npm run dev` (it drives its own
+  headless browser) — that's the authoritative 5b. Don't be fooled by a
+  preview-tool 404 into thinking the council page is broken; cross-check a
+  known-good council on the same server first.
+- **Allowances with only a catalogue-URL citation → strip.** Legacy
+  `councillor_basic_allowance £7,221` / `leader_allowance £21,663` cited a
+  basildonmeetings.info `ieListDocuments`/`ecCatDisplay` *catalogue* URL
+  (a document list), not a specific archived scheme PDF, and the figures
+  appeared in neither the archived budgets nor the SoA. A catalogue URL is
+  not a fingerprintable source — strip + watch item (archive the actual
+  Members' Allowances Scheme PDF and reinstate with page/excerpt/PNG).
