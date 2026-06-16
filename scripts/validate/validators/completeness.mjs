@@ -2030,6 +2030,41 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|leader_allowance`,
     ]),
+    // 2026-06-16 Batch-45-5 (Breckland, queue-driven full-depth rollout). Bradford strip
+    // checklist; per-field reasons in BRECKLAND-AUDIT.md (data repo) + inline comments in
+    // districts.ts. The brief noted shared management with South Holland; the live evidence
+    // shows Breckland has its OWN dedicated CMT (SoA p7) and the CE's FULL 100% remuneration is
+    // in Breckland's own SoA Note 20 — Breckland's figures are entirely its own, not joint/
+    // recharged. KEPT (richer than Boston): chief_executive (Tier-4 council news, Maxine
+    // O'Mahony — verified current Apr 2026 Deputy Returning Officer), council_leader (Tier-3
+    // SoA p5, Cllr Sam Chapman-Allen — verified current Feb 2026 Full Council), chief_executive_
+    // salary (£143,925 Pay Policy 2025-26 Grade 1 top, corroborated paid by SoA Note 20 £146,704),
+    // total_allowances_cost (£520k SoA Note 19). STRIPPED: councillor_basic_allowance +
+    // leader_allowance (£6,410/£24,290 are 2025-26 rates in the 2023-2027 scheme which is
+    // WAF-blocked + has NO Wayback snapshot + SPN can't reach the blocked origin; only the
+    // superseded 2021-2023 scheme is archivable at £5,780/£23,119); budget_gap + savings_target
+    // (legacy £23.69m/£21.32m fabricated 'derived from RA' — MTFS runs a balanced budget bridged
+    // by the multi-year Evolve savings grid, no quotable headline gap; Bolsover/Boston no-force-
+    // fit); salary_bands (both SoA banding tables are image/graph, no text layer — Ashfield
+    // image-scan precedent); cabinet + councillor_allowances_detail + grant_payments +
+    // top_suppliers + performance_kpis + service_outcomes + service_spending + staff_fte +
+    // documents (Bradford strip checklist).
+    ...['Breckland'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|leader_allowance`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|documents`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

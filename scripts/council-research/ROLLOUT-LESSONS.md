@@ -776,3 +776,56 @@ good — don't re-do them; extend from there to the other fields.
   chief_executive_salary, reserves, total_allowances_cost, councillor_basic_allowance, salary_bands
   (5 Tier-3 SoA/notice). STRIPS cabinet, budget_gap/savings_target, councillor_allowances_detail,
   leader_allowance + the Bradford strip-list. Richer than Bolsover (keeps council_leader + salary_bands).
+
+### Batch-45-5 / Breckland (2026-06-16) — the brief's "shared management" premise was wrong; reserves trap #10; un-archivable allowances scheme; WAF origin IA also can't reach
+
+- **The brief said Breckland "shares a management team with South Holland" — the primary
+  says otherwise.** Breckland's SoA 2024-25 (p7) describes its OWN dedicated CMT ("a Chief
+  Executive, a Deputy Chief Executive and two Executive Directors, supported by seven
+  Assistant Directors") and Note 20 (p68) shows the CE's FULL 100% remuneration as
+  Breckland's Head of Paid Service — not a recharged/joint figure. The shared partnership
+  Breckland is actually in is the **Anglia Revenues Partnership** (5-partner revenues/
+  benefits service), NOT a shared CMT with South Holland. Same lesson as Basildon (the brief
+  can be wrong): the joint-officer scoping discipline (Babergh/Bolsover/Boston) didn't apply
+  here — verify the premise against the SoA's "Our People" section + Note 20's "full 100%
+  costs" line before reaching for it. Every value was Breckland's own by construction.
+- **Reserves trap, TENTH council in a row** — legacy `reserves 20,069,000` was *exactly* the
+  parsed-reserves.csv RA Part 2 reference (≈ prior-year Total Usable 20,530). Breckland's MIRS
+  is the PURE-GF shape (Babergh/Basildon/Boston variant): "Balance as at 31 March 2025 ...
+  General Fund Balance 3,562" is a standalone first column; Earmarked GF (19,303) is separate;
+  GF+earmarked = 22,865 (the "Closing General Fund & Earmarked Reserves Balance" line the
+  03-extract matcher surfaces — DON'T pick it); Total Usable = 29,531. Corrected to £3.562m.
+  03-extract's auto top-candidate was the wrong £164k page-locator narrative — read the excerpt,
+  never trust the top hit. By now: assume EVERY pre-pipeline reserves value is wrong until the
+  MIRS pure-GF column proves the scope.
+- **CE-salary range top is shippable when the SoA proves it's PAID (Ashfield/Ashford, extended).**
+  Pay Policy 2025-26 gave only a Grade 1 range "£121,782 to £143,925" and the pay-ratio section
+  had no top-earner figure (so the range alone wouldn't qualify). But the SoA Note 20 actual CE
+  salary incl fees & allowances (£146,704) EXCEEDS the £143,925 scale top — that's even stronger
+  corroboration than a same-document pay-ratio line. Range top + actual-pay-from-the-SoA = shippable.
+- **A WAF-blocked origin is often un-reachable by Internet Archive too — strip the dependent
+  field, don't hang.** Breckland's 2023-2027 Members' Allowances Scheme (the £6,410 basic /
+  £24,290 leader 2025-26 rates) is WAF-blocked AND has NO Wayback snapshot; SavePageNow accepted
+  the save (302) but no capture ever landed (IA can't fetch from a TCP-blocked origin — the
+  Norfolk/Amber Valley pattern). The media slot's only captures are the SUPERSEDED 2021-2023
+  scheme (£5,780/£23,119 — living-slot GUID reuse, the Amber Valley trap). Stripped both scalars
+  with a watch item. total_allowances_cost was re-sourced to the AUDITED SoA Note 19 (£520k) —
+  when a standalone allowances publication is un-archivable, the SoA Members'-Allowances note is
+  the clean fallback (Boston Note 29 precedent).
+- **02-archive can hang ~15+ min in a SavePageNow poll loop on a WAF origin IA can't reach.**
+  The script kept retrying wayback-save-poll on the un-fetchable allowance docs. The 4 core PDFs
+  had already landed; I killed the process (it journals on exit), recovered the one needed
+  WAF-blocked doc (Pay Policy 2025-26) via a manual Wayback `id_` fetch + gunzip (the snapshot
+  served gzip-compressed — `file` says "gzip compressed data"; `mv x x.gz && gunzip` fixes it),
+  and stripped the un-archivable allowance docs. Don't let the rollout hang on IA uptime
+  (Batch-44 "SPN fully down != blocked").
+- **MTFS with a balanced budget + multi-year savings grid = strip budget_gap/savings_target
+  (Bolsover/Boston no-force-fit, again).** Breckland's MTFS aims "to set a balanced budget with
+  no long term dependency on general balances"; the Evolve programme savings are a 4-column
+  (2025-26..2028-29) × 4-row grid with no quotable single-sentence headline gap. Legacy
+  £23.69m/£21.32m were fabricated 'derived from RA' (absurd for £25m net service). Stripped.
+- **Breckland ended mid-rich**: KEEPS chief_executive (Tier-4 .gov.uk news, O'Mahony — verified
+  Apr 2026 DRO), council_leader (Tier-3 SoA p5, Chapman-Allen — verified Feb 2026 Full Council),
+  chief_executive_salary (£143,925 PP 2025-26 + SoA Note 20 corroboration), total_allowances_cost
+  (£520k SoA Note 19). STRIPS councillor_basic_allowance/leader_allowance (un-archivable scheme),
+  budget_gap/savings_target (balanced MTFS), salary_bands (image-only), + Bradford strip-list.

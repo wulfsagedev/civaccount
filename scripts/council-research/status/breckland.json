@@ -1,0 +1,50 @@
+{
+  "council": "Breckland",
+  "slug": "breckland",
+  "batch": "45-5",
+  "north_star_complete": true,
+  "kept_fields": ["reserves", "chief_executive_salary", "total_allowances_cost", "council_leader", "chief_executive"],
+  "stripped_fields": ["councillor_basic_allowance", "leader_allowance", "budget_gap", "savings_target", "salary_bands", "performance_kpis", "service_spending", "service_outcomes", "top_suppliers", "grant_payments", "councillor_allowances_detail", "staff_fte", "cabinet", "documents"],
+  "gates": {
+    "validate": "0 errors, 0 regressions",
+    "audit_north_star": "0/5 gaps",
+    "tier1_drift": "0 cells / 23 checks",
+    "ux_audit": "0/0 (post-proof)",
+    "live_site_reality": "5/5 verbatim",
+    "screenshot_parity": "3 screenshots, 3 verbatim-1:1, 0 mismatched, 0 missing PNG",
+    "proof_engine": "3 Tier-3 PROVEN + 6 Band D exact"
+  },
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-16T10:46:09.390Z",
+      "candidates": 10
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-16T11:10:54.401Z",
+      "drift": 0
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-16T11:06:27.724Z",
+      "candidates": 26,
+      "parse_failures": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-16T11:11:40.796Z",
+      "images": 3
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T11:29:43.261Z",
+      "fields": [
+        "chief_executive_salary",
+        "reserves",
+        "total_allowances_cost"
+      ]
+    }
+  },
+  "last_session": "2026-06-16T11:29:43.261Z"
+}
