@@ -2086,6 +2086,29 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-16 Batch-46-2 (Bromsgrove, queue-driven full-depth rollout). Bromsgrove shares a
+    // single management team with Redditch Borough Council (each authority charged 50% of each
+    // post's cost — SoA Note B10); every kept value is Bromsgrove's OWN figure. reserves STRIPPED
+    // (no-force-fit): the SoA/MTFS pure General Fund Balance £13.381m EXCEEDS the stale GOV.UK RA
+    // Part 2 reference £9.97m by >10%, tripping spot-check reserves_exceeds_total; the legacy
+    // 9,970,000 was that wrong-scope reference (§2 trap). Bradford strip-list otherwise. KEEPS
+    // chief_executive (corrected Kevin Dicks → John Leach, Tier-3 mgmt chart), council_leader
+    // (Karen May, Tier-4 council news), chief_executive_salary (Pay Policy scale top £153,750,
+    // proven paid by SoA actual £179,456), total_allowances_cost (SoA Note B7 £268k),
+    // councillor_basic_allowance + leader_allowance (Members' Allowances Scheme 2025-26),
+    // budget_gap + savings_target (corrected fabricated values → MTFS 2026-29 verbatim figures).
+    ...['Bromsgrove'].flatMap(c => [
+      `${c}|reserves`,
+      `${c}|cabinet`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

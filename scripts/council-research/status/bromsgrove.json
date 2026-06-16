@@ -1,0 +1,36 @@
+{
+  "council": "Bromsgrove",
+  "slug": "bromsgrove",
+  "batch": "46-2",
+  "north_star_complete": true,
+  "shared_management": "Single (joint) management team with Redditch Borough Council since 2010/11 (each authority charged 50% of each post's cost — SoA Note B10). Every rendered value is Bromsgrove's OWN figure: CE salary from Bromsgrove's own Pay Policy scale (full £153,750, not the 50% cost-share); CE name (John Leach) from Bromsgrove's own single-management structure chart; total_allowances_cost from Bromsgrove's own SoA Note B7; allowance rates from Bromsgrove's own Members' Allowances Scheme; budget_gap/savings_target from Bromsgrove's own MTFS. No Redditch figure used.",
+  "kept_fields": ["chief_executive", "council_leader", "chief_executive_salary", "councillor_basic_allowance", "leader_allowance", "total_allowances_cost", "budget_gap", "savings_target"],
+  "stripped_fields": ["reserves", "salary_bands", "cabinet", "councillor_allowances_detail", "staff_fte", "grant_payments", "service_outcomes", "service_spending", "top_suppliers", "performance_kpis"],
+  "corrections": [
+    "chief_executive: 'Kevin Dicks (Shared with Redditch)' -> 'John Leach (Shared with Redditch)' (stale legacy name; John Leach appointed CE/Head of Paid Service 22 Jan 2025, verified current Dec 2025, signs the 2024-25 allowances notice, NOT a deputy)",
+    "reserves: STRIPPED -- legacy 9,970,000 was EXACTLY the RA Part 2 usable reference (ROLLOUT-LESSONS §2 trap, 12th council in a row); true GF balance £13.381m (SoA MIRS p16 + MTFS §3.25) exceeds the stale reference and trips the spot-check reserves_exceeds_total ceiling, so stripped (no-force-fit, Wakefield/Doncaster precedent)",
+    "total_allowances_cost: 265,249 (derived component-sum) -> 268,000 (SoA Note B7 published Total, £000)",
+    "councillor_basic_allowance: 5,518 (2024/25) -> 5,826 (2025-26 scheme)",
+    "budget_gap: 13,601,000 (fabricated 'derived from RA') -> 1,030,000 (MTFS 2026/27 start-point deficit, p6)",
+    "savings_target: 12,240,900 (fabricated 'derived from RA') -> 1,213,000 (MTFS savings target, p8)",
+    "population.ts: 100,400 -> 101,685 (ONS Mid-2024)"
+  ],
+  "gates": {
+    "validate": "0 errors, 0 regressions",
+    "audit_north_star": "0/5 gaps (50 renderable fields)",
+    "tier1_drift": "0 cells / 23 checks",
+    "ux_audit": "0/0 (post-proof)",
+    "live_site_reality": "7/7 verbatim",
+    "screenshot_parity": "7 screenshots, 7 verbatim-1:1, 0 mismatched, 0 missing PNG",
+    "proof_engine": "7 Tier-3 PROVEN (3 PROVEN_STALE + 4 PROVEN_CURRENT) + council_leader Tier-4 verified + 6 Band D exact -- evidence-clean"
+  },
+  "phases": {
+    "phase_0_inventory": { "done": true, "at": "2026-06-16T13:32:37.353Z", "candidates": 6 },
+    "phase_1_archive": { "done": true, "at": "2026-06-16T13:45:51.922Z", "results": { "ok": 7, "skipped": 0, "blocked": 0, "failed": 0 } },
+    "phase_2_extract": { "done": true, "at": "2026-06-16T13:36:36.840Z", "candidates": 22, "parse_failures": 0 },
+    "phase_3_5_tier1_crosscheck": { "done": true, "at": "2026-06-16T13:36:41.740Z", "drift": 0 },
+    "phase_1b_page_images": { "done": true, "at": "2026-06-16T13:54:40.760Z", "images": 6 },
+    "phase_4_populate": { "done": true, "at": "2026-06-16T13:49:36.445Z", "fields": ["chief_executive", "council_leader", "chief_executive_salary", "councillor_basic_allowance", "leader_allowance", "total_allowances_cost", "budget_gap", "savings_target"] }
+  },
+  "last_session": "2026-06-16T13:55:00.000Z"
+}
