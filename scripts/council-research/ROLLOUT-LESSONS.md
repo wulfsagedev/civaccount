@@ -829,3 +829,64 @@ good — don't re-do them; extend from there to the other fields.
   chief_executive_salary (£143,925 PP 2025-26 + SoA Note 20 corroboration), total_allowances_cost
   (£520k SoA Note 19). STRIPS councillor_basic_allowance/leader_allowance (un-archivable scheme),
   budget_gap/savings_target (balanced MTFS), salary_bands (image-only), + Bradford strip-list.
+
+### Batch-46-2 / Bromsgrove (2026-06-16) — the reserves trap's NASTIEST variant: the CORRECT GF figure exceeds the stale reference → strip, don't correct
+
+- **Reserves trap, TWELFTH council in a row — and the first where the right answer is to STRIP,
+  not re-point.** Legacy `reserves 9,970,000` was *exactly* the parsed-reserves.csv RA Part 2
+  reference. Bromsgrove's MIRS (p16) is the clean pure-GF shape: "Balance as at 31 March 2025 —
+  General Fund Balance 13,381 / Earmarked General Fund Reserves 11,266 / Total GF Balance 24,647
+  / … Total Usable 25,191", confirmed by the Balance Sheet (p28), the narrative (p60: "a General
+  Fund Balance of £13.381m") AND the MTFS §3.25 (Jan 2026: "General Fund Balances of £13.38m").
+  So the correct GF balance is unambiguously **£13.381m**. BUT — unlike Babergh/Basildon/Boston/
+  Broadland where the correct GF figure was *smaller* than the usable reference — here the correct
+  GF (£13.381m) **EXCEEDS** the stale RA reference (£9.97m) by >10%, which trips spot-check
+  `reserves_exceeds_total` (a NON-suppressible error: `reserves <= refPounds*1.1 = 10,967,000`,
+  no allowlist in spot-check.mjs). Shipping £13.381m works around the gate (forbidden);
+  shipping £9.97m re-asserts the wrong-scope reference. **No third option passes honestly → STRIP**
+  (the Wakefield/Doncaster `INTENTIONAL_REMOVALS|reserves` precedent: "SoA GF exceeds RA usable
+  reference, semantics ambiguous"). Rule: when the correct GF figure exceeds the stale RA Part 2
+  reference, reserves is unshippable under the current validator — strip + watch item, don't
+  force-fit either number. (03-extract's auto top-candidate was the wrong £13,520k EFA
+  funding-basis closing balance — the accounting-basis MIRS figure 13,381 ≠ the funding-basis EFA
+  figure 13,520; read the excerpt.)
+- **The brief's CE name was stale and the live check caught it (Basildon lesson again).** Brief +
+  legacy TS said "Kevin Dicks (Shared with Redditch)"; the real CE is **John Leach** (appointed
+  22 Jan 2025). The SoA does NOT name the CE in text (certification signed by the Deputy CE/S151;
+  AGS signature lines blank), so ground the CE in the council's **single-management structure
+  chart** (`/media/…/rbc-bdc-single-management-april-2025.pdf` p1: "Chief Executive (Head of Paid
+  Service) — John Leach"). Verified current 3 ways (April + Dec 2025 charts + "J Leach Chief
+  Executive" signing the 2024-25 allowances notice). NOT a deputy (Deputy CE/S151 is a separate
+  box). For shared-management districts whose SoA omits CE names, the joint single-management
+  chart is the cleanest Tier-3 CE source.
+- **Shared 50/50 CE: the published SCALE is the salary, the 50% is the cost-share — don't confuse
+  them (the inverse of Broadland).** Bromsgrove's Pay Policy p4 table: "Chief Executive 100%
+  145,807 153,750 3 50%" with a column literally headed "Cost to Bromsgrove District Council 50%".
+  The CE earns the full £153,750 (scale top); the 50% is how the *bill* is split with Redditch,
+  not a different salary. `chief_executive_salary` = the full £153,750 (proven paid: SoA Note B10
+  shows actual 2024/25 £179,456 incl. election fees > scale top — Breckland/Ashford precedent).
+  Contrast Broadland, where the joint MD's FULL salary sat in BDC's own SoA because the postholder
+  was a BDC employee. Both shapes ship the FULL salary; the difference is just where it's published.
+- **total_allowances_cost: prefer the SoA Note published TOTAL over a per-member component-sum.**
+  Legacy 265,249 was the sum of the per-member Notice columns (169,682.88 + 93,990.99 + 1,575.21 =
+  265,249.08) — a derived value that appears NOWHERE verbatim (fails §3 + screenshot-parity). The
+  SoA Note B7 publishes a single "Total 268 223" (£000) → ship £268,000. When a per-member notice
+  and the SoA both exist, the SoA's single published total is the §3-clean figure.
+- **budget_gap/savings_target: correct fabrications to the MTFS verbatim figures (Basildon
+  precedent).** Legacy £13.601m/£12.2409m were fabricated 'derived from RA' (~10x too big). The
+  archived MTFS 2026/27-2028/29 (Cabinet 7 Jan 2026) carries both verbatim: "A deficit balance of
+  £1.03m in 2026/27 budget as a start-point position" (p6) and "The total savings target for the
+  year is £1.213m" (p8). These are provenance-anchor keys for mtfs_deficit/savings_achieved display
+  siblings (absent → don't render → ux-audit 0/0), but correcting them to true archived figures
+  beats stripping when the MTFS has quotable sentences.
+- **Bromsgrove fetch profile**: `www.bromsgrove.gov.uk/media/` fully open (Chrome UA, 200,
+  application/pdf). MTFS on `moderngovwebpublic.bromsgrove.gov.uk/documents/sNNNNN/` 403s direct
+  bots but fetched via the ladder's wayback-snapshot step (immutable sNNNNN attachment — Arun/
+  Bolsover pattern, not the living-slot trap). Budget block arrived at ZERO Tier-1 drift (no
+  re-sync needed — first Batch-44/45/46 district that didn't need a budget re-sync). population.ts
+  corrected 100,400 → 101,685.
+- **Bromsgrove ended rich**: KEEPS chief_executive (Tier-3 mgmt chart, John Leach), council_leader
+  (Tier-4 news, Karen May), chief_executive_salary (£153,750 Pay Policy), councillor_basic_allowance
+  (£5,826) + leader_allowance (£17,478) (Members' Scheme 2025-26), total_allowances_cost (£268k SoA
+  Note B7), budget_gap (£1.03m) + savings_target (£1.213m) (MTFS). STRIPS reserves (correct GF
+  exceeds stale reference → no-force-fit), salary_bands (joint pool), + Bradford strip-list.
