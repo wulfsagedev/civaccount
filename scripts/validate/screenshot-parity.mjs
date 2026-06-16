@@ -127,7 +127,7 @@ const NORTH_STAR_22 = [
   // Batch-44 (2026-06-10): queue-driven full-depth rollouts.
   'Amber Valley', 'Arun', 'Ashfield', 'Ashford', 'Babergh',
   // Batch-45 (2026-06-10): queue-driven full-depth rollouts.
-  'Basildon', 'Basingstoke & Deane', 'Bolsover',
+  'Basildon', 'Basingstoke & Deane', 'Bolsover', 'Boston',
 ];
 
 function slugify(n) {

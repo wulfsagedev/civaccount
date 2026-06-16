@@ -2000,6 +2000,36 @@ export function validate(councils, _population, report) {
       `${c}|leader_allowance`,
       `${c}|staff_fte`,
     ]),
+    // 2026-06-16 Batch-45-4 (Boston, queue-driven full-depth rollout). Bradford strip
+    // checklist; per-field reasons in BOSTON-AUDIT.md (data repo) + inline comments in
+    // districts.ts. Boston shares a joint CE (Rob Barlow) with East Lindsey + South
+    // Holland (South & East Lincolnshire Councils Partnership). The pre-rollout record
+    // cited mybostonuk.com (a non-.gov.uk source) on 4 fields — all re-sourced to the SoA
+    // / council pages or stripped. KEPT (richer than Bolsover): chief_executive,
+    // chief_executive_salary, councillor_basic_allowance, total_allowances_cost,
+    // salary_bands, AND council_leader (Cllr Dale Broughton, ModernGov member record).
+    // STRIPPED: cabinet (stale ousted-Dorrian line-up + mybostonuk source; current is a
+    // mid-2025 cross-party coalition not fingerprintable to one .gov.uk doc);
+    // budget_gap + savings_target (fabricated 'derived from RA' £13.26m/£11.93m — absurd
+    // for a £15.4m-service district; only archived budget paper is the ~£769k BTAC
+    // special-expenses budget with no council-wide gap; budget_gap cited mybostonuk);
+    // councillor_allowances_detail (2023-24, a year stale, prior administration);
+    // leader_allowance (leadership changed mid-year — notice SRA is a part-year former-
+    // leader figure); performance_kpis + service_outcomes + service_spending +
+    // top_suppliers + grant_payments (Bradford strip checklist — RAG/derived/OCDS-ceiling/
+    // news-article sources).
+    ...['Boston'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|leader_allowance`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

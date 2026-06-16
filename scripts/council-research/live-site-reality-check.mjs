@@ -150,6 +150,11 @@ const CHECKS = {
     { value: '157,581', where: 'statement-of-accounts-2024-25.pdf', note: 'CE salary 2024/25 (Note 23)' },
     { value: '£1.5M General Fund balance', where: 'statement-of-accounts-2024-25.pdf', note: 'GF working balance narrative p70' },
   ],
+  boston: [
+    { value: '157,200', where: 'appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf', note: 'CE salary (Note 30a Senior Officers Remuneration)' },
+    { value: 'General Fund', where: 'appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf', note: 'GF reserve row exists (p12 / MIRS p17)' },
+    { value: '367', where: 'appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf', note: 'Total members allowances (Note 29)' },
+  ],
 };
 
 function pdfGrep(pdfPath, needle) {

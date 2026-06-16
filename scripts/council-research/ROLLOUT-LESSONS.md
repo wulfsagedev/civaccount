@@ -725,3 +725,54 @@ good — don't re-do them; extend from there to the other fields.
   councillor_basic_allowance, total_allowances_cost (4 Tier-3 + 1 Tier-4); STRIPS
   salary_bands (full SoA un-archivable), budget_gap/savings_target (balanced MTFP),
   council_leader + cabinet (TCP-blocked portal + 2026 elections + Derbyshire LGR).
+
+### Batch-45-4 / Boston (2026-06-16) — forbidden-source cleanup, the brief was RIGHT about the trap, a leader who never existed, joint-CE full salary in the SoA
+
+- **The brief's KNOWN-ISSUE warning was accurate and worth front-loading.** Boston cited
+  `mybostonuk.com` (a non-.gov.uk/OGL site) on 4 fields. Two (`chief_executive_salary`,
+  `councillor_basic_allowance`) had a correct VALUE behind a forbidden SOURCE → re-source to
+  the archived SoA/notice, value unchanged. Two (`cabinet`, `budget_gap`) were both
+  forbidden-sourced AND wrong/un-fingerprintable → strip. The populate script REPLACES a
+  field_sources entry by key (so re-sourcing chief_executive_salary + councillor_basic_allowance
+  was automatic once `chosen` pointed at the new SoA candidates), but the two STRIPPED fields'
+  field_sources entries had to be hand-removed (the brief flagged this exactly). After: grep the
+  block for the domain — it survived only in my explanatory comments, which I then reworded to
+  "non-.gov.uk third-party source" so a future grep for the literal domain is clean. Lower
+  source-licence-floor.json by the count removed (43 → 39) + note it in the commit.
+- **Reserves trap, NINTH council in a row** — legacy `reserves 15,030,000` was *exactly* the
+  parsed-reserves.csv RA Part 2 reference. Boston's MIRS is the PURE-GF shape (Babergh/Basildon
+  variant): the by-reserve table p12 lists "General Fund ... 2,000" as a standalone row and the
+  MIRS GF column p17 reads 2,000 both years. Corrected to £2.0m. By now this is not a surprise —
+  assume EVERY pre-pipeline reserves value is the usable reference until the MIRS proves otherwise.
+- **`council_leader` was a name that exists nowhere** ("Cllr Anne Sherring"). The real history:
+  Anne Dorrian led May 2023 → removed in a July 2025 NO-CONFIDENCE vote after ~14 of her 17-strong
+  group defected; Dale Broughton (Progressive Independents) has led since. This is the B&D/Babergh
+  rotating-leadership trap at full tilt, BUT unlike B&D the new leader IS reachable: the council's
+  own ModernGov member record (`mgUserInfo.aspx?UID=<id>`, "Title: Leader") is a clean Tier-4
+  .gov.uk primary → UPDATE the scalar rather than strip. Strip the `cabinet` array though (a
+  9-member cross-party coalition formed in the revolt, not fingerprintable to one doc, and it was
+  the stale ousted line-up). Lesson: a wrong leader name + a stale cabinet can have DIFFERENT
+  resolutions — update the one with a reachable primary, strip the one without.
+- **Joint-CE FULL salary lives in the district's own SoA (Babergh precedent, confirmed again).**
+  Boston shares CE Rob Barlow with East Lindsey + South Holland (S&ELCP). SoA Note 30a shows
+  "Chief Executive Officer ... 157,200" (full salary/fees/allowances) with BBC's recharged
+  share (£44,742) in a SEPARATE column. The £157,200 is the shippable full-year figure (NOT a
+  part-year amount like Arun) — don't confuse it with the recharge share. The CE NAME isn't in
+  the remuneration table (role only); ground it in the council's CE page (Tier-4, Wayback-captured).
+  Pay Policy corroborates with a range ("£155,250 to £170,775") but has no single figure.
+- **budget_gap: the only archived budget paper was a PARISH-level special-expenses budget.** Boston's
+  "budget-setting 2025-26" auto-discovered doc is the BTAC (Boston Town Area Committee) budget — a
+  ~£769k special-expenses budget with "efficiency savings required" of £35,031, NOT the council's GF
+  MTFS. Legacy budget_gap £13.26m / savings_target £11.93m were fabricated 'derived from RA' values
+  (absurd for a £15.4m-service district) AND budget_gap cited mybostonuk. Strip both (Bolsover
+  balanced-MTFP no-force-fit precedent). When the only budget doc you can archive is a town/parish
+  committee budget, there is no shippable council-wide gap — that's a valid strip, not a gap to fill.
+- **completeness regressions cleared by INTENTIONAL_REMOVALS (B&D lesson, applied cleanly).** The 9
+  Boston strips read as `regression_field_lost` ERRORS on the first validate after stripping; adding
+  a `...['Boston'].flatMap(...)` block to INTENTIONAL_REMOVALS in completeness.mjs returned 0
+  regressions. Because all strips happened BEFORE my first baseline validate this session, the timing
+  was forgiving, but declare them regardless so CI stays green when the baseline shifts.
+- **Boston ended RICH**: KEEPS chief_executive (Tier-4 CE page), council_leader (Tier-4 ModernGov),
+  chief_executive_salary, reserves, total_allowances_cost, councillor_basic_allowance, salary_bands
+  (5 Tier-3 SoA/notice). STRIPS cabinet, budget_gap/savings_target, councillor_allowances_detail,
+  leader_allowance + the Bradford strip-list. Richer than Bolsover (keeps council_leader + salary_bands).

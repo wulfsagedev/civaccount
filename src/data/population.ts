@@ -20,7 +20,7 @@ export const populationData: Record<string, number> = {
   "Bassetlaw": 124937,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 118,800 (mid-2022 era).
   "Blaby": 102300,
   "Bolsover": 82400,
-  "Boston": 72100,
+  "Boston": 71080,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes nearest-hundred convention. Was 72,100 (mid-2022 era).
   "Braintree": 155600,
   "Breckland": 143400,
   "Brentwood": 78200,
