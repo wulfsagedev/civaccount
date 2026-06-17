@@ -2389,6 +2389,52 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-8 (Derbyshire Dales E07000035, queue-driven full-depth rollout).
+    // District, Derbyshire (LGR/devolution in progress). The brief warned of "shared senior
+    // management with High Peak BC" — the primary disproves it: DDDC's live corporate-leadership
+    // -team page + SoA AGS p56 show DDDC's OWN CE (Paul Wilson, Head of Paid Service) + a full
+    // dedicated CLT (Karen Henriksen S151, + 4 directors); High Peak shares its CE with
+    // Staffordshire Moorlands, NOT DDDC (Breckland "brief's shared-management premise can be wrong"
+    // precedent). Every value is DDDC's own. Origin (www.derbyshiredales.gov.uk) Cloudflare-blocks
+    // deep pages; SoA 2024-25 (draft, 130pp text) recovered from its Wayback id_ capture — the
+    // primary Tier-3 source. reserves corrected 11,452,000 → £4.034m: legacy was EXACTLY the
+    // parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF; MIRS p58 has a clean pure
+    // "General Fund Balance" column ((4,034) at 31 March 2025), separate from Earmarked (16,938) +
+    // Total Usable (24,384) — smaller-than-ref, passes spot-check (Babergh/Castle Point shape).
+    // council_leader corrected "Cllr Garry Purdy" (STALE — pre-2023 Conservative leader) → Cllr
+    // Steve Flitter (Lib Dem, re-elected May 2025 ACM, Progressive Alliance; SoA AGS p56 + cabinet[0]
+    // internal-contradiction tell). chief_executive_salary re-sourced from the FORBIDDEN Town-Hall
+    // -Rich-List trade-aggregator (legacy £117,255) → SoA Note 28 Officers' Remuneration (Chief
+    // Executive 2024/25 Salary/Fees/Allowances £120,176, Tier-3 fingerprintable). total_allowances_cost
+    // 228,029 → £241,786 (SoA Note 26 published 2024/25 total; 228,029 was the stale 2023/24 figure).
+    // STRIPPED: salary_bands (legacy 8 bands to £115-120k mismatch SoA Note 28, which bands only
+    // £50-60k + lists seniors by post — Cheltenham precedent); councillor_basic_allowance +
+    // councillor_allowances_detail (Members' Allowances Scheme rate un-archivable — Cloudflare origin,
+    // no Wayback, SPN 520; SoA gives only the total; legacy detail was "estimated from SRA rates" =
+    // derived — Cannock/Breckland/Basildon un-archivable-scheme strip); budget_gap + savings_target
+    // (legacy 'derived from GOV.UK Revenue Account' = forbidden §3, absurd vs £15.2m service; no
+    // archivable MTFS with a quotable gap — no-force-fit, Bolsover/Boston/Dacorum); cabinet (committee
+    // -system "Committee Chair" list, not fingerprintable, LGR churn); + Bradford strip-list
+    // (service_spending, top_suppliers, performance_kpis, grant_payments, service_outcomes incl
+    // population_served + housing + the unsourced 53.1% recycling rate). KEEPS chief_executive (Tier-3
+    // SoA AGS p56 + live page), council_leader (Tier-3 SoA AGS p56), reserves (£4.034m SoA MIRS p58),
+    // chief_executive_salary (£120,176 SoA Note 28 p108), total_allowances_cost (£241,786 SoA Note 26
+    // p107) — 5 Tier-3 PROVEN + 6 band_d + budget/population row-evidence (22 Tier-1 row PNGs).
+    // Tier-1 re-sync: population 72,600 → 71,757; budgets → RA 2025-26; revenue_budget → 25,171,000.
+    // Derbyshire LGR/devolution in progress — re-home to the successor unitary if abolished.
+    ...['Derbyshire Dales'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|salary_bands`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
