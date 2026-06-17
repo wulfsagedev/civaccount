@@ -2345,6 +2345,50 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-7 (Dartford, queue-driven full-depth rollout). Dartford BC
+    // (E07000107, Kent). Origin fully open (Jadu CMS). SoA 2024-25 (139pp, text) is the
+    // primary Tier-3 source. reserves corrected 76,993,000 → £3.5m: legacy was the RA
+    // Part 2 total-usable reference misfiled as GF; SoA Balance Sheet p35 + MIRS p33 give
+    // the pure General Fund column (3,500), separate from HRA (11,975) + earmarked (77,841)
+    // + total usable (144,298) — clean smaller-than-ref, passes spot-check (Babergh/Castle
+    // Point/Dacorum shape; HRA does NOT force the combined-EFA trap when GF is its own
+    // column). chief_executive corrected "Caroline Sherwood" (fabricated, no Dartford source)
+    // → Sarah Martin (live council-structure page "Chief Executive / Head of Paid Service";
+    // SoA names the post only by title "Chief Officer and Director of Corporate Services",
+    // AGS signatory S Martin = Returning Officer = Sarah Martin) — Tier-4 live_page (deputy/
+    // S151-not-CE trap, the brief flagged it). council_leader Cllr Jeremy Kite CONFIRMED
+    // current (SoA AGS p30 "The Leader of the Council J Kite 23 July 2025" + live ModernGov;
+    // no May-2026 borough election — all-out 2023, next 2027). total_allowances_cost
+    // 407,000 → £424,000 (SoA Note 25 published 2024/25 Total; 407 was the stale 2023/24
+    // comparative). salary_bands re-authored to SoA Note 26 2024/25 column (Total 54),
+    // double-proven by the senior-salary-count transparency CSV. STRIPPED: chief_executive_salary
+    // (CE pay published only as inconsistent bands — £115-120k CSV vs £130,074 SoA Note 26 vs
+    // £110-115k org-chart ceiling, no single archivable full-year rate — Canterbury/Dacorum/Arun);
+    // councillor_basic_allowance + leader_allowance + councillor_allowances_detail (no archivable
+    // Members' Allowances SCHEME PDF — the scheme page is HTML text with no rate table, SoA gives
+    // only the total; Basildon/Breckland/Cannock un-archivable-scheme strip); budget_gap +
+    // savings_target (legacy 'derived from GOV.UK Revenue Account' = forbidden §3 derivation,
+    // absurd for a £29m-service district; no standalone budget/MTFS PDF — budget lives only in
+    // ModernGov committee papers, no quotable single-sentence gap — no-force-fit, Bolsover/Boston/
+    // Breckland/Chichester/Dacorum); cabinet (Tier-4 portfolio list, stale); + Bradford strip-list
+    // (service_spending, top_suppliers, performance_kpis, grant_payments, service_outcomes.housing/
+    // population_served). KEEPS chief_executive (Tier-4), council_leader, reserves,
+    // total_allowances_cost, salary_bands — 4 Tier-3 PROVEN (SoA pp30/35/91/92) + 1 Tier-4
+    // personnel + 6 band_d + budget/population row-evidence. Kent LGR/devolution in progress —
+    // re-home to the successor unitary if abolished.
+    ...['Dartford'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

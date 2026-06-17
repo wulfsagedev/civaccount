@@ -1,0 +1,6 @@
+[
+  { "council": "Dartford", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 35, "value": "£3,500,000", "note": "Balance Sheet — Usable Reserves: General Fund (3,500) [pure GF balance, £'000], separate column from Housing Revenue Account (11,975) and Earmarked Reserves (77,841)" },
+  { "council": "Dartford", "field": "council_leader", "pdf": "statement-of-accounts-2024-25.pdf", "page": 30, "value": "Cllr Jeremy Kite", "note": "Annual Governance Statement signature page — The Leader of the Council, J Kite, 23 July 2025" },
+  { "council": "Dartford", "field": "total_allowances_cost", "pdf": "statement-of-accounts-2024-25.pdf", "page": 91, "value": "£424,000", "note": "Note 25 Members' Allowances — 2024/25 Total 424 (£'000)" },
+  { "council": "Dartford", "field": "salary_bands", "pdf": "statement-of-accounts-2024-25.pdf", "page": 92, "value": "54 employees >£50k", "note": "Note 26 Officers' Remuneration — employees receiving more than £50,000, 2024/25 banding column, Total 54" }
+]

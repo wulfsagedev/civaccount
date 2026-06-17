@@ -1,0 +1,24 @@
+{
+  "council": "Dartford",
+  "slug": "dartford",
+  "ons_code": "E07000107",
+  "batch": "47-7",
+  "phases": {
+    "phase_0_inventory": { "done": true, "candidates": 4, "note": "origin fully open (Jadu CMS, no WAF); auto-probe + CDX sweep found nothing — discovered via live landing-page crawl, inventory hand-authored" },
+    "phase_1_archive": { "done": true, "results": { "ok": 4 }, "note": "SoA 2024-25 (139pp text PDF, /downloads/file/2660) + 3 transparency CSVs; SoA sha ca24916b + Wayback snapshot landed" },
+    "phase_1b_page_images": { "done": true, "images": 4, "note": "SoA pp30/35/91/92 rendered + fingerprinted into image-manifest.json" },
+    "phase_2_extract": { "done": true, "candidates": 13, "parse_failures": 2, "note": "2 parse failures are the CSV files tried as PDFs — harmless (Tier-1 sources, --allow-parse-failures)" },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_crosscheck": { "done": true, "drift": 0, "note": "population 115600->125011; budget cells re-synced to RA Part 1 2025-26; revenue_budget->44,473,000" },
+    "phase_3_6_link_check": { "done": true, "ce_leader_verified_live": true, "note": "CE Sarah Martin (live council-structure page; legacy Caroline Sherwood fabricated). Leader Cllr Jeremy Kite confirmed current (SoA AGS p30 + live ModernGov UID=124; no May-2026 borough election)" },
+    "phase_4_populate": { "done": true, "note": "field_sources hand-authored (matcher page-numbering != physical page; wide-table reserves); only Dartford record edited" },
+    "phase_5_validate": { "done": true, "errors": 0, "regressions": 0, "note": "11 strips declared in completeness.mjs INTENTIONAL_REMOVALS" },
+    "phase_5b_ux_audit": { "done": true, "violations": 0, "note": "puppeteer installed mid-rollout; ran against Bash npm run dev on :3001 (3000 held by another session). 0 unwrapped, 0 derived" },
+    "phase_5c_reality_check": { "done": true, "verbatim": "4/4", "note": "reserves 3,500 p35; allowances 424 p91; J Kite p30; bands Total 54 p92" },
+    "phase_5d_screenshot_parity": { "done": true, "screenshots": 4, "verbatim_1to1": 4, "mismatched": 0, "missing_png": 0 },
+    "phase_6_document": { "done": true, "note": "DARTFORD-AUDIT.md + manifests/dartford.json" },
+    "phase_7_ship": { "done": false }
+  },
+  "north_star_complete": true,
+  "last_session": "2026-06-17"
+}

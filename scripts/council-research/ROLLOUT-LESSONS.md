@@ -1421,3 +1421,65 @@ good — don't re-do them; extend from there to the other fields.
   grant_payments + Bradford strip-list. 7 Tier-3 + 6 band_d = 13 proven fields. Tier-1 re-sync: population
   157,700→161,420; budgets→RA 2025-26; revenue_budget→70,331,000. Hertfordshire LGR in progress — re-home
   to successor unitary if abolished.
+
+### Batch-47-7 / Dartford (2026-06-17) — fully-open Jadu site whose auto-probe finds nothing; the council with NO "Chief Executive" title (it's the "Chief Officer/Director of Corporate Services"); the matcher page-number ≠ physical page trap; reserves trap ~22nd
+- **Jadu CMS: /downloads/file/<id>/ is the real binary; /downloads/download/<id>/ is an HTML wrapper.** Dartford's
+  origin (`www.dartford.gov.uk`) is FULLY OPEN (TCP :443 open, HTTP 200 to Chrome UA, no WAF — Castle Point/
+  Broxbourne class), but `01-inventory`'s auto-probe + Wayback CDX sweep found NOTHING (the probe URL patterns
+  don't match Jadu's structure, and IA hadn't indexed the /downloads/ store). Document discovery was a manual
+  crawl of the live landing pages: `/budgets-spending` → links the SoA page; `/budgets-spending/statement-accounts`
+  → the SoA PDFs; `/transparency/organisational-information` → senior-pay CSVs. CRITICAL Jadu gotcha: a `/downloads/
+  download/<id>/<slug>` URL returns an HTML *wrapper page* (curl `file` says "HTML document") that itself links the
+  real `/downloads/file/<id2>/<slug>` binary — fetch the wrapper, grep its `<a href>` for the `/file/` id, then fetch
+  that. The SoA 2024-25 was at /file/2660 (139pp text PDF); the senior-employees/salary-count/org-structure were CSVs
+  at /file/2731,2732,2309. (Don't archive the /download/ wrapper — it's not the document.)
+- **Reserves trap, ~22nd council in a row — clean pure-GF, stock-holding district.** Legacy `reserves 76,993,000`
+  was the parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF. Dartford HAS an HRA, but its MIRS (p33)
+  and Balance Sheet (p35) have a CLEAN pure "General Fund" column ((3,500) at 31 Mar 2025), SEPARATE from "Housing
+  Revenue Account" (11,975), "Earmarked Reserves" (77,841) and "Total Usable Reserves" (144,298) — Babergh/Castle
+  Point/Cheltenham/Dacorum clean shape, NOT the Cannock/Canterbury HRA-combined-EFA trap. READ THE MIRS/Balance-Sheet
+  COLUMN HEADERS. Corrected to £3.5m (<< ref → passes spot-check). 03-extract's top candidate was the prior-year
+  opening £3,000k — read the excerpt (the closing 3,500 is the last figure in the same MIRS GF row).
+- **Some districts have NO "Chief Executive" post — the Head of Paid Service has a different title.** Dartford's SoA
+  Note 26 lists senior officers by POST only; the top post is "Chief Officer and Director of Corporate Services"
+  (£130,074) — there is NO "Chief Executive" row. The AGS top signatory is "S Martin, Chief Officer and Director of
+  Corporate Services" (NOT a "Chief Executive"). BUT the council's live structure page styles the same person
+  "Sarah Martin — Chief Executive / Head of Paid Service" — so the rendered chief_executive = Sarah Martin (Tier-4
+  live_page), grounded by: AGS signatory S Martin + Sarah Martin = Dartford's Returning Officer (Kent election notices).
+  Legacy "Caroline Sherwood" appears in NO Dartford source (fabricated). Lesson: when the SoA has no "Chief Executive"
+  row, the HoPS is the highest by-title post; confirm the name + the public-facing title on the live structure page
+  (the formal title and the public title can differ).
+- **The 03-extract candidate `page` is the matcher's extraction-index page, NOT the physical PDF page — hand-author
+  field_sources when they differ.** The reserves candidate reported "p63" (matcher numbering) but the figure is on
+  physical PDF page 35 (Balance Sheet) / 33 (MIRS). Using the script's candidate page would write a wrong `#page=63`
+  anchor + a wrong `reserves-p63.png` name. For Dartford I hand-authored ALL field_sources with the correct physical
+  pages (located via per-page `pdftotext -layout -f N -l N` grep) + rendered PNGs to match, then ran
+  `generate-image-manifest.mjs` directly (skipping 06-audit-evidence's spec-rebuild, which would overwrite my correct
+  spec with the matcher's wrong pages). Basildon/Canterbury wide-table precedent, generalised: verify the candidate
+  page against the physical page before letting 05/06 use it.
+- **No standalone budget/MTFS PDF → strip budget_gap/savings_target (no-force-fit).** Dartford's budget pages link only
+  to fees-&-charges reports and say "visit the Committee pages for the budget-setting meeting" — the budget lives only
+  in ModernGov committee papers. Legacy budget_gap £16.291m / savings_target £14.6619m were "derived from GOV.UK Revenue
+  Account" (forbidden §3 derivation, absurd vs £29m service). Stripped (Bolsover/Boston/Breckland/Chichester/Dacorum).
+- **CE salary published as 3 inconsistent figures → strip.** senior-employees CSV "£115,000-£120,000" band ≠ SoA Note 26
+  by-post "£130,074" ≠ org-structure CSV "£110,000-£115,000" ceiling. No single archivable full-year named rate → strip
+  chief_executive_salary + watch (Canterbury/Dacorum/Arun). Allowances: no archivable Members' Allowances SCHEME PDF
+  (the scheme/6 page is HTML scheme TEXT with no rate table); SoA Note 25 gives only the £424k total → strip
+  basic/leader/detail, keep total_allowances_cost from the SoA (Basildon/Breckland/Cannock un-archivable-scheme).
+- **salary_bands double-proven by a transparency CSV.** The SoA Note 26 >£50k banding (Total 54, 2024/25 column) matches
+  the council's own senior-salary-count.csv band counts exactly — strong corroboration; re-authored from the legacy
+  stale column.
+- **completeness regression gotcha (B&D/Boston) — declare strips in INTENTIONAL_REMOVALS.** The 11 Dartford strips read
+  as regression_field_lost on the first validate; the second run showed 0 (baseline absorbed them this session), but
+  declared them in the `...['Dartford'].flatMap(...)` block regardless so CI stays green on a fresh checkout.
+- **puppeteer was installable mid-rollout** (unlike Batch-47-1..5): `npm install puppeteer --no-save` pulled Chrome for
+  Testing, so ux-audit ran for real (0/0). NB the dev server bound to :3001 (another session held :3000 with an
+  unrelated build that 404s /council/dartford) — pass `--url=http://localhost:3001/council/dartford`. Don't be fooled
+  by the :3000 404 into thinking the page is broken; check the dev log for the actual port.
+- **Dartford ended RICH**: KEEPS reserves (£3.5m pure-GF SoA p35), chief_executive (Sarah Martin, Tier-4 live structure
+  page), council_leader (Cllr Jeremy Kite, SoA AGS p30), total_allowances_cost (£424k SoA Note 25 p91), salary_bands
+  (SoA Note 26 p92, Total 54). STRIPS chief_executive_salary (3 inconsistent figures, no single rate), councillor_basic_
+  allowance/leader_allowance/councillor_allowances_detail (un-archivable scheme), budget_gap/savings_target (derived-
+  from-RA, no MTFS PDF), cabinet + Bradford strip-list. 4 Tier-3 + 1 Tier-4 personnel + 6 band_d. Tier-1 re-sync:
+  population 115,600→125,011; budgets→RA 2025-26; revenue_budget→44,473,000. Kent LGR/devolution in progress — re-home
+  to successor unitary if abolished.
