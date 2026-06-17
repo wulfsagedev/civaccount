@@ -131,7 +131,7 @@ const NORTH_STAR_22 = [
   // Batch-46 (2026-06-16): queue-driven full-depth rollouts.
   'Broadland', 'Bromsgrove', 'Broxbourne', 'Cannock Chase', 'Canterbury',
   // Batch-47 (2026-06-16): queue-driven full-depth rollouts.
-  'Castle Point', 'Charnwood', 'Cheltenham', 'Chichester', 'Cotswold',
+  'Castle Point', 'Charnwood', 'Cheltenham', 'Chichester', 'Cotswold', 'Dacorum',
 ];
 
 function slugify(n) {

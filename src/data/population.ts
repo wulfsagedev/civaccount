@@ -44,7 +44,7 @@ export const populationData: Record<string, number> = {
   "Cotswold": 91661,
   "Craven": 57100,
   "Crawley": 118500,
-  "Dacorum": 157700,
+  "Dacorum": 161420,
   "Dartford": 115600,
   "Daventry": 88300,
   "Derbyshire Dales": 72600,

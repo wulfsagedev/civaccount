@@ -1,0 +1,24 @@
+{
+  "council": "Dacorum",
+  "slug": "dacorum",
+  "ons_code": "E07000096",
+  "batch": "47-6",
+  "phases": {
+    "phase_0_inventory": { "done": true, "candidates": 5, "note": "origin TCP-blocked; discovered via Wayback CDX domain sweep, inventory hand-authored" },
+    "phase_1_archive": { "done": true, "results": { "ok": 4 }, "note": "fetched from exact Wayback if_ captures (SoA 2024-25, Pay Policy, Allowances Scheme, Capital Strategy); all %PDF + text layer" },
+    "phase_1b_page_images": { "done": true, "images": 7 },
+    "phase_2_extract": { "done": true, "candidates": 24, "parse_failures": 0 },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_crosscheck": { "done": true, "drift": 0, "note": "population 157700->161420; budget cells re-synced to RA Part 1 2025-26; revenue_budget->70,331,000" },
+    "phase_3_6_link_check": { "done": true, "ce_leader_verified_live": true, "note": "CE Darren Welsh (interim, SoA Note 30 + LGC; Hamilton left for Redbridge); Leader Cllr Sally Symington (SoA p3 + democracy.dacorum.gov.uk UID=800)" },
+    "phase_4_populate": { "done": true, "note": "field_sources hand-authored (wide-table reserves + CE transition — Canterbury/Basildon precedent); only Dacorum's record edited" },
+    "phase_5_validate": { "done": true, "errors": 0, "regressions": 0 },
+    "phase_5b_ux_audit": { "done": true, "violations": 0, "note": "structural sweep — all derived/comparator fields stripped (0 budget_gap/savings_target/per-capita remain); all 13 rendered values carry field_sources provenance (audit-north-star 0/5). puppeteer ux-audit unavailable; /council/[slug] 404s under Next-16 dev harness (affects all councils incl. known-good Cotswold — Basildon lesson); a non-rendered value can't be unwrapped" },
+    "phase_5c_reality_check": { "done": true, "verbatim": "7/7" },
+    "phase_5d_screenshot_parity": { "done": true, "screenshots": 7, "verbatim_1to1": 7, "mismatched": 0, "missing_png": 0 },
+    "phase_6_document": { "done": true },
+    "phase_7_ship": { "done": false }
+  },
+  "north_star_complete": true,
+  "last_session": "2026-06-17"
+}

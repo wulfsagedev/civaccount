@@ -1369,3 +1369,55 @@ good — don't re-do them; extend from there to the other fields.
   legacy, no-force-fit), cabinet (Tier-4, pre-reshuffle, Gloucestershire LGR), + Bradford strip-list. 6 Tier-3
   + 1 Tier-4 personnel + 6 band_d = 12 proven fields. Gloucestershire LGR in progress — re-home to successor
   unitary if abolished.
+
+### Batch-47-6 / Dacorum (2026-06-17) — origin TCP-blocked (fetch from exact CDX if_ captures); HRA district with a CLEAN pure-GF MIRS; the CE transition the brief didn't flag (Hamilton→Welsh, found in the SoA note + live); reserves trap ~21st
+- **Origin fully TCP-blocked → 01-inventory hangs, 02-archive ladder times out; fetch each PDF from its
+  exact Wayback identity capture.** `www.dacorum.gov.uk` drops TCP :443 entirely from this network (Amber
+  Valley pattern — `nc`/curl fail, not a UA-WAF), so `01-inventory` printed the header then hung on the
+  probe stage and wrote NO inventory.json (the probe loop has no per-probe timeout when the origin
+  black-holes the connection — it's not a crash, exit 0, just no output). `02-archive`'s wayback-snapshot/
+  save/poll ladder also timed out (process killed mid-poll on the first source). Recovery that worked:
+  (a) hand-author inventory.json from a Wayback CDX domain sweep (`web.archive.org` IS reachable) of the
+  `/docs/default-source/finance-performance/` store; (b) fetch each PDF directly via
+  `curl -sSL "https://web.archive.org/web/<TS>if_/<url>"` using the CDX timestamp — all 4 landed as real
+  %PDF with text layers. `democracy.dacorum.gov.uk` was TCP-OPEN (different host) — committee attachments
+  reachable. NB inventory.json schema for 02-archive is `sources[]` (with `url`/`filename`/`expectsPdf`),
+  NOT `candidates[]` — using the wrong key reports "0 entries".
+- **Reserves trap ~21st in a row — HRA district, CLEAN pure-GF-MIRS variant (Castle Point/Cheltenham/
+  Cotswold shape).** Legacy `reserves 24,469,000` was EXACTLY the parsed-reserves.csv RA Part 2 total-usable
+  reference misfiled as the GF balance. Dacorum is stock-holding (has an HRA), BUT its MIRS (p30) has a PURE
+  "General Fund" FIRST column (2,500 at 31 Mar 2025) SEPARATE from "Housing Revenue Account" (3,725),
+  "Earmarked Reserves - General Fund" (31,796) and "Total Usable Reserves" (103,423) — and the Balance Sheet
+  Usable-Reserves note (p31) confirms "General Fund 2,500". Corrected to £2.5m (<< ref → passes spot-check).
+  Lesson reinforced: an HRA does NOT force the combined-EFA trap — READ THE MIRS COLUMN HEADERS; separate
+  GF + HRA columns ⇒ GF column is the scalar. 03-extract's auto top-candidate was a £3.68m narrative line
+  ("net contribution to a number of reserves") — read the excerpt, take the Balance Sheet/MIRS GF column.
+- **The brief said "verify CE" but didn't flag a transition — the SoA remuneration note + live check caught
+  a full handover.** Legacy CE "Claire Hamilton" had LEFT for the London Borough of Redbridge in March 2025
+  (she's Redbridge's Returning Officer for the 2026 election per redbridge.gov.uk; SoA Note 30 shows
+  "Chief Executive- Claire Hamilton - to 02/03/2025"). Darren Welsh is interim CE from 01/01/2025 (SoA
+  Note 30 "from 01/01/2025"; LGC "District names interim chief" 07-03-2025). Render the name from the SoA's
+  own remuneration note (the AGS doesn't name a current CE — accounts signed by the Chief Finance Officer/
+  S151). Always run the live CE check even when the brief is silent and the legacy name "looks fine" — a
+  plausible legacy CE can have moved to another authority (Cotswold/Basildon pattern).
+- **chief_executive_salary STRIP when the post turned over with only part-year figures AND the Pay Policy
+  has no rate.** SoA Note 30 shows Hamilton £149,544 (~11mo) and Welsh £30,611 (~3mo) — neither a full-year
+  rate. The Senior Officer Pay Policy 2024-25 publishes NO CE figure (salary-range *process* + a 4.3:1 pay
+  ratio only — no scale-top number, unlike Castle Point/Ashfield). No archivable full-year RATE → strip +
+  watch (Arun/Canterbury/Charnwood part-year precedent).
+- **Leader stale, cabinet[0] was right (the recurring internal-contradiction tell).** Legacy
+  council_leader "Cllr Ron Sherwin" was stale; legacy cabinet[0] said Sally Symington. Real Leader =
+  Cllr Sally Symington (Lib Dem, from 2 Apr 2025), grounded in the SoA Leader's Introduction (p3, signed)
+  + the council's own democracy.dacorum.gov.uk councillor page. Elects by thirds (last all-out 2023; Apsley
+  by-election June 2026 = Lib Dem hold; Lib Dem minority admin) — no May-2026 all-out disturbed leadership.
+- **budget_gap/savings_target: legacy "derived from GOV.UK Revenue Account" = forbidden derivation → STRIP.**
+  The comment literally said derived; the figures (£44m/£39.6m) were also absurd vs ~£26m total service.
+  Current MTFS not archivable (only 2020-2025 vintage on Wayback). STRIP + watch (NORTH-STAR §3; Cotswold).
+- **Dacorum ended RICH**: KEEPS reserves (£2.5m pure-GF SoA p31), chief_executive (Darren Welsh, SoA Note 30
+  p54), council_leader (Cllr Sally Symington, SoA p3), total_allowances_cost (£471k SoA p53),
+  councillor_basic_allowance (£6,120) + leader_allowance (£18,360) (Members' Allowances Scheme 2023),
+  salary_bands (SoA p53, Total 108). STRIPS chief_executive_salary (post turnover, part-year only, no Pay
+  Policy rate), budget_gap/savings_target (derived-from-RA, no-force-fit), cabinet/councillor_allowances_detail/
+  grant_payments + Bradford strip-list. 7 Tier-3 + 6 band_d = 13 proven fields. Tier-1 re-sync: population
+  157,700→161,420; budgets→RA 2025-26; revenue_budget→70,331,000. Hertfordshire LGR in progress — re-home
+  to successor unitary if abolished.

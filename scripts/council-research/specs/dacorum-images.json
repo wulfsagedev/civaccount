@@ -1,0 +1,9 @@
+[
+  { "council": "Dacorum", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 31, "value": "£2,500,000", "note": "Balance Sheet — Usable Reserves: General Fund 2,500 (pure GF balance, £'000)" },
+  { "council": "Dacorum", "field": "chief_executive", "pdf": "statement-of-accounts-2024-25.pdf", "page": 54, "value": "Darren Welsh", "note": "Note 30 Officers' Remuneration — Chief Executive Darren Welsh from 01/01/2025" },
+  { "council": "Dacorum", "field": "council_leader", "pdf": "statement-of-accounts-2024-25.pdf", "page": 3, "value": "Cllr Sally Symington", "note": "Introduction by the Leader of the Council — Councillor Sally Symington" },
+  { "council": "Dacorum", "field": "total_allowances_cost", "pdf": "statement-of-accounts-2024-25.pdf", "page": 53, "value": "£471,000", "note": "Members' Allowances note — 2024/25 Total 471 (£'000)" },
+  { "council": "Dacorum", "field": "salary_bands", "pdf": "statement-of-accounts-2024-25.pdf", "page": 53, "value": "108 employees >£50k", "note": "Remuneration of Employees — 2024/25 banding column, Total 108" },
+  { "council": "Dacorum", "field": "councillor_basic_allowance", "pdf": "members-allowances-scheme-2023.pdf", "page": 2, "value": "£6,120", "note": "Members' Allowances Scheme — basic allowance £6,120" },
+  { "council": "Dacorum", "field": "leader_allowance", "pdf": "members-allowances-scheme-2023.pdf", "page": 15, "value": "£18,360", "note": "Members' Allowances Scheme — Leader SRA 18,360" }
+]
