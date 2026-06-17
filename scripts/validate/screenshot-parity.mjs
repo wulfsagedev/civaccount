@@ -131,7 +131,12 @@ const NORTH_STAR_22 = [
   // Batch-46 (2026-06-16): queue-driven full-depth rollouts.
   'Broadland', 'Bromsgrove', 'Broxbourne', 'Cannock Chase', 'Canterbury',
   // Batch-47 (2026-06-16): queue-driven full-depth rollouts.
-  'Castle Point', 'Charnwood', 'Cheltenham', 'Chichester',
+  'Castle Point', 'Charnwood', 'Cheltenham', 'Chichester', 'Cotswold', 'Dacorum',
+  'Dartford', 'Derbyshire Dales',
+  // Batch-47-9 (2026-06-17): Dover (E07000108, Kent district).
+  'Dover',
+  // Batch-47-10 (2026-06-17): East Cambridgeshire (E07000009, Cambridgeshire district — last of Batch-47).
+  'East Cambridgeshire',
 ];
 
 function slugify(n) {

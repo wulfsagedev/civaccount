@@ -2311,6 +2311,166 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-5 (Cotswold E07000079, queue-driven full-depth rollout — RETRY). District,
+    // Gloucestershire, in the Publica Group (shared back-office services with West Oxfordshire + Forest of
+    // Dean). Every kept value is Cotswold's OWN figure. reserves CORRECTED (§2 trap, ~20th council in a row):
+    // legacy 11,340,000 == GOV.UK RA Part 2 total-usable reference misfiled as the GF balance; the pure
+    // General Fund risk-based balance is £1.760m (SoA 2024-25 narrative p7 + MIRS closing GF column 1,760,411,
+    // earmarked separate) << ref → passes spot-check. chief_executive CORRECTED (legacy "Robert Weaver" stale —
+    // he stepped down 30 Jun 2025 → Jane Portman, permanent CEO/Head of Paid Service from 1 Jan 2026, council
+    // decision Id=489, verified current via Returning-Officer notices Feb+Mar 2026). council_leader CORRECTED
+    // (legacy "Cllr Joe Harris" stale, contradicted cabinet[0] → Cllr Mike Evemy, elected 21 May 2025 ACM,
+    // SoA AGS signature p111; LibDems retained control, next election 2027). chief_executive_salary 115105→
+    // 140000 (Cotswold's OWN Head of Paid Service post — Pay Policy 2026-27 p4 AND Jane Portman's actual
+    // contracted permanent salary per decision Id=489; NOT a Publica-wide/recharged figure). total_allowances_cost
+    // 324038→333579 (SoA Note B6 2024/25 column: Allowances 329,615 + Expenses 3,964). councillor_basic_allowance
+    // 6288→6084 (Members' Allowances Payments 2024-25 uniform rate). salary_bands re-authored to SoA Note B9
+    // 2024/25 column (officers >£50k). STRIPPED: leader_allowance (full-year Leader SRA rate only in the
+    // un-archived Members' Allowances Scheme/Constitution; the payments notice shows part-year SRAs — Cannock/
+    // Castle Point); budget_gap + savings_target (legacy 16.086m/14.4774m fabricated 'derived from RA', absurd vs
+    // ~£17m net service; the archived Budget Pressures & Savings doc is a multi-year savings grid with no quotable
+    // single-sentence gap — no-force-fit, Bolsover/Boston/Breckland/Chichester); cabinet (Tier-4 only, predates the
+    // May-2025 leadership change, Gloucestershire LGR churn); + Bradford strip-list (service_spending, top_suppliers,
+    // performance_kpis, grant_payments, councillor_allowances_detail, service_outcomes.housing/population_served).
+    // KEEPS chief_executive, council_leader, reserves, chief_executive_salary, total_allowances_cost,
+    // councillor_basic_allowance, salary_bands — 5 Tier-3 PROVEN + 1 Tier-4 personnel + 6 band_d + budget/
+    // population row-evidence. Gloucestershire LGR in progress — re-home to the successor unitary if abolished.
+    ...['Cotswold'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-17 Batch-47-7 (Dartford, queue-driven full-depth rollout). Dartford BC
+    // (E07000107, Kent). Origin fully open (Jadu CMS). SoA 2024-25 (139pp, text) is the
+    // primary Tier-3 source. reserves corrected 76,993,000 → £3.5m: legacy was the RA
+    // Part 2 total-usable reference misfiled as GF; SoA Balance Sheet p35 + MIRS p33 give
+    // the pure General Fund column (3,500), separate from HRA (11,975) + earmarked (77,841)
+    // + total usable (144,298) — clean smaller-than-ref, passes spot-check (Babergh/Castle
+    // Point/Dacorum shape; HRA does NOT force the combined-EFA trap when GF is its own
+    // column). chief_executive corrected "Caroline Sherwood" (fabricated, no Dartford source)
+    // → Sarah Martin (live council-structure page "Chief Executive / Head of Paid Service";
+    // SoA names the post only by title "Chief Officer and Director of Corporate Services",
+    // AGS signatory S Martin = Returning Officer = Sarah Martin) — Tier-4 live_page (deputy/
+    // S151-not-CE trap, the brief flagged it). council_leader Cllr Jeremy Kite CONFIRMED
+    // current (SoA AGS p30 "The Leader of the Council J Kite 23 July 2025" + live ModernGov;
+    // no May-2026 borough election — all-out 2023, next 2027). total_allowances_cost
+    // 407,000 → £424,000 (SoA Note 25 published 2024/25 Total; 407 was the stale 2023/24
+    // comparative). salary_bands re-authored to SoA Note 26 2024/25 column (Total 54),
+    // double-proven by the senior-salary-count transparency CSV. STRIPPED: chief_executive_salary
+    // (CE pay published only as inconsistent bands — £115-120k CSV vs £130,074 SoA Note 26 vs
+    // £110-115k org-chart ceiling, no single archivable full-year rate — Canterbury/Dacorum/Arun);
+    // councillor_basic_allowance + leader_allowance + councillor_allowances_detail (no archivable
+    // Members' Allowances SCHEME PDF — the scheme page is HTML text with no rate table, SoA gives
+    // only the total; Basildon/Breckland/Cannock un-archivable-scheme strip); budget_gap +
+    // savings_target (legacy 'derived from GOV.UK Revenue Account' = forbidden §3 derivation,
+    // absurd for a £29m-service district; no standalone budget/MTFS PDF — budget lives only in
+    // ModernGov committee papers, no quotable single-sentence gap — no-force-fit, Bolsover/Boston/
+    // Breckland/Chichester/Dacorum); cabinet (Tier-4 portfolio list, stale); + Bradford strip-list
+    // (service_spending, top_suppliers, performance_kpis, grant_payments, service_outcomes.housing/
+    // population_served). KEEPS chief_executive (Tier-4), council_leader, reserves,
+    // total_allowances_cost, salary_bands — 4 Tier-3 PROVEN (SoA pp30/35/91/92) + 1 Tier-4
+    // personnel + 6 band_d + budget/population row-evidence. Kent LGR/devolution in progress —
+    // re-home to the successor unitary if abolished.
+    ...['Dartford'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-17 Batch-47-8 (Derbyshire Dales E07000035, queue-driven full-depth rollout).
+    // District, Derbyshire (LGR/devolution in progress). The brief warned of "shared senior
+    // management with High Peak BC" — the primary disproves it: DDDC's live corporate-leadership
+    // -team page + SoA AGS p56 show DDDC's OWN CE (Paul Wilson, Head of Paid Service) + a full
+    // dedicated CLT (Karen Henriksen S151, + 4 directors); High Peak shares its CE with
+    // Staffordshire Moorlands, NOT DDDC (Breckland "brief's shared-management premise can be wrong"
+    // precedent). Every value is DDDC's own. Origin (www.derbyshiredales.gov.uk) Cloudflare-blocks
+    // deep pages; SoA 2024-25 (draft, 130pp text) recovered from its Wayback id_ capture — the
+    // primary Tier-3 source. reserves corrected 11,452,000 → £4.034m: legacy was EXACTLY the
+    // parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF; MIRS p58 has a clean pure
+    // "General Fund Balance" column ((4,034) at 31 March 2025), separate from Earmarked (16,938) +
+    // Total Usable (24,384) — smaller-than-ref, passes spot-check (Babergh/Castle Point shape).
+    // council_leader corrected "Cllr Garry Purdy" (STALE — pre-2023 Conservative leader) → Cllr
+    // Steve Flitter (Lib Dem, re-elected May 2025 ACM, Progressive Alliance; SoA AGS p56 + cabinet[0]
+    // internal-contradiction tell). chief_executive_salary re-sourced from the FORBIDDEN Town-Hall
+    // -Rich-List trade-aggregator (legacy £117,255) → SoA Note 28 Officers' Remuneration (Chief
+    // Executive 2024/25 Salary/Fees/Allowances £120,176, Tier-3 fingerprintable). total_allowances_cost
+    // 228,029 → £241,786 (SoA Note 26 published 2024/25 total; 228,029 was the stale 2023/24 figure).
+    // STRIPPED: salary_bands (legacy 8 bands to £115-120k mismatch SoA Note 28, which bands only
+    // £50-60k + lists seniors by post — Cheltenham precedent); councillor_basic_allowance +
+    // councillor_allowances_detail (Members' Allowances Scheme rate un-archivable — Cloudflare origin,
+    // no Wayback, SPN 520; SoA gives only the total; legacy detail was "estimated from SRA rates" =
+    // derived — Cannock/Breckland/Basildon un-archivable-scheme strip); budget_gap + savings_target
+    // (legacy 'derived from GOV.UK Revenue Account' = forbidden §3, absurd vs £15.2m service; no
+    // archivable MTFS with a quotable gap — no-force-fit, Bolsover/Boston/Dacorum); cabinet (committee
+    // -system "Committee Chair" list, not fingerprintable, LGR churn); + Bradford strip-list
+    // (service_spending, top_suppliers, performance_kpis, grant_payments, service_outcomes incl
+    // population_served + housing + the unsourced 53.1% recycling rate). KEEPS chief_executive (Tier-3
+    // SoA AGS p56 + live page), council_leader (Tier-3 SoA AGS p56), reserves (£4.034m SoA MIRS p58),
+    // chief_executive_salary (£120,176 SoA Note 28 p108), total_allowances_cost (£241,786 SoA Note 26
+    // p107) — 5 Tier-3 PROVEN + 6 band_d + budget/population row-evidence (22 Tier-1 row PNGs).
+    // Tier-1 re-sync: population 72,600 → 71,757; budgets → RA 2025-26; revenue_budget → 25,171,000.
+    // Derbyshire LGR/devolution in progress — re-home to the successor unitary if abolished.
+    ...['Derbyshire Dales'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|salary_bands`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-17 Batch-47-9 (Dover E07000108, queue-driven full-depth rollout).
+    // chief_executive_salary: Pay Policy publishes a scale (£136,244–£154,170) but the SoA 2024-25 actual
+    //   is below scale → no full-year rate proven paid (no-force-fit). cabinet: Tier-4, Kent LGR churn.
+    //   councillor_allowances_detail: 2023-24 catalogue-sourced, not a current fingerprintable per-member doc.
+    //   budget_gap/savings_target: were "derived from RA" (forbidden §3); MTFP has no quotable headline gap.
+    //   service_outcomes/service_spending/top_suppliers/performance_kpis/grant_payments: Bradford strip-list.
+    ...['Dover'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // East Cambridgeshire (Batch-47-10): reserves re-pointed to pure-GF MIRS (£1.386m, was RA Part-2
+    // usable ref £26.007m); CE corrected Emily Hill→Emma Grima (fabrication→AGS p32). Strips:
+    // chief_executive_salary (CE transition + 2024/25 part-year/reduced-hours, no full-year rate, scale-only
+    // Pay Policy), budget_gap/savings_target (derived-from-RA, balanced 2026/27 budget), service_outcomes/
+    // service_spending/top_suppliers/performance_kpis/grant_payments/councillor_allowances_detail
+    // (Bradford strip-list), cabinet (Tier-4 committee list, Cambridgeshire LGR churn).
+    ...['East Cambridgeshire'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

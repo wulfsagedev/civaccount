@@ -1,0 +1,6 @@
+[
+  { "council": "Dover", "field": "reserves", "pdf": "statement-of-accounts-2024-25-final-signed.pdf", "page": 22, "value": "£1.501m", "note": "Balance Sheet — General Fund balance (Note 26) closing 31 March 2025" },
+  { "council": "Dover", "field": "councillor_basic_allowance", "pdf": "part-6-members-allowances-2025.pdf", "page": 10, "value": "£5,000", "note": "Members' Allowances Scheme 2025 Schedule 1 (Basic) + Schedule 2 (Leader SRA £18,000)" },
+  { "council": "Dover", "field": "total_allowances_cost", "pdf": "statement-of-accounts-2024-25-final-signed.pdf", "page": 83, "value": "£250k", "note": "Note 39 Members' Allowances — 2024/25 total" },
+  { "council": "Dover", "field": "salary_bands", "pdf": "statement-of-accounts-2024-25-final-signed.pdf", "page": 66, "value": "bands", "note": "Note 24 Officers' Remuneration by Band — 2024/25 column" }
+]

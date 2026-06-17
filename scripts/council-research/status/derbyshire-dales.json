@@ -1,0 +1,38 @@
+{
+  "council": "Derbyshire Dales",
+  "slug": "derbyshire-dales",
+  "phases": {
+    "phase_0_inventory": {
+      "done": false,
+      "at": "2026-06-17T08:49:16.664Z",
+      "candidates": 0
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-17T08:59:55.033Z",
+      "candidates": 15,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-17T09:00:50.364Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-17T09:03:41.067Z",
+      "images": 4
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-17T09:03:56.267Z",
+      "fields": [
+        "reserves",
+        "chief_executive",
+        "chief_executive_salary",
+        "total_allowances_cost"
+      ]
+    }
+  },
+  "last_session": "2026-06-17T09:03:56.267Z"
+}

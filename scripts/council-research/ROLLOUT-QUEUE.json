@@ -2,7 +2,7 @@
   "generated_at": "2026-06-10T05:25:16.516Z",
   "north_star_complete": 174,
   "total_councils": 317,
-  "remaining": 124,
+  "remaining": 118,
   "queue": [
     {
       "name": "Amber Valley",
@@ -160,43 +160,49 @@
       "name": "Cotswold",
       "ons_code": "E07000079",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-17"
     },
     {
       "name": "Dacorum",
       "ons_code": "E07000096",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-17"
     },
     {
       "name": "Dartford",
       "ons_code": "E07000107",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-17"
     },
     {
       "name": "Derbyshire Dales",
       "ons_code": "E07000035",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-17"
     },
     {
       "name": "Dover",
       "ons_code": "E07000108",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-17"
     },
     {
       "name": "East Cambridgeshire",
       "ons_code": "E07000009",
       "type": "District Councils",
-      "status": "queued",
-      "attempts": 0
+      "status": "shipped",
+      "attempts": 1,
+      "shipped_at": "2026-06-17"
     },
     {
       "name": "East Devon",

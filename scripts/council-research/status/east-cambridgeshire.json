@@ -1,0 +1,88 @@
+{
+  "council": "East Cambridgeshire",
+  "slug": "east-cambridgeshire",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-17T10:25:00.137Z",
+      "candidates": 7
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-17T10:32:36.510Z",
+      "results": {
+        "ok": 8,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-17T10:32:56.560Z",
+      "candidates": 18,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-17T10:37:04.046Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-17T10:40:00Z",
+      "images": 5,
+      "tier1_row_images": 22
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-17T10:42:00Z",
+      "method": "hand-authored field_sources (bounded slice edits)",
+      "fields": [
+        "reserves",
+        "chief_executive",
+        "council_leader",
+        "total_allowances_cost",
+        "councillor_basic_allowance",
+        "salary_bands"
+      ]
+    },
+    "phase_5_validate": {
+      "done": true,
+      "at": "2026-06-17T10:43:00Z",
+      "errors": 0,
+      "regressions": 0
+    },
+    "phase_5b_ux_audit": {
+      "done": true,
+      "at": "2026-06-17T10:48:00Z",
+      "violations": 0
+    },
+    "phase_5c_reality_check": {
+      "done": true,
+      "at": "2026-06-17T10:46:00Z",
+      "verbatim": "6/6"
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-06-17T10:45:00Z",
+      "screenshots": 6,
+      "verbatim_1to1": 6,
+      "mismatched": 0,
+      "missing_png": 0
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-06-17T10:50:00Z",
+      "audit": "docs/EAST-CAMBRIDGESHIRE-AUDIT.md",
+      "manifest": "manifests/east-cambridgeshire.json"
+    },
+    "phase_7_ship": {
+      "done": false,
+      "note": "STRICT_COUNCILS + screenshot-parity Batch-47-10 line added; proof+commit pending"
+    }
+  },
+  "last_session": "2026-06-17T10:50:00Z",
+  "north_star_complete": true,
+  "batch": "47-10"
+}

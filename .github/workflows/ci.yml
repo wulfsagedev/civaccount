@@ -100,10 +100,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Gitleaks is free for public repos; no licence key required.
           GITLEAKS_NOTIFY_USER_LIST: ''
-        with:
-          # Run in redact mode so any finding is shown without the raw
-          # value in the action log.
-          args: detect --redact --no-git -v --config=.github/gitleaks.toml
+          # gitleaks-action v2 IGNORES the `args:` input (it runs its own
+          # `gitleaks detect`); the only supported way to point it at our
+          # config is GITLEAKS_CONFIG. Without this it silently used the
+          # DEFAULT ruleset, which flags our public SHA-256 document
+          # fingerprints (sha256_at_access) as "generic-api-key".
+          GITLEAKS_CONFIG: ${{ github.workspace }}/.github/gitleaks.toml
 
   npm-audit:
     name: Dependency audit

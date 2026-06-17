@@ -1,0 +1,59 @@
+{
+  "council": "Dover",
+  "slug": "dover",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-17T09:52:39.377Z",
+      "candidates": 34
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-17T09:55:11.479Z",
+      "results": {
+        "ok": 8,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-17T09:55:32.840Z",
+      "candidates": 25,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-17T10:00:45.046Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-17T10:01:51.847Z",
+      "images": 2
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-17T10:01:58.687Z",
+      "fields": [
+        "reserves",
+        "councillor_basic_allowance",
+        "leader_allowance",
+        "total_allowances_cost",
+        "salary_bands",
+        "chief_executive",
+        "council_leader"
+      ]
+    },
+    "phase_5_validate": { "done": true, "errors": 0, "regressions": 0 },
+    "phase_5b_ux_audit": { "done": true, "violations": 0 },
+    "phase_5c_reality_check": { "done": true, "verbatim": "5/5" },
+    "phase_5d_screenshot_parity": { "done": true, "screenshots": 5, "verbatim_1to1": 5 },
+    "phase_6_document": { "done": true, "audit": "docs/DOVER-AUDIT.md", "manifest": "manifests/dover.json" },
+    "phase_7_ship": { "done": true, "batch": "47-9", "strict_councils": true }
+  },
+  "north_star_complete": true,
+  "batch": "47-9",
+  "last_session": "2026-06-17T10:01:58.687Z"
+}

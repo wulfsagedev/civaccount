@@ -1304,3 +1304,211 @@ good — don't re-do them; extend from there to the other fields.
   legacy, no-force-fit), salary_bands (DOCX SoA), cabinet (Tier-4, West Sussex LGR), + Bradford strip-list.
   2 Tier-3 PROVEN + 2 Tier-4 personnel + 6 band_d + budget/population row-evidence. West Sussex LGR in
   progress — re-home to successor unitary if abolished.
+
+### Batch-47-5 / Cotswold (2026-06-17, RETRY) — the Publica-shared-CE salary IS shippable (it's Cotswold's own benchmark-graded HoPS post, double-proven by the appointment decision); a CE transition the brief didn't flag; reserves trap ~20th in a row
+- **Publica shared-services scoping resolved at the Pay Policy + SoA-Note-B9 scope lines (Cheltenham/Bromsgrove
+  pattern).** Cotswold is in the Publica Group (shared back-office with West Oxfordshire + Forest of Dean). The
+  brief warned every value must be Cotswold's OWN, not Publica-wide. Resolution: the CE salary £140,000 is
+  Cotswold's OWN Head of Paid Service establishment post — the CDC Pay Policy 2026-27 §5.2 lists it as a
+  benchmark-graded Cotswold statutory officer ("Chief Executive (Head of Paid Service) £140,000 per annum"),
+  and SoA Note B9 explicitly distinguishes Cotswold's statutory officers from Publica Directors ("the total
+  cost of Publica's Directors is disclosed in the Publica financial statements"). The Publica-wide figures
+  (SoA Note B10 £223,336 redundancy contribution = 1/3 of Publica's; "Publica Directors' cost") were NOT
+  rendered — they're not Cotswold-specific. Lesson: a Publica/shared-services council still publishes its OWN
+  Head-of-Paid-Service salary in its OWN Pay Policy — verify the Pay Policy's scope + the SoA remuneration
+  note's Publica-vs-own-officer split before reaching for the strip.
+- **The CE salary was DOUBLE-proven — the forward Pay-Policy rate matched the actual appointment decision.**
+  Unusually, the SoA actual CE remuneration (£112,979, 2024-25) is LOWER than the £140k Pay Policy rate (the
+  inverse of the Ashford/Breckland "actual exceeds scale" proof). Normally a forward scale that exceeds the
+  most recent actual would be unprovable. But the council's OWN appointment decision (ModernGov Id=489)
+  resolved to pay the incoming permanent CE EXACTLY £140,000 ("appoint Jane Portman ... £140,000 ... effective
+  1 January 2026") — so the £140k is a contracted actual, not an aspirational ceiling. When a Pay-Policy scale
+  is corroborated by a same-council appointment-decision resolution naming the figure, it ships even without an
+  SoA-actual that reaches it.
+- **The brief said nothing about a CE change — the live check caught a full transition (Basildon/Charnwood).**
+  Legacy TS "Robert Weaver" had been CE since 2021, looked stable, and the brief didn't flag it. But WebSearch
+  surfaced "Rob Weaver to step down" + "Jane Portman interim CEO": Weaver stepped down 30 Jun 2025, Portman was
+  interim from Jul 2025, then PERMANENT CEO from 1 Jan 2026 (decision Id=489). Verified current via her
+  Returning-Officer signature on Cotswold election notices dated 5 Feb + 12 Mar 2026 (a "Robert Weaver in 2026
+  election notices" search hit was a stale-cache red herring — date every hit, Castle Point/Cheltenham pattern).
+  Always run the live CE check even when the legacy name looks long-tenured and the brief is silent.
+- **Leader stale + cabinet[0] was right (Broxbourne/Charnwood/Castle Point internal-contradiction tell).**
+  Legacy council_leader "Cllr Joe Harris" was stale; legacy cabinet[0] already said Mike Evemy. Evemy succeeded
+  Harris at the 21 May 2025 ACM (Harris stood down after 6 years). Grounded in the SoA 2024-25 AGS signature
+  page (p111: "Mike Evemy / Leader of the Council") + the live leader page. LibDems retained control May 2023,
+  next election 2027 (no 2026 district election → no post-election strip). When the leader scalar disagrees with
+  cabinet[0], the scalar is usually the stale one.
+- **Reserves trap, ~20th council in a row — clean smaller-than-reference pure-GF (Babergh/Castle Point).**
+  Legacy 11,340,000 == parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF. SoA 2024-25 p7
+  narrative "general fund revenue risk-based balance at £1.760m" + MIRS closing "General Fund Balance
+  (Unallocated) at 31 March (1,760,411)" (earmarked separate columns). £1.760m << ref → passes spot-check.
+  03-extract's auto top-candidate surfaced the right £1.760m narrative this time, but also offered combined
+  balance-sheet rows — read the excerpt.
+- **salary_bands keepable (Ashford/Castle Point) — SoA Note B9 banding has a clean text layer.** The 2024/25
+  column (officers >£50k: 3/1/1/2/1, Total 8) extracts cleanly; legacy bands matched the 2023/24 column with
+  fabricated overlapping labels — re-authored. Excerpt "£110,000 to £114,999  1  1" (multi-space run → 3 chunks).
+- **Budget cells were stale — re-synced to RA Part 1 2025-26 per the brief (source-truth warnings, not the
+  tier1-drift gate).** 04-extract-csv reported tier1_drift_count 0 (it checks population/band_d), but
+  source-truth flagged budget.housing/planning/total_service drift >10%. The brief mandates aligning stale
+  budget cells to current RA — housing 1451→2052, planning 2890→3467, environmental 10161→10840, total_service
+  16874→18946, net_current 32960→35403, revenue_budget→35,403,000. Don't rely on tier1_drift_count alone for
+  budgets — check source-truth's budget_*_drift warnings too.
+- **Environment gap (carried from Batch-47-1..4): puppeteer absent → render-csv-evidence + ux-audit/screenshot
+  scripts can't run.** Tier-1 row PNGs deferred (popover falls back to the inline csv_row mini-table); Phase 5b
+  run as an HTML-level button-ancestry sweep against a Bash-launched `npm run dev` (the authoritative finding:
+  SourceAnnotation renders as `<span role="button" aria-label="Source:…">` NOT `<button>` — a sweep that only
+  tracks `<button>` false-flags every wrapped value; track role="button" on any element). 0 genuine unwrapped
+  Cotswold values — the only "unwrapped" tokens are the compare-with-other-councils widget's NNNN.00 bills
+  (navigational, on every council page) + "317 councils" descriptive copy. Screenshot-parity (the real
+  North-Star #7 gate) satisfied by 6 Tier-3 PDF-page PNGs.
+- **Cotswold ended RICH**: KEEPS chief_executive (Tier-4 appointment decision, Jane Portman), council_leader
+  (Tier-3 SoA AGS p111, Cllr Mike Evemy), reserves (£1.760m pure-GF SoA p7), chief_executive_salary (£140,000
+  Pay Policy 2026-27 p4, Cotswold's own HoPS), total_allowances_cost (£333,579 SoA Note B6 p28),
+  councillor_basic_allowance (£6,084 Members' Allowances p1), salary_bands (SoA Note B9 p34). STRIPS
+  leader_allowance (un-archived Scheme SRA rate), budget_gap/savings_target (multi-year savings grid, fabricated
+  legacy, no-force-fit), cabinet (Tier-4, pre-reshuffle, Gloucestershire LGR), + Bradford strip-list. 6 Tier-3
+  + 1 Tier-4 personnel + 6 band_d = 12 proven fields. Gloucestershire LGR in progress — re-home to successor
+  unitary if abolished.
+
+### Batch-47-6 / Dacorum (2026-06-17) — origin TCP-blocked (fetch from exact CDX if_ captures); HRA district with a CLEAN pure-GF MIRS; the CE transition the brief didn't flag (Hamilton→Welsh, found in the SoA note + live); reserves trap ~21st
+- **Origin fully TCP-blocked → 01-inventory hangs, 02-archive ladder times out; fetch each PDF from its
+  exact Wayback identity capture.** `www.dacorum.gov.uk` drops TCP :443 entirely from this network (Amber
+  Valley pattern — `nc`/curl fail, not a UA-WAF), so `01-inventory` printed the header then hung on the
+  probe stage and wrote NO inventory.json (the probe loop has no per-probe timeout when the origin
+  black-holes the connection — it's not a crash, exit 0, just no output). `02-archive`'s wayback-snapshot/
+  save/poll ladder also timed out (process killed mid-poll on the first source). Recovery that worked:
+  (a) hand-author inventory.json from a Wayback CDX domain sweep (`web.archive.org` IS reachable) of the
+  `/docs/default-source/finance-performance/` store; (b) fetch each PDF directly via
+  `curl -sSL "https://web.archive.org/web/<TS>if_/<url>"` using the CDX timestamp — all 4 landed as real
+  %PDF with text layers. `democracy.dacorum.gov.uk` was TCP-OPEN (different host) — committee attachments
+  reachable. NB inventory.json schema for 02-archive is `sources[]` (with `url`/`filename`/`expectsPdf`),
+  NOT `candidates[]` — using the wrong key reports "0 entries".
+- **Reserves trap ~21st in a row — HRA district, CLEAN pure-GF-MIRS variant (Castle Point/Cheltenham/
+  Cotswold shape).** Legacy `reserves 24,469,000` was EXACTLY the parsed-reserves.csv RA Part 2 total-usable
+  reference misfiled as the GF balance. Dacorum is stock-holding (has an HRA), BUT its MIRS (p30) has a PURE
+  "General Fund" FIRST column (2,500 at 31 Mar 2025) SEPARATE from "Housing Revenue Account" (3,725),
+  "Earmarked Reserves - General Fund" (31,796) and "Total Usable Reserves" (103,423) — and the Balance Sheet
+  Usable-Reserves note (p31) confirms "General Fund 2,500". Corrected to £2.5m (<< ref → passes spot-check).
+  Lesson reinforced: an HRA does NOT force the combined-EFA trap — READ THE MIRS COLUMN HEADERS; separate
+  GF + HRA columns ⇒ GF column is the scalar. 03-extract's auto top-candidate was a £3.68m narrative line
+  ("net contribution to a number of reserves") — read the excerpt, take the Balance Sheet/MIRS GF column.
+- **The brief said "verify CE" but didn't flag a transition — the SoA remuneration note + live check caught
+  a full handover.** Legacy CE "Claire Hamilton" had LEFT for the London Borough of Redbridge in March 2025
+  (she's Redbridge's Returning Officer for the 2026 election per redbridge.gov.uk; SoA Note 30 shows
+  "Chief Executive- Claire Hamilton - to 02/03/2025"). Darren Welsh is interim CE from 01/01/2025 (SoA
+  Note 30 "from 01/01/2025"; LGC "District names interim chief" 07-03-2025). Render the name from the SoA's
+  own remuneration note (the AGS doesn't name a current CE — accounts signed by the Chief Finance Officer/
+  S151). Always run the live CE check even when the brief is silent and the legacy name "looks fine" — a
+  plausible legacy CE can have moved to another authority (Cotswold/Basildon pattern).
+- **chief_executive_salary STRIP when the post turned over with only part-year figures AND the Pay Policy
+  has no rate.** SoA Note 30 shows Hamilton £149,544 (~11mo) and Welsh £30,611 (~3mo) — neither a full-year
+  rate. The Senior Officer Pay Policy 2024-25 publishes NO CE figure (salary-range *process* + a 4.3:1 pay
+  ratio only — no scale-top number, unlike Castle Point/Ashfield). No archivable full-year RATE → strip +
+  watch (Arun/Canterbury/Charnwood part-year precedent).
+- **Leader stale, cabinet[0] was right (the recurring internal-contradiction tell).** Legacy
+  council_leader "Cllr Ron Sherwin" was stale; legacy cabinet[0] said Sally Symington. Real Leader =
+  Cllr Sally Symington (Lib Dem, from 2 Apr 2025), grounded in the SoA Leader's Introduction (p3, signed)
+  + the council's own democracy.dacorum.gov.uk councillor page. Elects by thirds (last all-out 2023; Apsley
+  by-election June 2026 = Lib Dem hold; Lib Dem minority admin) — no May-2026 all-out disturbed leadership.
+- **budget_gap/savings_target: legacy "derived from GOV.UK Revenue Account" = forbidden derivation → STRIP.**
+  The comment literally said derived; the figures (£44m/£39.6m) were also absurd vs ~£26m total service.
+  Current MTFS not archivable (only 2020-2025 vintage on Wayback). STRIP + watch (NORTH-STAR §3; Cotswold).
+- **Dacorum ended RICH**: KEEPS reserves (£2.5m pure-GF SoA p31), chief_executive (Darren Welsh, SoA Note 30
+  p54), council_leader (Cllr Sally Symington, SoA p3), total_allowances_cost (£471k SoA p53),
+  councillor_basic_allowance (£6,120) + leader_allowance (£18,360) (Members' Allowances Scheme 2023),
+  salary_bands (SoA p53, Total 108). STRIPS chief_executive_salary (post turnover, part-year only, no Pay
+  Policy rate), budget_gap/savings_target (derived-from-RA, no-force-fit), cabinet/councillor_allowances_detail/
+  grant_payments + Bradford strip-list. 7 Tier-3 + 6 band_d = 13 proven fields. Tier-1 re-sync: population
+  157,700→161,420; budgets→RA 2025-26; revenue_budget→70,331,000. Hertfordshire LGR in progress — re-home
+  to successor unitary if abolished.
+
+### Batch-47-7 / Dartford (2026-06-17) — fully-open Jadu site whose auto-probe finds nothing; the council with NO "Chief Executive" title (it's the "Chief Officer/Director of Corporate Services"); the matcher page-number ≠ physical page trap; reserves trap ~22nd
+- **Jadu CMS: /downloads/file/<id>/ is the real binary; /downloads/download/<id>/ is an HTML wrapper.** Dartford's
+  origin (`www.dartford.gov.uk`) is FULLY OPEN (TCP :443 open, HTTP 200 to Chrome UA, no WAF — Castle Point/
+  Broxbourne class), but `01-inventory`'s auto-probe + Wayback CDX sweep found NOTHING (the probe URL patterns
+  don't match Jadu's structure, and IA hadn't indexed the /downloads/ store). Document discovery was a manual
+  crawl of the live landing pages: `/budgets-spending` → links the SoA page; `/budgets-spending/statement-accounts`
+  → the SoA PDFs; `/transparency/organisational-information` → senior-pay CSVs. CRITICAL Jadu gotcha: a `/downloads/
+  download/<id>/<slug>` URL returns an HTML *wrapper page* (curl `file` says "HTML document") that itself links the
+  real `/downloads/file/<id2>/<slug>` binary — fetch the wrapper, grep its `<a href>` for the `/file/` id, then fetch
+  that. The SoA 2024-25 was at /file/2660 (139pp text PDF); the senior-employees/salary-count/org-structure were CSVs
+  at /file/2731,2732,2309. (Don't archive the /download/ wrapper — it's not the document.)
+- **Reserves trap, ~22nd council in a row — clean pure-GF, stock-holding district.** Legacy `reserves 76,993,000`
+  was the parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF. Dartford HAS an HRA, but its MIRS (p33)
+  and Balance Sheet (p35) have a CLEAN pure "General Fund" column ((3,500) at 31 Mar 2025), SEPARATE from "Housing
+  Revenue Account" (11,975), "Earmarked Reserves" (77,841) and "Total Usable Reserves" (144,298) — Babergh/Castle
+  Point/Cheltenham/Dacorum clean shape, NOT the Cannock/Canterbury HRA-combined-EFA trap. READ THE MIRS/Balance-Sheet
+  COLUMN HEADERS. Corrected to £3.5m (<< ref → passes spot-check). 03-extract's top candidate was the prior-year
+  opening £3,000k — read the excerpt (the closing 3,500 is the last figure in the same MIRS GF row).
+- **Some districts have NO "Chief Executive" post — the Head of Paid Service has a different title.** Dartford's SoA
+  Note 26 lists senior officers by POST only; the top post is "Chief Officer and Director of Corporate Services"
+  (£130,074) — there is NO "Chief Executive" row. The AGS top signatory is "S Martin, Chief Officer and Director of
+  Corporate Services" (NOT a "Chief Executive"). BUT the council's live structure page styles the same person
+  "Sarah Martin — Chief Executive / Head of Paid Service" — so the rendered chief_executive = Sarah Martin (Tier-4
+  live_page), grounded by: AGS signatory S Martin + Sarah Martin = Dartford's Returning Officer (Kent election notices).
+  Legacy "Caroline Sherwood" appears in NO Dartford source (fabricated). Lesson: when the SoA has no "Chief Executive"
+  row, the HoPS is the highest by-title post; confirm the name + the public-facing title on the live structure page
+  (the formal title and the public title can differ).
+- **The 03-extract candidate `page` is the matcher's extraction-index page, NOT the physical PDF page — hand-author
+  field_sources when they differ.** The reserves candidate reported "p63" (matcher numbering) but the figure is on
+  physical PDF page 35 (Balance Sheet) / 33 (MIRS). Using the script's candidate page would write a wrong `#page=63`
+  anchor + a wrong `reserves-p63.png` name. For Dartford I hand-authored ALL field_sources with the correct physical
+  pages (located via per-page `pdftotext -layout -f N -l N` grep) + rendered PNGs to match, then ran
+  `generate-image-manifest.mjs` directly (skipping 06-audit-evidence's spec-rebuild, which would overwrite my correct
+  spec with the matcher's wrong pages). Basildon/Canterbury wide-table precedent, generalised: verify the candidate
+  page against the physical page before letting 05/06 use it.
+- **No standalone budget/MTFS PDF → strip budget_gap/savings_target (no-force-fit).** Dartford's budget pages link only
+  to fees-&-charges reports and say "visit the Committee pages for the budget-setting meeting" — the budget lives only
+  in ModernGov committee papers. Legacy budget_gap £16.291m / savings_target £14.6619m were "derived from GOV.UK Revenue
+  Account" (forbidden §3 derivation, absurd vs £29m service). Stripped (Bolsover/Boston/Breckland/Chichester/Dacorum).
+- **CE salary published as 3 inconsistent figures → strip.** senior-employees CSV "£115,000-£120,000" band ≠ SoA Note 26
+  by-post "£130,074" ≠ org-structure CSV "£110,000-£115,000" ceiling. No single archivable full-year named rate → strip
+  chief_executive_salary + watch (Canterbury/Dacorum/Arun). Allowances: no archivable Members' Allowances SCHEME PDF
+  (the scheme/6 page is HTML scheme TEXT with no rate table); SoA Note 25 gives only the £424k total → strip
+  basic/leader/detail, keep total_allowances_cost from the SoA (Basildon/Breckland/Cannock un-archivable-scheme).
+- **salary_bands double-proven by a transparency CSV.** The SoA Note 26 >£50k banding (Total 54, 2024/25 column) matches
+  the council's own senior-salary-count.csv band counts exactly — strong corroboration; re-authored from the legacy
+  stale column.
+- **completeness regression gotcha (B&D/Boston) — declare strips in INTENTIONAL_REMOVALS.** The 11 Dartford strips read
+  as regression_field_lost on the first validate; the second run showed 0 (baseline absorbed them this session), but
+  declared them in the `...['Dartford'].flatMap(...)` block regardless so CI stays green on a fresh checkout.
+- **puppeteer was installable mid-rollout** (unlike Batch-47-1..5): `npm install puppeteer --no-save` pulled Chrome for
+  Testing, so ux-audit ran for real (0/0). NB the dev server bound to :3001 (another session held :3000 with an
+  unrelated build that 404s /council/dartford) — pass `--url=http://localhost:3001/council/dartford`. Don't be fooled
+  by the :3000 404 into thinking the page is broken; check the dev log for the actual port.
+- **Dartford ended RICH**: KEEPS reserves (£3.5m pure-GF SoA p35), chief_executive (Sarah Martin, Tier-4 live structure
+  page), council_leader (Cllr Jeremy Kite, SoA AGS p30), total_allowances_cost (£424k SoA Note 25 p91), salary_bands
+  (SoA Note 26 p92, Total 54). STRIPS chief_executive_salary (3 inconsistent figures, no single rate), councillor_basic_
+  allowance/leader_allowance/councillor_allowances_detail (un-archivable scheme), budget_gap/savings_target (derived-
+  from-RA, no MTFS PDF), cabinet + Bradford strip-list. 4 Tier-3 + 1 Tier-4 personnel + 6 band_d. Tier-1 re-sync:
+  population 115,600→125,011; budgets→RA 2025-26; revenue_budget→44,473,000. Kent LGR/devolution in progress — re-home
+  to successor unitary if abolished.
+
+### Batch-47-8 / Derbyshire Dales (2026-06-17) — the brief's "shared management with High Peak" was wrong (High Peak shares with Staffs Moorlands, not DDDC); Cloudflare origin + ModernGov both blocked → SoA recovered from the Jadu /documents/<slug>/download store via Wayback; reserves trap ~23rd; the forbidden-TPA CE salary re-sourced to the SoA remuneration note
+- **The brief warned of "joint/shared senior management with High Peak BC" — the primary disproves it for DDDC (Breckland/Basildon precedent, again).** DDDC's live Corporate Leadership Team page + SoA 2024-25 AGS p56 show DDDC's OWN dedicated CLT (CE Paul Wilson Head of Paid Service; Karen Henriksen Director of Resources/S151; + 4 directors), signed off with no joint caveat. High Peak BC's shared-CE/SLT alliance is with **Staffordshire Moorlands DC** (High Peak CE = Andrew Stokes), NOT Derbyshire Dales. Both 'High Peak' and 'Staffordshire Moorlands' are already separate STRICT_COUNCILS. Lesson reinforced: a brief's shared-services pairing can be misremembered/wrong — verify the actual partner against the SoA "Our People" + the live CLT page + each council's Wikipedia before reaching for the joint-officer scoping discipline. Every DDDC value was its own by construction.
+- **Fully-blocked discovery — Cloudflare origin AND ModernGov both 403, CDX empty — but the Jadu /documents/<slug>/download store serves the binary directly.** `www.derbyshiredales.gov.uk` returns 200 on the bare homepage but Cloudflare-challenges every deep page ("Just a moment..."); `democracy.derbyshiredales.gov.uk` (403) + `derbyshiredales.moderngov.co.uk` (Cloudflare 403) also block bots; SavePageNow 520s against the Cloudflare origin; CDX returned 0 for the domain/moderngov prefixes. 01-inventory found NO candidates. Recovery: read the **Wayback-captured Statement-of-Accounts landing page** (snapshot 2025-11-04) — it exposes the friendly-slug store `/documents/statement-of-accounts-2024-25-draft-a-pdf/download`, which (unlike Dartford's Jadu /downloads/download/ HTML wrapper) serves the REAL PDF binary directly. Fetch it from its Wayback `id_` capture (`/web/<ts>id_/<url>`). The `archive.org/wayback/available?url=…` API confirms a single-URL capture even when the CDX *prefix* sweep is rate-limited/empty — probe candidate slugs one at a time with it.
+- **Reserves trap, ~23rd council in a row — clean pure-GF MIRS (Babergh/Castle Point/Cheltenham/Dacorum shape).** Legacy `reserves 11,452,000` was EXACTLY the parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF. The SoA MIRS p58 has a clean FIRST column headed "General Fund Balance" ((4,034) at 31 March 2025), separate from "Earmarked Fund Balance" (16,938) + Total Usable (24,384). Corrected to £4.034m (<< the £11.452m ref → passes the `reserves_exceeds_total` spot-check). 03-extract's auto top-candidate was the wrong £21,648 EFA "Opening General Fund Balance" (an opening, funding-basis figure) — read the excerpt, take the MIRS closing GF column.
+- **The forbidden-TPA CE salary re-sourced to the SoA remuneration note (Dartford/Broxbourne precedent).** Legacy `chief_executive_salary 117,255` cited the "TPA Town Hall Rich List" — a forbidden trade aggregator (NORTH-STAR §3) — and £117,255 is in fact the SoA's 2023/24 comparative fees figure. Re-sourced to the audited SoA 2024-25 Note 28 Officers' Remuneration: Chief Executive 2024/25 "Salary, Fees and Allowances" £120,176 (Pension £24,554 + Total £144,730 separate columns). When the Pay Policy is un-archivable (here Cloudflare-blocked + no Wayback + SPN 520), the audited SoA remuneration note is the clean fingerprintable CE-pay source. Reword the explanatory comment so the forbidden source's literal name isn't a grep target (Boston precedent).
+- **council_leader stale, cabinet[0] was right (the recurring internal-contradiction tell).** Legacy `council_leader "Cllr Garry Purdy"` = the pre-2023 Conservative leader; legacy cabinet[0] already said Steve Flitter. Real Leader = Cllr Steve Flitter (Lib Dem, Progressive Alliance), re-elected at the May 2025 ACM + signing the SoA AGS p56 as "Leader of the Council". The May-2025 election that ran was Derbyshire COUNTY, not the district (DDDC all-out 2023, undisturbed). The SoA AGS signature page grounds BOTH the CE and the Leader on one PNG (council_leader reuses the chief_executive-p56.png).
+- **total_allowances_cost: SoA Note 26 single sentence.** "Members' allowances paid during 2024/25 amounted to £241,786 (2023/24 £228,029)" — ship £241,786; legacy 228,029 was the stale 2023/24 figure on the same line (Bromsgrove/Broxbourne "prefer the SoA published total" rule).
+- **salary_bands strip when the SoA bands only £50-60k + lists seniors by post (Cheltenham).** SoA Note 28 bands only employees £50,000-£59,999 (£50-55k×6, £55-60k×5) and lists the CE + 6 directors individually by post — no full verbatim banding distribution. The legacy 8-band array (to £115-120k) matched nothing → strip.
+- **DDDC ended RICH**: KEEPS chief_executive (Tier-3 SoA AGS p56, Paul Wilson), council_leader (Tier-3 SoA AGS p56, Cllr Steve Flitter), reserves (£4.034m SoA MIRS p58), chief_executive_salary (£120,176 SoA Note 28 p108), total_allowances_cost (£241,786 SoA Note 26 p107) — 5 Tier-3 PROVEN (all SoA 2024-25) + 6 band_d. STRIPS councillor_basic_allowance/councillor_allowances_detail (un-archivable Scheme — Cloudflare + no Wayback + SPN 520), salary_bands (Note 28 bands only £50-60k), budget_gap/savings_target (derived-from-RA, no archivable MTFS, no-force-fit), cabinet (committee-system list, LGR churn), + Bradford strip-list (service_spending, top_suppliers, performance_kpis, grant_payments, service_outcomes incl the unsourced 53.1% recycling rate ≠ Tier-1 52.7%). puppeteer present → ux-audit 0/0 ran for real + 22 Tier-1 row PNGs. Tier-1 re-sync: population 72,600→71,757; budget → RA 2025-26; revenue_budget → 25,171,000. Derbyshire LGR/devolution in progress — re-home to successor unitary if abolished.
+
+### Batch-47-9 / Dover (2026-06-17) — fully-open Kent district; stock-holding HRA with a CLEAN pure-GF MIRS; the fabricated-Sherwin leader caught by the live check; CE salary STRIP because the SoA actual sits below the published scale
+- **Fully-open origin, all-text SoA — the easy-fetch counterpoint to Derbyshire Dales.** `www.dover.gov.uk` is TCP-open, HTTP 200 to a Chrome UA, no WAF (Castle Point/Broxbourne/Dartford class). The landing-page harvest of the Budgets-&-Accounts + Councillor-Allowances pages surfaced every current PDF directly; all 8 archived as real text-layer PDFs (SoA 2024-25 = 106pp, full text). No moderngov needed (every finance doc is in the council's own `/PDF/` store). puppeteer present → ux-audit 0/0 ran for real + 22 Tier-1 row PNGs + 4 PDF-page PNGs.
+- **Reserves trap, ~24th council in a row — stock-holding HRA, CLEAN pure-GF-MIRS variant (Castle Point/Cheltenham/Dacorum/Dartford shape, NOT the Cannock/Canterbury HRA-combined-EFA trap).** Legacy `reserves 32,935,000` was a usable/earmarked figure misfiled as GF (Total Usable Reserves were £86.663m). Dover HAS an HRA ('Local Authority Housing (HRA)' in the CIES; HRA balance column £1.013m), BUT its MIRS (PDF p21) and Balance Sheet (PDF p22) carry a PURE 'General Fund Balance' FIRST column closing at **(1,501)** = £1.501m at 31 March 2025, SEPARATE from 'Earmarked General Fund Reserves' (44,091), 'Housing Revenue Account' (1,013) and 'Total Usable Reserves' (86,663). READ THE MIRS COLUMN HEADERS — separate GF + HRA columns ⇒ the GF column is the scalar. £1.501m << ref → passes spot-check. 03-extract's auto top-candidate was the wrong £1.5m forecast 'maintained at' narrative + £1,507k opening 'start of year' balances — read the excerpt, take the Balance-Sheet/MIRS CLOSING GF figure. (NB the printed page number on the MIRS leaf is '20' but it is PDF page 21 — use the PDF page for the #page anchor/PNG, the Dartford matcher-page≠physical-page lesson.)
+- **The legacy leader was the recurring fabricated 'Cllr X Sherwin' artefact — the live check + the cabinet[0] tell caught it.** Legacy `council_leader 'Cllr Trevor Sherwin'` exists in no Dover source; the legacy cabinet[0] already said 'K Mills, Leader of the Council' (the internal-contradiction tell, Broxbourne/Castle Point/Charnwood/Cotswold/Dacorum). Real Leader = **Cllr Kevin Mills** (Labour, since 5 May 2023; Labour majority 17/32; all-out elections, next 2027 — no 2024/2026 district election), verified via the council's own ModernGov member record (mgUserInfo.aspx?UID=110, 'Leader') + council Facebook (Feb 2026) + KentOnline. The 'Sherwin' surname has now been a bogus leader on ≥6 districts — treat ANY 'Cllr <X> Sherwin' legacy scalar as suspect on sight.
+- **CE name is correct but NOT in the SoA — Tier-4 live page.** Legacy CE 'Nadeem Aziz' is correct (verified via the live Senior Management Structure page 'Nadeem Aziz, Chief Executive' + LinkedIn; Head of Paid Service, NOT a deputy — Louise May is Deputy CE). The SoA never names the CE in text (refers to 'the Chief Executive' by role; certified by Helen Lamb, Head of Finance & Investment/S151) — so chief_executive is a Tier-4 live_page (no PNG; the 5 Tier-3 PDF fields satisfy screenshot-parity). Run the live CE check even when the legacy name looks right (it was) — and even though it was right, the leader on the SAME record was fabricated.
+- **chief_executive_salary STRIP — the SoA actual sits BELOW the published Pay-Policy scale (the inverse-Cotswold no-force-fit).** Pay Policy 2025-26 §5.1.3 publishes a CE scale '£136,244 to £154,170 per annum plus non-pensionable pay of £17,320' (car £13,621 + fuel £3,699), and the pay-ratio section is computed from these scale points (so the scale IS the live structure). But the SoA 2024-25 Note 24 actual CE 'Salary, Fees & Allowances' is £113k (£127k excl pension, in the £125-129,999 band) — BELOW even the £136,244 scale bottom. Unlike Castle Point/Breckland/Ashford (actual reaches/exceeds the scale → ship the scale top), here NO same-year actual reaches either scale endpoint, so neither is 'proven paid' → STRIP + watch (Dacorum/Canterbury/Charnwood part-year/scale-mismatch precedent). Prior 132,000 matched no figure in the Pay Policy it cited. **The brief's TPA-Rich-List warning checked: Dover's legacy CE salary did NOT come from the forbidden TaxPayers' Alliance Town Hall Rich List — its comment cited the council's own Pay Policy (unlike Derbyshire Dales/Broxbourne where it did).**
+- **total_allowances_cost: prefer the SoA Note 39 published total over the per-member detail sum (Bromsgrove/Broxbourne/DDDC rule).** SoA Note 39 (PDF p83): Basic 160 + SRA 87 = **Total 250** (£000, 2024/25 column; 2023/24 was 266). Prior 250,374 was the 2023-24 per-member detail sum (a derived value). councillor_basic_allowance £5,000 + leader_allowance £18,000 ship cleanly from the Members' Allowances Scheme 2025 (Schedule 1 + Schedule 2, PDF p10) — both legacy values already correct; the leader_allowance reuses the Schedule p10 PNG.
+- **salary_bands re-authored to the SoA Note 24 2024/25 column (Broxbourne 'stale by one year' pattern).** Legacy counts (15/5/19/…/1@£120-125k/1@£145-150k) matched the SoA 2023/24 COMPARATIVE column exactly; the current 2024/25 column is 16/14/14/16/5/7/1/4/2/2/1@£105-110k/2@£125-130k. The Note 24 table has a clean text layer (Ashford/Castle Point/Cotswold) — keep, re-authored.
+- **budget_gap/savings_target STRIP (derived-from-RA, no quotable MTFP gap; Bolsover/Boston/Breckland/Dacorum).** Legacy 36,995,000/33,295,500 were 'derived from GOV.UK Revenue Account' (forbidden §3, absurd vs ~£28m service). The MTFP 2026-27 to 2029-30 carries only a multi-year savings grid ('2026/27 proposed savings target 295'), no quotable single-sentence headline gap.
+- **Dover ended RICH**: KEEPS reserves (£1.501m, SoA Balance Sheet p22 / MIRS p21), total_allowances_cost (£250k, SoA Note 39 p83), councillor_basic_allowance (£5,000) + leader_allowance (£18,000) (Members' Allowances Scheme 2025 p10), salary_bands (SoA Note 24 p66, 2024/25 column), chief_executive (Nadeem Aziz, Tier-4 live structure page), council_leader (Cllr Kevin Mills, Tier-4 ModernGov). STRIPS chief_executive_salary (SoA actual below published scale, no-force-fit), budget_gap/savings_target (derived-from-RA), councillor_allowances_detail (catalogue-URL 2023-24 detail), cabinet (Tier-4, Kent LGR), + Bradford strip-list (service_outcomes, service_spending, top_suppliers, performance_kpis, grant_payments). 11 PROVEN (5 Tier-3 + 6 band_d) + 2 Tier-4 personnel. Tier-1 re-sync: population 118,000→119,768; budget → RA 2025-26 (9 cells); revenue_budget → 53,788,000. Kent LGR/devolution in progress — re-home to successor unitary if abolished.
+
+### Batch-47-10 / East Cambridgeshire (2026-06-17, last of Batch-47) — the brief's shared-services premise wrong AGAIN; a fabricated CE that was the COUNTY's S151; the bounded-slice edit rule (a near-miss that deleted 3,703 lines)
+- **The brief's "3C Shared Services / shared officers" premise was WRONG for East Cambs's senior management (Breckland/Derbyshire Dales pattern, third time).** The SoA 2024-25 has NO mention of 3C Shared Services, shared management, a joint CE, or sharing senior officers/staff; the only "Combined Authority" references are the Cambridgeshire & Peterborough Combined Authority (CPCA, upper-tier — precept/levy flows, not staffing). The AGS 2024-25 (Principle E) describes East Cambs's OWN Corporate Management Team ("the Chief Executive leads the officers and chairs the Council's Corporate Management Team. The other two statutory officers, the Monitoring Officer and S151 Officer report directly to the Chief Executive"). The Pay Policy 2026-27 is scoped to "East Cambridgeshire District Council" posts; SoA Note 26 shows the CE + all 5 directors as East Cambs's own employees with FULL salaries. The historical "3C Shared Services" (Cambridge City + South Cambs + Huntingdonshire ICT/legal/finance) did NOT include East Cambs. Verify the premise against the SoA "Our People"/AGS + the Pay Policy scope line before reaching for joint-officer scoping — the brief even flagged "a prior hint this batch turned out wrong".
+- **The legacy CE was a fabrication conflating the COUNTY's S151 + the district CE's surname — the live check caught it (Basildon/Charnwood/Chichester pattern).** Legacy `chief_executive "Emily Hill"`: Emily Hill is the S151/CFO at Cambridgeshire COUNTY Council; "Hill" also matched John Hill, East Cambs's long-serving district CE. The REAL CE is **Emma Grima** (CE/HoPS/Returning Officer from 1 Jan 2026), succeeding **John Hill** (retired 31 Dec 2025 after 30 years — the UK's longest-serving district CE). The SoA Note 26 only shows the RETIRED John Hill (and his 2024/25 row is reduced-hours/part-year); the **AGS signature page (p32, signed 20.02.2026 by the NEW CE)** names both "Emma Grima / Chief Executive" + "Councillor Anna Bailey / Leader of the Council" — one PNG grounds both, and a freshly-signed AGS correctly carries the CURRENT postholder where the SoA remuneration note lags. Ground the CE in the AGS signature / live news, never in the legacy scalar.
+- **chief_executive_salary STRIP on a CE transition where the 2024/25 actual is reduced-hours AND the new postholder has no rate (Arun/Canterbury/Dacorum, sharpened).** John Hill "moved to reduced hours, through flexible retirement, from 8th April 2024" (SoA Note 26), so his 2024/25 £118,465 is part-year; his full-year 2023/24 £146,562 is stale + for a departed CE; the Pay Policy 2026-27 gives only a CE SCALE (£139,197-£152,583) with NO single proven-paid point for incoming Emma Grima; legacy 141,367 was a "range midpoint" derivation (§3). When the post turns over mid-cycle AND the only actual is part-year AND the forward Pay Policy is scale-only, strip + watch — even though a clean full-year actual existed one year earlier for the previous holder.
+- **THE BOUNDED-SLICE EDIT RULE (a serious near-miss — caught before any commit).** Doing multi-field strips in a SHARED TS file (districts.ts holds all ~190 districts) with `s.index('<comment>', start)` is dangerous: the comment `// Service spending` recurs in EVERY council, so a `so_end = s.index('// Service spending', so_start)` that should have ended East Cambs's service_outcomes instead matched a FAR-later council's comment and deleted **3,703 lines across ~many councils** (East Cambs through Epsom & Ewell). Caught by a post-edit `grep name:"East Cambridgeshire"` returning nothing + a `git diff --stat` showing 3703 deletions; recovered with `git checkout districts.ts` (reverting MY OWN broken edit is correct — it's a file I changed this session) and redone. **The safe pattern, used for the rest of the rollout:** (1) locate the council's slice by its UNIQUE `ons_code` boundaries (`E07000009` → next council's `ons_code`); (2) operate ONLY on `'\n'.join(lines[start:end])`; (3) assert `seg.count('name: "<Council>"')==1` and the NEXT council's name is NOT in the slice BEFORE writing; (4) after writing, re-grep the next council's name to confirm it's intact + check the line-delta is plausible. NEVER run a bare `s.index('<generic comment>')` over the whole shared file. (NB districts.ts is NOT alphabetically sorted and `src/data/councils/` is git-IGNORED in the public repo + an independent git repo — not a registered submodule — so the two repos commit/push fully independently.)
+- **`git add a b c` aborts the WHOLE stage on one bad pathspec.** `git add … src/data/evidence-images.json` (which lives in the PUBLIC repo, not the data submodule) made the entire `git add` in the data submodule fail with "did not match any files" and stage NOTHING. Stage data-submodule files and public-repo files separately; don't mix a public path into a submodule `git add`.
+- **East Cambridgeshire ended RICH**: KEEPS reserves (£1.386m pure-GF MIRS p24), chief_executive (Emma Grima, AGS p32), council_leader (Cllr Anna Bailey, AGS p32 — Con held control May 2026), total_allowances_cost (£327,057 SoA Note 25 p54), councillor_basic_allowance (£7,152 Members' Allowances notice), salary_bands (SoA Note 26 p55, 2024/25 column). STRIPS chief_executive_salary (CE transition + part-year + scale-only), leader_allowance (un-archivable scheme — notice shows paid SRA only), budget_gap/savings_target (derived-from-RA; 2026/27 BALANCED via Surplus Savings Reserve), + Bradford strip-list (cabinet, service_outcomes, service_spending, top_suppliers, performance_kpis, grant_payments, councillor_allowances_detail). 12 PROVEN (6 Tier-3 + 6 band_d). Fully-open Drupal origin but JS-rendered finance landing pages → discover docs via WebSearch site:eastcambs.gov.uk. Tier-1 re-sync: population 90,200→92,906; budgets → RA 2025-26 (zero drift, 23 checks); revenue_budget → 41,996,000. Cambridgeshire LGR/devolution in progress (Dec 2024) — re-home to successor unitary if abolished.
