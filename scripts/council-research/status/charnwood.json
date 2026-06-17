@@ -1,0 +1,22 @@
+{
+  "council": "Charnwood",
+  "slug": "charnwood",
+  "north_star_complete": true,
+  "batch": "47-2",
+  "phases": {
+    "phase_0_inventory": { "done": true },
+    "phase_1_archive": { "done": true },
+    "phase_1b_images": { "done": true },
+    "phase_2_extract": { "done": true },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_drift": { "done": true, "drift": 0 },
+    "phase_4_populate": { "done": true },
+    "phase_5_validate": { "done": true },
+    "phase_5b_ux_audit": { "done": true, "violations": 0 },
+    "phase_5c_reality_check": { "done": true, "verbatim": "4/4" },
+    "phase_5d_screenshot_parity": { "done": true },
+    "phase_6_document": { "done": true },
+    "phase_7_ship": { "done": true }
+  },
+  "last_session": "2026-06-17"
+}

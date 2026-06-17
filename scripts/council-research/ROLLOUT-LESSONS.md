@@ -1146,3 +1146,53 @@ good — don't re-do them; extend from there to the other fields.
   (balanced budget, fabricated legacy, no-force-fit), leader_allowance (SRA range only), cabinet
   (Tier-4 agendas, LGR churn), + Bradford strip-list. 13 PROVEN fields (7 Tier-3 + 6 band_d),
   evidence-clean. Note Essex LGR/devolution in progress (re-home to successor unitary if abolished).
+
+### Batch-47-2 / Charnwood (2026-06-17, RETRY) — BOTH SoAs are image-scans → all values from companion docs; the S151-mistaken-for-CE trap; reserves trap #17
+
+- **Both Statements of Accounts are image-scans — plan for it, don't fight it.** The 2024-25
+  SoA (Nitro PDF Pro) has ZERO text layer (`pdffonts` = 0 fonts, `pdftotext` = 0 chars across
+  all 79 pages — the Ashfield trap, but worse: the WHOLE document, not just some volumes). The
+  2023-24 SoA has text ONLY on its narrative (pp1-19) + auditor's-report (pp70-78) pages; the
+  core statements, MIRS, remuneration note and members'-allowances note (pp20-69) are image-
+  only. So NO SoA-note value was text-extractable from EITHER SoA. The rollout still shipped 4
+  Tier-3 PROVEN fields by sourcing everything from text-extractable COMPANION docs: reserves from
+  the Draft Budget Report Table 2B, basic+leader allowance from the Members' Allowances Scheme,
+  total_allowances_cost from the Members' Allowances notice. Lesson: when `file`/`pdffonts` show
+  an image-only SoA, don't burn time on OCR (tesseract wasn't installed anyway) — pivot straight
+  to the budget report / allowances scheme / allowances notice, which are almost always
+  text-PDFs (Bolsover/Breckland "MTFP carries the GF working balance" precedent, extended to a
+  council whose SoA is 100% image).
+- **Reserves trap, ~17th council in a row — pure-GF from the Draft Budget Report, not the SoA.**
+  Legacy `reserves 16,144,000` was EXACTLY the parsed-reserves.csv RA Part 2 total-usable
+  reference. With the SoA MIRS unreachable (image), the Draft 2026/27 Budget Report p12 Table 2B
+  "Revenue Balances" carries the audited 2024/25 closing **General Fund Working Balance** in its
+  *Actual 2024/25* column: "Balance at 31 March (6,579)" = £6.579m (TOTAL BALANCES £20.169m;
+  s151 minimum £3m). Triangulated against the 2025-26 Budget Book (same closing balance) + MTFO
+  ("working balance … above the £3m minimum"). Smaller-than-reference → passes spot-check.
+  03-extract's auto top-candidate was the wrong "£3m minimum" page-locator — read the excerpt.
+  Excerpt "(6,579)     Balance at 31 March" needs the multi-space run (Basildon wide-table).
+- **The S151/Deputy-CX-mistaken-for-CE trap, live — and the live check caught it.** Legacy
+  `chief_executive "Simon Jackson"` is actually the **Director of Finance, Governance & Contracts
+  (S151 officer / Deputy CX)** — he's the "Officer to contact" on the MTFO (a treasury doc), which
+  is exactly why a careless extractor picks him. The real CE is **Rob Mitchell** (since 2019),
+  named verbatim on charnwood.gov.uk/pages/organisation_structure ("Chief Executive - Rob
+  Mitchell") and signing delegated-decision PDFs as "Robert Mitchell … Chief Executive". The brief
+  warned "don't mistake the signatory/S151 for the CE" — confirmed necessary. Always ground the CE
+  in the org-structure / leadership page, never in a finance doc's "officer to contact" line.
+- **council_leader was stale AND contradicted by cabinet[0] (the tell).** Legacy "Cllr Jonathan
+  Morgan"; the legacy cabinet[0] already said Jewel Miah was Leader. Real Leader = Cllr Jewel Miah
+  (Labour, since 22 May 2023), quoted as "Leader of Charnwood Borough Council" in the council's own
+  16 Jun 2026 news. When the leader scalar and cabinet[0] disagree, the scalar is usually the stale
+  one — verify both against a live primary.
+- **The brief said "reserves=pure GF" and the prior crash left a clean reusable SoA — both held.**
+  The crashed prior run's 2023-24 SoA (sha256 on disk) was reused via 02-archive's idempotent skip;
+  the re-archive added the MTFO + re-pulled the SoAs/pay-policies, creating URL-encoded `-20`
+  duplicate filenames (same sha256) — clean them up (keep the hyphenated names, rename the MTFO).
+- **Charnwood ended mid-lean-but-clean**: KEEPS reserves (£6.579m, Draft Budget Report Table 2B),
+  councillor_basic_allowance (£6,192) + leader_allowance (£15,064, Allowances Scheme 2026-27),
+  total_allowances_cost (£415,296, Allowances notice 2024-25), chief_executive (Rob Mitchell,
+  Tier-4), council_leader (Cllr Jewel Miah, Tier-4). STRIPS chief_executive_salary (scale-only,
+  SoA actual image-only — Arun/Canterbury), salary_bands (image-only — Ashfield), budget_gap +
+  savings_target (balanced GF, fabricated legacy, no-force-fit), cabinet (Tier-4, LGR churn), +
+  Bradford strip-list. 4 Tier-3 PROVEN + 2 Tier-4 personnel + 6 band_d. Leicestershire LGR /
+  new town & parish councils in progress (June 2026) — re-home to successor if abolished.

@@ -2207,6 +2207,40 @@ export function validate(councils, _population, report) {
       `${c}|budget_gap`,
       `${c}|savings_target`,
     ]),
+    // 2026-06-17 Batch-47-2 (Charnwood E07000130, queue-driven full-depth rollout — RETRY). District,
+    // Leicestershire. Both SoAs (2023-24 + 2024-25) are image-scans with no text layer (Ashfield trap),
+    // so all SoA-note fields are un-extractable. reserves CORRECTED (§2 trap, ~17th council in a row):
+    // legacy 16,144,000 was exactly the GOV.UK RA Part 2 total-usable reference; the pure General Fund
+    // Working Balance (audited 2024/25 closing) is £6.579m, in the Draft 2026/27 Budget Report p12 Table 2B
+    // "Actual 2024/25 Balance at 31 March (6,579)" — TOTAL BALANCES were £20.169m; £6.579m << £16.144m so it
+    // passes spot-check (Babergh/Basildon/Boston smaller-than-reference shape). chief_executive CORRECTED
+    // (legacy "Simon Jackson" is the Director of Finance/S151/Deputy CX, NOT the CE → Rob Mitchell, since
+    // 2019, charnwood.gov.uk/pages/organisation_structure). council_leader CORRECTED (stale "Cllr Jonathan
+    // Morgan", contradicted cabinet[0] → Cllr Jewel Miah, Labour, named Leader in the council's 16-Jun-2026
+    // news). total_allowances_cost £402,378→£415,296 (current 2024-25 Members' Allowances notice published
+    // grand total). councillor_basic_allowance (£6,192) + leader_allowance (£15,064.10) re-sourced to the
+    // archived Allowances Scheme 2026-27 (Schedule of Allowances p4). STRIPPED: chief_executive_salary
+    // (Pay Policy publishes a CEX1-CEX4 scale only; SoA actual is image-only → no proven point; legacy
+    // 153,398 was a banned "range midpoint" — Arun/Canterbury scale-only strip); salary_bands (SoA Note
+    // image-only — Ashfield); budget_gap + savings_target (legacy 29.052m/26.147m fabricated 'derived from
+    // RA', absurd > whole budget; GF budget is balanced, only an HRA £2.6m deficit exists; no-force-fit —
+    // Bolsover/Boston/Breckland/Castle Point); cabinet (Tier-4 committee page, not fingerprintable, LGR
+    // churn); + Bradford strip-list. KEEPS chief_executive, council_leader, reserves,
+    // councillor_basic_allowance, leader_allowance, total_allowances_cost, documents.
+    ...['Charnwood'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
