@@ -2241,6 +2241,39 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-3 (Cheltenham E07000078, queue-driven full-depth rollout). District, Gloucestershire,
+    // stock-holding (HRA via Cheltenham Borough Homes ALMO, which is being wound up — staff transferring to the
+    // council). Shares Publica Group / Ubico (joint companies) but the CE (Gareth Edmundson, since Jan 2020,
+    // CBC's own Head of Paid Service) is a CBC employee — every value is CBC's own. reserves CORRECTED (§2 trap,
+    // ~18th council: legacy 3,551,000 == GOV.UK RA Part 2 usable reference; the audited SoA 2023/24 MIRS p17 has a
+    // PURE "General Fund Balance" column (separate from the HRA column) reading 950 at 31 Mar 2024 — Babergh/Castle
+    // Point clean-MIRS shape, NOT the HRA-combined-EFA trap; £0.950m << £3.551m so it passes spot-check). The SoA
+    // narrative's £1.030m is a contradicted draft-narrative carry-over; the audited MIRS statutory figure is 950.
+    // council_leader CORRECTED (legacy scalar "Cllr Rowena Sherwin" — a name that exists nowhere; cabinet[0] already
+    // said Rowena Hay → Cllr Rowena Hay, SoA p4 + live Cabinet ID=166, LibDem RETAINED control at the 7-May-2026
+    // election). chief_executive (Gareth Edmundson) re-sourced to SoA p4 (live-verified current; the two "new CEO"
+    // news items are both his 2019 appointment — red herrings). chief_executive_salary KEPT £134,419 (Pay Policy
+    // 2025-26 p6 "Highest paid employee", CBC's own). total_allowances_cost 457,144→428,009 (SoA Note 10 published
+    // total). budget_gap 19,858,000→2,180,000 + savings_target 17,872,200→1,130,000 (legacy fabricated 'derived from
+    // RA' ~10x too big; corrected to MTFS 2025-26 verbatim — funding gap p10 £2.180m, savings p16 £1.130m).
+    // councillor_basic_allowance £6,645 + leader_allowance £21,154 re-sourced to the IRP Members' Allowances Report
+    // (2024/25, Recs 2 + 5 — most recent confirmed rates). STRIPPED: salary_bands (legacy bands incl. £95k/£130k do
+    // not match the SoA Note 11 banding column, which excludes seniors — fabricated/mismatched); cabinet (stale
+    // 6-member line-up; live Cabinet has 8, Gloucestershire LGR churn, Tier-4 only); councillor_allowances_detail
+    // (catalogue ecCatDisplay URL, not fingerprintable — Basildon rule); + Bradford strip-list (service_outcomes,
+    // service_spending, top_suppliers, performance_kpis, grant_payments). KEEPS chief_executive, council_leader,
+    // reserves, chief_executive_salary, total_allowances_cost, councillor_basic_allowance, leader_allowance,
+    // budget_gap, savings_target, documents — 9 Tier-3 PROVEN fields.
+    ...['Cheltenham'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

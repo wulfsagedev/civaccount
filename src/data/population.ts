@@ -35,7 +35,7 @@ export const populationData: Record<string, number> = {
   "Castle Point": 90581,
   "Charnwood": 188385,
   "Chelmsford": 183600,
-  "Cheltenham": 118800,
+  "Cheltenham": 121739,
   "Cherwell": 154100,
   "Chesterfield": 104800,
   "Chichester": 124600,
