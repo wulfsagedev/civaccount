@@ -1,0 +1,52 @@
+[
+  {
+    "council": "Babergh",
+    "field": "chief_executive_salary",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 53,
+    "value": "166742"
+  },
+  {
+    "council": "Babergh",
+    "field": "chief_executive",
+    "pdf": "ags-2024-25-amended.pdf",
+    "page": 55,
+    "value": "Arthur Charvonia"
+  },
+  {
+    "council": "Babergh",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 17,
+    "value": "1200000"
+  },
+  {
+    "council": "Babergh",
+    "field": "total_allowances_cost",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 52,
+    "value": "406000"
+  },
+  {
+    "council": "Babergh",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-allowances-paid-2024-25.pdf",
+    "page": 1,
+    "value": "6972"
+  },
+  {
+    "council": "Babergh",
+    "field": "budget_gap",
+    "pdf": "budget-report-2026-27-bdc-gf.pdf",
+    "page": 47,
+    "value": "9656000"
+  },
+  {
+    "council": "Babergh",
+    "field": "salary_bands",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 54,
+    "value": "21",
+    "note": "Note 24 \u2014 employees >\u00a350,000 remuneration by band, 2024/25 column (Babergh-only)"
+  }
+]

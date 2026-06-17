@@ -1,0 +1,48 @@
+{
+  "council": "Boston",
+  "slug": "boston",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-16T10:08:57.210Z",
+      "candidates": 12
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-16T10:12:07.998Z",
+      "results": {
+        "ok": 7,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-16T10:13:51.053Z",
+      "candidates": 29,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-16T10:14:51.312Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-16T10:19:19.912Z",
+      "images": 5
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T10:18:39.106Z",
+      "fields": [
+        "chief_executive_salary",
+        "reserves",
+        "councillor_basic_allowance",
+        "total_allowances_cost"
+      ]
+    }
+  },
+  "last_session": "2026-06-16T10:19:19.912Z"
+}

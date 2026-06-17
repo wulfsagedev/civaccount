@@ -1,0 +1,44 @@
+[
+  {
+    "council": "Bromsgrove",
+    "field": "chief_executive_salary",
+    "pdf": "pay-policy-2025-26.pdf",
+    "page": 4,
+    "value": "153750"
+  },
+  {
+    "council": "Bromsgrove",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-scheme-of-allowances-2025-26.pdf",
+    "page": 1,
+    "value": "5826"
+  },
+  {
+    "council": "Bromsgrove",
+    "field": "total_allowances_cost",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 22,
+    "value": "268000"
+  },
+  {
+    "council": "Bromsgrove",
+    "field": "budget_gap",
+    "pdf": "mtfs-2026-27-to-2028-29.pdf",
+    "page": 6,
+    "value": "1030000"
+  },
+  {
+    "council": "Bromsgrove",
+    "field": "savings_target",
+    "pdf": "mtfs-2026-27-to-2028-29.pdf",
+    "page": 8,
+    "value": "1213000"
+  },
+  {
+    "council": "Bromsgrove",
+    "field": "chief_executive",
+    "pdf": "single-management-structure-april-2025.pdf",
+    "page": 1,
+    "value": "John Leach (Shared with Redditch)"
+  }
+]

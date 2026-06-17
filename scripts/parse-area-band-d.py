@@ -6,7 +6,7 @@ Source: GOV.UK Live Table, sheet "Area_CT" (Table 5)
   = total Band D area council tax including all precepts
   = what residents actually pay
 
-Output: CSV with ONS code, name, class, and band_d for 2021-2025
+Output: CSV with ONS code, name, class, and band_d for 2021-2026
   This CSV is the single derived artifact that the validator checks against.
 
 Run: python3 scripts/parse-area-band-d.py
@@ -89,6 +89,7 @@ def main():
         elif '2023 to 2024' in h: year_cols['band_d_2023'] = i
         elif '2024 to 2025' in h: year_cols['band_d_2024'] = i
         elif '2025 to 2026' in h: year_cols['band_d_2025'] = i
+        elif '2026 to 2027' in h: year_cols['band_d_2026'] = i
 
     print(f"Year columns: {list(year_cols.keys())}")
 
@@ -135,8 +136,9 @@ def main():
                 **years
             })
 
-    # Write CSV
-    fields = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'band_d_2025']
+    # Write CSV — sorted by ONS code so output order is stable across releases
+    authorities.sort(key=lambda a: a['ons_code'])
+    fields = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'band_d_2025', 'band_d_2026']
     with open(csv_path, 'w') as f:
         f.write(','.join(['ons_code', 'name', 'class'] + fields) + '\n')
         for a in authorities:
@@ -149,7 +151,7 @@ def main():
     # Quick verification
     for a in authorities:
         if a['ons_code'] == 'E08000032':
-            print(f"\nVerification — Bradford: band_d_2025={a.get('band_d_2025', '?')}")
+            print(f"\nVerification — Bradford: band_d_2026={a.get('band_d_2026', '?')}")
             break
 
     print("\nDone. Run npm run validate to verify data integrity.")

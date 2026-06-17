@@ -1,0 +1,123 @@
+{
+  "council": "Ashford",
+  "slug": "ashford",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-10T10:09:38.957Z",
+      "candidates": 20,
+      "note": "auto-probe + landing-page harvest + CDX sweep (no bot-blocking on www.ashford.gov.uk); pruned CDX noise (nutrient-budget calculators, local-plan note, stale SoAs/budget books); added by targeted search: AGS 2024-25, Notice of Conclusion of Audit 2024-25, top-3-levels org chart Apr 2025, senior-remuneration XLSX, ModernGov s27021 scheme + s28448 allowances notice"
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-10T10:27:13.403Z",
+      "results": {
+        "ok": 9,
+        "skipped": 0,
+        "blocked": 1,
+        "failed": 0
+      },
+      "note": "10/10 archived with sha256 + _meta.json (8 direct, s28448 via ladder wayback-snapshot, s27021 via manual Wayback exact-timestamp 20240530022742 after SPN captured an ieLogon redirect \u2014 the living 'latest capture' was poisoned by our own save attempt; documented in _meta note). The '1 blocked' in results refers to s27021's ladder failure before the manual recovery."
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-10T10:29:02.514Z",
+      "candidates": 21,
+      "parse_failures": 0,
+      "note": "auto-detectors: weak/locator candidates only; all 7 shipped fields hand-located and re-read against per-page pdftotext output (SoA 2024-25 p58 Note 8+9, p59 bands, p62 Note 13; AGS p26 signatures; notice p1; scheme p7 Schedule 1 corroboration); curated candidates appended to extracted-values.json with chosen indices"
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-10T10:30:51.131Z",
+      "drift": 0,
+      "note": "initial run: 4 budget cells outside \u00b110% (stale RA snapshot) \u2014 whole budget block re-synced exactly to RA 2025-26 (transport -689\u2192-694, housing 4780\u21926480, cultural 4190\u21922859, environmental 10254\u219210936, planning 1965\u21921577, central_services 5855\u21924425, total_service 26355\u219225583, net_current 53462\u219253122; revenue_budget mirrored 53,122,000) + population 134,200 \u2192 ONS Mid-2024 140,936; re-run = 0 drift across 23 checks"
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-10T10:42:57.752Z",
+      "images": 7,
+      "note": "7 page PNGs (incl. hand-seeded salary_bands p59 + council_leader p26 spec entries) + 22 tier-1 row-evidence PNGs via render-csv-evidence; all fingerprinted into image-manifest.json"
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-10T10:43:37.124Z",
+      "fields": [
+        "reserves",
+        "total_allowances_cost",
+        "chief_executive_salary",
+        "chief_executive",
+        "councillor_basic_allowance",
+        "council_leader (hand)",
+        "salary_bands (hand)"
+      ],
+      "note": "05 --apply clean (round-trip + tsc pass; the Ashfield indentation bug is fixed in the pipeline). council_leader + salary_bands field_sources hand-written (not in FIELD_KIND). Titles hand-refined post-apply. CE 'Elizabeth Chicken'\u2192'Tracey Kerly', leader 'Cllr Gerry Clarkson'\u2192'Cllr Noel Ovenden', reserves 35,321,000\u21923,265,000, basic allowance 4628\u21925287."
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-06-10T10:55:00.000Z",
+      "stripped": [
+        "performance_kpis",
+        "service_spending",
+        "service_outcomes",
+        "top_suppliers",
+        "staff_fte",
+        "councillor_allowances_detail",
+        "documents",
+        "budget_gap",
+        "savings_target",
+        "cabinet",
+        "grant_payments"
+      ],
+      "note": "budget_gap/savings_target were 'derived from GOV.UK Revenue Account' = banned derivation; Budget Books 2025-26/2026-27 are line-item books with no MTFS gap statement \u2014 reinstate only from a future archived MTFS. councillor_allowances_detail rows were explicitly 'estimated' (fabrication). council_leader KEPT (unlike Ashfield) \u2014 fresh signed AGS 2024-25 names the Leader; salary_bands KEPT (Bradford precedent) \u2014 Ashford's Note 9 banding table is text-extractable."
+    },
+    "phase_3_6_tier4_links": {
+      "done": true,
+      "at": "2026-06-10T10:58:00.000Z",
+      "broken": 0,
+      "note": "ZERO Tier-4 field_sources (all seven citations Tier-3 archived). CE verified current 3 ways (AGS signature 27 Jun 2025; live CE page accessed 2026-06-10; Dec 2025 CE briefing). Leader verified 2 ways (AGS signature; council cabinet-changes news). Stale navigational URLs fixed: councillors_url 301 \u2192 /your-council/council-meetings; two 404 members-allowances links \u2192 /transparency/open-data/your-council/members-allowances/."
+    },
+    "phase_5_validators": {
+      "done": true,
+      "at": "2026-06-10T11:05:00.000Z",
+      "errors": 0,
+      "note": "0 errors with Ashford in STRICT_COUNCILS; 1 expected warning (precept sum \u00a32,158.54 vs area Band D \u00a32,311 \u2014 dataset-wide precept-components vintage pattern, same class as ~306 other councils); audit-north-star 0/5 gaps (50 renderable fields)"
+    },
+    "phase_5b_ux_audit": {
+      "done": true,
+      "at": "2026-06-10T11:10:00.000Z",
+      "violations": 0,
+      "note": "0 unwrapped / 0 derived (re-run after proven-fields regeneration unlocked the reserves hero \u2014 still 0/0); popover spot-check x3: reserves \u2192 SoA #page=62 + page image + verbatim excerpt; CE salary \u2192 #page=58; basic allowance \u2192 notice #page=1"
+    },
+    "phase_5c_reality_check": {
+      "done": true,
+      "at": "2026-06-10T11:12:00.000Z",
+      "verbatim": "7/7",
+      "note": "manual pdftotext+grep (script's hardcoded list doesn't cover Ashford): '3,265' x2 SoA, exact CE-salary row x1, exact Note-8 totals row x1, 'Tracey Kerly' x1 AGS, 'Noel Ovenden' x1 AGS, '5286.79' x30 notice, '\u00a350,000 - \u00a354,999' x1 SoA"
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-06-10T11:13:00.000Z",
+      "result": "7 screenshots \u00b7 7 verbatim-1:1 \u00b7 0 archival-only \u00b7 0 mismatched \u00b7 0 missing PNG"
+    },
+    "phase_proof_engine": {
+      "done": true,
+      "at": "2026-06-10T11:15:00.000Z",
+      "result": "6/6 Band D exact \u00b7 7 Tier-3 PROVEN, 0 unproven \u00b7 evidence-clean; proven-fields.ts regenerated (Ashford's 7 detailed fields now pass the Stage-5 render gate)"
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-06-10T11:20:00.000Z",
+      "audit_doc": "docs/ASHFORD-AUDIT.md",
+      "manifest": "manifests/ashford.json"
+    },
+    "phase_7_ship": {
+      "done": true,
+      "at": "2026-06-10T11:25:00.000Z",
+      "strict_councils": true,
+      "screenshot_parity_list": "Batch-44 (2026-06-10)"
+    }
+  },
+  "last_session": "2026-06-10T11:25:00.000Z",
+  "north_star_complete": true,
+  "batch": "44-4"
+}

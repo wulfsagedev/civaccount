@@ -1,0 +1,38 @@
+[
+  {
+    "council": "Boston",
+    "field": "chief_executive_salary",
+    "pdf": "appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf",
+    "page": 63,
+    "value": "157200"
+  },
+  {
+    "council": "Boston",
+    "field": "reserves",
+    "pdf": "appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf",
+    "page": 12,
+    "value": "2000000"
+  },
+  {
+    "council": "Boston",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-20allowances-202024-25.pdf",
+    "page": 1,
+    "value": "7000"
+  },
+  {
+    "council": "Boston",
+    "field": "total_allowances_cost",
+    "pdf": "appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf",
+    "page": 62,
+    "value": "367000"
+  },
+  {
+    "council": "Boston",
+    "field": "salary_bands",
+    "pdf": "appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf",
+    "page": 64,
+    "value": "salary bands",
+    "note": "SoA Note 30b Employees by remuneration band 2024/25"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "council": "Bolsover",
+    "field": "chief_executive_salary",
+    "pdf": "pay-policy-statement-2025-26.pdf",
+    "page": 2,
+    "value": "137078"
+  },
+  {
+    "council": "Bolsover",
+    "field": "reserves",
+    "pdf": "mtfp-report-2025-26.pdf",
+    "page": 8,
+    "value": "2001000"
+  },
+  {
+    "council": "Bolsover",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-allowances-scheme-part6.pdf",
+    "page": 1,
+    "value": "9902"
+  },
+  {
+    "council": "Bolsover",
+    "field": "total_allowances_cost",
+    "pdf": "members-allowances-2023-24.pdf",
+    "page": 1,
+    "value": "513735"
+  }
+]

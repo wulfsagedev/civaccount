@@ -1,0 +1,69 @@
+{
+  "council": "Canterbury",
+  "slug": "canterbury",
+  "ons_code": "E07000106",
+  "type": "SD",
+  "batch": "46-5",
+  "north_star_complete": true,
+  "done": true,
+  "phases": {
+    "phase_0_inventory": { "done": true, "candidates": 17, "note": "CDX sweep + landing-page harvest; pruned 17 -> 6 (SoA 2024-25/2023-24, 3 budget reports, allowances PDF). Allowances /media/874169/ 404'd (stale); HRA-appendix/draft/ancient SoAs dropped. No WAF on www.canterbury.gov.uk." },
+    "phase_1_archive": { "done": true, "results": { "ok": 4, "skipped": 0, "blocked": 0, "failed": 0 }, "note": "2 SoAs direct; Financial Outlook 2025-26 + structure chart recovered via Wayback if_/direct after the ModernGov SPN poll loop hung (killed; journals on exit)." },
+    "phase_1b_page_images": { "done": true, "page_pngs": 3, "csv_row_pngs": 22 },
+    "phase_2_extract": { "done": true, "candidates": 18, "parse_failures": 0, "note": "pure-GF reserves candidate hand-authored (all auto-candidates were the HRA-combined EFA line)" },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_crosscheck": { "done": true, "drift": 0, "checks": 23, "note": "budget block re-synced to RA 2025-26 (housing 2465->3482 etc.); revenue_budget->50,649,000" },
+    "phase_3_6_tier4_links": { "done": true, "tier4_field_sources": 1, "ce_leader_verified_current": true },
+    "phase_4_populate": { "done": true, "method": "05-populate --apply (reserves + total_allowances_cost; round-trip + tsc); chief_executive + council_leader + strips hand-edited (line-range scoped)" },
+    "phase_5_validators": { "done": true, "errors": 0, "regressions": 0, "north_star_gaps": 0 },
+    "phase_5b_ux_audit": { "done": true, "violations": "0 / 0" },
+    "phase_5c_reality_check": { "done": true, "result": "4/4 verbatim (manual — Canterbury not in the script's fixed BATCH list)" },
+    "phase_5d_screenshot_parity": { "done": true, "result": "3 screenshots · 3 verbatim-1:1 · 0 mismatched · 0 missing PNG" },
+    "phase_6_document": { "done": true, "files": ["docs/CANTERBURY-AUDIT.md", "manifests/canterbury.json"] },
+    "phase_7_ship": { "done": true }
+  },
+  "gates": {
+    "validate": "0 errors, 0 regressions",
+    "audit_north_star": "0 / 5 gaps",
+    "tier1_drift": "0 cells (23 checks)",
+    "ux_audit": "0 / 0",
+    "live_site_reality": "4/4 verbatim",
+    "screenshot_parity": "3 screenshots · 3 verbatim-1:1 · 0 mismatched · 0 missing PNG",
+    "proof_engine": "3 tier-3 PROVEN · 0 unproven · 1 tier-4 (council_leader) · evidence-clean"
+  },
+  "kept_fields": [
+    "chief_executive (Peter Davies & Suzi Wakeham, Joint CEs — structure chart p1)",
+    "council_leader (Cllr Alan Baldock — Tier-4 leader page, verified current)",
+    "reserves (£2,070,000 — SoA 2024-25 Balance Sheet p13 / MIRS p14, PURE General Fund, HRA separate)",
+    "total_allowances_cost (£373,929 — SoA 2024-25 Note 22 p58)",
+    "documents",
+    "council_tax band_d 2021-26 (Tier-1)",
+    "budget RA 2025-26 (Tier-1)"
+  ],
+  "stripped_fields": [
+    "chief_executive_salary (Joint CEs — SoA Note 23 part-year only; old £121k defunct; no archivable rate; watch)",
+    "councillor_basic_allowance / leader_allowance (HTML-only members-allowances page; no archivable scheme PDF; watch)",
+    "budget_gap (£0.5m verbatim but proof value-binding fails on the leading-zero decimal -> gate-hidden; sibling mtfs_deficit absent; watch)",
+    "savings_target (no quotable headline; fabricated)",
+    "salary_bands (stale 2023/24 column; out of field set)",
+    "cabinet (stale line-up; not fingerprintable to one doc)",
+    "councillor_allowances_detail",
+    "top_suppliers",
+    "grant_payments",
+    "performance_kpis",
+    "service_outcomes",
+    "service_spending",
+    "staff_fte"
+  ],
+  "corrections": {
+    "reserves": "23,842,000 (RA Part 2 total-usable ref — section-2 HRA-combined trap, ~15th council) -> 2,070,000 (SoA 2024-25 Balance Sheet p13 / MIRS p14, pure General Fund; HRA 8,300 is a separate column)",
+    "chief_executive": "William Hatchett (fabricated) -> Peter Davies and Suzi Wakeham (Joint Chief Executives — structure chart Jan 2025 p1; 1-Jan-2025 restructure; verified current)",
+    "council_leader": "Cllr Alan Sheridan (fabricated/stale) -> Cllr Alan Baldock (leader page + ModernGov, verified current 2026)",
+    "total_allowances_cost": "value £373,929 unchanged; year label corrected 2023-24 -> 2024-25 (SoA Note 22 — £365,698 is the 2023/24 comparative); re-sourced from bare URL to fingerprinted SoA Note",
+    "budget": "stale 2024-25 cells -> RA 2025-26 (housing 2465->3482, transport -5636->-5790, cultural 4125->4289, environmental 8996->9561, total_service 22067->23580, net_current 48666->50649); revenue_budget -> 50,649,000",
+    "budget_gap": "26,599,000 (fabricated 'derived from RA') -> stripped (verbatim £0.5m can't bind in the proof engine; sibling absent)"
+  },
+  "audit_date": "2026-06-16",
+  "last_verified": "2026-06-16",
+  "last_session": "2026-06-16"
+}

@@ -1909,6 +1909,408 @@ export function validate(councils, _population, report) {
     'Forest of Dean|chief_executive',
     'Hyndburn|chief_executive',
     'Ipswich|chief_executive',
+    // 2026-06-10 Batch-44 (queue-driven full-depth rollouts): Amber Valley,
+    // Arun, Ashfield. Bradford strip checklist; per-council reasons in
+    // AMBER-VALLEY-AUDIT.md / ARUN-AUDIT.md / ASHFIELD-AUDIT.md (data repo)
+    // and inline comments in districts.ts. Recorded here so the honest
+    // removals never read as drift regardless of baseline state (Amber
+    // Valley + Arun strips were previously absorbed by the rolling
+    // baseline rather than declared — declared now).
+    ...['Amber Valley', 'Arun', 'Ashfield'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|salary_bands`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|staff_fte`,
+      `${c}|savings_target`,
+      `${c}|budget_gap`,
+      `${c}|documents`,
+    ]),
+    // Arun-only: no published full-year CE salary RATE (SoA Note 31 is
+    // part-year; pay-policy HTML figure is a pension-inclusive package).
+    'Arun|chief_executive_salary',
+    // 2026-06-10 Batch-44 (cont.): Ashford, Babergh. Bradford strip checklist;
+    // per-council reasons in ASHFORD-AUDIT.md / BABERGH-AUDIT.md (data repo).
+    ...['Ashford', 'Babergh'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|staff_fte`,
+      `${c}|documents`,
+    ]),
+    // 2026-06-16 Batch-45 (queue-driven full-depth rollouts): Basildon, Basingstoke
+    // & Deane. Bradford strip checklist; per-council reasons in BASILDON-AUDIT.md /
+    // BASINGSTOKE-AND-DEANE-AUDIT.md (data repo) and inline comments in districts.ts.
+    // B&D went to No Overall Control at the 7 May 2026 election, so cabinet +
+    // council_leader are stale-until-next-signed-AGS (Babergh rotating-leadership rule).
+    ...['Basildon', 'Basingstoke & Deane'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|savings_target`,
+      `${c}|staff_fte`,
+      `${c}|documents`,
+    ]),
+    // Basildon-only: no full-year CE salary RATE, no atomic allowances total/basic
+    // (see BASILDON-AUDIT.md). B&D keeps all three (full SoA Note 23 + 2026/27 scheme).
+    'Basildon|chief_executive_salary',
+    'Basildon|councillor_basic_allowance',
+    'Basildon|leader_allowance',
+    'Basildon|total_allowances_cost',
+    'Basildon|salary_bands',
+    // 2026-06-16 Batch-45-3 (Bolsover, queue-driven full-depth rollout). Bradford strip
+    // checklist; per-field reasons in BOLSOVER-AUDIT.md (data repo) + inline comments in
+    // districts.ts. Bolsover shares a Joint Officer Team / CE with North East Derbyshire.
+    // KEPT (richer than Basildon): chief_executive, chief_executive_salary,
+    // councillor_basic_allowance, total_allowances_cost (full Pay Policy + Allowances Scheme
+    // + 2023-24 Reg-15 notice). STRIPPED: budget_gap + savings_target (MTFP is balanced via
+    // reserve transfers — only a £953k FY28/29 table cell, no quotable headline gap; legacy
+    // £17.6m/£15.9m were fabricated 'derived from RA' values); salary_bands (full SoA
+    // Appendix 1 not Wayback-archivable; covering report has no banding table);
+    // council_leader + cabinet (committees portal TCP-blocked, 2026 elections imminent + LGR
+    // pending — no fingerprintable current primary; legacy cabinet held a cross-council
+    // Boston artefact); leader_allowance (not rendered in UI).
+    ...['Bolsover'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|council_leader`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|salary_bands`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|leader_allowance`,
+      `${c}|staff_fte`,
+    ]),
+    // 2026-06-16 Batch-45-4 (Boston, queue-driven full-depth rollout). Bradford strip
+    // checklist; per-field reasons in BOSTON-AUDIT.md (data repo) + inline comments in
+    // districts.ts. Boston shares a joint CE (Rob Barlow) with East Lindsey + South
+    // Holland (South & East Lincolnshire Councils Partnership). The pre-rollout record
+    // cited mybostonuk.com (a non-.gov.uk source) on 4 fields — all re-sourced to the SoA
+    // / council pages or stripped. KEPT (richer than Bolsover): chief_executive,
+    // chief_executive_salary, councillor_basic_allowance, total_allowances_cost,
+    // salary_bands, AND council_leader (Cllr Dale Broughton, ModernGov member record).
+    // STRIPPED: cabinet (stale ousted-Dorrian line-up + mybostonuk source; current is a
+    // mid-2025 cross-party coalition not fingerprintable to one .gov.uk doc);
+    // budget_gap + savings_target (fabricated 'derived from RA' £13.26m/£11.93m — absurd
+    // for a £15.4m-service district; only archived budget paper is the ~£769k BTAC
+    // special-expenses budget with no council-wide gap; budget_gap cited mybostonuk);
+    // councillor_allowances_detail (2023-24, a year stale, prior administration);
+    // leader_allowance (leadership changed mid-year — notice SRA is a part-year former-
+    // leader figure); performance_kpis + service_outcomes + service_spending +
+    // top_suppliers + grant_payments (Bradford strip checklist — RAG/derived/OCDS-ceiling/
+    // news-article sources).
+    ...['Boston'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|grant_payments`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|leader_allowance`,
+    ]),
+    // 2026-06-16 Batch-45-5 (Breckland, queue-driven full-depth rollout). Bradford strip
+    // checklist; per-field reasons in BRECKLAND-AUDIT.md (data repo) + inline comments in
+    // districts.ts. The brief noted shared management with South Holland; the live evidence
+    // shows Breckland has its OWN dedicated CMT (SoA p7) and the CE's FULL 100% remuneration is
+    // in Breckland's own SoA Note 20 — Breckland's figures are entirely its own, not joint/
+    // recharged. KEPT (richer than Boston): chief_executive (Tier-4 council news, Maxine
+    // O'Mahony — verified current Apr 2026 Deputy Returning Officer), council_leader (Tier-3
+    // SoA p5, Cllr Sam Chapman-Allen — verified current Feb 2026 Full Council), chief_executive_
+    // salary (£143,925 Pay Policy 2025-26 Grade 1 top, corroborated paid by SoA Note 20 £146,704),
+    // total_allowances_cost (£520k SoA Note 19). STRIPPED: councillor_basic_allowance +
+    // leader_allowance (£6,410/£24,290 are 2025-26 rates in the 2023-2027 scheme which is
+    // WAF-blocked + has NO Wayback snapshot + SPN can't reach the blocked origin; only the
+    // superseded 2021-2023 scheme is archivable at £5,780/£23,119); budget_gap + savings_target
+    // (legacy £23.69m/£21.32m fabricated 'derived from RA' — MTFS runs a balanced budget bridged
+    // by the multi-year Evolve savings grid, no quotable headline gap; Bolsover/Boston no-force-
+    // fit); salary_bands (both SoA banding tables are image/graph, no text layer — Ashfield
+    // image-scan precedent); cabinet + councillor_allowances_detail + grant_payments +
+    // top_suppliers + performance_kpis + service_outcomes + service_spending + staff_fte +
+    // documents (Bradford strip checklist).
+    ...['Breckland'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|leader_allowance`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|documents`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-16 Batch-46-1 (Broadland, queue-driven full-depth rollout). Broadland shares its
+    // joint Managing Director + officer team with South Norfolk DC; every kept value is Broadland's
+    // OWN figure (full MD salary sits in BDC's own SoA Note 24 because the postholder is a BDC
+    // employee — the "BDC Share" £96,005 column is South Norfolk's recharge, not the salary).
+    // Bradford strip-list + no-force-fit budget_gap (balanced 2025-26 budget, no quotable headline)
+    // + salary_bands (joint BDC+SNC pool "by employing Authority before recharges", not Broadland's
+    // own workforce). KEEPS documents + councillor_basic_allowance + leader_allowance (sourced to
+    // the archived Constitution Part 4.4).
+    ...['Broadland'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-16 Batch-46-2 (Bromsgrove, queue-driven full-depth rollout). Bromsgrove shares a
+    // single management team with Redditch Borough Council (each authority charged 50% of each
+    // post's cost — SoA Note B10); every kept value is Bromsgrove's OWN figure. reserves STRIPPED
+    // (no-force-fit): the SoA/MTFS pure General Fund Balance £13.381m EXCEEDS the stale GOV.UK RA
+    // Part 2 reference £9.97m by >10%, tripping spot-check reserves_exceeds_total; the legacy
+    // 9,970,000 was that wrong-scope reference (§2 trap). Bradford strip-list otherwise. KEEPS
+    // chief_executive (corrected Kevin Dicks → John Leach, Tier-3 mgmt chart), council_leader
+    // (Karen May, Tier-4 council news), chief_executive_salary (Pay Policy scale top £153,750,
+    // proven paid by SoA actual £179,456), total_allowances_cost (SoA Note B7 £268k),
+    // councillor_basic_allowance + leader_allowance (Members' Allowances Scheme 2025-26),
+    // budget_gap + savings_target (corrected fabricated values → MTFS 2026-29 verbatim figures).
+    ...['Bromsgrove'].flatMap(c => [
+      `${c}|reserves`,
+      `${c}|cabinet`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-16 Batch-46-3 (Broxbourne, queue-driven full-depth rollout). All kept values are
+    // grounded in the council's OWN archived publications. reserves CORRECTED (§2 trap, 13th
+    // council in a row): legacy 28,763,000 was exactly the GOV.UK RA Part 2 total-usable reference;
+    // the SoA 2024-25 Note 6 (p25) pure General Fund Reserve is £6,572k (Narrative p6 "£6.6 million"),
+    // well below the RA reference so it passes spot-check (Babergh/Basildon/Boston/Broadland shape,
+    // NOT the Bromsgrove exceeds-reference strip case). chief_executive CORRECTED (fabricated
+    // "Amanda Maybury" → Jeff Stack, AGS p8 + verified current 2026, CE since 2013); council_leader
+    // CORRECTED (stale "Cllr Lewis Sherwin (Interim)" → Cllr Corina Gander, AGS p8 + verified
+    // retained after the 7 May 2026 election). chief_executive_salary £136,508 (SoA Note 27 p43),
+    // total_allowances_cost £325k (SoA Note 26 p42), salary_bands 2024/25 column (SoA Note 27 p43).
+    // KEEPS documents. STRIPPED: budget_gap + savings_target (legacy £14.678m/£13.210m fabricated
+    // 'derived from RA' — 2026/27 budget report is a balanced budget, no quotable headline gap;
+    // Bolsover/Boston/Breckland no-force-fit); councillor_basic_allowance (the £6,638 rate is only
+    // in the Allowances-Paid XLSX — no PDF/HTML page form, can't carry a PNG or be proof-verified, so
+    // it would be gate-hidden; SoA Note 26 publishes only the total — Basildon catalogue-strip
+    // precedent, watch item to reinstate from an archivable Members' Allowances Scheme PDF) + Bradford
+    // strip-list.
+    ...['Broxbourne'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
+    // 2026-06-16 Batch-46-5 (Canterbury, queue-driven full-depth rollout). Canterbury is a
+    // stock-holding district (HRA). reserves CORRECTED (§2 trap, 14th/15th council in a row):
+    // legacy 23,842,000 was exactly the GOV.UK RA Part 2 total-usable reference; the SoA 2024-25
+    // Balance Sheet p13 + MIRS p14 pure General Fund Balance is £2.070m (the HRA £8.300m is a
+    // SEPARATE column — NOT the combined "General Fund and HRA balances" EFA line), well below the
+    // RA reference so it passes spot-check (Babergh/Basildon/Boston/Broadland/Cannock smaller-than-
+    // reference shape). chief_executive CORRECTED (fabricated "William Hatchett" → Joint Chief
+    // Executives Peter Davies & Suzi Wakeham, senior-management-structure chart Jan 2025 p1 + live
+    // page; a 1-Jan-2025 restructure replaced the single Head of Paid Service with two Joint CEs).
+    // council_leader CORRECTED (stale "Cllr Alan Sheridan" → Cllr Alan Baldock, leader page +
+    // ModernGov, current). total_allowances_cost £373,929 re-sourced to SoA Note 22 p58 (year label
+    // corrected to 2024-25). budget_gap CORRECTED £26.6m→£0.5m (Financial Outlook 2025-26 report p2,
+    // verbatim; legacy was fabricated 'derived from RA'). STRIPPED: chief_executive_salary (Joint CEs
+    // — SoA Note 23 shows only part-year £33k each post-restructure, old £121k defunct, Senior
+    // Salaries page gives grade ranges with no named figure; Arun/Cannock part-year/shared-CE strip);
+    // councillor_basic_allowance + leader_allowance (HTML-only members-allowances page, no archivable
+    // scheme/notice PDF — Basildon/Broxbourne/Cannock un-archivable-rate strip); savings_target (no
+    // quotable headline; legacy fabricated — Bolsover/Boston no-force-fit); salary_bands (legacy was
+    // the SoA's stale 2023/24 column, out of field set); cabinet (stale line-up, not fingerprintable
+    // to one doc — Broxbourne/Cannock); + Bradford strip-list.
+    ...['Canterbury'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|chief_executive_salary`,
+      `${c}|salary_bands`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
+    // 2026-06-16 Batch-47-1 (Castle Point E07000069, queue-driven full-depth rollout). Stock-holding
+    // district (HRA), Essex. reserves CORRECTED (§2 trap, ~16th council in a row): legacy 25,461,000
+    // was exactly the GOV.UK RA Part 2 total-usable reference; the SoA 2024-25 MIRS p25 pure General
+    // Fund (GF) Balance is £5.803m (a SEPARATE column from the HRA £1.557m + Earmarked £20.633m;
+    // Total Usable £31.665m), confirmed by the Narrative "General Reserves (£5.8m at 31 March 2025)",
+    // well below the RA reference so it passes spot-check (Babergh/Basildon/Boston/Broadland/Broxbourne
+    // smaller-than-reference shape, NOT the Bromsgrove exceeds-reference strip). chief_executive
+    // CORRECTED (fabricated "Daniel Sexton" → Angela Hutchings, AGS p141 signature 27-Feb-2026 +
+    // verified current as Deputy RO on 27-Mar-2026 election notice). council_leader CORRECTED (wrong
+    // "Cllr Andrew Sherwin", contradicted cabinet[0] → Cllr Dave Blackwell, AGS p141 + Dec-2025 leader
+    // statement; no May-2026 borough election, only Essex CC). chief_executive_salary CORRECTED
+    // £137,304→£138,960 (Pay Scales 2025/26 CEX1, proven paid by SoA Note 9.2.1 actual £139k).
+    // councillor_basic_allowance £3,550→£4,414 + total_allowances_cost £238,660→£301,492 (re-sourced to
+    // the current 2025-26 Members' Allowances notice). salary_bands rebuilt to the SoA Note 9.1 2024/25
+    // column (legacy array was stale + conflated senior officers). STRIPPED: budget_gap + savings_target
+    // (legacy £13.753m/£12.378m fabricated 'derived from RA' — the SoA narrative states 2025/26 is
+    // balanced, the only verbatim gap (£285k/£852k, SoA 2023-24) is since closed; Bolsover/Boston/
+    // Breckland/Broxbourne/Canterbury no-force-fit); leader_allowance (only an SRA range £982–£25,129 in
+    // the notice, no single published Leader rate — Cannock un-archivable-rate strip); cabinet (Tier-4
+    // agendas-page only, not fingerprintable, LGR/devolution churn); grant_payments (UKSPF, landing-page
+    // only, not fingerprintable); + Bradford strip-list. KEEPS chief_executive, council_leader, reserves,
+    // chief_executive_salary, councillor_basic_allowance, total_allowances_cost, salary_bands, documents.
+    ...['Castle Point'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+    ]),
+    // 2026-06-17 Batch-47-2 (Charnwood E07000130, queue-driven full-depth rollout — RETRY). District,
+    // Leicestershire. Both SoAs (2023-24 + 2024-25) are image-scans with no text layer (Ashfield trap),
+    // so all SoA-note fields are un-extractable. reserves CORRECTED (§2 trap, ~17th council in a row):
+    // legacy 16,144,000 was exactly the GOV.UK RA Part 2 total-usable reference; the pure General Fund
+    // Working Balance (audited 2024/25 closing) is £6.579m, in the Draft 2026/27 Budget Report p12 Table 2B
+    // "Actual 2024/25 Balance at 31 March (6,579)" — TOTAL BALANCES were £20.169m; £6.579m << £16.144m so it
+    // passes spot-check (Babergh/Basildon/Boston smaller-than-reference shape). chief_executive CORRECTED
+    // (legacy "Simon Jackson" is the Director of Finance/S151/Deputy CX, NOT the CE → Rob Mitchell, since
+    // 2019, charnwood.gov.uk/pages/organisation_structure). council_leader CORRECTED (stale "Cllr Jonathan
+    // Morgan", contradicted cabinet[0] → Cllr Jewel Miah, Labour, named Leader in the council's 16-Jun-2026
+    // news). total_allowances_cost £402,378→£415,296 (current 2024-25 Members' Allowances notice published
+    // grand total). councillor_basic_allowance (£6,192) + leader_allowance (£15,064.10) re-sourced to the
+    // archived Allowances Scheme 2026-27 (Schedule of Allowances p4). STRIPPED: chief_executive_salary
+    // (Pay Policy publishes a CEX1-CEX4 scale only; SoA actual is image-only → no proven point; legacy
+    // 153,398 was a banned "range midpoint" — Arun/Canterbury scale-only strip); salary_bands (SoA Note
+    // image-only — Ashfield); budget_gap + savings_target (legacy 29.052m/26.147m fabricated 'derived from
+    // RA', absurd > whole budget; GF budget is balanced, only an HRA £2.6m deficit exists; no-force-fit —
+    // Bolsover/Boston/Breckland/Castle Point); cabinet (Tier-4 committee page, not fingerprintable, LGR
+    // churn); + Bradford strip-list. KEEPS chief_executive, council_leader, reserves,
+    // councillor_basic_allowance, leader_allowance, total_allowances_cost, documents.
+    ...['Charnwood'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|staff_fte`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-17 Batch-47-3 (Cheltenham E07000078, queue-driven full-depth rollout). District, Gloucestershire,
+    // stock-holding (HRA via Cheltenham Borough Homes ALMO, which is being wound up — staff transferring to the
+    // council). Shares Publica Group / Ubico (joint companies) but the CE (Gareth Edmundson, since Jan 2020,
+    // CBC's own Head of Paid Service) is a CBC employee — every value is CBC's own. reserves CORRECTED (§2 trap,
+    // ~18th council: legacy 3,551,000 == GOV.UK RA Part 2 usable reference; the audited SoA 2023/24 MIRS p17 has a
+    // PURE "General Fund Balance" column (separate from the HRA column) reading 950 at 31 Mar 2024 — Babergh/Castle
+    // Point clean-MIRS shape, NOT the HRA-combined-EFA trap; £0.950m << £3.551m so it passes spot-check). The SoA
+    // narrative's £1.030m is a contradicted draft-narrative carry-over; the audited MIRS statutory figure is 950.
+    // council_leader CORRECTED (legacy scalar "Cllr Rowena Sherwin" — a name that exists nowhere; cabinet[0] already
+    // said Rowena Hay → Cllr Rowena Hay, SoA p4 + live Cabinet ID=166, LibDem RETAINED control at the 7-May-2026
+    // election). chief_executive (Gareth Edmundson) re-sourced to SoA p4 (live-verified current; the two "new CEO"
+    // news items are both his 2019 appointment — red herrings). chief_executive_salary KEPT £134,419 (Pay Policy
+    // 2025-26 p6 "Highest paid employee", CBC's own). total_allowances_cost 457,144→428,009 (SoA Note 10 published
+    // total). budget_gap 19,858,000→2,180,000 + savings_target 17,872,200→1,130,000 (legacy fabricated 'derived from
+    // RA' ~10x too big; corrected to MTFS 2025-26 verbatim — funding gap p10 £2.180m, savings p16 £1.130m).
+    // councillor_basic_allowance £6,645 + leader_allowance £21,154 re-sourced to the IRP Members' Allowances Report
+    // (2024/25, Recs 2 + 5 — most recent confirmed rates). STRIPPED: salary_bands (legacy bands incl. £95k/£130k do
+    // not match the SoA Note 11 banding column, which excludes seniors — fabricated/mismatched); cabinet (stale
+    // 6-member line-up; live Cabinet has 8, Gloucestershire LGR churn, Tier-4 only); councillor_allowances_detail
+    // (catalogue ecCatDisplay URL, not fingerprintable — Basildon rule); + Bradford strip-list (service_outcomes,
+    // service_spending, top_suppliers, performance_kpis, grant_payments). KEEPS chief_executive, council_leader,
+    // reserves, chief_executive_salary, total_allowances_cost, councillor_basic_allowance, leader_allowance,
+    // budget_gap, savings_target, documents — 9 Tier-3 PROVEN fields.
+    ...['Cheltenham'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|grant_payments`,
+    ]),
+    // 2026-06-17 Batch-47-4 (Chichester E07000225, queue-driven full-depth rollout). District, West Sussex.
+    // Chichester publishes its Statement of Accounts as DOCX ONLY (no PDF form) and its current Members'
+    // Allowances rates/paid totals as XLSX only; the council /media/ origin hard-403s automated clients AND
+    // SavePageNow 520s (IA cannot reach the WAF'd origin). Finance values were therefore sourced from the
+    // text-PDF committee papers on chichester.moderngov.co.uk (Arun/Bolsover pattern). reserves STRIPPED
+    // (§2 trap, ~19th council in a row): legacy 52,288,000 == GOV.UK RA Part 2 total-usable reference misfiled
+    // as the GF balance; the pure General Fund balance lives only in the DOCX SoA (WAF-unreachable AND
+    // DOCX→proof-gate-hidden per Broxbourne) → strip + watch (no force-fit either number). chief_executive
+    // CORRECTED (legacy "Louise Goldsmith" was fabricated — she was Leader of West Sussex COUNTY Council, never
+    // Chichester's CE → Diane Shepherd, Head of Paid Service/Returning Officer, 40 yrs, retiring 31 Mar 2027;
+    // District Dispatch 31-Mar-2026). council_leader CORRECTED (stale "Cllr John Cross", contradicted cabinet[0]
+    // → Cllr Adrian Moss, Lib Dem majority since 17 May 2023; confirmed Feb 2026 budget). chief_executive_salary
+    // 140,473→142,286 (Senior Staff Pay Policy 2025-26 p1 pay-multiple statement — RENDERABLE Tier-3 PDF).
+    // council_tax_requirement £16,656,682 KEPT (legacy value already correct; re-sourced to the Tier-3 Council
+    // Tax Resolution Report 2025-26 p5). STRIPPED: councillor_basic_allowance + total_allowances_cost (XLSX-only
+    // / 2020 IRP PDF superseded → unprovable, Broxbourne rule); budget_gap + savings_target (legacy 27.695m/
+    // 24.926m fabricated 'derived from RA', absurd vs ~£19m net service; archived MTFS 2026-31 is narrative with
+    // a £4m minimum reserve + forward gap to ~£3.2m by 2029-30, no quotable single-sentence gap — no-force-fit,
+    // Bolsover/Boston/Breckland); salary_bands (SoA DOCX, no archivable banding table); cabinet (Tier-4 only,
+    // not fingerprintable, West Sussex LGR churn); + Bradford strip-list (service_outcomes, service_spending,
+    // top_suppliers, performance_kpis, grant_payments, councillor_allowances_detail). KEEPS chief_executive,
+    // council_leader, chief_executive_salary, council_tax_requirement, documents — 2 Tier-3 PROVEN + 2 Tier-4
+    // personnel + 6 band_d + budget/population row-evidence.
+    ...['Chichester'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|total_allowances_cost`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

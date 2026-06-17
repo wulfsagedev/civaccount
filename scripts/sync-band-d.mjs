@@ -16,36 +16,29 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { loadCsv as loadCsvRows } from './validate/load-councils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '..');
-const BULK_DATA_DIR = join(PROJECT_ROOT, 'src', 'data', 'councils', 'pdfs', 'gov-uk-bulk-data');
 const COUNCILS_DIR = join(PROJECT_ROOT, 'src', 'data', 'councils');
 
 const CSV_FILE = 'parsed-area-band-d.csv';
-const FIELDS = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'band_d_2025'];
+const FIELDS = ['band_d_2021', 'band_d_2022', 'band_d_2023', 'band_d_2024', 'band_d_2025', 'band_d_2026'];
 
 // ── Load CSV ─────────────────────────────────────────────────────────
 
 function loadCsv() {
-  const csvPath = join(BULK_DATA_DIR, CSV_FILE);
-  if (!existsSync(csvPath)) {
-    console.error(`ERROR: ${CSV_FILE} not found. Run: python3 scripts/parse-area-band-d.py`);
+  // Shared quote-aware loader — a naive split(',') shifts every year column
+  // by one on rows whose name contains a comma (e.g. "Bournemouth,
+  // Christchurch & Poole"), silently writing year-shifted values into TS.
+  const rows = loadCsvRows(CSV_FILE);
+  if (rows.length === 0) {
+    console.error(`ERROR: ${CSV_FILE} not found or empty. Run: python3 scripts/parse-area-band-d.py`);
     process.exit(1);
   }
 
-  const content = readFileSync(csvPath, 'utf-8').trim();
-  const lines = content.split('\n');
-  const headers = lines[0].split(',');
-
   const authorities = new Map();
-  for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(',');
-    const row = {};
-    for (let j = 0; j < headers.length; j++) {
-      row[headers[j]] = (parts[j] || '').trim();
-    }
-
+  for (const row of rows) {
     const ons = row.ons_code;
     if (!ons || !ons.startsWith('E')) continue;
 

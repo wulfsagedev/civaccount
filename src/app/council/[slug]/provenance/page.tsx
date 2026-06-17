@@ -15,8 +15,10 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { PageContainer } from '@/components/ui/page-container';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Calendar, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, Calendar, ShieldCheck, CheckCircle2, Landmark, GitCommitHorizontal } from 'lucide-react';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
+import { buildEvidenceUrl, waybackFor } from '@/data/provenance';
+import DATASET_VERSION from '@/data/dataset-version.json';
 
 const BASE_URL = 'https://www.civaccount.co.uk';
 
@@ -240,6 +242,20 @@ export default async function ProvenancePage({ params }: Props) {
               </p>
             </div>
           )}
+
+          {DATASET_VERSION.data_commit && (
+            <div className="mt-3 p-3 rounded-lg bg-muted/30 border border-border/50 flex items-center gap-3">
+              <GitCommitHorizontal className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+              <p className="type-body-sm">
+                <span className="text-muted-foreground">Dataset version:</span>{' '}
+                <span className="font-mono font-semibold tabular-nums">{DATASET_VERSION.data_commit}</span>
+                {DATASET_VERSION.data_commit_date && (
+                  <span className="text-muted-foreground"> ({DATASET_VERSION.data_commit_date})</span>
+                )}
+                <span className="text-muted-foreground"> — every figure on this page comes from this exact dataset snapshot.</span>
+              </p>
+            </div>
+          )}
         </section>
 
         {/* National / bulk sources */}
@@ -295,8 +311,15 @@ export default async function ProvenancePage({ params }: Props) {
             </p>
           ) : (
             <ul className="space-y-4">
-              {fieldEntries.map(([fieldKey, src]) => (
-                <li key={fieldKey} className="pb-4 border-b border-border/50 last:border-b-0 last:pb-0">
+              {fieldEntries.map(([fieldKey, src]) => {
+                const evidenceUrl = buildEvidenceUrl(src);
+                const waybackUrl = waybackFor(src.url, src.wayback_url);
+                return (
+                <li
+                  key={fieldKey}
+                  id={`field-${fieldKey}`}
+                  className="pb-4 border-b border-border/50 last:border-b-0 last:pb-0 scroll-mt-24 target:bg-muted/30 target:rounded-lg target:p-3 target:-mx-3"
+                >
                   <div className="flex items-start justify-between gap-4 mb-1">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -312,34 +335,79 @@ export default async function ProvenancePage({ params }: Props) {
                       </div>
                       <p className="type-caption text-muted-foreground break-words">{src.title}</p>
                       {src.page && (
-                        <p className="type-caption text-muted-foreground mt-1">Page {src.page}</p>
+                        <p className="type-caption text-muted-foreground mt-1">
+                          Page {src.page} — the source link opens at this page
+                        </p>
+                      )}
+                      {src.excerpt && (
+                        <blockquote className="type-caption text-muted-foreground border-l-2 border-border pl-2 mt-2 break-words">
+                          &ldquo;{src.excerpt}&rdquo;
+                        </blockquote>
                       )}
                     </div>
+                    <div className="shrink-0 flex flex-col items-end gap-1.5">
+                      <a
+                        href={evidenceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        Open source
+                        <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                        <span className="sr-only"> (opens in new tab)</span>
+                      </a>
+                      {waybackUrl && (
+                        <a
+                          href={waybackUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          Archived copy
+                          <Landmark className="h-3 w-3" aria-hidden="true" />
+                          <span className="sr-only"> (Wayback Machine, opens in new tab)</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  {src.page_image_url && (
                     <a
-                      href={src.url}
+                      href={src.page_image_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors"
+                      className="mt-2 inline-flex items-center gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted transition-colors group"
                     >
-                      Open source
-                      <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                      <span className="sr-only"> (opens in new tab)</span>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={src.page_image_url}
+                        alt={`Page ${src.page ?? ''} of ${src.title} — where this value appears`}
+                        loading="lazy"
+                        className="w-10 h-12 object-cover object-top rounded border border-border/50"
+                      />
+                      <span className="type-caption text-muted-foreground group-hover:text-foreground transition-colors">
+                        See the original page (screenshot)
+                        <span className="sr-only"> (opens in new tab)</span>
+                      </span>
                     </a>
-                  </div>
+                  )}
                   <div className="mt-2 flex items-center gap-3 flex-wrap">
                     <p className="type-caption text-muted-foreground flex items-center gap-1.5">
                       <Calendar className="h-3 w-3" aria-hidden="true" />
                       <span className="tabular-nums">Accessed {src.accessed}</span>
                     </p>
                     {src.sha256_at_access && (
-                      <p className="type-caption text-muted-foreground flex items-center gap-1.5">
+                      <p
+                        className="type-caption text-muted-foreground flex items-center gap-1.5"
+                        title={`SHA-256 of the document when we fetched it: ${src.sha256_at_access}`}
+                      >
                         <ShieldCheck className="h-3 w-3" aria-hidden="true" />
                         <span className="font-mono tabular-nums">sha256 {src.sha256_at_access.slice(0, 12)}…</span>
                       </p>
                     )}
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </section>

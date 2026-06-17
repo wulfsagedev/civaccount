@@ -1,0 +1,22 @@
+{
+  "council": "Chichester",
+  "slug": "chichester",
+  "north_star_complete": true,
+  "batch": "47-4",
+  "phases": {
+    "phase_0_inventory": { "done": true },
+    "phase_1_archive": { "done": true },
+    "phase_1b_page_images": { "done": true, "images": 2 },
+    "phase_2_extract": { "done": true, "candidates": 1, "parse_failures": 0 },
+    "phase_3_strip": { "done": true },
+    "phase_3_5_tier1_drift": { "done": true, "drift": 0 },
+    "phase_4_populate": { "done": true },
+    "phase_5_validate": { "done": true, "errors": 0, "regressions": 0 },
+    "phase_5b_ux_audit": { "done": true, "violations": 0 },
+    "phase_5c_reality_check": { "done": true, "verbatim": "4/4" },
+    "phase_5d_screenshot_parity": { "done": true, "screenshots": 2, "verbatim_1to1": 2, "mismatched": 0 },
+    "phase_6_document": { "done": true },
+    "phase_7_ship": { "done": true }
+  },
+  "last_session": "2026-06-17"
+}

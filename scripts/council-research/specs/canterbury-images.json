@@ -1,0 +1,23 @@
+[
+  {
+    "council": "Canterbury",
+    "field": "reserves",
+    "pdf": "statement-20of-20accounts-202024-20to-202025.pdf",
+    "page": 13,
+    "value": "2070000"
+  },
+  {
+    "council": "Canterbury",
+    "field": "total_allowances_cost",
+    "pdf": "statement-20of-20accounts-202024-20to-202025.pdf",
+    "page": 58,
+    "value": "373929"
+  },
+  {
+    "council": "Canterbury",
+    "field": "budget_gap",
+    "pdf": "financial-outlook-draft-budget-2025-26.pdf",
+    "page": 2,
+    "value": "500000"
+  }
+]

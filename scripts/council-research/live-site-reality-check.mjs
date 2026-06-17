@@ -44,6 +44,7 @@ const BATCH_67 = [
   { name: 'Bristol', slug: 'bristol' },
   { name: 'Lancashire', slug: 'lancashire' },
   { name: 'Tower Hamlets', slug: 'tower-hamlets' },
+  { name: 'Broxbourne', slug: 'broxbourne' },
 ];
 
 // For each council, the 3 key values we expect to find verbatim.
@@ -69,6 +70,11 @@ const CHECKS = {
     { value: '213,454', where: 'statement-of-accounts-2023-24.pdf', note: 'CE Kate Josephs Note 10a' },
     { value: 'Kate Josephs', where: 'statement-of-accounts-2023-24.pdf', note: 'CE name' },
     { value: '557,970', where: 'statement-of-accounts-2023-24.pdf', note: 'Total usable reserves' },
+  ],
+  broxbourne: [
+    { value: '136,508', where: 'statement-of-accounts-2024-25.pdf', note: 'CE salary Note 27 (p43)' },
+    { value: 'J T Stack', where: 'annual-governance-statement-2024-25.pdf', note: 'CE name AGS signature (p8)' },
+    { value: '6,572', where: 'statement-of-accounts-2024-25.pdf', note: 'General Fund Reserve Note 6 (p25)' },
   ],
   westminster: [
     { value: '232,389', where: 'annual-accounts-2023-24.pdf', note: 'CE Stuart Love Note 10a' },
@@ -144,6 +150,16 @@ const CHECKS = {
     { value: '21.2', where: 'statement-of-accounts-2024-25.pdf', note: 'GF balances MIRS' },
     { value: 'Lutfur Rahman', where: 'statement-of-accounts-2024-25.pdf', note: 'Executive Mayor' },
     { value: 'General Fund', where: 'statement-of-accounts-2024-25.pdf', note: 'Section exists' },
+  ],
+  'basingstoke-and-deane': [
+    { value: 'Russell O\'Keefe', where: 'statement-of-accounts-2024-25.pdf', note: 'CE name (Note 23 remuneration)' },
+    { value: '157,581', where: 'statement-of-accounts-2024-25.pdf', note: 'CE salary 2024/25 (Note 23)' },
+    { value: '£1.5M General Fund balance', where: 'statement-of-accounts-2024-25.pdf', note: 'GF working balance narrative p70' },
+  ],
+  boston: [
+    { value: '157,200', where: 'appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf', note: 'CE salary (Note 30a Senior Officers Remuneration)' },
+    { value: 'General Fund', where: 'appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf', note: 'GF reserve row exists (p12 / MIRS p17)' },
+    { value: '367', where: 'appendix-201-20--20unaudited-20financial-20statements-202024-25.pdf', note: 'Total members allowances (Note 29)' },
   ],
 };
 

@@ -154,11 +154,12 @@ export default function DataValidationPage() {
           <section className="space-y-3">
             <h2 className="type-title-2">How to spot-check a number</h2>
             <ol className="list-decimal list-inside space-y-2 type-body text-muted-foreground">
-              <li>Tap any figure on the site — a popover shows the source title, data year, and an &ldquo;Open source document&rdquo; link.</li>
-              <li>Click the link. The document opens directly in a new tab.</li>
-              <li>For a CSV source, look up the row by ONS code or council name. For a PDF, use the page reference shown.</li>
-              <li>If the document has moved, the popover falls back to the archived copy from when we last verified.</li>
-              <li>If the number doesn&apos;t match what the source says, tap &ldquo;Report incorrect data&rdquo; on the popover — every report is triaged and the triage decision is recorded with the original citation.</li>
+              <li>Tap any figure on the site — a popover shows the source title, the data year, the page number, and the exact line we read the value from, quoted word for word.</li>
+              <li>Click the source link. PDFs open at the cited page; web pages highlight the quoted line in supporting browsers.</li>
+              <li>Where we hold a screenshot of the cited page, &ldquo;See the original page&rdquo; shows it without downloading anything.</li>
+              <li>The popover also shows the date we checked the source, the document&apos;s SHA-256 fingerprint, and an &ldquo;Archived copy&rdquo; link (Wayback Machine) in case the council has moved or deleted the page.</li>
+              <li>For a CSV source, look up the row by ONS code or council name using the locator shown.</li>
+              <li>If the number doesn&apos;t match what the source says, tap &ldquo;Report a mistake&rdquo; on the popover — every report is triaged and the triage decision is recorded with the original citation.</li>
             </ol>
           </section>
 

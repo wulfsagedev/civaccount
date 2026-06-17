@@ -1,0 +1,63 @@
+{
+  "council": "Broadland",
+  "slug": "broadland",
+  "batch": "46-1",
+  "north_star_complete": true,
+  "shared_management": "Joint management team with South Norfolk DC (South Norfolk and Broadland partnership). Every rendered value is Broadland's OWN figure (joint MD's full salary is in BDC's own SoA Note 24 because the postholder is a BDC employee; allowance rates from BDC's own Constitution). No South Norfolk figure used.",
+  "kept_fields": ["reserves", "chief_executive", "council_leader", "chief_executive_salary", "total_allowances_cost", "councillor_basic_allowance", "leader_allowance"],
+  "stripped_fields": ["budget_gap", "savings_target", "salary_bands", "cabinet", "councillor_allowances_detail", "grant_payments", "top_suppliers", "performance_kpis", "service_outcomes", "service_spending", "staff_fte"],
+  "gates": {
+    "validate": "0 errors, 0 regressions",
+    "audit_north_star": "0/5 gaps",
+    "tier1_drift": "0 cells / 23 checks",
+    "ux_audit": "0/0 (post-proof)",
+    "live_site_reality": "7/7 verbatim",
+    "screenshot_parity": "7 screenshots, 7 verbatim-1:1, 0 mismatched, 0 missing PNG",
+    "proof_engine": "7 Tier-3 PROVEN (5 PROVEN_STALE + 2 PROVEN_CURRENT) + 6 Band D exact"
+  },
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-16T12:55:10.010Z",
+      "candidates": 4
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-16T12:57:25.664Z",
+      "results": {
+        "ok": 6,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-16T12:57:42.008Z",
+      "candidates": 17,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-16T12:58:41.715Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-16T13:04:53.718Z",
+      "images": 5
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T13:05:05.853Z",
+      "fields": [
+        "reserves",
+        "chief_executive_salary",
+        "total_allowances_cost",
+        "councillor_basic_allowance",
+        "chief_executive"
+      ]
+    }
+  },
+  "last_session": "2026-06-16T13:05:05.853Z"
+}

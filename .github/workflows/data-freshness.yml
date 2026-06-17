@@ -96,6 +96,16 @@ jobs:
         run: npm run validate 2>&1 | tee validation-output.txt
         continue-on-error: true
 
+      # ─── Step 3b: Top up Wayback archive coverage ───
+      # Maps every cited source URL to an Internet Archive snapshot
+      # (src/data/wayback-fallbacks.json drives the "Archived copy" links
+      # readers see). Save-Page-Now is capped per run, so coverage compounds
+      # month over month without hammering archive.org. Degrades gracefully
+      # when the private data files aren't on the runner.
+      - name: Wayback archive top-up
+        run: node scripts/wayback-backfill.mjs --save --save-cap=15
+        continue-on-error: true
+
       # ─── Step 4: Regenerate coverage stats ───
       - name: Regenerate coverage stats
         run: npm run generate:coverage
@@ -123,6 +133,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add src/data/coverage-stats.ts \
+                  src/data/wayback-fallbacks.json \
                   src/data/councils/pdfs/gov-uk-bulk-data/Band_D_2026-27.ods \
                   src/data/councils/pdfs/gov-uk-bulk-data/parsed-area-band-d.csv \
                   src/data/councils/county-councils.ts \

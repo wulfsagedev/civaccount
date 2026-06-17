@@ -126,6 +126,11 @@ const sweepScript = `
     if (r.text === 'Staff earning £50,000 or more' || r.text === 'staff earn £50,000 or more') return false;
     if (/^In 20\\d\\d-\\d\\d,/.test(r.text)) return false;
     if (/^\\d\\d? [A-Z][a-z]+ \\d{4}$/.test(r.text)) return false;
+    // Dataset-version stamp (DataSourcesFooter): a bare git commit SHA is
+    // provenance metadata about the dataset itself, not a council data value.
+    // Hex-only token with at least one a-f letter — rendered data numbers
+    // always carry £ / comma separators, so no collision is possible.
+    if (/^(?=.*[a-f])[0-9a-f]{7,40}$/.test(r.text)) return false;
     return true;
   });
 

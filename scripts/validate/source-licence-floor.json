@@ -1,0 +1,5 @@
+{
+  "max_violations": 39,
+  "note": "Ratchet floor — source-licence violations may only decrease. Lower this number as rollouts/audits clean councils; the validator errors if the live count ever exceeds it. Lowered 43 → 39 on 2026-06-16 (Batch-45-4 Boston rollout removed 4 mybostonuk.com citations — re-sourced to SoA/council pages or stripped).",
+  "set_at": "2026-06-16"
+}

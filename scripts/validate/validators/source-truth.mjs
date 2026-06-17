@@ -9,7 +9,8 @@
  * VP1 scope (this commit):
  *   - Band D council tax (5 years) — exact
  *   - RA Part 1 budget categories (13 columns) — ±10% relative
- *   - RA Part 2 net_current + reserves semantic check
+ *   - RA Part 1 net_current (bottom-line column of the same file;
+ *     Part 2 holds reserves/HRA only) — ±10% relative
  *   - ONS population — ±100 absolute
  *   - LGBCE total_councillors — exact
  *   - DEFRA recycling rate — ±0.5pp absolute
@@ -50,7 +51,7 @@ function parseCsvLine(line) {
   return result;
 }
 
-function loadRaCsv(filename, valueColumns) {
+function loadRaCsv(filename, valueColumns, report) {
   const path = join(RA_DIR, filename);
   if (!existsSync(path)) return new Map();
   const content = readFileSync(path, 'utf-8');
@@ -61,6 +62,26 @@ function loadRaCsv(filename, valueColumns) {
   for (let i = 0; i < header.length; i++) {
     const h = header[i].trim();
     if (valueColumns[h]) colMap[valueColumns[h]] = i;
+  }
+  // FAIL-LOUD: a requested column missing from the header means every
+  // check on that field silently disappears (empty map → lookups all
+  // skip). That must surface as an error, not read as "all passing".
+  const missing = Object.entries(valueColumns)
+    .filter(([, field]) => colMap[field] === undefined)
+    .map(([h]) => h);
+  if (missing.length > 0) {
+    console.warn(
+      `⚠ ${filename}: column(s) not found in header row (file line 10): ` +
+      `${missing.map((h) => `"${h}"`).join(', ')} — their cross-checks are SKIPPED. ` +
+      'The GOV.UK file layout may have changed; fix the column mapping.',
+    );
+    for (const h of missing) {
+      report.finding(
+        { name: 'SYSTEM', ons_code: '' }, 'source-truth', 'csv_column_missing', 'error',
+        `${filename}: requested column "${h}" not found in header row — its checks would be silently skipped`,
+        'system', null, h,
+      );
+    }
   }
   const result = new Map();
   for (let r = 10; r < lines.length; r++) {
@@ -187,11 +208,11 @@ export function validate(councils, population, report) {
     'TOTAL CENTRAL SERVICES': 'central_services',
     'TOTAL OTHER SERVICES': 'other',
     'TOTAL SERVICE EXPENDITURE': 'total_service',
-  });
-
-  const raPart2 = loadRaCsv('RA_Part2_LA_Data.csv', {
+    // Bottom-line column of the SAME Part 1 file. This used to be looked
+    // up in RA_Part2_LA_Data.csv, where the header does not exist — the
+    // map came back empty and every net_current check silently skipped.
     'NET CURRENT EXPENDITURE': 'net_current',
-  });
+  }, report);
 
   const BUDGET_TOL = 0.10;
   const BUDGET_FIELDS = Object.keys({
@@ -234,17 +255,16 @@ export function validate(councils, population, report) {
       }
     }
 
-    // budget.net_current vs RA Part 2
-    const raRow2 = raPart2.get(ons);
-    if (raRow2?.net_current != null && b.net_current != null) {
+    // budget.net_current vs RA Part 1 bottom line
+    if (raRow?.net_current != null && b.net_current != null) {
       report.tick();
-      const delta = b.net_current - raRow2.net_current;
-      const pass = withinRelative(b.net_current, raRow2.net_current, 0.10);
-      record({ council: c.name, ons, field: 'budget.net_current', rendered: b.net_current, source: raRow2.net_current, delta, delta_pct: raRow2.net_current ? (delta / raRow2.net_current) * 100 : null, tolerance: { kind: 'relative', max: 0.10 }, status: pass ? 'pass' : 'fail' });
+      const delta = b.net_current - raRow.net_current;
+      const pass = withinRelative(b.net_current, raRow.net_current, 0.10);
+      record({ council: c.name, ons, field: 'budget.net_current', rendered: b.net_current, source: raRow.net_current, delta, delta_pct: raRow.net_current ? (delta / raRow.net_current) * 100 : null, tolerance: { kind: 'relative', max: 0.10 }, status: pass ? 'pass' : 'fail' });
       if (!pass) {
         report.finding(c, 'source-truth', 'budget_net_current_drift', 'warning',
-          `budget.net_current ${b.net_current}k differs from RA Part 2 reference ${raRow2.net_current}k by ${((delta / raRow2.net_current) * 100).toFixed(1)}%`,
-          'budget.net_current', b.net_current, `${raRow2.net_current} (±10%)`);
+          `budget.net_current ${b.net_current}k differs from RA Part 1 reference ${raRow.net_current}k by ${((delta / raRow.net_current) * 100).toFixed(1)}%`,
+          'budget.net_current', b.net_current, `${raRow.net_current} (±10%)`);
       }
     }
 

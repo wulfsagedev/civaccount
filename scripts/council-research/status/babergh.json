@@ -1,0 +1,115 @@
+{
+ "council": "Babergh",
+ "slug": "babergh",
+ "phases": {
+  "phase_0_inventory": {
+   "done": true,
+   "at": "2026-06-10T11:12:12.035Z",
+   "candidates": 9
+  },
+  "phase_1_archive": {
+   "done": true,
+   "at": "2026-06-10T11:25:36.172Z",
+   "results": {
+    "ok": 7,
+    "skipped": 0,
+    "blocked": 0,
+    "failed": 0
+   }
+  },
+  "phase_2_extract": {
+   "done": true,
+   "at": "2026-06-10T11:26:09.046Z",
+   "candidates": 35,
+   "parse_failures": 0
+  },
+  "phase_3_5_tier1_crosscheck": {
+   "done": true,
+   "at": "2026-06-10T11:51:18.336Z",
+   "drift": 0
+  },
+  "phase_1b_page_images": {
+   "done": true,
+   "at": "2026-06-10T11:37:19.943Z",
+   "images": 6
+  },
+  "phase_4_populate": {
+   "done": true,
+   "at": "2026-06-10T11:37:54.643Z",
+   "fields": [
+    "chief_executive_salary",
+    "chief_executive",
+    "reserves",
+    "total_allowances_cost",
+    "councillor_basic_allowance",
+    "budget_gap"
+   ]
+  },
+  "phase_3_strip": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "stripped": [
+    "savings_target",
+    "cabinet",
+    "councillor_allowances_detail",
+    "leader_allowance",
+    "staff_fte",
+    "performance_kpis",
+    "service_outcomes",
+    "service_spending",
+    "documents",
+    "grant_payments",
+    "top_suppliers"
+   ]
+  },
+  "phase_3_6_tier4_links": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "note": "1 Tier-4 citation (council_leader news page) HTTP 200 + wayback; CE verified 2 ways (AGS 24/02/2026 + live SLT page); Leader verified 2 ways (council news 13/05/26 + press)"
+  },
+  "phase_5_validators": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "validate_errors": 0,
+   "north_star_gaps": "0/5"
+  },
+  "phase_5b_ux_audit": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "violations": "0/0",
+   "note": "after npm run proof + generate:proven (Ashford lesson)"
+  },
+  "phase_5c_reality_check": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "result": "7/7 verbatim (manual greps)"
+  },
+  "phase_5d_screenshot_parity": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "result": "7 screenshots, 7 verbatim-1:1, 0 mismatched, 0 missing PNG"
+  },
+  "phase_proof_engine": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "result": "7 Tier-3 PROVEN, 0 unproven; evidence-clean; 6/6 Band D exact"
+  },
+  "phase_6_document": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "files": [
+    "docs/BABERGH-AUDIT.md",
+    "manifests/babergh.json"
+   ]
+  },
+  "phase_7_ship": {
+   "done": true,
+   "at": "2026-06-10T12:05:00.000Z",
+   "strict_councils": true,
+   "screenshot_parity_list": "Batch-44 line"
+  }
+ },
+ "last_session": "2026-06-10T12:05:00.000Z",
+ "north_star_complete": true,
+ "batch": "44-5"
+}

@@ -8,11 +8,11 @@
 export const populationData: Record<string, number> = {
   // District Councils (SD)
   "Adur": 64200,
-  "Amber Valley": 128900,
-  "Arun": 165500,
-  "Ashfield": 128500,
-  "Ashford": 134200,
-  "Babergh": 93500,
+  "Amber Valley": 130451,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 128,900 (mid-2022 era).
+  "Arun": 170064,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 165,500 (mid-2022 era).
+  "Ashfield": 129572,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 128,500 (mid-2022 era).
+  "Ashford": 140936,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 134,200 (mid-2022 era).
+  "Babergh": 97033,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 93,500 (mid-2022 era).
   "Barnsley": 246400,
   "Barrow-in-Furness": 67400,
   "Basildon": 187800,
@@ -20,25 +20,25 @@ export const populationData: Record<string, number> = {
   "Bassetlaw": 124937,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 118,800 (mid-2022 era).
   "Blaby": 102300,
   "Bolsover": 82400,
-  "Boston": 72100,
+  "Boston": 71080,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes nearest-hundred convention. Was 72,100 (mid-2022 era).
   "Braintree": 155600,
-  "Breckland": 143400,
+  "Breckland": 146620,
   "Brentwood": 78200,
-  "Broadland": 132700,
-  "Bromsgrove": 100400,
-  "Broxbourne": 98100,
+  "Broadland": 138157,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 132,700 (mid-2022 era).
+  "Bromsgrove": 101685,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 100,400 (mid-2022 era).
+  "Broxbourne": 101900,
   "Broxtowe": 114400,
   "Burnley": 99200,
   "Cambridge": 145700,
-  "Cannock Chase": 101500,
+  "Cannock Chase": 104088,
   "Canterbury": 170400,
-  "Castle Point": 91400,
-  "Charnwood": 189100,
+  "Castle Point": 90581,
+  "Charnwood": 188385,
   "Chelmsford": 183600,
-  "Cheltenham": 118800,
+  "Cheltenham": 121739,
   "Cherwell": 154100,
   "Chesterfield": 104800,
-  "Chichester": 124600,
+  "Chichester": 128934,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 124,600 (mid-2022 era).
   "Chorley": 119300,
   "Colchester": 203400,
   "Cotswold": 90600,

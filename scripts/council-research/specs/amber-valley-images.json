@@ -1,0 +1,45 @@
+[
+  {
+    "council": "Amber Valley",
+    "field": "chief_executive",
+    "pdf": "statement-of-accounts-2023-24.pdf",
+    "page": 148,
+    "value": "Simon Gladwin"
+  },
+  {
+    "council": "Amber Valley",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2023-24.pdf",
+    "page": 20,
+    "value": "9079"
+  },
+  {
+    "council": "Amber Valley",
+    "field": "total_allowances_cost",
+    "pdf": "members-allowances-2022-23.pdf",
+    "page": 2,
+    "value": "269162"
+  },
+  {
+    "council": "Amber Valley",
+    "field": "leader_allowance",
+    "pdf": "members-allowances-scheme.pdf",
+    "page": 5,
+    "value": "£17,610",
+    "note": "Schedule 1 — Leader of Council SRA (3 x Basic Allowance)"
+  },
+  {
+    "council": "Amber Valley",
+    "field": "chief_executive_salary",
+    "pdf": "pay-policy-statement.pdf",
+    "page": 5,
+    "value": "124122"
+  },
+  {
+    "council": "Amber Valley",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-allowances-scheme.pdf",
+    "page": 5,
+    "value": "5870"
+  }
+]

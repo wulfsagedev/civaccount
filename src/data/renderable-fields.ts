@@ -73,8 +73,8 @@ const CATEGORY_A: RenderableField[] = [
   // Revenue outturn Part 1 (budget categories)
   { path: 'budget.education', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL EDUCATION SERVICES', label: 'Education budget', status: 'verified_source' },
   { path: 'budget.transport', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL HIGHWAYS AND TRANSPORT SERVICES', label: 'Transport budget', status: 'verified_source' },
-  { path: 'budget.childrens_social_care', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: "TOTAL CHILDREN'S SOCIAL CARE SERVICES", label: "Children's social care budget", status: 'verified_source' },
-  { path: 'budget.adult_social_care', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL ADULT SOCIAL CARE SERVICES', label: 'Adult social care budget', status: 'verified_source' },
+  { path: 'budget.childrens_social_care', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: "TOTAL CHILDREN'S SOCIAL CARE", label: "Children's social care budget", status: 'verified_source' },
+  { path: 'budget.adult_social_care', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL ADULT SOCIAL CARE', label: 'Adult social care budget', status: 'verified_source' },
   { path: 'budget.public_health', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL PUBLIC HEALTH', label: 'Public health budget', status: 'verified_source' },
   { path: 'budget.housing', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL HOUSING SERVICES (GFRA only)', label: 'Housing budget', status: 'verified_source' },
   { path: 'budget.cultural', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL CULTURAL AND RELATED SERVICES', label: 'Cultural / parks budget', status: 'verified_source' },
@@ -83,9 +83,11 @@ const CATEGORY_A: RenderableField[] = [
   { path: 'budget.central_services', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL CENTRAL SERVICES', label: 'Central services budget', status: 'verified_source' },
   { path: 'budget.other', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL OTHER SERVICES', label: 'Other services budget', status: 'verified_source' },
   { path: 'budget.total_service', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'TOTAL SERVICE EXPENDITURE', label: 'Total service budget', status: 'verified_source' },
+  // NET CURRENT EXPENDITURE is the bottom-line column of the SAME Part 1
+  // file — Part 2 holds reserves/HRA columns only.
+  { path: 'budget.net_current', origin: 'national_csv', dataset_id: 'revenue-expenditure-part1', source_file: 'gov-uk-ra-data/RA_Part1_LA_Data.csv', csv_column: 'NET CURRENT EXPENDITURE', label: 'Net current expenditure', status: 'verified_source' },
 
   // Revenue outturn Part 2
-  { path: 'budget.net_current', origin: 'national_csv', dataset_id: 'revenue-expenditure-part2', source_file: 'gov-uk-ra-data/RA_Part2_LA_Data.csv', csv_column: 'NET CURRENT EXPENDITURE', label: 'Net current expenditure', status: 'verified_source' },
   { path: 'detailed.reserves', origin: 'national_csv', dataset_id: 'reserves', source_file: 'parsed-reserves.csv', csv_column: 'reserves_k', label: 'Reserves (total usable)', status: 'verified_source' },
 
   // Population

@@ -1,0 +1,51 @@
+[
+  {
+    "council": "Castle Point",
+    "field": "reserves",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 25,
+    "value": "5803000"
+  },
+  {
+    "council": "Castle Point",
+    "field": "chief_executive_salary",
+    "pdf": "payscales-2025-26.pdf",
+    "page": 1,
+    "value": "138960"
+  },
+  {
+    "council": "Castle Point",
+    "field": "councillor_basic_allowance",
+    "pdf": "members-allowances-2025-26.pdf",
+    "page": 1,
+    "value": "4414"
+  },
+  {
+    "council": "Castle Point",
+    "field": "total_allowances_cost",
+    "pdf": "members-allowances-2025-26.pdf",
+    "page": 3,
+    "value": "301492"
+  },
+  {
+    "council": "Castle Point",
+    "field": "salary_bands",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 57,
+    "value": "32"
+  },
+  {
+    "council": "Castle Point",
+    "field": "chief_executive",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 141,
+    "value": "Angela Hutchings"
+  },
+  {
+    "council": "Castle Point",
+    "field": "council_leader",
+    "pdf": "statement-of-accounts-2024-25.pdf",
+    "page": 141,
+    "value": "Dave Blackwell"
+  }
+]

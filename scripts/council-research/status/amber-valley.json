@@ -1,0 +1,108 @@
+{
+  "council": "Amber Valley",
+  "slug": "amber-valley",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-10T05:55:00.000Z",
+      "candidates": 5,
+      "note": "auto-probe found 0 (origin TCP-blocked); 5 sources supplemented by hand via Wayback copies of landing pages per script guidance"
+    },
+    "phase_1_archive": {
+      "done": true,
+      "at": "2026-06-10T06:23:30.205Z",
+      "results": {
+        "ok": 3,
+        "skipped": 2,
+        "blocked": 0,
+        "failed": 0
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-10T06:03:17.483Z",
+      "candidates": 13,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-10T06:04:36.950Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-10T06:26:30.474Z",
+      "images": 6
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-10T06:27:06.827Z",
+      "fields": [
+        "chief_executive",
+        "reserves",
+        "total_allowances_cost",
+        "chief_executive_salary",
+        "councillor_basic_allowance"
+      ]
+    },
+    "phase_3_strip": {
+      "done": true,
+      "at": "2026-06-10T06:20:00.000Z",
+      "stripped": [
+        "performance_kpis",
+        "service_spending",
+        "service_outcomes",
+        "top_suppliers",
+        "staff_fte",
+        "salary_bands",
+        "councillor_allowances_detail",
+        "documents",
+        "budget_gap",
+        "savings_target",
+        "council_leader",
+        "cabinet"
+      ]
+    },
+    "phase_3_6_tier4_links": {
+      "done": true,
+      "at": "2026-06-10T06:33:00.000Z",
+      "note": "no Tier-4 field_sources shipped (all 6 entries Tier-3 archived); CE name currency verified via web search 2026-06-10"
+    },
+    "phase_5_validators": {
+      "done": true,
+      "at": "2026-06-10T06:40:00.000Z",
+      "errors": 0
+    },
+    "phase_5b_ux_audit": {
+      "done": true,
+      "at": "2026-06-10T06:36:00.000Z",
+      "violations": 0,
+      "note": "0 unwrapped / 0 derived; global dataset-stamp false-positive fixed in ux-audit filter"
+    },
+    "phase_5c_reality_check": {
+      "done": true,
+      "at": "2026-06-10T06:34:00.000Z",
+      "verbatim": "5/5 manual (script set doesn't cover this council)"
+    },
+    "phase_5d_screenshot_parity": {
+      "done": true,
+      "at": "2026-06-10T06:38:00.000Z",
+      "line": "✓ Amber Valley: 6 screenshot(s) · 6 verbatim-1:1 · 0 archival-only · 0 mismatched · 0 missing PNG"
+    },
+    "phase_6_document": {
+      "done": true,
+      "at": "2026-06-10T06:45:00.000Z",
+      "audit_doc": "src/data/councils/docs/AMBER-VALLEY-AUDIT.md",
+      "manifest": "src/data/councils/manifests/amber-valley.json"
+    },
+    "phase_7_ship": {
+      "done": true,
+      "at": "2026-06-10T06:50:00.000Z",
+      "strict_councils": true,
+      "screenshot_parity_list": "Batch-44 (2026-06-10)"
+    }
+  },
+  "last_session": "2026-06-10T06:27:06.827Z",
+  "north_star_complete": true,
+  "batch": "44-1"
+}

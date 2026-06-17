@@ -35,9 +35,11 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, basename, extname } from 'node:path';
 
 import { fetchUrl } from './lib/fetch.mjs';
+import { robustFetchPdf } from './lib/robust-fetch.mjs';
 import { hashBuffer, hashFile } from './lib/sha256.mjs';
 import { readMeta, writeMeta, validateMeta } from './lib/meta.mjs';
 import { ensureSnapshot } from './lib/wayback.mjs';
+import { startRun } from './lib/journal.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..', '..');
@@ -63,6 +65,8 @@ function slugify(n) {
   return n.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+const run = startRun('02-archive', councilName);
+
 // ── Main ─────────────────────────────────────────────────────────
 
 async function main() {
@@ -78,7 +82,13 @@ async function main() {
   let entries;
   if (existsSync(inventoryPath)) {
     const raw = JSON.parse(readFileSync(inventoryPath, 'utf8'));
-    entries = raw.documents || [];
+    // Accept both inventory shapes: the legacy `documents[].source_url`
+    // and the rich `sources[].url` written by 01-inventory + the
+    // hand-authored retroactive inventories.
+    entries = (raw.documents || raw.sources || []).map((e) => ({
+      ...e,
+      source_url: e.source_url || e.url,
+    })).filter((e) => e.source_url);
     console.log(`Archive: ${entries.length} entries from ${inventoryPath}`);
   } else {
     // Re-verification mode — walk _meta.json files.
@@ -110,6 +120,10 @@ async function main() {
   // Update status file
   updateStatus(slug, { phase_1_archive: { done: failed === 0, at: new Date().toISOString(), results: { ok, skipped, blocked, failed } } });
 
+  run.finish(failed > 0 ? 'failed' : 'ok', {
+    ok, skipped, blocked, failed,
+    failed_urls: entries.filter((_, i) => results[i]?.status === 'failed').map((e) => e.source_url),
+  });
   process.exit(failed > 0 ? 1 : 0);
 }
 
@@ -150,16 +164,62 @@ async function archiveOne(entry, { councilDir, skipWayback }) {
     }
   }
 
-  // Fetch
+  // Fetch — direct first; PDFs that fail or come back as WAF HTML fall
+  // through the ROLLOUT-LESSONS §1 ladder (wayback-snapshot → wayback-
+  // save → save+poll) via robustFetchPdf before we give up.
+  const expectsPdf =
+    /\.pdf(\?|$)/i.test(url) ||
+    /mgConvert2PDF|documents\/s\d+/i.test(url) ||
+    filename.toLowerCase().endsWith('.pdf');
+
   const res = await fetchUrl(url);
 
-  if (!res.ok) {
-    if (res.cloudflareBlocked) {
-      // Bot-blocked. If we already have a local file with a valid
-      // sha256 in the existing meta, PRESERVE the existing record —
-      // the file was fetched previously (perhaps via Wayback) and is
-      // still valid. Only write a fresh archive_exempt meta when we
-      // have no existing local archive.
+  // ROLLOUT-LESSONS §1 smoke check: a WAF can serve a bot-block page
+  // with 200 + a .pdf URL. Never hash that. Treat as not-ok so the
+  // ladder takes over.
+  const looksLikePdf = res.ok && res.body && res.body.length >= 5 &&
+    new TextDecoder('latin1').decode(res.body.slice(0, 5)) === '%PDF-';
+  const directOk = res.ok && (!expectsPdf || looksLikePdf);
+  if (res.ok && expectsPdf && !looksLikePdf) {
+    console.warn(`  ! ${filename}: 200 response but body is not a PDF (WAF bot-page?) — trying fetch ladder`);
+  }
+
+  let fetchMethod = 'direct_https';
+
+  if (!directOk) {
+    if (expectsPdf) {
+      // Climb the ladder. robustFetchPdf writes the file itself and
+      // verifies %PDF- magic bytes per strategy.
+      mkdirSync(councilDir, { recursive: true });
+      const ladder = await robustFetchPdf(url, pdfPath);
+      if (ladder.ok) {
+        const sha = hashFile(pdfPath);
+        const wb = skipWayback ? null : await ensureSnapshot(url);
+        const meta = {
+          ...(existingMeta || {}),
+          source_url: url,
+          publisher: entry.publisher || existingMeta?.publisher || '',
+          document_type: entry.document_type || existingMeta?.document_type || classifyUrl(url),
+          fiscal_year: entry.fiscal_year || existingMeta?.fiscal_year || 'unknown',
+          fetched: new Date().toISOString(),
+          sha256: sha,
+          content_type: 'application/pdf',
+          content_length: statSync(pdfPath).size,
+          fetch_method: `ladder:${ladder.strategy}`,
+          wayback_url: wb || existingMeta?.wayback_url || existingMeta?.archive_url || null,
+          licence: existingMeta?.licence || 'Open Government Licence v3.0',
+        };
+        writeMeta(metaPath, meta);
+        return { status: 'ok', path: pdfPath, sha256: sha, via: ladder.strategy };
+      }
+    }
+
+    if (res.cloudflareBlocked || (res.ok && expectsPdf && !looksLikePdf)) {
+      // Bot-blocked and the ladder couldn't reach it either. If we
+      // already have a local file with a valid sha256 in the existing
+      // meta, PRESERVE the existing record — the file was fetched
+      // previously (perhaps via Wayback) and is still valid. Only
+      // write a fresh archive_exempt meta when we have no archive.
       if (existingMeta?.sha256 && existsSync(pdfPath)) {
         const localSha = hashFile(pdfPath);
         if (localSha === existingMeta.sha256) {
@@ -204,6 +264,7 @@ async function archiveOne(entry, { councilDir, skipWayback }) {
     sha256: sha,
     content_type: res.contentType,
     content_length: res.contentLength,
+    fetch_method: fetchMethod,
     wayback_url: wb || existingMeta?.wayback_url || existingMeta?.archive_url || null,
     licence: existingMeta?.licence || 'Open Government Licence v3.0',
   };
@@ -292,5 +353,6 @@ function updateStatus(slug, patch) {
 
 main().catch((e) => {
   console.error('Fatal:', e);
+  run.finish('crashed', { error: String(e?.stack || e) });
   process.exit(2);
 });

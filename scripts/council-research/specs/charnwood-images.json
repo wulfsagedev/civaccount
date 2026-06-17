@@ -1,0 +1,30 @@
+[
+  {
+    "council": "Charnwood",
+    "field": "reserves",
+    "pdf": "202627-20draft-20budget-20report-20final-202-20december.pdf",
+    "page": 12,
+    "value": "6579000"
+  },
+  {
+    "council": "Charnwood",
+    "field": "councillor_basic_allowance",
+    "pdf": "allowances-20scheme-202026-27.pdf",
+    "page": 4,
+    "value": "6192"
+  },
+  {
+    "council": "Charnwood",
+    "field": "leader_allowance",
+    "pdf": "allowances-20scheme-202026-27.pdf",
+    "page": 4,
+    "value": "15064"
+  },
+  {
+    "council": "Charnwood",
+    "field": "total_allowances_cost",
+    "pdf": "councillors-20-26-20independent-20members-20allowances-20and-20expenses-202024-25.pdf",
+    "page": 2,
+    "value": "415296"
+  }
+]

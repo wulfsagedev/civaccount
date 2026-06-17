@@ -1,0 +1,48 @@
+{
+  "council": "Cannock Chase",
+  "slug": "cannock-chase",
+  "phases": {
+    "phase_0_inventory": {
+      "done": true,
+      "at": "2026-06-16T14:55:09.576Z",
+      "candidates": 38
+    },
+    "phase_1_archive": {
+      "done": false,
+      "at": "2026-06-16T15:02:54.671Z",
+      "results": {
+        "ok": 5,
+        "skipped": 0,
+        "blocked": 0,
+        "failed": 1
+      }
+    },
+    "phase_2_extract": {
+      "done": true,
+      "at": "2026-06-16T15:03:18.466Z",
+      "candidates": 36,
+      "parse_failures": 0
+    },
+    "phase_3_5_tier1_crosscheck": {
+      "done": true,
+      "at": "2026-06-16T15:04:01.533Z",
+      "drift": 0
+    },
+    "phase_1b_page_images": {
+      "done": true,
+      "at": "2026-06-16T15:13:56.785Z",
+      "images": 4
+    },
+    "phase_4_populate": {
+      "done": true,
+      "at": "2026-06-16T15:14:31.673Z",
+      "fields": [
+        "chief_executive_salary",
+        "reserves",
+        "total_allowances_cost",
+        "councillor_basic_allowance"
+      ]
+    }
+  },
+  "last_session": "2026-06-16T15:14:31.673Z"
+}
