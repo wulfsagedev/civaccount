@@ -1248,3 +1248,59 @@ good — don't re-do them; extend from there to the other fields.
   Gloucestershire LGR), councillor_allowances_detail (catalogue URL), + Bradford strip-list. 9 Tier-3
   PROVEN + 6 band_d. All-text-extractable SoA (no OCR needed). Gloucestershire LGR in progress — re-home
   to successor unitary if abolished.
+
+### Batch-47-4 / Chichester (2026-06-17) — DOCX-only SoA + XLSX-only allowances = both unreachable AND proof-gate-hidden; reserves trap #19 → STRIP (no reachable correct figure); the CE was a COUNTY leader's name
+- **The SoA is DOCX-only and the allowances are XLSX-only — plan for it, both are unreachable AND
+  unprovable.** Chichester publishes its Statement of Accounts as DOCX (no PDF form) and its Members'
+  Allowances rates/paid totals as XLSX. The council's own `www.chichester.gov.uk/media/` origin
+  hard-403s every automated client (true WAF — full Chrome UA + referer + cache-buster all 403,
+  13-byte "403 forbidden" body) AND SavePageNow 520s against it (IA can't reach the origin either —
+  Norfolk/Breckland pattern). Even if reachable, DOCX/XLSX are proof-gate-hidden (resolveArchive only
+  does .pdf/.html/.htm/.csv — the Broxbourne XLSX rule, here extended to DOCX). So the canonical
+  reserves source (the SoA MIRS/Balance Sheet) is doubly out of reach. Pivot straight to the
+  `chichester.moderngov.co.uk/documents/sNNNNN/` committee PDFs (Pay Policy, Council Tax Resolution,
+  Financial Strategy) — those fetch cleanly via SavePageNow→Wayback id_ (the moderngov origin IS
+  reachable to IA even when the council's own /media/ store is not — they're different hosts; SPN
+  returned 302 for every moderngov doc but 520 for every /media/ DOCX in the same session).
+- **Document discovery: the auto-inventory + CDX sweep found only stale 2020 allowances PDFs.** For a
+  district on a WAF'd /media/ store, discovery was: read the newest Wayback snapshot of the SoA + budget
+  landing pages (`/statementofaccounts` 2026-01-14, `/annualbudget` 2026-01-16) for the document `<a>`
+  links, then WebSearch `chichester.moderngov.co.uk documents` to surface the sNNNNN finance papers
+  (Financial Strategy s29598-pay/s31117-MTFS, Council Tax Resolution s29495). The media-store CDX
+  `/media*` prefix returned ZERO (IA hadn't indexed recent /media/ paths); the domain-match query
+  truncated at 2004-2016 vintage. Lesson: when CDX `/media*` is empty, read the landing-page snapshots
+  for the real current doc URLs — don't conclude "no documents".
+- **Reserves trap, ~19th council in a row — and STRIP, because no correct figure is reachable.** Legacy
+  `reserves 52,288,000` was EXACTLY the parsed-reserves.csv RA Part 2 total-usable reference. The pure
+  GF balance lives only in the DOCX SoA (unreachable + gate-hidden), and the Financial Strategy report
+  is narrative (only a £4m minimum-reserve level + a forward funding gap to ~£3.2m by 2029-30 — no
+  quotable current GF balance; Appendix 3's reserve schedule is in the full agenda pack g2007, which
+  Wayback captured truncated to 9 pages). Unlike Bromsgrove (correct GF figure exceeds the stale ref →
+  strip) this is "correct figure is UNREACHABLE → strip": shipping £52.288m re-asserts the wrong-scope
+  reference and there's no reachable correct number to ship instead. STRIP + watch (the brief's "if true
+  GF balance exceeds the stale RA reference STRIP" rule, generalised: any time the only correct figure is
+  unreachable, strip rather than ship the usable reference).
+- **The legacy CE name was a COUNTY leader's name (a new fabrication shape).** Legacy
+  `chief_executive "Louise Goldsmith"` — Louise Goldsmith was Leader of West Sussex COUNTY Council, never
+  Chichester's CE. The real CE is Diane Shepherd (40 yrs, retiring 31 Mar 2027), grounded in the council's
+  District Dispatch column (31 Mar 2026), Returning Officer election notices, and a moderngov EY audit fee
+  letter "Ms Diane Shepherd Chief Executive". The Pay Policy names the CE only by role ("the Chief
+  Executive"), so the name is Tier-4 live_page. Leader was also wrong (stale "Cllr John Cross", contradicted
+  by cabinet[0]=Adrian Moss → Cllr Adrian Moss, Lib Dem majority since 17 May 2023; no 2026 district
+  election, next 2027, so no post-election strip). Lesson: a legacy CE scalar can be a totally unrelated
+  person from the upper-tier authority — verify against a live primary regardless of how plausible it looks.
+- **CE salary is a clean single-line pay-multiple statement (renderable Tier-3 PDF).** The Senior Staff Pay
+  Policy 2025-26 p1: "the highest paid member of staff (the Chief Executive) is paid within 10 times this
+  amount at £73.75 per hour which is £142,286 p/a" — single quotable line, the cleanest CE-salary source.
+  Confirm you have the CURRENT-year Pay Policy: a 2024-25 version (s27123, £133,302) was found first; the
+  2025-26 (s29598, £142,286) is the current one. council_tax_requirement (£16,656,682) re-sourced to the
+  Council Tax Resolution p4 (NOT p5 — `pdftotext -f N -l N` per-page is authoritative for the `page:` field;
+  the full-document grep line number is NOT the PDF page; screenshot-parity caught the p5→p4 error).
+- **Chichester ended lean-but-clean**: KEEPS chief_executive (Tier-4 District Dispatch, Diane Shepherd),
+  council_leader (Tier-4, Cllr Adrian Moss), chief_executive_salary (£142,286 Pay Policy 2025-26 p1),
+  council_tax_requirement (£16,656,682 Council Tax Resolution p4). STRIPS reserves (DOCX-SoA unreachable
+  + usable-ref trap → no reachable correct figure), councillor_basic_allowance + total_allowances_cost
+  (XLSX-only / 2020 IRP superseded → gate-hidden), budget_gap + savings_target (narrative MTFS, fabricated
+  legacy, no-force-fit), salary_bands (DOCX SoA), cabinet (Tier-4, West Sussex LGR), + Bradford strip-list.
+  2 Tier-3 PROVEN + 2 Tier-4 personnel + 6 band_d + budget/population row-evidence. West Sussex LGR in
+  progress — re-home to successor unitary if abolished.

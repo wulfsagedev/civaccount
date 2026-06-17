@@ -2274,6 +2274,43 @@ export function validate(councils, _population, report) {
       `${c}|performance_kpis`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-4 (Chichester E07000225, queue-driven full-depth rollout). District, West Sussex.
+    // Chichester publishes its Statement of Accounts as DOCX ONLY (no PDF form) and its current Members'
+    // Allowances rates/paid totals as XLSX only; the council /media/ origin hard-403s automated clients AND
+    // SavePageNow 520s (IA cannot reach the WAF'd origin). Finance values were therefore sourced from the
+    // text-PDF committee papers on chichester.moderngov.co.uk (Arun/Bolsover pattern). reserves STRIPPED
+    // (§2 trap, ~19th council in a row): legacy 52,288,000 == GOV.UK RA Part 2 total-usable reference misfiled
+    // as the GF balance; the pure General Fund balance lives only in the DOCX SoA (WAF-unreachable AND
+    // DOCX→proof-gate-hidden per Broxbourne) → strip + watch (no force-fit either number). chief_executive
+    // CORRECTED (legacy "Louise Goldsmith" was fabricated — she was Leader of West Sussex COUNTY Council, never
+    // Chichester's CE → Diane Shepherd, Head of Paid Service/Returning Officer, 40 yrs, retiring 31 Mar 2027;
+    // District Dispatch 31-Mar-2026). council_leader CORRECTED (stale "Cllr John Cross", contradicted cabinet[0]
+    // → Cllr Adrian Moss, Lib Dem majority since 17 May 2023; confirmed Feb 2026 budget). chief_executive_salary
+    // 140,473→142,286 (Senior Staff Pay Policy 2025-26 p1 pay-multiple statement — RENDERABLE Tier-3 PDF).
+    // council_tax_requirement £16,656,682 KEPT (legacy value already correct; re-sourced to the Tier-3 Council
+    // Tax Resolution Report 2025-26 p5). STRIPPED: councillor_basic_allowance + total_allowances_cost (XLSX-only
+    // / 2020 IRP PDF superseded → unprovable, Broxbourne rule); budget_gap + savings_target (legacy 27.695m/
+    // 24.926m fabricated 'derived from RA', absurd vs ~£19m net service; archived MTFS 2026-31 is narrative with
+    // a £4m minimum reserve + forward gap to ~£3.2m by 2029-30, no quotable single-sentence gap — no-force-fit,
+    // Bolsover/Boston/Breckland); salary_bands (SoA DOCX, no archivable banding table); cabinet (Tier-4 only,
+    // not fingerprintable, West Sussex LGR churn); + Bradford strip-list (service_outcomes, service_spending,
+    // top_suppliers, performance_kpis, grant_payments, councillor_allowances_detail). KEEPS chief_executive,
+    // council_leader, chief_executive_salary, council_tax_requirement, documents — 2 Tier-3 PROVEN + 2 Tier-4
+    // personnel + 6 band_d + budget/population row-evidence.
+    ...['Chichester'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_basic_allowance`,
+      `${c}|total_allowances_cost`,
+      `${c}|salary_bands`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');
