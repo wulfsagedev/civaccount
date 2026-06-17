@@ -48,7 +48,7 @@ export const populationData: Record<string, number> = {
   "Dartford": 125011,
   "Daventry": 88300,
   "Derbyshire Dales": 71757,
-  "Dover": 118000,
+  "Dover": 119768,
   "East Cambridgeshire": 90200,
   "East Devon": 151000,
   "East Hampshire": 125400,

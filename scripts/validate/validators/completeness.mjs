@@ -2435,6 +2435,24 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-9 (Dover E07000108, queue-driven full-depth rollout).
+    // chief_executive_salary: Pay Policy publishes a scale (£136,244–£154,170) but the SoA 2024-25 actual
+    //   is below scale → no full-year rate proven paid (no-force-fit). cabinet: Tier-4, Kent LGR churn.
+    //   councillor_allowances_detail: 2023-24 catalogue-sourced, not a current fingerprintable per-member doc.
+    //   budget_gap/savings_target: were "derived from RA" (forbidden §3); MTFP has no quotable headline gap.
+    //   service_outcomes/service_spending/top_suppliers/performance_kpis/grant_payments: Bradford strip-list.
+    ...['Dover'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

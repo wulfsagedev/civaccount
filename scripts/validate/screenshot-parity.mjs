@@ -133,6 +133,8 @@ const NORTH_STAR_22 = [
   // Batch-47 (2026-06-16): queue-driven full-depth rollouts.
   'Castle Point', 'Charnwood', 'Cheltenham', 'Chichester', 'Cotswold', 'Dacorum',
   'Dartford', 'Derbyshire Dales',
+  // Batch-47-9 (2026-06-17): Dover (E07000108, Kent district).
+  'Dover',
 ];
 
 function slugify(n) {
