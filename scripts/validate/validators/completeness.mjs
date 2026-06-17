@@ -2453,6 +2453,24 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // East Cambridgeshire (Batch-47-10): reserves re-pointed to pure-GF MIRS (£1.386m, was RA Part-2
+    // usable ref £26.007m); CE corrected Emily Hill→Emma Grima (fabrication→AGS p32). Strips:
+    // chief_executive_salary (CE transition + 2024/25 part-year/reduced-hours, no full-year rate, scale-only
+    // Pay Policy), budget_gap/savings_target (derived-from-RA, balanced 2026/27 budget), service_outcomes/
+    // service_spending/top_suppliers/performance_kpis/grant_payments/councillor_allowances_detail
+    // (Bradford strip-list), cabinet (Tier-4 committee list, Cambridgeshire LGR churn).
+    ...['East Cambridgeshire'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|chief_executive_salary`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_outcomes`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

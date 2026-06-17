@@ -135,6 +135,8 @@ const NORTH_STAR_22 = [
   'Dartford', 'Derbyshire Dales',
   // Batch-47-9 (2026-06-17): Dover (E07000108, Kent district).
   'Dover',
+  // Batch-47-10 (2026-06-17): East Cambridgeshire (E07000009, Cambridgeshire district — last of Batch-47).
+  'East Cambridgeshire',
 ];
 
 function slugify(n) {

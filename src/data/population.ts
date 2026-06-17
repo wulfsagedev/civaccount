@@ -49,7 +49,7 @@ export const populationData: Record<string, number> = {
   "Daventry": 88300,
   "Derbyshire Dales": 71757,
   "Dover": 119768,
-  "East Cambridgeshire": 90200,
+  "East Cambridgeshire": 92906,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 90,200 (mid-2022 era).
   "East Devon": 151000,
   "East Hampshire": 125400,
   "East Hertfordshire": 151800,

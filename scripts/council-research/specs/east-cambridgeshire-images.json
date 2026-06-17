@@ -1,0 +1,7 @@
+[
+  { "council": "East Cambridgeshire", "field": "reserves", "pdf": "statement-of-accounts-2024-25.pdf", "page": 24, "value": "£1.386m", "note": "Movement in Reserves Statement 2024/25 — General Fund Balance at 31 March 2025 (£'000)" },
+  { "council": "East Cambridgeshire", "field": "chief_executive", "pdf": "annual-governance-statement-2024-25.pdf", "page": 32, "value": "Emma Grima", "note": "AGS 2024-25 Statement by Leader of the Council and Chief Executive (signed 20.02.2026) — grounds CE + Leader" },
+  { "council": "East Cambridgeshire", "field": "total_allowances_cost", "pdf": "statement-of-accounts-2024-25.pdf", "page": 54, "value": "£327,057", "note": "Note 25 Members' Allowances — 2024/25 total (Allowances 323,575 + Expenses 3,482)" },
+  { "council": "East Cambridgeshire", "field": "councillor_basic_allowance", "pdf": "members-allowances-2024-25.pdf", "page": 1, "value": "£7,152.36", "note": "Members' Allowances 2024/25 notice — uniform basic allowance per elected member" },
+  { "council": "East Cambridgeshire", "field": "salary_bands", "pdf": "statement-of-accounts-2024-25.pdf", "page": 55, "value": "bands", "note": "Note 26 Senior Officer and Staff Remuneration over £50,000 — 2024/25 column" }
+]
