@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -73,9 +73,6 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  other: {
-    'theme-color': '#1c1917',
-  },
   alternates: {
     canonical: '/',
     types: {
@@ -84,6 +81,17 @@ export const metadata: Metadata = {
       ],
     },
   },
+};
+
+// Browser-chrome colour belongs in the viewport export (Next 14+), not in
+// metadata.other. Media-matched so the mobile address bar tracks the theme:
+// warm newsprint in light, deep stone in dark — instead of a fixed dark bar.
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fcfbf8' },
+    { media: '(prefers-color-scheme: dark)', color: '#1c1917' },
+  ],
 };
 
 export default function RootLayout({

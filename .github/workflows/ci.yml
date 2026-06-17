@@ -136,13 +136,16 @@ jobs:
     # Requires Dependency Graph to be enabled on the repo:
     #   Settings → Code security → Dependency graph
     # When disabled the action fails fast with "not supported on this
-    # repository", so we keep the job advisory (`continue-on-error`) until
-    # the admin toggle is flipped.
+    # repository". We mark the STEP (not the job) continue-on-error so the
+    # check reports green instead of a perpetual red X on every PR — once an
+    # admin enables Dependency Graph the scan starts adding real value with no
+    # further change needed. Vulnerability coverage meanwhile comes from the
+    # npm-audit job above.
     if: github.event_name == 'pull_request'
-    continue-on-error: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/dependency-review-action@4081bf99e2866ebe428fc0477b69eb4fcda7220a # v4.4.0
+        continue-on-error: true
         with:
           fail-on-severity: high
           # Block dependencies released in the last 48h — "day-zero" typosquats

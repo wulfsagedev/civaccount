@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useCouncil } from '@/context/CouncilContext';
 import { useAuth } from '@/context/AuthContext';
 import { getCouncilDisplayName, getCouncilBySlug, getCouncilSlug } from '@/data/councils';
+import { getLatestUpdate } from '@/data/updates';
 import FeedbackModal from '@/components/FeatureRequestDialog';
 import SearchCommand from '@/components/SearchCommand';
 import AccountModal from '@/components/AccountModal';
@@ -22,6 +23,10 @@ const NAV_LINK_BASE = 'inline-flex items-center justify-center gap-2 whitespace-
 const MOBILE_NAV_LINK_BASE = 'inline-flex items-center justify-start gap-2 whitespace-nowrap type-body-sm font-medium h-11 px-4 py-2 rounded-lg transition-colors cursor-pointer w-full';
 const NAV_LINK_CLASS = `${NAV_LINK_BASE} text-muted-foreground hover:text-foreground hover:bg-muted`;
 const MOBILE_NAV_LINK_CLASS = `${MOBILE_NAV_LINK_BASE} text-muted-foreground hover:text-foreground hover:bg-muted`;
+
+// Version badge tracks the changelog's current release — single source of
+// truth, so it never drifts from package.json / the /updates page again.
+const APP_VERSION = `v${getLatestUpdate().version}`;
 
 export default function Header() {
   const { selectedCouncil, setSelectedCouncil } = useCouncil();
@@ -96,7 +101,7 @@ export default function Header() {
               <Link href="/updates" className="hidden sm:flex cursor-pointer">
                 <Badge variant="outline" className="type-body-sm cursor-pointer hover:bg-muted flex items-center gap-1.5">
                   <PulsingDot size="sm" />
-                  v3.0
+                  {APP_VERSION}
                 </Badge>
               </Link>
             </div>
@@ -201,7 +206,7 @@ export default function Header() {
                     Updates
                     <Badge variant="outline" className="type-body-sm ml-auto flex items-center gap-1.5">
                       <PulsingDot size="sm" />
-                      v3.0
+                      {APP_VERSION}
                     </Badge>
                   </Link>
                   <button type="button" onClick={openFeedback} className={MOBILE_NAV_LINK_CLASS}>

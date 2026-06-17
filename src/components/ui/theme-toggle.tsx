@@ -110,7 +110,6 @@ export function ThemeToggle({ size = 'default' }: ThemeToggleProps) {
         <div className="flex flex-col" role="radiogroup" aria-label="Theme">
           <ThemeOption
             label="System"
-            sublabel="Follow device"
             Icon={Monitor}
             active={pref === 'system'}
             onSelect={() => choose('system')}
