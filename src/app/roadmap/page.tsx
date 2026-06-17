@@ -19,6 +19,10 @@ const roadmap: RoadmapSection[] = [
     title: "Done",
     status: "done",
     items: [
+      { text: "See the exact source behind every number — the document, page, and line it came from", done: true },
+      { text: "A picture of the original page or table for figures we verify, with the number highlighted", done: true },
+      { text: "An archived copy of every source, so links keep working if a council changes its website", done: true },
+      { text: "Every figure sourced only from official UK government and council records", done: true },
       { text: "All 317 English councils with budget data", done: true },
       { text: "Council tax rates and 5-year history", done: true },
       { text: "Service spending breakdowns for every council", done: true },

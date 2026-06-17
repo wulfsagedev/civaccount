@@ -22,10 +22,29 @@ export type CivAccountUpdate = {
 
 export const updates: CivAccountUpdate[] = [
   {
+    version: '3.1',
+    date: '2026-06-17',
+    label: 'June 2026',
+    isCurrent: true,
+    title: 'V3.1 — See the proof behind every number',
+    summary:
+      'Tap any figure to see exactly where it came from — the official document, the page, and the line it was taken from, with the date we checked it and a saved copy that can never change. Plus dozens more councils brought up to our highest standard.',
+    changes: [
+      'Tap any number to see its exact source — the document, the page, and the line it came from',
+      'See a picture of the original page or table, with the figure highlighted',
+      'Open the source document straight to the right page in one tap',
+      'Every figure shows the date it was last checked against the official source',
+      'An archived copy of every source, so it still works even if a council changes its website',
+      'Every council page shows which data version you are viewing',
+      'Every figure comes only from official UK government and council records',
+      'Leadership, pay, reserves and budget figures freshly verified for dozens more councils',
+    ],
+  },
+  {
     version: '3.0',
     date: '2026-04-06',
     label: 'April 2026',
-    isCurrent: true,
+    isCurrent: false,
     title: 'V3.0 — Town Hall launches across all 317 English councils',
     summary:
       'Residents can now propose how their council should spend money, vote on ideas, and join the discussion. Full leadership, salary, and spending data for every English council.',
