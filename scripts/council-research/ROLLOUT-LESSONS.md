@@ -1304,3 +1304,68 @@ good — don't re-do them; extend from there to the other fields.
   legacy, no-force-fit), salary_bands (DOCX SoA), cabinet (Tier-4, West Sussex LGR), + Bradford strip-list.
   2 Tier-3 PROVEN + 2 Tier-4 personnel + 6 band_d + budget/population row-evidence. West Sussex LGR in
   progress — re-home to successor unitary if abolished.
+
+### Batch-47-5 / Cotswold (2026-06-17, RETRY) — the Publica-shared-CE salary IS shippable (it's Cotswold's own benchmark-graded HoPS post, double-proven by the appointment decision); a CE transition the brief didn't flag; reserves trap ~20th in a row
+- **Publica shared-services scoping resolved at the Pay Policy + SoA-Note-B9 scope lines (Cheltenham/Bromsgrove
+  pattern).** Cotswold is in the Publica Group (shared back-office with West Oxfordshire + Forest of Dean). The
+  brief warned every value must be Cotswold's OWN, not Publica-wide. Resolution: the CE salary £140,000 is
+  Cotswold's OWN Head of Paid Service establishment post — the CDC Pay Policy 2026-27 §5.2 lists it as a
+  benchmark-graded Cotswold statutory officer ("Chief Executive (Head of Paid Service) £140,000 per annum"),
+  and SoA Note B9 explicitly distinguishes Cotswold's statutory officers from Publica Directors ("the total
+  cost of Publica's Directors is disclosed in the Publica financial statements"). The Publica-wide figures
+  (SoA Note B10 £223,336 redundancy contribution = 1/3 of Publica's; "Publica Directors' cost") were NOT
+  rendered — they're not Cotswold-specific. Lesson: a Publica/shared-services council still publishes its OWN
+  Head-of-Paid-Service salary in its OWN Pay Policy — verify the Pay Policy's scope + the SoA remuneration
+  note's Publica-vs-own-officer split before reaching for the strip.
+- **The CE salary was DOUBLE-proven — the forward Pay-Policy rate matched the actual appointment decision.**
+  Unusually, the SoA actual CE remuneration (£112,979, 2024-25) is LOWER than the £140k Pay Policy rate (the
+  inverse of the Ashford/Breckland "actual exceeds scale" proof). Normally a forward scale that exceeds the
+  most recent actual would be unprovable. But the council's OWN appointment decision (ModernGov Id=489)
+  resolved to pay the incoming permanent CE EXACTLY £140,000 ("appoint Jane Portman ... £140,000 ... effective
+  1 January 2026") — so the £140k is a contracted actual, not an aspirational ceiling. When a Pay-Policy scale
+  is corroborated by a same-council appointment-decision resolution naming the figure, it ships even without an
+  SoA-actual that reaches it.
+- **The brief said nothing about a CE change — the live check caught a full transition (Basildon/Charnwood).**
+  Legacy TS "Robert Weaver" had been CE since 2021, looked stable, and the brief didn't flag it. But WebSearch
+  surfaced "Rob Weaver to step down" + "Jane Portman interim CEO": Weaver stepped down 30 Jun 2025, Portman was
+  interim from Jul 2025, then PERMANENT CEO from 1 Jan 2026 (decision Id=489). Verified current via her
+  Returning-Officer signature on Cotswold election notices dated 5 Feb + 12 Mar 2026 (a "Robert Weaver in 2026
+  election notices" search hit was a stale-cache red herring — date every hit, Castle Point/Cheltenham pattern).
+  Always run the live CE check even when the legacy name looks long-tenured and the brief is silent.
+- **Leader stale + cabinet[0] was right (Broxbourne/Charnwood/Castle Point internal-contradiction tell).**
+  Legacy council_leader "Cllr Joe Harris" was stale; legacy cabinet[0] already said Mike Evemy. Evemy succeeded
+  Harris at the 21 May 2025 ACM (Harris stood down after 6 years). Grounded in the SoA 2024-25 AGS signature
+  page (p111: "Mike Evemy / Leader of the Council") + the live leader page. LibDems retained control May 2023,
+  next election 2027 (no 2026 district election → no post-election strip). When the leader scalar disagrees with
+  cabinet[0], the scalar is usually the stale one.
+- **Reserves trap, ~20th council in a row — clean smaller-than-reference pure-GF (Babergh/Castle Point).**
+  Legacy 11,340,000 == parsed-reserves.csv RA Part 2 total-usable reference misfiled as GF. SoA 2024-25 p7
+  narrative "general fund revenue risk-based balance at £1.760m" + MIRS closing "General Fund Balance
+  (Unallocated) at 31 March (1,760,411)" (earmarked separate columns). £1.760m << ref → passes spot-check.
+  03-extract's auto top-candidate surfaced the right £1.760m narrative this time, but also offered combined
+  balance-sheet rows — read the excerpt.
+- **salary_bands keepable (Ashford/Castle Point) — SoA Note B9 banding has a clean text layer.** The 2024/25
+  column (officers >£50k: 3/1/1/2/1, Total 8) extracts cleanly; legacy bands matched the 2023/24 column with
+  fabricated overlapping labels — re-authored. Excerpt "£110,000 to £114,999  1  1" (multi-space run → 3 chunks).
+- **Budget cells were stale — re-synced to RA Part 1 2025-26 per the brief (source-truth warnings, not the
+  tier1-drift gate).** 04-extract-csv reported tier1_drift_count 0 (it checks population/band_d), but
+  source-truth flagged budget.housing/planning/total_service drift >10%. The brief mandates aligning stale
+  budget cells to current RA — housing 1451→2052, planning 2890→3467, environmental 10161→10840, total_service
+  16874→18946, net_current 32960→35403, revenue_budget→35,403,000. Don't rely on tier1_drift_count alone for
+  budgets — check source-truth's budget_*_drift warnings too.
+- **Environment gap (carried from Batch-47-1..4): puppeteer absent → render-csv-evidence + ux-audit/screenshot
+  scripts can't run.** Tier-1 row PNGs deferred (popover falls back to the inline csv_row mini-table); Phase 5b
+  run as an HTML-level button-ancestry sweep against a Bash-launched `npm run dev` (the authoritative finding:
+  SourceAnnotation renders as `<span role="button" aria-label="Source:…">` NOT `<button>` — a sweep that only
+  tracks `<button>` false-flags every wrapped value; track role="button" on any element). 0 genuine unwrapped
+  Cotswold values — the only "unwrapped" tokens are the compare-with-other-councils widget's NNNN.00 bills
+  (navigational, on every council page) + "317 councils" descriptive copy. Screenshot-parity (the real
+  North-Star #7 gate) satisfied by 6 Tier-3 PDF-page PNGs.
+- **Cotswold ended RICH**: KEEPS chief_executive (Tier-4 appointment decision, Jane Portman), council_leader
+  (Tier-3 SoA AGS p111, Cllr Mike Evemy), reserves (£1.760m pure-GF SoA p7), chief_executive_salary (£140,000
+  Pay Policy 2026-27 p4, Cotswold's own HoPS), total_allowances_cost (£333,579 SoA Note B6 p28),
+  councillor_basic_allowance (£6,084 Members' Allowances p1), salary_bands (SoA Note B9 p34). STRIPS
+  leader_allowance (un-archived Scheme SRA rate), budget_gap/savings_target (multi-year savings grid, fabricated
+  legacy, no-force-fit), cabinet (Tier-4, pre-reshuffle, Gloucestershire LGR), + Bradford strip-list. 6 Tier-3
+  + 1 Tier-4 personnel + 6 band_d = 12 proven fields. Gloucestershire LGR in progress — re-home to successor
+  unitary if abolished.

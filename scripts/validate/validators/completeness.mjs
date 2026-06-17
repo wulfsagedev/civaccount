@@ -2311,6 +2311,40 @@ export function validate(councils, _population, report) {
       `${c}|savings_target`,
       `${c}|grant_payments`,
     ]),
+    // 2026-06-17 Batch-47-5 (Cotswold E07000079, queue-driven full-depth rollout — RETRY). District,
+    // Gloucestershire, in the Publica Group (shared back-office services with West Oxfordshire + Forest of
+    // Dean). Every kept value is Cotswold's OWN figure. reserves CORRECTED (§2 trap, ~20th council in a row):
+    // legacy 11,340,000 == GOV.UK RA Part 2 total-usable reference misfiled as the GF balance; the pure
+    // General Fund risk-based balance is £1.760m (SoA 2024-25 narrative p7 + MIRS closing GF column 1,760,411,
+    // earmarked separate) << ref → passes spot-check. chief_executive CORRECTED (legacy "Robert Weaver" stale —
+    // he stepped down 30 Jun 2025 → Jane Portman, permanent CEO/Head of Paid Service from 1 Jan 2026, council
+    // decision Id=489, verified current via Returning-Officer notices Feb+Mar 2026). council_leader CORRECTED
+    // (legacy "Cllr Joe Harris" stale, contradicted cabinet[0] → Cllr Mike Evemy, elected 21 May 2025 ACM,
+    // SoA AGS signature p111; LibDems retained control, next election 2027). chief_executive_salary 115105→
+    // 140000 (Cotswold's OWN Head of Paid Service post — Pay Policy 2026-27 p4 AND Jane Portman's actual
+    // contracted permanent salary per decision Id=489; NOT a Publica-wide/recharged figure). total_allowances_cost
+    // 324038→333579 (SoA Note B6 2024/25 column: Allowances 329,615 + Expenses 3,964). councillor_basic_allowance
+    // 6288→6084 (Members' Allowances Payments 2024-25 uniform rate). salary_bands re-authored to SoA Note B9
+    // 2024/25 column (officers >£50k). STRIPPED: leader_allowance (full-year Leader SRA rate only in the
+    // un-archived Members' Allowances Scheme/Constitution; the payments notice shows part-year SRAs — Cannock/
+    // Castle Point); budget_gap + savings_target (legacy 16.086m/14.4774m fabricated 'derived from RA', absurd vs
+    // ~£17m net service; the archived Budget Pressures & Savings doc is a multi-year savings grid with no quotable
+    // single-sentence gap — no-force-fit, Bolsover/Boston/Breckland/Chichester); cabinet (Tier-4 only, predates the
+    // May-2025 leadership change, Gloucestershire LGR churn); + Bradford strip-list (service_spending, top_suppliers,
+    // performance_kpis, grant_payments, councillor_allowances_detail, service_outcomes.housing/population_served).
+    // KEEPS chief_executive, council_leader, reserves, chief_executive_salary, total_allowances_cost,
+    // councillor_basic_allowance, salary_bands — 5 Tier-3 PROVEN + 1 Tier-4 personnel + 6 band_d + budget/
+    // population row-evidence. Gloucestershire LGR in progress — re-home to the successor unitary if abolished.
+    ...['Cotswold'].flatMap(c => [
+      `${c}|cabinet`,
+      `${c}|councillor_allowances_detail`,
+      `${c}|service_spending`,
+      `${c}|top_suppliers`,
+      `${c}|performance_kpis`,
+      `${c}|budget_gap`,
+      `${c}|savings_target`,
+      `${c}|grant_payments`,
+    ]),
   ]);
 
   const previousPath = join(REPORTS_DIR, 'validation-latest.json');

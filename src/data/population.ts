@@ -41,7 +41,7 @@ export const populationData: Record<string, number> = {
   "Chichester": 128934,  // ONS Mid-2024 verbatim (parsed-population.csv); North-Star §2 #3 — supersedes file's nearest-hundred convention. Was 124,600 (mid-2022 era).
   "Chorley": 119300,
   "Colchester": 203400,
-  "Cotswold": 90600,
+  "Cotswold": 91661,
   "Craven": 57100,
   "Crawley": 118500,
   "Dacorum": 157700,
