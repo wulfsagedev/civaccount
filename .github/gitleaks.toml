@@ -28,4 +28,14 @@ useDefault = true
 
   # Regex examples we know we want to allow through.  Empty by default; add
   # carefully with a comment explaining why.
-  regexes = []
+  regexes = [
+    # SHA-256 document fingerprints. CivAccount stores a sha256 of every
+    # archived source document (sha256_at_access, raw_file_sha256,
+    # parsed_csv_sha256, and the evidence image-manifest) as its core
+    # integrity mechanism — these are PUBLIC fingerprints of published
+    # government documents, not credentials. A bare 64-char lowercase-hex
+    # string is that shape. Real keys are still caught: the default
+    # ruleset's rules are vendor-prefixed (sk_live_, ghp_, AKIA…, xox*,
+    # SG., AIza…) and never look like a plain 64-hex hash.
+    '''\b[a-f0-9]{64}\b''',
+  ]
