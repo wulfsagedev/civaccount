@@ -1196,3 +1196,55 @@ good — don't re-do them; extend from there to the other fields.
   savings_target (balanced GF, fabricated legacy, no-force-fit), cabinet (Tier-4, LGR churn), +
   Bradford strip-list. 4 Tier-3 PROVEN + 2 Tier-4 personnel + 6 band_d. Leicestershire LGR /
   new town & parish councils in progress (June 2026) — re-home to successor if abolished.
+
+### Batch-47-3 / Cheltenham (2026-06-17) — HRA district with a CLEAN pure-GF MIRS column (read headers, don't assume the EFA trap); the all-text SoA; shared-services premise resolved at the Pay Policy scope line; the draft narrative that contradicts its own MIRS
+- **Reserves trap, ~18th council in a row — stock-holding district but the CLEAN-pure-GF-MIRS variant
+  (Babergh/Castle Point shape, NOT the Cannock/Canterbury HRA-combined-EFA trap).** Legacy
+  `reserves 3,551,000` was EXACTLY the parsed-reserves.csv RA Part 2 total-usable reference. Cheltenham
+  HAS an HRA (via the Cheltenham Borough Homes ALMO), but its MIRS (p17) has a PURE "General Fund Balance"
+  FIRST column (950 at 31 Mar 2024) that is SEPARATE from the "Housing Revenue Account" column (934),
+  "Earmarked General Fund Reserves" (3,220) and "Total Usable Reserves" (11,963) — so the GF column is
+  directly usable with no note arithmetic and no EFA-combined confusion. Corrected to £0.950m. Lesson
+  reinforced (Castle Point): a district having an HRA does NOT automatically mean the HRA-combined-EFA
+  trap — READ THE MIRS COLUMN HEADERS FIRST; separate "General Fund Balance" + "Housing Revenue Account"
+  columns ⇒ the GF column is the scalar; only a single combined "GF & HRA" column forces the EFA/note math.
+- **The draft narrative contradicted its own audited MIRS — trust the financial statement, not the prose.**
+  The SoA Narrative Report p12 says "the General Fund Balance stands at £1.030m", but (a) it contradicts
+  itself in the same paragraph (describes a £630k transfer that would move it), and (b) the audited MIRS
+  statutory figure is 950 in BOTH the draft (s50120) and the audited-final (id/10207) SoA. When a
+  narrative number and the MIRS GF column disagree inside one SoA, the MIRS (the statutory financial
+  statement) wins — the narrative is a hand-written approximation. 03-extract's auto top candidate was the
+  WRONG £1.662m s151 "optimum level" (and #2 was the £1.030m narrative) — read the excerpt, take the MIRS.
+- **Shared-services premise (Publica / GO Shared Services / CBH ALMO) resolved at the Pay Policy scope
+  line.** The brief warned Cheltenham historically shares services and that no joint/ALMO figure may stand
+  in for CBC's own. Resolution: the CE (Gareth Edmundson) is CBC's OWN Head of Paid Service (SoA p4
+  "Leadership team, led by the Chief Executive. This position is held by Gareth Edmundson") — a CBC
+  employee, NOT a shared/Publica officer (unlike Bromsgrove/Cannock). The Pay Policy 2025-26 is scoped "For
+  all employees at Cheltenham Borough Council" (p1) and its "Highest paid employee £134,419" (p6) is CBC's
+  own CE. Publica/Ubico are joint COMPANIES (Cheltenham holds shares), not a shared management team. CBH
+  is a subsidiary being wound up (staff transferring to the council). Every value was CBC's by construction
+  — verify the Pay Policy's own scope sentence + the SoA "Leadership team" line before reaching for the
+  joint-officer discipline.
+- **The "new CEO" red herrings were ALL 2019 (Castle Point pattern, again).** WebSearch surfaced a Chamber
+  "new chief executive" article + a democracy "Appointment of a new Chief Executive" agenda item that
+  looked like a recent transition; both were Edmundson's OWN Oct–Nov 2019 appointment. He's been CE
+  continuously since Jan 2020 (documents through Feb/Mar 2026 still reference him). Date every "new CEO"
+  hit and check for an actual successor before editing/stripping.
+- **Post-election: LibDem RETAINED control → keep the leader.** The 7 May 2026 borough election kept the
+  Liberal Democrats in overall control (17/40 seats; Green 2, Reform 1), so Cllr Rowena Hay remains Leader
+  (control retained → keep, the inverse of the B&D/Basingstoke NOC strip). Legacy scalar "Cllr Rowena
+  Sherwin" was a name that exists nowhere; cabinet[0] already said Rowena Hay (the internal-contradiction
+  tell, Broxbourne/Castle Point). The borough election was the DISTRICT's own (all-out), not the county's.
+- **Cheltenham fetch profile**: `democracy.cheltenham.gov.uk/documents/sNNNNN/` immutable attachments serve
+  cleanly to a Chrome UA. The council's OWN `www.cheltenham.gov.uk/download/downloads/id/<n>/` store is
+  JS-gated (returns EMPTY to curl, not a WAF block) — recover the audited SoA from its Wayback id_ capture.
+  The SoA landing page + leadership/allowance pages are all JS-rendered (no static links) — use the
+  democracy portal (committee meetings, IRP agenda items) + Wayback for document discovery.
+- **Cheltenham ended RICH**: KEEPS chief_executive (SoA p4, Gareth Edmundson), council_leader (SoA p4, Cllr
+  Rowena Hay), reserves (£0.950m pure-GF MIRS p17), chief_executive_salary (£134,419 Pay Policy 2025-26 p6),
+  total_allowances_cost (£428,009 SoA Note 10 p45), councillor_basic_allowance (£6,645) + leader_allowance
+  (£21,154) (IRP Allowances Report 2024/25), budget_gap (£2.180m) + savings_target (£1.130m) (MTFS 2025-26).
+  STRIPS salary_bands (legacy bands mismatch SoA Note 11 / exclude seniors), cabinet (stale; live has 8;
+  Gloucestershire LGR), councillor_allowances_detail (catalogue URL), + Bradford strip-list. 9 Tier-3
+  PROVEN + 6 band_d. All-text-extractable SoA (no OCR needed). Gloucestershire LGR in progress — re-home
+  to successor unitary if abolished.
