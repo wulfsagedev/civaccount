@@ -46,6 +46,7 @@ export function DataGapNotice({
   if (!ex) {
     return (
       <div
+        data-provenance-caption="true"
         className={
           "p-4 rounded-lg bg-muted/30 border border-border/40 " + (className ?? "")
         }
@@ -71,6 +72,7 @@ export function DataGapNotice({
 
   return (
     <div
+      data-provenance-caption="true"
       className={
         "p-4 rounded-lg bg-muted/30 border border-border/40 " + (className ?? "")
       }

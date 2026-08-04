@@ -109,9 +109,22 @@ const sweepScript = `
         wrapped = true; break;
       }
       if (el.getAttribute && el.getAttribute('role') === 'dialog') { wrapped = 'in-dialog'; break; }
+      // Explicitly-marked provenance caption: the description of a source
+      // link (e.g. "Pay policy statement 2025"). This text IS provenance —
+      // it names the document the adjacent link opens — not a council data
+      // value, so it needs no SourceAnnotation of its own. Marked in the
+      // markup with data-provenance-caption so this stays intentional
+      // rather than a text-matching guess.
+      if (el.getAttribute && el.getAttribute('data-provenance-caption')) { wrapped = 'caption'; break; }
+      // Text inside a link is the NAME of a source document ("Pay policy
+      // statement 2025", "Annual Performance Compendium 2025") — the link
+      // is itself the provenance. Guarded: anything that looks like a bare
+      // rendered value (starts with £ or a digit) is still reported, so a
+      // data figure can never hide inside an anchor.
+      if (el.tagName === 'A' && !/^[£\\d]/.test(text)) { wrapped = 'caption'; break; }
       el = el.parentElement; depth++;
     }
-    if (wrapped === true || wrapped === 'in-dialog') continue;
+    if (wrapped === true || wrapped === 'in-dialog' || wrapped === 'caption') continue;
     let h = node.parentElement, card = null;
     while (h && h.tagName !== 'BODY') {
       if (h.tagName === 'SECTION' || (h.tagName === 'DIV' && h.classList && h.classList.contains('card-elevated'))) {

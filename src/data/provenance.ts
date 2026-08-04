@@ -398,6 +398,12 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     source_title: 'MHCLG Housing Supply Tables',
     data_year: '2023-24',
   },
+  'service_outcomes.housing.homes_target': {
+    label: 'published',
+    source_url: 'https://www.gov.uk/government/publications/standard-method-for-assessing-local-housing-need',
+    source_title: 'MHCLG standard method — local housing need',
+    data_year: '2024-25',
+  },
 
     // ── Suppliers (Contracts Finder OCDS — national register, NOT council
   //    transparency pages). Per-council verifiability is via a buyer-filtered

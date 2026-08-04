@@ -150,7 +150,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                         />
                       </span>
                       {supplier.category && (
-                        <p className="type-body-sm text-muted-foreground">{supplier.category}</p>
+                        <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{supplier.category}</p>
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
@@ -166,7 +166,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   </div>
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-2">
-                      <p className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
+                      <p data-provenance-caption="true" className="type-body-sm text-muted-foreground leading-relaxed">{supplier.description}</p>
                       {/* Descriptions are CivAccount summaries of what the
                           supplier contract covers — not a verbatim quote
                           from a council publication. Labelled honestly per
@@ -201,7 +201,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                     <div className="min-w-0 mr-3">
                       <p className="type-body font-semibold">{supplier.name}</p>
                       {supplier.category && (
-                        <p className="type-body-sm text-muted-foreground">{supplier.category}</p>
+                        <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{supplier.category}</p>
                       )}
                       {sourceUrl && (
                         <a
@@ -360,7 +360,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                         />
                       </span>
                       {grant.purpose && (
-                        <p className="type-body-sm text-muted-foreground">{grant.purpose}</p>
+                        <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{grant.purpose}</p>
                       )}
                     </div>
                     <span className="type-body font-semibold tabular-nums shrink-0">
@@ -376,7 +376,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   </div>
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-muted/20 rounded-lg space-y-2">
-                      <p className="type-body-sm text-muted-foreground leading-relaxed">{grant.description}</p>
+                      <p data-provenance-caption="true" className="type-body-sm text-muted-foreground leading-relaxed">{grant.description}</p>
                       {grantSourceUrl && (
                         <div className="flex flex-col gap-1 pt-1">
                           <a
@@ -404,7 +404,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                     <div className="min-w-0 mr-3">
                       <p className="type-body font-semibold">{grant.recipient}</p>
                       {grant.purpose && (
-                        <p className="type-body-sm text-muted-foreground">{grant.purpose}</p>
+                        <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{grant.purpose}</p>
                       )}
                       {grantSourceUrl && (
                         <a
@@ -470,7 +470,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   <span className="sr-only"> (opens in new tab)</span>
                 </a>
                 {link.description && (
-                  <p className="type-body-sm text-muted-foreground">{link.description}</p>
+                  <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{link.description}</p>
                 )}
               </div>
             ))}

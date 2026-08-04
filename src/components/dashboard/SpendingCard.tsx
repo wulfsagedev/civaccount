@@ -297,7 +297,7 @@ const SpendingCard = ({
                                 <span className="sr-only"> (opens in new tab)</span>
                               </a>
                               {link.description && (
-                                <p className="type-body-sm text-muted-foreground mt-0.5">{link.description}</p>
+                                <p data-provenance-caption="true" className="type-body-sm text-muted-foreground mt-0.5">{link.description}</p>
                               )}
                             </div>
                           ))}

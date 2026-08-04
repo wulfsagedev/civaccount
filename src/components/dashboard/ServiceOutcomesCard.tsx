@@ -10,7 +10,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { formatCurrency, formatBudget, type Council } from '@/data/councils';
-import { getRecyclingContext, getHomesBuiltContext, getOfstedContext, getRoadConditionContext } from '@/data/benchmarks';
+import { getOfstedContext } from '@/data/benchmarks';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
@@ -40,7 +40,6 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
           {/* Metrics grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {detailed.service_outcomes.waste?.recycling_rate_percent != null && (() => {
-              const ctx = getRecyclingContext(detailed.service_outcomes.waste.recycling_rate_percent, selectedCouncil.type);
               return (
                 <div className="p-3 rounded-lg bg-muted/30">
                   <div className="flex items-center gap-2 mb-1">
@@ -60,41 +59,54 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                   <p className="type-caption text-muted-foreground/60">
                     {detailed.service_outcomes.waste.year || DATA_YEARS.waste} data
                   </p>
-                  <p className="type-caption text-muted-foreground/60 mt-1">
-                    Average for {ctx.compareLabel}: {ctx.compareAverage}%
-                  </p>
+                  {/* Peer-average comparator removed 2026-08-04. `compareAverage`
+                      is a CivAccount mean across councils — it appears verbatim
+                      in no council's publication, so it fails NORTH-STAR §3
+                      (forbidden derived patterns), same precedent as the
+                      year-on-year and 5-year change callouts. */}
                 </div>
               );
             })()}
 
             {detailed.service_outcomes.housing?.homes_built != null && detailed.service_outcomes.housing.homes_built > 0 && (() => {
-              const ctx = getHomesBuiltContext(detailed.service_outcomes.housing!.homes_built!, selectedCouncil.type);
               return (
                 <div className="p-3 rounded-lg bg-muted/30">
                   <div className="flex items-center gap-2 mb-1">
                     <Hammer className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <p className="type-caption text-muted-foreground">Homes built</p>
                   </div>
-                  <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.housing!.homes_built!.toLocaleString('en-GB')}</p>
+                  <SourceAnnotation
+                    provenance={getProvenance('service_outcomes.housing.homes_built', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Homes built',
+                      value: detailed.service_outcomes.housing!.homes_built!.toLocaleString('en-GB'),
+                    }}
+                  >
+                    <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.housing!.homes_built!.toLocaleString('en-GB')}</p>
+                  </SourceAnnotation>
                   {detailed.service_outcomes.housing!.homes_built_year && (
                     <p className="type-caption text-muted-foreground/60">{detailed.service_outcomes.housing!.homes_built_year}</p>
                   )}
                   {detailed.service_outcomes.housing!.homes_target ? (
                     <p className="type-caption text-muted-foreground/60 mt-1">
-                      Government target: {detailed.service_outcomes.housing!.homes_target.toLocaleString('en-GB')}/yr
+                      Government target:{' '}
+                      <SourceAnnotation
+                        provenance={getProvenance('service_outcomes.housing.homes_target', selectedCouncil)}
+                        reportContext={{
+                          council: selectedCouncil.name,
+                          field: 'Government homes target (per year)',
+                          value: detailed.service_outcomes.housing!.homes_target.toLocaleString('en-GB'),
+                        }}
+                      >{detailed.service_outcomes.housing!.homes_target.toLocaleString('en-GB')}</SourceAnnotation>/yr
                     </p>
-                  ) : (
-                    <p className="type-caption text-muted-foreground/60 mt-1">
-                      Average for {ctx.compareLabel}: {ctx.compareAverage.toLocaleString('en-GB')}
-                    </p>
-                  )}
+                  ) : null}
                 </div>
               );
             })()}
 
             {/* Roads data */}
             {detailed.service_outcomes.roads?.condition_good_percent != null ? (() => {
-              const roadCtx = getRoadConditionContext(detailed.service_outcomes.roads!.condition_good_percent!, selectedCouncil.type);
               return (
                 <div className="p-3 rounded-lg bg-muted/30">
                   <div className="flex items-center gap-2 mb-1">
@@ -112,9 +124,11 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <p className="type-metric font-semibold tabular-nums">{detailed.service_outcomes.roads!.condition_good_percent}%</p>
                   </SourceAnnotation>
                   <p className="type-caption text-muted-foreground/60">in good or acceptable condition <span className="text-muted-foreground/50">({DATA_YEARS.road_condition} data)</span></p>
-                  <p className="type-caption text-muted-foreground/60 mt-1">
-                    Average for {roadCtx.compareLabel}: {roadCtx.compareAverage}%
-                  </p>
+                  {/* Peer-average comparator removed 2026-08-04. `compareAverage`
+                      is a CivAccount mean across councils — it appears verbatim
+                      in no council's publication, so it fails NORTH-STAR §3
+                      (forbidden derived patterns), same precedent as the
+                      year-on-year and 5-year change callouts. */}
                 </div>
               );
             })() : detailed.service_outcomes.roads?.maintained_miles ? (
@@ -316,7 +330,19 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                 {detailed.performance_kpis.map((kpi, idx) => (
                   <div key={idx} className="p-3 rounded-lg bg-muted/30">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="type-body-sm font-medium min-w-0">{kpi.metric}</p>
+                      {/* Some councils' KPI names carry figures inside the
+                          label itself ("Housing delivery (861 of 489
+                          target)"), so the label is sourced text too. */}
+                      <p className="type-body-sm font-medium min-w-0">
+                        <SourceAnnotation
+                          provenance={getProvenance('detailed.performance_kpis', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Performance indicator',
+                            value: String(kpi.metric),
+                          }}
+                        >{kpi.metric}</SourceAnnotation>
+                      </p>
                       <span className="type-body-sm font-semibold tabular-nums shrink-0 text-foreground">
                         <SourceAnnotation
                           provenance={getProvenance('detailed.performance_kpis', selectedCouncil)}
@@ -329,7 +355,21 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                       </span>
                     </div>
                     <p className="type-body-sm text-muted-foreground mt-1">
-                      {kpi.target && `Target: ${kpi.target} · `}{kpi.period}
+                      {kpi.target && (
+                        <>
+                          Target:{' '}
+                          <SourceAnnotation
+                            provenance={getProvenance('detailed.performance_kpis', selectedCouncil)}
+                            reportContext={{
+                              council: selectedCouncil.name,
+                              field: `${kpi.metric} — target`,
+                              value: String(kpi.target),
+                            }}
+                          >{kpi.target}</SourceAnnotation>
+                          {' · '}
+                        </>
+                      )}
+                      {kpi.period}
                     </p>
                   </div>
                 ))}
@@ -448,7 +488,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                       <span className="sr-only"> (opens in new tab)</span>
                     </a>
                     {link.description && (
-                      <p className="type-body-sm text-muted-foreground">{link.description}</p>
+                      <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{link.description}</p>
                     )}
                   </div>
                 ))}
