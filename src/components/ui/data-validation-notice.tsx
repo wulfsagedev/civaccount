@@ -59,6 +59,10 @@ export function DataValidationNotice({
   return (
     <div
       role="status"
+      // This notice explains where the figures below came from and how far
+      // they can be trusted — it is provenance about the data, never a
+      // rendered data value, so the Phase 5b sweep skips it.
+      data-provenance-caption="true"
       className={
         'p-3 rounded-lg border border-border bg-muted/30 flex gap-3 ' +
         (className ?? '')

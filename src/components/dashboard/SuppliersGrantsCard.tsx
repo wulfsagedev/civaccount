@@ -67,6 +67,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
           {verifiedSupplierSource ? (
             <div
               role="status"
+              data-provenance-caption="true"
               className="mb-4 p-3 rounded-lg border border-border bg-muted/30 flex gap-3"
             >
               <ShieldCheck className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" aria-hidden="true" />
@@ -285,6 +286,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
           {verifiedGrantSource ? (
             <div
               role="status"
+              data-provenance-caption="true"
               className="mb-4 p-3 rounded-lg border border-border bg-muted/30 flex gap-3"
             >
               <ShieldCheck className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" aria-hidden="true" />

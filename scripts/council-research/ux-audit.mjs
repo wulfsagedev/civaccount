@@ -116,6 +116,12 @@ const sweepScript = `
       // markup with data-provenance-caption so this stays intentional
       // rather than a text-matching guess.
       if (el.getAttribute && el.getAttribute('data-provenance-caption')) { wrapped = 'caption'; break; }
+      // The council picker is a navigation control, not this page's data
+      // presentation: each row is a link to another council showing that
+      // council's Band D, which is sourced on the page it navigates to.
+      // Whether its dropdown happens to be open must not change the audit
+      // result, so it is out of scope by construction.
+      if (el.getAttribute && (el.getAttribute('role') === 'option' || el.hasAttribute('data-council-item'))) { wrapped = 'caption'; break; }
       // Text inside a link is the NAME of a source document ("Pay policy
       // statement 2025", "Annual Performance Compendium 2025") — the link
       // is itself the provenance. Guarded: anything that looks like a bare
