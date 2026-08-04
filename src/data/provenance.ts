@@ -150,27 +150,27 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
   'budget.education': {
     label: 'published',
     source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
-    source_title: 'Revenue Outturn (RO) Returns',
-    data_year: '2024-25',
+    source_title: 'Revenue Account Budget (RA) Returns 2025-26',
+    data_year: '2025-26',
   },
   'budget.transport': {
     label: 'published',
     source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
-    source_title: 'Revenue Outturn (RO) Returns',
-    data_year: '2024-25',
+    source_title: 'Revenue Account Budget (RA) Returns 2025-26',
+    data_year: '2025-26',
   },
   'budget.total_service': {
     label: 'published',
     source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
-    source_title: 'Revenue Outturn (RO) Returns',
-    data_year: '2024-25',
+    source_title: 'Revenue Account Budget (RA) Returns 2025-26',
+    data_year: '2025-26',
   },
   // Catch-all for any budget field
   'budget': {
     label: 'published',
     source_url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing',
-    source_title: 'Revenue Outturn (RO) Returns',
-    data_year: '2024-25',
+    source_title: 'Revenue Account Budget (RA) Returns 2025-26',
+    data_year: '2025-26',
   },
 
   // ── Budget category details (GOV.UK Revenue Account) ──

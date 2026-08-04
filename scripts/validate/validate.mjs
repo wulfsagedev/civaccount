@@ -42,6 +42,7 @@ import { validate as validateNorthStarGate } from './validators/north-star-gate.
 import { validate as validateTierClassification } from './validators/tier-classification.mjs';
 import { validate as validateForbiddenSourceScan } from './validators/forbidden-source-scan.mjs';
 import { validate as validateLastVerifiedFreshness } from './validators/last-verified-freshness.mjs';
+import { validate as validateCtrCrossCheck } from './validators/ctr-cross-check.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -104,6 +105,7 @@ async function main() {
     ['freshness', validateFreshness],
     ['field-staleness', validateFieldStaleness],
     ['last-verified-freshness', validateLastVerifiedFreshness],
+    ['ctr-cross-check', validateCtrCrossCheck],
     ['provenance-strict', validateProvenanceStrict],
     ['calculated-fields', validateCalculatedFields],
     ['field-source-years', validateFieldSourceYears],

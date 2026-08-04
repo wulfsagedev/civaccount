@@ -29,7 +29,7 @@
     },
     {
       "id": "council-tax-2025",
-      "description": "Council tax requirement and council-only Band D rates (Table 10). NOT the total bill — use area-council-tax for resident-facing figures.",
+      "description": "Council tax requirement and council-only Band D rates (Table 10). NOT the total bill \u2014 use area-council-tax for resident-facing figures.",
       "raw_file": "ctb-2025-local-authority.xlsx",
       "raw_file_sha256": "9fd74444f25278b53f7666dc23ff060d1996adcfe27e74caf63aef2b5b19af06",
       "parsed_csv": "parsed-council-tax-requirement.csv",
@@ -69,13 +69,13 @@
     },
     {
       "id": "revenue-expenditure-part1",
-      "description": "Revenue Account Part 1 — primary service expenditure by category (education, social care, transport, etc.)",
+      "description": "Revenue Account Part 1 \u2014 primary service expenditure by category (education, social care, transport, etc.)",
       "raw_file": "gov-uk-ra-data/RA_2025-26_data_Part_1.ods",
       "raw_file_sha256": "b6176cf91e0235b29b5cceffd0d9ccfaac8f75e4a986cd236d9dee80dc77c1f9",
       "parsed_csv": "gov-uk-ra-data/RA_Part1_LA_Data.csv",
       "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
       "publisher": "MHCLG",
-      "data_year": "2024-25",
+      "data_year": "2025-26",
       "update_frequency": "annual_november",
       "last_downloaded": "2026-01-15",
       "next_expected_update": "2027-01-15",
@@ -98,13 +98,13 @@
     },
     {
       "id": "revenue-expenditure-part2",
-      "description": "Revenue Account Part 2 — financial data, reserves, council tax requirement",
+      "description": "Revenue Account Part 2 \u2014 financial data, reserves, council tax requirement",
       "raw_file": "gov-uk-ra-data/RA_2025-26_data_Part_2.ods",
       "raw_file_sha256": "90a6bc93fe8ace155802a4c11882cd183a23b1b9ac2fbc4c463f9e1beaef40d1",
       "parsed_csv": "gov-uk-ra-data/RA_Part2_LA_Data.csv",
       "gov_uk_page": "https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing",
       "publisher": "MHCLG",
-      "data_year": "2024-25",
+      "data_year": "2025-26",
       "update_frequency": "annual_november",
       "last_downloaded": "2026-01-15",
       "next_expected_update": "2027-01-15",
@@ -134,7 +134,7 @@
     },
     {
       "id": "defra-waste-2022-23",
-      "description": "Local authority waste management statistics — recycling, landfill, energy recovery tonnage by disposal authority",
+      "description": "Local authority waste management statistics \u2014 recycling, landfill, energy recovery tonnage by disposal authority",
       "raw_file": "defra-waste-2022-23.ods",
       "raw_file_sha256": "15bf4ddb230a9572702885423c1e4aded03244b60ccd7c735a98c2465175e1c1",
       "parsed_csv": "parsed-waste.csv",
@@ -153,7 +153,7 @@
     },
     {
       "id": "road-condition",
-      "description": "Road condition statistics — percentage of roads in good/acceptable/poor condition by highway authority",
+      "description": "Road condition statistics \u2014 percentage of roads in good/acceptable/poor condition by highway authority",
       "raw_file": "rdc0120-road-condition.ods",
       "raw_file_sha256": "dae33d298826b3e88b78521891560f5649711423a65fcaa1a7ea77ca9d55905f",
       "parsed_csv": "parsed-road-condition.csv",
@@ -171,7 +171,7 @@
     },
     {
       "id": "road-length",
-      "description": "Road length statistics — total miles of road maintained by highway authority",
+      "description": "Road length statistics \u2014 total miles of road maintained by highway authority",
       "raw_file": "rdl0102-road-length.ods",
       "raw_file_sha256": "12eccff8b87e5a4aed0619e42acacd889af66983b373bd125f481f23abf0fe05",
       "parsed_csv": "parsed-road-length.csv",
@@ -189,7 +189,7 @@
     },
     {
       "id": "ofsted-childrens-services",
-      "description": "Ofsted children's services inspection outcomes — ratings and inspection dates by authority",
+      "description": "Ofsted children's services inspection outcomes \u2014 ratings and inspection dates by authority",
       "raw_file": "ofsted-childrens-services.ods",
       "raw_file_sha256": "3ff0a08b74d633728e20c892fd4ed1290d297b6275407f50b07842b2fddfc6bb",
       "parsed_csv": "parsed-ofsted.csv",
@@ -205,7 +205,7 @@
     },
     {
       "id": "lgbce-councillors",
-      "description": "Local Government Boundary Commission electoral data — total councillors per authority",
+      "description": "Local Government Boundary Commission electoral data \u2014 total councillors per authority",
       "raw_file": "lgbce-electoral-data.xlsx",
       "raw_file_sha256": "1231a7d4aad5c6fb29726d986bd08e02f5f43cd5f8504e0e98c891a64ea293a7",
       "parsed_csv": "parsed-lgbce-councillors.csv",
@@ -238,11 +238,11 @@
         "chief_executive_total_remuneration"
       ],
       "spot_check_tolerance_absolute": 1000,
-      "note": "Compiled from 317 individual council pay policy statements — no single national download"
+      "note": "Compiled from 317 individual council pay policy statements \u2014 no single national download"
     },
     {
       "id": "workforce",
-      "description": "LGA QPSES local authority workforce survey — staff FTE and headcount per local authority from the LGA Quarterly Public Sector Employment Survey ('Final Individual' sheet; Welsh unitaries excluded).",
+      "description": "LGA QPSES local authority workforce survey \u2014 staff FTE and headcount per local authority from the LGA Quarterly Public Sector Employment Survey ('Final Individual' sheet; Welsh unitaries excluded).",
       "raw_file": "qpses-2026-q1.xlsx",
       "parsed_csv": "parsed-workforce.csv",
       "parsed_csv_sha256": "7e6dcee65c68ce395ed4a028aa5677de43decdc017faf4df588b98b1fbf7b07a",

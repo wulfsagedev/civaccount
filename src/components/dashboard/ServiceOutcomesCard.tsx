@@ -318,7 +318,14 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <div className="flex items-center justify-between gap-3">
                       <p className="type-body-sm font-medium min-w-0">{kpi.metric}</p>
                       <span className="type-body-sm font-semibold tabular-nums shrink-0 text-foreground">
-                        {kpi.value}
+                        <SourceAnnotation
+                          provenance={getProvenance('detailed.performance_kpis', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: `${kpi.metric}${kpi.period ? ` (${kpi.period})` : ''}`,
+                            value: String(kpi.value),
+                          }}
+                        >{kpi.value}</SourceAnnotation>
                       </span>
                     </div>
                     <p className="type-body-sm text-muted-foreground mt-1">

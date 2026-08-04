@@ -367,8 +367,14 @@ function proveCouncil(c) {
       const ours = c.council_tax?.[y];
       if (ours == null) continue;
       out.tier1.checked++;
-      const refVal = parseInt(ref[y], 10);
-      if (!isNaN(refVal) && Math.round(ours) === refVal) {
+      // Compare at PENNY precision — the precision GOV.UK publishes.
+      // Previously this did parseInt(cell) vs Math.round(ours), which both
+      // truncated pence off the source (rows like North Kesteven's 2337.81
+      // are published with pence) and, worse, let our value differ from the
+      // source by up to 49p while still being certified "exact".
+      const refVal = parseFloat(String(ref[y]).replace(/,/g, ''));
+      const pence = (n) => Math.round(Number(n) * 100);
+      if (!isNaN(refVal) && pence(ours) === pence(refVal)) {
         out.tier1.exact++;
       } else {
         out.tier1.failed++;

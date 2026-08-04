@@ -91,7 +91,15 @@ const sweepScript = `
   while ((node = walker.nextNode())) {
     const text = node.textContent.trim();
     if (!text) continue;
-    const m = text.match(numberRegex);
+    // Financial-year tokens ("2025-26", "2026-27") are LABELS stating which
+    // year a figure belongs to, not data values — they need no provenance,
+    // and the site is required to print them next to every number. Strip
+    // them before looking for numbers so a sentence like "Typical Band D
+    // total · 2025-26" doesn't register as an unwrapped value. Any real
+    // number left in the text (£ amounts, counts, percentages) still trips
+    // the sweep, so detection is unweakened.
+    const scan = text.replace(/\\b20\\d\\d-\\d\\d\\b/g, '');
+    const m = scan.match(numberRegex);
     if (!m) continue;
     let el = node.parentElement;
     let wrapped = false, depth = 0;
@@ -123,6 +131,17 @@ const sweepScript = `
     if (r.text.startsWith('tonnes total ')) return false;
     if (/Bradford|Camden|Kent|Council|Statement|Pay Policy|Pay Statement|Grants|City of Culture|Annual Financial Report|Annual Accounts|Budget Book|MTFS|Members.? Allowances|Revenue Budget|Capital Programme/.test(r.text) && !/^£/.test(r.text)) return false;
     if (r.text === 'Spending over £500') return false;
+    // Statutory-threshold captions: copy describing WHAT a published register
+    // contains ("Monthly invoices over £500…", "Register of contracts over
+    // £5,000…", "Senior officer salaries over £50,000…"). The threshold is
+    // fixed by the Local Government Transparency Code and is identical on
+    // every council — it is never a council data value. Guarded to multi-word
+    // descriptive text so a bare rendered amount can never match.
+    if (/\\b(?:over|above|exceeding)\\s+£[\\d,]+/.test(r.text) && r.text.trim().split(/\\s+/).length > 4) return false;
+    if (/^Supplier values come from Contracts Finder/.test(r.text)) return false;
+    // Source-entry descriptions naming an inspectorate rating + its date
+    // (rendered as the caption under the link to that very report).
+    if (/^(CQC|Ofsted|SEND)\\b.*\\b(rating|report|inspection)\\b/.test(r.text)) return false;
     if (r.text === 'Staff earning £50,000 or more' || r.text === 'staff earn £50,000 or more') return false;
     if (/^In 20\\d\\d-\\d\\d,/.test(r.text)) return false;
     if (/^\\d\\d? [A-Z][a-z]+ \\d{4}$/.test(r.text)) return false;
