@@ -108,7 +108,7 @@ export default function CompareCouncilTax2026Page() {
     },
     {
       question: 'Why are some councils raising council tax by more than 5% in 2026-27?',
-      answer: `5% (technically 4.99%) is the most a council can normally add to its own share without holding a local referendum — councils in severe financial difficulty can get government permission to go higher. In ${overCapCount} of ${billing.length} billing areas the whole 2026-27 Band D bill rose by 4.99% or more; the biggest area rise was ${getCouncilDisplayName(top10Rises[0].council)} at ${top10Rises[0].changePct.toFixed(1)}%.`,
+      answer: `5% (technically 4.99%) is the most a council can normally add to its own share without holding a local referendum — councils in severe financial difficulty can get government permission to go higher. In ${overCapCount} of ${billing.length} billing areas the whole 2026-27 Band D bill rose by 4.99% or more; the biggest area rise was ${top10Rises[0] ? `${getCouncilDisplayName(top10Rises[0].council)} at ${top10Rises[0].changePct.toFixed(1)}%` : 'not available'}.`,
     },
     {
       question: 'Which English council charges the most council tax?',
@@ -238,7 +238,7 @@ export default function CompareCouncilTax2026Page() {
           <RankedBarList>
             {top10Highest.map((council, index) => {
               const bandD = council.council_tax!.band_d_2026!;
-              const max = top10Highest[0].council_tax!.band_d_2026!;
+              const max = top10Highest[0]?.council_tax?.band_d_2026 ?? 0;
               return (
                 <RankedBarRow
                   key={council.ons_code}

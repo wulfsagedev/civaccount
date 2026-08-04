@@ -92,11 +92,11 @@ function buildTileStats(): Record<
     },
     'biggest-tax-rises': {
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
-      explainer: `${getCouncilDisplayName(rises[0].council)} raised Band D the most in 2025-26. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
+      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised Band D the most in 2025-26. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
     },
     'three-year-squeeze': {
-      hero: `+${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })}`,
-      explainer: `A Band D household in ${getCouncilDisplayName(threeYear.top[0].council)} now pays ${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })} more per year than in 2023-24 — the biggest rise. Middle (median) English council: ${formatCurrency(Math.round(threeYear.medianAbs), { decimals: 0 })} more per year.`,
+      hero: `+${formatCurrency(Math.round(threeYear.top[0]?.changeAbs ?? 0), { decimals: 0 })}`,
+      explainer: `A Band D household in ${threeYear.top[0] ? getCouncilDisplayName(threeYear.top[0].council) : 'the biggest riser'} now pays ${formatCurrency(Math.round(threeYear.top[0]?.changeAbs ?? 0), { decimals: 0 })} more per year than in 2023-24 — the biggest rise. Middle (median) English council: ${formatCurrency(Math.round(threeYear.medianAbs), { decimals: 0 })} more per year.`,
     },
     'where-every-pound-goes': {
       hero: `${topService.pence.toFixed(0)}p`,
@@ -124,7 +124,7 @@ function buildTileStats(): Record<
     },
     'closest-to-bankruptcy': {
       hero: formatShort(bankruptcy.top[0]?.gapPounds ?? 0),
-      explainer: `Biggest budget gap in pounds — ${getCouncilDisplayName(bankruptcy.top[0].council)}. ${bankruptcy.over10pct} councils have a gap of 10% or more of their net budget.`,
+      explainer: `Biggest budget gap in pounds — ${bankruptcy.top[0] ? getCouncilDisplayName(bankruptcy.top[0].council) : 'not available'}. ${bankruptcy.over10pct} councils have a gap of 10% or more of their net budget.`,
     },
     'tax-cap-breakers': {
       hero: `${capBreakers.atOrOverCap.length}`,
