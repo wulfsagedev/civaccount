@@ -128,6 +128,13 @@ const sweepScript = `
       // rendered value (starts with £ or a digit) is still reported, so a
       // data figure can never hide inside an anchor.
       if (el.tagName === 'A' && !/^[£\\d]/.test(text)) { wrapped = 'caption'; break; }
+      // Entity labels: a supplier's legal name or a grant programme name is
+      // data, but it is not a NUMBER — and plenty legally contain digits
+      // ("IAN FARMER ASSOCIATES (1998) LIMITED", "Local Community Fund
+      // (14 wards x £15,000)"). The money paid to them renders separately
+      // and is wrapped. Same guard as anchors: anything that starts with £
+      // or a digit is still reported.
+      if (el.getAttribute && el.getAttribute('data-entity-label') && !/^[£\\d]/.test(text)) { wrapped = 'caption'; break; }
       el = el.parentElement; depth++;
     }
     if (wrapped === true || wrapped === 'in-dialog' || wrapped === 'caption') continue;

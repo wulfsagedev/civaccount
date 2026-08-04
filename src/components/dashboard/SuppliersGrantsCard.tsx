@@ -101,7 +101,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
           <div className="p-3 rounded-lg bg-muted/30 mb-2">
             <p className="type-body-sm">
               <span className="font-semibold">Largest supplier:</span>{' '}
-              {detailed.top_suppliers[0].name} — <SourceAnnotation
+              <span data-entity-label="true">{detailed.top_suppliers[0].name}</span> — <SourceAnnotation
                 provenance={getProvenance('detailed.top_suppliers.annual_spend', selectedCouncil)}
                 reportContext={{
                   council: selectedCouncil.name,
@@ -143,7 +143,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                 >
                   <div className="flex items-baseline justify-between">
                     <div className="min-w-0 mr-3">
-                      <span className="type-body font-semibold flex items-center gap-1.5">
+                      <span data-entity-label="true" className="type-body font-semibold flex items-center gap-1.5">
                         {supplier.name}
                         <ChevronDown
                           className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -200,7 +200,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                 <div key={idx} className="py-3 px-2 -mx-2 border-b border-border/30">
                   <div className="flex items-baseline justify-between">
                     <div className="min-w-0 mr-3">
-                      <p className="type-body font-semibold">{supplier.name}</p>
+                      <p data-entity-label="true" className="type-body font-semibold">{supplier.name}</p>
                       {supplier.category && (
                         <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{supplier.category}</p>
                       )}
@@ -313,7 +313,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
               <div className="p-3 rounded-lg bg-muted/30 mb-2">
                 <p className="type-body-sm">
                   <span className="font-semibold">Largest grant:</span>{' '}
-                  {largest.recipient} — <SourceAnnotation
+                  <span data-entity-label="true">{largest.recipient}</span> — <SourceAnnotation
                     provenance={getProvenance('detailed.grant_payments', selectedCouncil)}
                     reportContext={{
                       council: selectedCouncil.name,
@@ -354,7 +354,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                 >
                   <div className="flex items-baseline justify-between">
                     <div className="min-w-0 mr-3">
-                      <span className="type-body font-semibold flex items-center gap-1.5">
+                      <span data-entity-label="true" className="type-body font-semibold flex items-center gap-1.5">
                         {grant.recipient}
                         <ChevronDown
                           className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -404,7 +404,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                 <div key={idx} className="py-3 px-2 -mx-2 border-b border-border/30">
                   <div className="flex items-baseline justify-between">
                     <div className="min-w-0 mr-3">
-                      <p className="type-body font-semibold">{grant.recipient}</p>
+                      <p data-entity-label="true" className="type-body font-semibold">{grant.recipient}</p>
                       {grant.purpose && (
                         <p data-provenance-caption="true" className="type-body-sm text-muted-foreground">{grant.purpose}</p>
                       )}
