@@ -29,6 +29,26 @@ if (useFixtures) {
   );
 }
 
+// A PRODUCTION deploy must never be built from the 3-council fixture.
+// fetch-private-data.mjs soft-fails to fixtures when CIVACCOUNT_DATA_TOKEN is
+// missing or expired — deliberately, so a dead token can't hang or break a
+// build. The cost is that it fails *quietly*: the build goes green and ships a
+// 3-council site over a 317-council one. This turns that silent downgrade into
+// a loud stop. Preview and local builds are unaffected; set
+// CIVACCOUNT_ALLOW_FIXTURE_PROD=1 to override deliberately.
+if (
+  useFixtures &&
+  process.env.VERCEL_ENV === "production" &&
+  process.env.CIVACCOUNT_ALLOW_FIXTURE_PROD !== "1"
+) {
+  throw new Error(
+    "[civaccount] Refusing to build production from fixture data. " +
+      "The private dataset was not fetched — check CIVACCOUNT_DATA_TOKEN in " +
+      "Vercel project settings (90-day rotation, see ROTATION-RUNBOOK.md). " +
+      "Shipping this build would replace 317 councils with 3.",
+  );
+}
+
 const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
