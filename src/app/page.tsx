@@ -24,8 +24,8 @@ const HomepageContent = memo(function HomepageContent() {
               <h1 className="type-title-1 font-semibold leading-tight">
                 The average English household pays £1,026 in council tax
               </h1>
-              <p className="text-muted-foreground type-body-lg max-w-[320px] mx-auto">
-                Find out what your council charges and how it&apos;s spent
+              <p className="text-muted-foreground type-body-lg max-w-[360px] mx-auto">
+                See where your council tax goes — for all 317 English councils
               </p>
             </div>
           </div>

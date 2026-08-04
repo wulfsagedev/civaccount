@@ -55,6 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Insight sub-pages — data-driven; bump when data refreshes.
     { url: `${baseUrl}/insights/cheapest-council-tax`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/most-expensive-council-tax`, lastModified: dataDriven },
+    { url: `${baseUrl}/insights/compare-council-tax-2026`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/council-tax-increases`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/council-ceo-salaries`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/leaderboards`, lastModified: dataDriven },

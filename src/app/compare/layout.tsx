@@ -3,21 +3,21 @@ import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
-  title: 'Compare Any Two English Councils Side by Side',
-  description: 'Compare any two English councils side by side. Band D council tax, total bill including precepts, budget breakdowns by service, CEO pay and supplier spend — head-to-head.',
+  title: 'Council Tax Comparison Tool — All 317 English Councils',
+  description: 'Free council tax comparison tool. Compare any two English councils side by side: Band D rates, total bill including precepts, budget breakdowns by service, CEO pay and supplier spend. All 317 English councils, sourced from .gov.uk.',
   alternates: {
     canonical: '/compare',
   },
   openGraph: {
-    title: 'Compare Any Two English Councils Side by Side',
-    description: 'Compare any two English councils head-to-head: Band D, total bill, budget breakdown, CEO pay, suppliers.',
+    title: 'Council Tax Comparison Tool — All 317 English Councils',
+    description: 'Free tool to compare any two English councils head-to-head: Band D, total bill, budget breakdown, CEO pay, suppliers.',
     type: 'website',
     siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Compare Any Two English Councils Side by Side',
-    description: 'Compare any two English councils head-to-head: Band D, budget breakdown, CEO pay, suppliers.',
+    title: 'Council Tax Comparison Tool — All 317 English Councils',
+    description: 'Free tool to compare any two English councils head-to-head: Band D, budget breakdown, CEO pay, suppliers.',
   },
 };
 

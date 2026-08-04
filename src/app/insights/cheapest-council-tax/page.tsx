@@ -6,19 +6,19 @@ import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWeb
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
 export const metadata: Metadata = {
-  title: 'Cheapest Council Tax in England 2025-26',
-  description: 'Find the cheapest council tax rates in England for 2025-26. See which councils charge the lowest Band D rates across unitary authorities, metropolitan districts, London boroughs, county councils, and district councils.',
+  title: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
+  description: 'The lowest council tax in England for 2026. See which councils charge the cheapest Band D rates — full top-20 rankings across unitary authorities, metropolitan districts, London boroughs, county and district councils. Sourced from .gov.uk.',
   alternates: {
     canonical: '/insights/cheapest-council-tax',
   },
   openGraph: {
-    title: 'Cheapest Council Tax in England 2025-26',
-    description: 'Which councils charge the lowest Band D council tax? See the full rankings.',
+    title: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
+    description: 'Which councils charge the lowest Band D council tax in 2026? See the full rankings.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cheapest Council Tax in England 2025-26',
-    description: 'Which councils charge the lowest Band D council tax? See the full rankings.',
+    title: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
+    description: 'Which councils charge the lowest Band D council tax in 2026? See the full rankings.',
   },
 };
 
@@ -42,12 +42,20 @@ export default function CheapestCouncilTaxPage() {
 
   const faqs = [
     {
-      question: 'Which council has the cheapest council tax in England?',
-      answer: `${cheapestName} has the cheapest Band D council tax in England for 2025-26 at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.`,
+      question: 'Which council has the lowest council tax in England in 2026?',
+      answer: `${cheapestName} has the lowest Band D council tax in England for 2025-26 at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. The 2026-27 average English Band D bill is roughly £2,392, up 4.9% on last year — but Wandsworth households still pay the least at around £1,028.`,
     },
     {
       question: 'How are council tax rates compared fairly between different council types?',
       answer: 'You can only fairly compare councils of the same type. Unitary authorities, metropolitan districts and London boroughs run all services in one council. District and county councils share services between them, so their bills look lower on their own.',
+    },
+    {
+      question: 'Why is council tax cheaper in some areas?',
+      answer: "Lower-rate councils typically have a larger council tax base (more properties contributing), lower demand for adult social care, and may receive more central government funding per resident. London boroughs in particular often have lower headline rates because the Greater London Authority precept handles fire and police separately.",
+    },
+    {
+      question: 'Did all English councils raise council tax in 2026?',
+      answer: 'Almost all English councils raised council tax for 2026-27 by close to the 4.99% maximum. Even the cheapest councils raised rates — Wandsworth (the lowest-bill council) put Band D up by 3.1% from April 2026.',
     },
   ];
 
@@ -55,23 +63,23 @@ export default function CheapestCouncilTaxPage() {
     '@context': 'https://schema.org',
     '@graph': [
       buildWebPageSchema(
-        'Cheapest Council Tax in England 2025-26',
-        'The cheapest Band D council tax rates in England for 2025-26, grouped by council type for fair comparison.',
+        'Lowest Council Tax in England 2026',
+        'The lowest Band D council tax rates in England for 2026, grouped by council type for fair comparison.',
         '/insights/cheapest-council-tax',
       ),
       buildArticleSchema({
-        headline: 'Cheapest Council Tax in England 2025-26',
-        description: `The cheapest Band D council tax in England for 2025-26 is ${cheapestName} at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. Full ranking by council type.`,
+        headline: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
+        description: `The lowest Band D council tax in England for 2025-26 is ${cheapestName} at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. Full top-20 ranking by council type.`,
         url: '/insights/cheapest-council-tax',
         about: 'Council tax in England',
-        keywords: ['cheapest council tax', 'lowest Band D', 'council tax 2025-26', 'England council tax rankings'],
+        keywords: ['lowest council tax UK 2026', 'cheapest council tax', 'lowest Band D 2026', 'council tax 2026', 'England council tax rankings'],
       }),
       buildFAQPageSchema(faqs, '/insights/cheapest-council-tax'),
       buildBreadcrumbSchema(
         [
           { name: 'Home', url: '/' },
           { name: 'Insights', url: '/insights' },
-          { name: 'Cheapest Council Tax' },
+          { name: 'Lowest Council Tax 2026' },
         ],
         '/insights/cheapest-council-tax'
       ),
@@ -88,13 +96,14 @@ export default function CheapestCouncilTaxPage() {
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Insights', href: '/insights' },
-          { label: 'Cheapest Council Tax' },
+          { label: 'Lowest Council Tax 2026' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Cheapest Council Tax in England</h1>
+        <h1 className="type-title-1 mb-2">Lowest Council Tax in England 2026</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
-          The cheapest Band D council tax in England for 2025-26 is {cheapestName} at {formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.
-          Rates are grouped by council type, so you compare like with like.
+          The lowest Band D council tax in England for 2025-26 is {cheapestName} at {formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.
+          Even the cheapest councils raised rates for 2026-27 — Wandsworth (lowest in England, around £1,028) put Band D up by 3.1% from April 2026.
+          Rates below are grouped by council type so you compare like with like — district councils look cheaper on their own because households in two-tier areas also pay a separate county bill.
         </p>
 
         {GROUPS.map((group) => {

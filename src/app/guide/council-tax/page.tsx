@@ -137,9 +137,9 @@ export default function CouncilTaxGuidePage() {
 
         <h1 className="type-title-1 mb-2">The Complete Guide to Council Tax</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
-          Council tax is the main way local councils in England raise money to pay for services.
-          In 2025-26, the average Band D council tax is {formatCurrency(avgBandD, { decimals: 0 })}{avgChange !== null ? `, up ${avgChange.toFixed(1)}% from last year` : ''}.
-          This guide explains how it works.
+          Council tax is calculated by multiplying your home&apos;s Band D rate (set by your local council each year) by a fraction based on your property&apos;s band.
+          In 2025-26, the average English Band D council tax is {formatCurrency(avgBandD, { decimals: 0 })}{avgChange !== null ? `, up ${avgChange.toFixed(1)}% from last year` : ''}.
+          This guide explains how bands work, how the precept adds to your bill, who pays, and where your money goes.
         </p>
 
         {/* Section 1: What is council tax */}

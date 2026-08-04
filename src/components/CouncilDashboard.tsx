@@ -58,7 +58,10 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
 
   const taxChange = bandD && bandD2024 ? ((bandD - bandD2024) / bandD2024) * 100 : null;
 
-  // Find biggest spending category (lowercase used in narrative prose)
+  // Compute top 3 spending categories (with £ amounts) for the answer-first
+  // narrative. Lists the actual £ figure per service so AI engines can extract
+  // "how much does [council] spend on [service]" queries verbatim from the SSR
+  // markup. Lowercase names are used because they read naturally in prose.
   const serviceMap = [
     { key: 'environmental', name: 'bins, streets & environment' },
     { key: 'planning', name: 'planning' },
@@ -71,19 +74,22 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
     { key: 'transport', name: 'roads & transport' },
     { key: 'public_health', name: 'public health' },
   ];
-  let biggestCategory: { name: string; pct: number } | null = null;
+  type TopService = { key: string; name: string; amount: number; pct: number };
+  let topServices: TopService[] = [];
   if (budget?.total_service) {
     const total = budget.total_service;
-    for (const service of serviceMap) {
-      const amount = budget[service.key as keyof typeof budget] as number | null;
-      if (amount && amount > 0) {
-        const pct = (amount / total) * 100;
-        if (!biggestCategory || pct > biggestCategory.pct) {
-          biggestCategory = { name: service.name, pct };
-        }
-      }
-    }
+    topServices = serviceMap
+      .map((service) => {
+        const amount = budget[service.key as keyof typeof budget] as number | null;
+        return amount && amount > 0
+          ? { key: service.key, name: service.name, amount, pct: (amount / total) * 100 }
+          : null;
+      })
+      .filter((s): s is TopService => s !== null)
+      .sort((a, b) => b.pct - a.pct)
+      .slice(0, 3);
   }
+  const biggestCategory = topServices[0] ?? null;
 
   // Narrative hero — now rendered as cited JSX below (every number is a
   // click-through to its source). The plain-text equivalent for
@@ -150,7 +156,46 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                   .
                 </>
               )}
-              {totalBudget && biggestCategory ? (
+              {totalBudget && topServices.length >= 3 ? (
+                <>
+                  {' '}The council manages a total service budget of{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance('budget.total_service', selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: 'Total service budget',
+                      value: totalBudget,
+                    }}
+                  >{totalBudget}</SourceAnnotation>.
+                  {' '}Here&apos;s where your council tax goes: {topServices[0].name} takes the biggest share at{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance(`budget.${topServices[0].key}`, selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `Spending — ${topServices[0].name}`,
+                      value: formatBudget(topServices[0].amount),
+                    }}
+                  >{formatBudget(topServices[0].amount)}</SourceAnnotation>{' '}({topServices[0].pct.toFixed(0)}%),
+                  {' '}followed by {topServices[1].name} at{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance(`budget.${topServices[1].key}`, selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `Spending — ${topServices[1].name}`,
+                      value: formatBudget(topServices[1].amount),
+                    }}
+                  >{formatBudget(topServices[1].amount)}</SourceAnnotation>{' '}({topServices[1].pct.toFixed(0)}%)
+                  {' '}and {topServices[2].name} at{' '}
+                  <SourceAnnotation
+                    provenance={getProvenance(`budget.${topServices[2].key}`, selectedCouncil)}
+                    reportContext={{
+                      council: selectedCouncil.name,
+                      field: `Spending — ${topServices[2].name}`,
+                      value: formatBudget(topServices[2].amount),
+                    }}
+                  >{formatBudget(topServices[2].amount)}</SourceAnnotation>{' '}({topServices[2].pct.toFixed(0)}%).
+                </>
+              ) : totalBudget && biggestCategory ? (
                 <>
                   {' '}The council manages a total service budget of{' '}
                   <SourceAnnotation
