@@ -109,6 +109,13 @@ async function check(url) {
 const MODERNGOV_403_DOMAINS = [
   'democracy.', 'moderngov.', 'committees.westminster',
   'cms.wiltshire', 'mycouncil.surreycc',
+  // Each verified in a real browser on 2026-08-04 — the page loads with the
+  // expected title; only automated fetches get a 403. They were being
+  // reported as broken, which buried two genuinely dead Sheffield links
+  // among nine false ones.
+  'kent.gov.uk',       // "Senior staff salaries - Kent County Council"
+  'hants.gov.uk',      // "Chief officers | About the Council | Hampshire County Council"
+  'manchester.gov.uk', // "The Council and democracy | Manchester City Council"
 ];
 const IMPERVA_TIMEOUT_DOMAINS = [
   'newcastle.gov.uk', // Imperva WAF — verified live in-browser 2026-04-23
