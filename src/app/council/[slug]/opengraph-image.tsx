@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { getCouncilBySlug, getCouncilDisplayName, getCouncilPopulation, councils } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, getCouncilPopulation, getAreaBandD, getAreaBandDChange, councils, type Council } from '@/data/councils';
 import { OG, ogWrap, ogBrand, getGeistFonts, formatCurrencyOG } from './card/_lib/og-shared';
 
 export const runtime = 'nodejs';
@@ -7,14 +7,20 @@ export const alt = 'Council tax and budget breakdown';
 export const size = { width: 2400, height: 1260 };
 export const contentType = 'image/png';
 
-function getRankWithinType(council: { type: string; council_tax?: { band_d_2025?: number | null } }): { rank: number; total: number } | null {
-  const bandD = council.council_tax?.band_d_2025;
+// Rank by the most recent verified area Band D. Peers share a council type,
+// so getAreaBandD returns the same year for every member — never mixed-year.
+function getRankWithinType(council: Council): { rank: number; total: number } | null {
+  const bandD = getAreaBandD(council)?.value;
   if (bandD == null) return null;
 
-  const peers = councils.filter(c => c.type === council.type && c.council_tax?.band_d_2025 != null);
-  const sorted = [...peers].sort((a, b) => (a.council_tax!.band_d_2025! - b.council_tax!.band_d_2025!));
-  const rank = sorted.findIndex(c => c.council_tax!.band_d_2025 === bandD) + 1;
-  return { rank, total: sorted.length };
+  const peerValues = councils
+    .filter(c => c.type === council.type)
+    .map(c => getAreaBandD(c)?.value)
+    .filter((v): v is number => v != null)
+    .sort((a, b) => a - b);
+  const rank = peerValues.findIndex(v => v === bandD) + 1;
+  if (rank === 0) return null;
+  return { rank, total: peerValues.length };
 }
 
 function ordinal(n: number): string {
@@ -45,19 +51,20 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   }
 
   const displayName = getCouncilDisplayName(council);
-  const bandD = council.council_tax?.band_d_2025;
-  const bandDPrev = council.council_tax?.band_d_2024;
+  // Most recent verified AREA Band D — 2026-27 for billing authorities,
+  // 2025-26 fallback for county councils. The year renders next to the number.
+  const area = getAreaBandD(council);
+  const areaChange = getAreaBandDChange(council);
   const population = getCouncilPopulation(council.name);
   const totalService = council.budget?.total_service;
 
-  const changePct = bandD && bandDPrev ? ((bandD - bandDPrev) / bandDPrev * 100) : null;
   const spendingPerResident = totalService && population ? Math.round((totalService * 1000) / population) : null;
   const ranking = council ? getRankWithinType(council) : null;
 
   const stats: { label: string; value: string }[] = [];
-  if (changePct !== null) {
-    const sign = changePct >= 0 ? '+' : '';
-    stats.push({ label: 'Year-on-year', value: `${sign}${changePct.toFixed(1)}%` });
+  if (areaChange !== null) {
+    const sign = areaChange.percent >= 0 ? '+' : '';
+    stats.push({ label: `vs ${areaChange.fromYear}`, value: `${sign}${areaChange.percent.toFixed(1)}%` });
   }
   if (spendingPerResident !== null) {
     stats.push({ label: 'Per resident', value: formatCurrencyOG(spendingPerResident) });
@@ -83,13 +90,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
         {/* Middle section — hero number + stats */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {bandD && (
+          {area && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '56px' }}>
               <span style={{ fontSize: '44px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Band D · Council Tax
+                {`Band D · Council Tax ${area.year}`}
               </span>
               <span style={{ fontSize: '120px', fontWeight: 700, color: OG.text, letterSpacing: '-0.02em', lineHeight: 1 }}>
-                {formatCurrencyOG(bandD, 2)}<span style={{ fontSize: '56px', fontWeight: 500, color: OG.secondary }}> /year</span>
+                {formatCurrencyOG(area.value, 2)}<span style={{ fontSize: '56px', fontWeight: 500, color: OG.secondary }}> /year</span>
               </span>
             </div>
           )}
@@ -110,8 +117,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           )}
         </div>
 
-        {/* Brand strip */}
-        {ogBrand(displayName, council.type_name)}
+        {/* Brand strip — stamped with the hero figure's year */}
+        {ogBrand(displayName, council.type_name, area?.year ?? '2025-26')}
       </div>
     ),
     ogOptions

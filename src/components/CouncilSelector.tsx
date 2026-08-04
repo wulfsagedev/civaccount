@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
-import { Council, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { Council, getCouncilDisplayName, getCouncilSlug, getAreaBandD } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SELECTOR_RESULT_LIMIT, CARD_STYLES, CARD_PADDING } from '@/lib/utils';
 import { searchCouncilsFast, getAutocompleteSuggestion, totalCouncilCount, getDefaultCouncils } from '@/lib/search-index';
@@ -27,8 +27,9 @@ const HomepageResultItem = memo(function HomepageResultItem({
   isHighlighted: boolean;
   onSelect: (council: Council) => void;
 }) {
-  const bandD = council.council_tax?.band_d_2025;
-  const prevBandD = council.council_tax?.band_d_2024;
+  const areaBandD = getAreaBandD(council);
+  const bandD = areaBandD?.value;
+  const prevBandD = areaBandD?.previous;
   const yoyChange = bandD && prevBandD ? ((bandD - prevBandD) / prevBandD) * 100 : null;
 
   return (
@@ -46,7 +47,7 @@ const HomepageResultItem = memo(function HomepageResultItem({
           <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
         </div>
         <div className="text-right shrink-0">
-          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">£{Math.round(bandD).toLocaleString('en-GB')}/yr</p>}
+          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">£{Math.round(bandD).toLocaleString('en-GB')}/yr{areaBandD?.year === '2025-26' ? ' (2025-26)' : ''}</p>}
           {yoyChange !== null && (
             <p className={`type-body-sm tabular-nums ${yoyChange > 0 ? 'text-negative' : yoyChange < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
               {yoyChange > 0 ? '+' : ''}{yoyChange.toFixed(1)}% from last year
@@ -69,7 +70,7 @@ const DashboardResultItem = memo(function DashboardResultItem({
   onSelect: (council: Council) => void;
 }) {
   const displayName = getCouncilDisplayName(council);
-  const bandD = council.council_tax?.band_d_2025;
+  const areaBandD = getAreaBandD(council);
 
   return (
     <button
@@ -92,9 +93,9 @@ const DashboardResultItem = memo(function DashboardResultItem({
           </div>
         </div>
         <div className="text-right shrink-0">
-          {bandD && (
+          {areaBandD && (
             <p className="type-body-sm text-muted-foreground tabular-nums">
-              £{bandD.toFixed(2)}/year
+              £{areaBandD.value.toFixed(2)}/year{areaBandD.year === '2025-26' ? ' (2025-26)' : ''}
             </p>
           )}
         </div>
@@ -264,7 +265,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
             {selectedCouncil.type_name}
           </Badge>
           <Badge variant="outline" className="type-body-sm font-medium">
-            2025-26
+            {getAreaBandD(selectedCouncil)?.year ?? '2025-26'}
           </Badge>
         </div>
       </div>

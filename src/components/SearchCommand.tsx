@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef, useCallback, memo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Council, getCouncilSlug, councils as allCouncilsList } from '@/data/councils';
+import { Council, getCouncilSlug, getAreaBandD, councils as allCouncilsList } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 import { searchCouncilsFast, getDefaultCouncils } from '@/lib/search-index';
@@ -36,7 +36,8 @@ const SearchResultItem = memo(function SearchResultItem({
   isHighlighted: boolean;
   onSelect: (council: Council) => void;
 }) {
-  const bandD = council.council_tax?.band_d_2025;
+  const areaBandD = getAreaBandD(council);
+  const bandD = areaBandD?.value;
 
   return (
     <button
@@ -55,7 +56,7 @@ const SearchResultItem = memo(function SearchResultItem({
       </div>
       {bandD && (
         <span className="type-body-sm text-muted-foreground shrink-0 ml-2 tabular-nums">
-          £{Math.round(bandD).toLocaleString('en-GB')}/yr
+          £{Math.round(bandD).toLocaleString('en-GB')}/yr{areaBandD?.year === '2025-26' ? ' (2025-26)' : ''}
         </span>
       )}
     </button>

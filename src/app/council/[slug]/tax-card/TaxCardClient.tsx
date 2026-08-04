@@ -79,6 +79,11 @@ export default function TaxCardClient() {
 
   const council = selectedCouncil;
   const councilTax = council.council_tax!;
+  // The whole receipt stays in 2025-26 — the hero, per-band totals, and
+  // per-precept rows must all sum against the same-year precept stack
+  // (detailed.precepts is 2025-26 data). The year is stamped on the receipt
+  // header and footer. The 2026-27 area figure lives on the dashboard and
+  // metadata/OG surfaces, where no precept breakdown sits next to it.
   const bandD = councilTax.band_d_2025;
   const bandDPrev = councilTax.band_d_2024;
   const allBands = calculateBands(bandD);
@@ -124,9 +129,12 @@ export default function TaxCardClient() {
   const lowerTotal = lowerBand ? (totalBandD ? totalBandD * (allBands[lowerBand as keyof typeof allBands] / bandD) : allBands[lowerBand as keyof typeof allBands]) : null;
   const higherTotal = higherBand ? (totalBandD ? totalBandD * (allBands[higherBand as keyof typeof allBands] / bandD) : allBands[higherBand as keyof typeof allBands]) : null;
 
-  // Compared to average
+  // Compared to average. This card's figures are all 2025-26 (the receipt has
+  // to reconcile against the 2025-26 precept stack), so it compares against
+  // the 2025-26 type average — never the 2026-27 one, which would make every
+  // council look cheaper than its peers.
   const typeAvg = getTypeAverages(council.type);
-  const avgWeekly = typeAvg.bandD / 52;
+  const avgWeekly = typeAvg.bandD2025 / 52;
   const vAvgWeekly = weeklyCost - avgWeekly;
 
   // Time-to-earn
@@ -207,7 +215,7 @@ export default function TaxCardClient() {
               <span className={`font-semibold ${changePct > 0 ? 'text-negative' : 'text-positive'}`}>
                 {changePct > 0 ? '+' : ''}{changePct.toFixed(1)}%
               </span>
-              {' '}from last year
+              {' '}from 2024-25
             </p>
           )}
 

@@ -1,4 +1,4 @@
-import { councils, getCouncilSlug } from '@/data/councils';
+import { councils, getCouncilSlug, getAreaBandD } from '@/data/councils';
 
 /**
  * Generate popular comparison matchup slugs for static generation and sitemap.
@@ -30,17 +30,21 @@ export function getPopularComparisons(): string[] {
     }
   }
 
-  // Cheapest vs most expensive per type
+  // Cheapest vs most expensive per type, by the most recent verified area
+  // Band D. Councils of the same type share a year (2026-27 for billing
+  // authorities, 2025-26 for county councils), so each pair is same-year.
   const types = ['UA', 'MD', 'LB', 'OLB', 'ILB', 'SD', 'SC'];
   for (const type of types) {
     const typeCouncils = councils
-      .filter((c) => c.type === type && c.council_tax?.band_d_2025)
-      .sort((a, b) => a.council_tax!.band_d_2025 - b.council_tax!.band_d_2025);
+      .map((c) => ({ council: c, bandD: getAreaBandD(c)?.value }))
+      .filter((x): x is { council: (typeof councils)[number]; bandD: number } =>
+        x.council.type === type && x.bandD != null)
+      .sort((a, b) => a.bandD - b.bandD);
 
     if (typeCouncils.length >= 2) {
       addPair(
-        getCouncilSlug(typeCouncils[0]),
-        getCouncilSlug(typeCouncils[typeCouncils.length - 1])
+        getCouncilSlug(typeCouncils[0].council),
+        getCouncilSlug(typeCouncils[typeCouncils.length - 1].council)
       );
     }
   }

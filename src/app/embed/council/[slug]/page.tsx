@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, formatCurrency, formatBudget, getAverageBandDByType, toSentenceTypeName } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, formatCurrency, formatBudget, getAreaBandD, getAverageBandDByType, toSentenceTypeName } from '@/data/councils';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,14 +27,19 @@ export default async function EmbedCouncilPage({ params }: Props) {
   if (!council) notFound();
 
   const displayName = getCouncilDisplayName(council);
-  const bandD = council.council_tax?.band_d_2025;
-  const bandD2024 = council.council_tax?.band_d_2024;
+  // Most recent verified area Band D — 2026-27 for billing authorities,
+  // 2025-26 fallback for county councils. The badge shows `area.year`.
+  const area = getAreaBandD(council);
+  const bandD = area?.value;
+  const bandDPrev = area?.previous;
   const totalBudget = council.budget?.total_service ? formatBudget(council.budget.total_service) : null;
+  // getAverageBandDByType returns the same year getAreaBandD would for this
+  // council's type, so this never mixes years.
   const typeAvg = getAverageBandDByType(council.type);
   const vsAvg = bandD && typeAvg ? bandD - typeAvg : null;
 
-  const taxChange = bandD && bandD2024
-    ? ((bandD - bandD2024) / bandD2024) * 100
+  const taxChange = bandD && bandDPrev
+    ? ((bandD - bandDPrev) / bandDPrev) * 100
     : null;
 
   return (
@@ -127,7 +132,7 @@ export default async function EmbedCouncilPage({ params }: Props) {
       </head>
       <body>
         <div className="card">
-          <span className="badge">{council.type_name} · 2025-26</span>
+          <span className="badge">{council.type_name}{area ? ` · ${area.year}` : ''}</span>
           <div className="name">{displayName}</div>
 
           {bandD && (

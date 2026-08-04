@@ -1,71 +1,86 @@
-CivAccount Data License v1.0
+CivAccount Data Licence v1.1
 
-Copyright (c) 2025 wulfsage.com / CivAccount
+Copyright (c) 2025-2026 wulfsage.com / CivAccount
 
-This license applies to the compiled council dataset in this repository,
-specifically all files within src/data/councils/ and any derived data files.
-
-
-1. WHAT THIS COVERS
-
-   The "Dataset" refers to the structured, enriched compilation of UK council
-   data in this repository — including budget breakdowns, service spending,
-   financial figures, service outcomes, leadership details, and all associated
-   metadata contained in the TypeScript data files.
-
-   This license does NOT apply to the underlying raw government data, which
-   remains Crown Copyright under the Open Government Licence v3.0. You are
-   free to obtain that raw data directly from GOV.UK and use it under the
-   OGL terms.
-
-   This license covers the compilation, structure, enrichment, normalisation,
-   and cross-referencing work that transforms raw government data into the
-   CivAccount Dataset.
+Here's the short version: look up anything, quote any figure, embed any
+widget, cite us anywhere — all free. Just don't copy the whole dataset
+or use it to build a competing council-data product.
 
 
-2. PERMITTED USE
+1. WHAT YOU CAN DO (no permission needed)
 
-   You MAY:
+   a) View and use the site, and look up any council, as much as you like.
 
-   a) View and inspect the Dataset in this public repository.
+   b) Quote individual figures anywhere — in an article, a paper, a
+      council meeting, a social post. Example: "Kent's Band D council
+      tax precept is £1,691.19 in 2025-26 (source: CivAccount)".
+      Commercial publications
+      included.
 
-   b) Reference individual data points from the Dataset for journalism,
-      research, education, or civic purposes, with attribution to CivAccount.
+   c) Embed CivAccount widgets and link to any page, including from
+      commercial sites.
 
-   c) Use the Dataset structure and schema as inspiration for your own
-      data projects, provided you compile your own data independently.
+   d) Use our schema and structure as inspiration for your own project,
+      if you compile your own data independently.
 
-   d) Fork this repository for the purpose of contributing improvements
-      back to CivAccount via pull requests.
+   e) Clone or fork the public code repository. It contains the MIT-
+      licensed code and small sample fixtures — no dataset — so cloning
+      it is not, and cannot be, a violation of this licence.
 
-
-3. RESTRICTED USE
-
-   You MAY NOT, without prior written permission from the copyright holder:
-
-   a) Bulk copy, redistribute, or republish the Dataset or any substantial
-      portion of it (whether in its original form or reformatted).
-
-   b) Use the Dataset to build or operate a competing product or service
-      that presents UK council financial data.
-
-   c) Incorporate the Dataset into a commercial product or service.
-
-   d) Create derivative datasets by systematically extracting and
-      restructuring the Dataset's contents.
-
-   e) Offer the Dataset (or a substantial portion of it) as a data feed,
-      API, download, or dataset on any platform.
+   f) Contribute improvements back via pull requests.
 
 
-4. ATTRIBUTION
+2. WHAT NEEDS PERMISSION FIRST
 
-   Any permitted use of data from the Dataset must include:
+   Without prior written permission, you may not:
 
-   "Source: CivAccount (https://civaccount.uk)"
+   a) Bulk copy, redistribute, or republish the Dataset or any
+      substantial portion of it, in any form or format.
+
+   b) Use the Dataset to build or operate a competing product or
+      service presenting UK council financial data.
+
+   c) Sell the Dataset or incorporate substantial portions of it into a
+      commercial product.
+
+   d) Systematically extract and restructure the Dataset's contents
+      into a derivative dataset, data feed, API, or download.
 
 
-5. GOVERNMENT DATA ACKNOWLEDGEMENT
+3. WHY THE RESTRICTION EXISTS
+
+   Every number on CivAccount comes from public GOV.UK sources — and
+   the raw data is free there for everyone, forever. What this licence
+   protects is the months of compilation work: normalising 317 councils'
+   figures, verifying each one against its source document, and keeping
+   it all current. If you need bulk data, GOV.UK has it under the Open
+   Government Licence — that's the right place to get it.
+
+
+4. WHAT "THE DATASET" MEANS
+
+   The structured, enriched compilation of UK council data published by
+   CivAccount — budget breakdowns, service spending, financial figures,
+   service outcomes, leadership details, and associated metadata. It
+   lives in the private civaccount-data repository and is served on
+   civaccount.co.uk.
+
+   This licence does NOT apply to the underlying raw government data,
+   which remains Crown copyright under the Open Government Licence v3.0
+   (see section 6).
+
+
+5. ATTRIBUTION
+
+   Any use of figures from the Dataset must include:
+
+   "Source: CivAccount (https://www.civaccount.co.uk)"
+
+   Where practical, please also cite the original .gov.uk source — every
+   figure on the site links to one.
+
+
+6. GOVERNMENT DATA ACKNOWLEDGEMENT
 
    The Dataset contains public sector information licensed under the
    Open Government Licence v3.0. Original data sources include:
@@ -78,18 +93,21 @@ specifically all files within src/data/councils/ and any derived data files.
    - Individual council publications
 
    The Open Government Licence permits anyone to freely obtain and use
-   the raw source data. This license restricts only the compiled,
-   enriched Dataset — not the underlying government data.
+   the raw source data. This licence restricts only the compiled,
+   enriched Dataset — never the underlying government data.
 
 
-6. NO WARRANTY
+7. NO WARRANTY
 
    THE DATASET IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
    WHILE EVERY EFFORT IS MADE TO ENSURE ACCURACY, THE DATASET MAY
    CONTAIN ERRORS OR OMISSIONS. USE AT YOUR OWN RISK.
 
 
-7. CONTACT
+8. VERSIONS AND CONTACT
+
+   v1.1 (2026-08-04) supersedes v1.0 for new uses; uses begun under
+   v1.0 keep their v1.0 terms.
 
    For licensing enquiries, commercial use, or permissions:
    https://github.com/wulfsagedev/civaccount

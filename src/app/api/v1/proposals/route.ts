@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { parseIntParam } from '@/lib/api-params';
 
 export async function GET(request: NextRequest) {
   const ip = getClientIP(request);
-  const { success: allowed, remaining } = await checkRateLimit(ip, { limit: 100, windowSeconds: 60 });
+  const { success: allowed, remaining } = await checkRateLimit(`v1-proposals:${ip}`, { limit: 100, windowSeconds: 60 });
 
   if (!allowed) {
     return NextResponse.json(
@@ -16,8 +17,8 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const councilSlug = searchParams.get('council');
   const sort = searchParams.get('sort') ?? 'score';
-  const limit = Math.min(parseInt(searchParams.get('limit') ?? '20'), 50);
-  const offset = parseInt(searchParams.get('offset') ?? '0');
+  const limit = parseIntParam(searchParams.get('limit'), { fallback: 20, min: 1, max: 50 });
+  const offset = parseIntParam(searchParams.get('offset'), { fallback: 0, min: 0, max: 100000 });
 
   const supabase = await createClient();
 
@@ -41,7 +42,8 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[api/v1/proposals] supabase error:', error.message);
+    return NextResponse.json({ error: 'Could not fetch proposals' }, { status: 500 });
   }
 
   return NextResponse.json(

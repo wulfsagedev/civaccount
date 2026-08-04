@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCouncilBySlug, getCouncilDisplayName, formatCurrency } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, formatCurrency, getAreaBandD } from '@/data/councils';
 import { buildBreadcrumbSchema } from '@/lib/structured-data';
 import TaxCardClient from './TaxCardClient';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
@@ -15,8 +15,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!council) return { title: 'Council Tax Card' };
 
   const name = getCouncilDisplayName(council);
-  const bandD = council.council_tax?.band_d_2025;
-  const bandDText = bandD ? ` Band D: ${formatCurrency(bandD, { decimals: 2 })}` : '';
+  // Most recent verified AREA Band D — the year is stated next to the figure.
+  const area = getAreaBandD(council);
+  const bandDText = area ? ` Band D: ${formatCurrency(area.value, { decimals: 2 })} (${area.year})` : '';
 
   return {
     title: `Your Council Tax Card — ${name}`,

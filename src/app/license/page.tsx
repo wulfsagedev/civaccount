@@ -51,7 +51,16 @@ export default function LicensePage() {
                 <Badge variant="outline" className="mb-2">Open Source</Badge>
                 <h1 className="type-title-1 font-semibold">Licensing</h1>
                 <p className="text-muted-foreground">
-                  CivAccount uses a dual license to keep the code open while protecting the compiled dataset
+                  CivAccount uses a dual licence: open MIT code, plus a data licence for the compiled dataset
+                </p>
+              </div>
+
+              {/* Short version */}
+              <div className="p-5 rounded-lg bg-muted/30 border border-border/50">
+                <p className="type-body-sm text-foreground font-medium mb-1">The short version</p>
+                <p className="type-body-sm text-muted-foreground leading-relaxed">
+                  Look up anything, quote any figure, embed any widget, cite us anywhere — all free.
+                  Just don&apos;t copy the whole dataset or use it to build a competing council-data product.
                 </p>
               </div>
 
@@ -100,54 +109,62 @@ export default function LicensePage() {
                     <Database className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h2 className="type-title-3 font-semibold">Compiled Dataset &mdash; CivAccount Data License</h2>
-                    <p className="type-body-sm text-muted-foreground">View and reference, but not bulk copy</p>
+                    <h2 className="type-title-3 font-semibold">Compiled Dataset &mdash; CivAccount Data Licence v1.1</h2>
+                    <p className="type-body-sm text-muted-foreground">Quote and embed freely; no bulk copying</p>
                   </div>
                 </div>
 
                 <div className="space-y-4 type-body-sm leading-relaxed">
                   <p className="text-muted-foreground">
                     The compiled council dataset (budget breakdowns, service spending, financial figures,
-                    and all enriched metadata across 317 councils) is protected under the CivAccount
-                    Data License. This covers the compilation and enrichment work, not the underlying
+                    and all enriched metadata across 317 councils) is under the CivAccount
+                    Data Licence. This covers the compilation and enrichment work, not the underlying
                     government data.
                   </p>
 
-                  <p className="font-medium text-foreground">You can:</p>
+                  <p className="font-medium text-foreground">You can, without asking:</p>
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      View and inspect the data in the public repository
+                      Quote any figure in your article, paper, or post — e.g. &ldquo;Kent&apos;s Band D
+                      county precept is £1,691.19 in 2025-26 (source: CivAccount)&rdquo;
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      Reference individual data points for journalism, research, or education
+                      Embed a council&apos;s spending breakdown on your site, commercial or not
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      Use the data structure as inspiration for your own projects
+                      Fork the code on GitHub to build your own thing — the public repository holds
+                      MIT code and sample fixtures, not the dataset, so cloning it never violates this licence
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      Contribute improvements back via pull requests
+                      Use the data structure as inspiration, compiling your own data independently
                     </li>
                   </ul>
 
-                  <p className="font-medium text-foreground mt-4">You cannot:</p>
+                  <p className="font-medium text-foreground mt-4">You can&apos;t, without written permission:</p>
                   <ul className="space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      Bulk copy or republish the compiled dataset
+                      Scrape every council page and package the result as your own dataset
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      Use it to build a competing product
+                      Bulk copy or republish the dataset, or offer it as a feed, API, or download
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                      Incorporate it into a commercial service
+                      Use it to build a competing council-data product or commercial service
                     </li>
                   </ul>
+
+                  <p className="text-muted-foreground mt-4">
+                    Why the restriction? The raw data is free at GOV.UK for everyone, forever — if you
+                    need bulk data, that&apos;s the right place. What this licence protects is the months
+                    of work turning it into one verified, comparable dataset.
+                  </p>
                 </div>
               </div>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD, getAreaBandD, getAreaBandDChange, PREVIOUS_TAX_YEAR } from '@/data/councils';
 import { buildFAQPageSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
@@ -25,23 +25,26 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const displayName = getCouncilDisplayName(council);
-  const bandD = council.council_tax?.band_d_2025;
-  const bandDText = bandD ? ` - Band D £${bandD.toLocaleString('en-GB')}` : '';
+  // Most recent verified AREA Band D — 2026-27 for billing authorities,
+  // 2025-26 fallback for county councils. `area.year` says which.
+  const area = getAreaBandD(council);
+  const taxYear = area?.year ?? PREVIOUS_TAX_YEAR;
+  const bandDText = area ? ` - Band D ${formatCurrency(area.value, { decimals: 2 })} (${area.year})` : '';
 
   return {
-    title: `${displayName} Budget & Council Tax 2025-26`,
-    description: `See how ${displayName} spends your council tax${bandDText}. Budget breakdown, service spending, and tax band information for 2025-26.`,
+    title: `${displayName} Budget & Council Tax ${taxYear}`,
+    description: `See how ${displayName} spends your council tax${bandDText}. Budget breakdown, service spending, and tax band information for ${taxYear}.`,
     alternates: {
       canonical: `/council/${slug}`,
     },
     openGraph: {
       title: `${displayName} Council Tax & Budget`,
-      description: `Council tax and budget breakdown for ${displayName} 2025-26`,
+      description: `Council tax and budget breakdown for ${displayName} ${taxYear}`,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${displayName} Council Tax & Budget 2025-26`,
+      title: `${displayName} Council Tax & Budget ${taxYear}`,
       description: `See how ${displayName} spends your council tax${bandDText}. Budget breakdown and spending insights.`,
     },
   };
@@ -70,17 +73,22 @@ export default async function CouncilLayout({ params, children }: Props) {
   }
 
   const displayName = getCouncilDisplayName(council);
+  // 2025-26 own-share figure — stays next to the 2025-26 precept breakdown.
   const bandD = council.council_tax?.band_d_2025;
-  const bandD2024 = council.council_tax?.band_d_2024;
   const typeName = council.type_name || 'Council';
   const detailed = council.detailed;
   const budget = council.budget;
 
   // Compute FAQ data server-side (mirrors UnifiedDashboard logic)
+  // Most recent verified AREA Band D (2026-27 for billing authorities;
+  // county councils fall back to 2025-26 — `area.year` says which).
+  const area = getAreaBandD(council);
   const typeAverage = getAverageBandDByType(council.type);
-  const vsAverage = bandD && typeAverage ? bandD - typeAverage : null;
-  const taxChange = bandD && bandD2024 ? ((bandD - bandD2024) / bandD2024) * 100 : null;
-  const taxChangeAmount = bandD && bandD2024 ? bandD - bandD2024 : null;
+  // Same-year comparison: getAverageBandDByType averages the year
+  // getAreaBandD returns for that type.
+  const vsAverage = area && typeAverage ? area.value - typeAverage : null;
+  // Year-on-year change computed from the two most recent published years.
+  const areaChange = getAreaBandDChange(council);
 
   // Build spending categories sorted by percentage
   const spendingCategories: Array<{ name: string; percentage: number }> = [];
@@ -101,6 +109,7 @@ export default async function CouncilLayout({ params, children }: Props) {
   // Build FAQ pairs for schema
   const faqs: Array<{ question: string; answer: string }> = [];
 
+  // Precept-based split — stays in 2025-26, the year the precept rows belong to.
   const totalBill = getTotalBandD(council);
   if (totalBill && bandD) {
     const pct = Math.round((bandD / totalBill) * 100);
@@ -108,8 +117,8 @@ export default async function CouncilLayout({ params, children }: Props) {
     faqs.push({
       question: `What percentage of my bill goes to ${council.name}?`,
       answer: isSoleAuthority
-        ? `All of your council tax (${formatCurrency(bandD, { decimals: 2 })}) goes to ${council.name}.`
-        : `${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(totalBill, { decimals: 2 })}).`,
+        ? `In 2025-26, all of your council tax (${formatCurrency(bandD, { decimals: 2 })}) goes to ${council.name}.`
+        : `In 2025-26, ${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(totalBill, { decimals: 2 })}).`,
     });
   }
 
@@ -120,25 +129,25 @@ export default async function CouncilLayout({ params, children }: Props) {
     });
   }
 
-  if (vsAverage !== null && bandD) {
+  if (vsAverage !== null && area) {
     const diff = formatCurrency(Math.abs(vsAverage), { decimals: 2 });
     const comparison = vsAverage > 0
-      ? `This council charges ${diff} more than the average ${typeName.toLowerCase()}.`
+      ? `In ${area.year}, this council charges ${diff} more than the average ${typeName.toLowerCase()}.`
       : vsAverage < 0
-        ? `This council charges ${diff} less than the average ${typeName.toLowerCase()}.`
-        : `This council charges about the same as the average ${typeName.toLowerCase()}.`;
+        ? `In ${area.year}, this council charges ${diff} less than the average ${typeName.toLowerCase()}.`
+        : `In ${area.year}, this council charges about the same as the average ${typeName.toLowerCase()}.`;
     faqs.push({
       question: 'Is this council expensive compared to others?',
       answer: comparison,
     });
   }
 
-  if (taxChange !== null && taxChangeAmount !== null) {
-    const changeDesc = taxChangeAmount > 0
-      ? `Your bill went up by ${formatCurrency(taxChangeAmount, { decimals: 2 })} (${taxChange.toFixed(1)}%) from last year.`
-      : taxChangeAmount < 0
-        ? `Your bill went down by ${formatCurrency(Math.abs(taxChangeAmount), { decimals: 2 })} (${Math.abs(taxChange).toFixed(1)}%) from last year.`
-        : 'Your bill stayed the same as last year.';
+  if (areaChange !== null) {
+    const changeDesc = areaChange.amount > 0
+      ? `Your Band D bill went up by ${formatCurrency(areaChange.amount, { decimals: 2 })} (${areaChange.percent.toFixed(1)}%) from ${areaChange.fromYear} to ${areaChange.toYear}.`
+      : areaChange.amount < 0
+        ? `Your Band D bill went down by ${formatCurrency(Math.abs(areaChange.amount), { decimals: 2 })} (${Math.abs(areaChange.percent).toFixed(1)}%) from ${areaChange.fromYear} to ${areaChange.toYear}.`
+        : `Your Band D bill stayed the same from ${areaChange.fromYear} to ${areaChange.toYear}.`;
     faqs.push({
       question: 'How much has my bill gone up this year?',
       answer: changeDesc,
@@ -155,11 +164,11 @@ export default async function CouncilLayout({ params, children }: Props) {
   const narrativeParts: string[] = [];
   narrativeParts.push(`${displayName} is a ${typeNameSentence}${population ? ` serving ${population.toLocaleString('en-GB')} residents` : ''}.`);
 
-  if (bandD) {
-    let taxSentence = `In 2025-26, Band D council tax is ${formatCurrency(bandD, { decimals: 2 })}`;
-    if (taxChange !== null) {
-      const direction = taxChange > 0 ? 'more' : 'less';
-      taxSentence += ` — ${Math.abs(taxChange).toFixed(1)}% ${direction} than last year`;
+  if (area) {
+    let taxSentence = `In ${area.year}, Band D council tax is ${formatCurrency(area.value, { decimals: 2 })}`;
+    if (areaChange !== null) {
+      const direction = areaChange.percent > 0 ? 'more' : 'less';
+      taxSentence += ` — ${Math.abs(areaChange.percent).toFixed(1)}% ${direction} than in ${areaChange.fromYear}`;
     }
     taxSentence += '.';
     narrativeParts.push(taxSentence);
@@ -211,10 +220,12 @@ export default async function CouncilLayout({ params, children }: Props) {
       {
         '@type': 'Dataset',
         '@id': `https://www.civaccount.co.uk/council/${slug}#dataset`,
-        name: `${displayName} Budget & Council Tax Data 2025-26`,
+        name: `${displayName} Budget & Council Tax Data ${area?.year ?? '2025-26'}`,
         description: `Budget breakdown, council tax bands, and spending data for ${displayName}`,
-        license: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
-        temporalCoverage: '2025/2026',
+        // Compiled dataset → CivAccount Data Licence (source data stays OGL,
+        // linked per-field in the provenance UI).
+        license: 'https://www.civaccount.co.uk/license',
+        temporalCoverage: area?.year === '2026-27' ? '2026/2027' : '2025/2026',
         spatialCoverage: {
           '@type': 'AdministrativeArea',
           name: displayName,
@@ -224,11 +235,11 @@ export default async function CouncilLayout({ params, children }: Props) {
           '@id': 'https://www.civaccount.co.uk/#organization',
           name: 'CivAccount',
         },
-        ...(bandD && {
+        ...(area && {
           variableMeasured: {
             '@type': 'PropertyValue',
-            name: 'Band D Council Tax',
-            value: bandD,
+            name: `Band D Council Tax (${area.year})`,
+            value: area.value,
             unitCode: 'GBP',
           },
         }),

@@ -24,7 +24,16 @@ function generateSlug(name: string): string {
     .replace(/(^-|-$)/g, '');
 }
 
-// Generate council tax diffs (year-over-year Band D changes)
+// Financial-year label for a starting calendar year, e.g. 2026 → "2026-27"
+function fyLabel(startYear: number): string {
+  return `${startYear}-${String((startYear + 1) % 100).padStart(2, '0')}`;
+}
+
+// Generate council tax diffs (year-over-year Band D changes).
+// The most recent row is year-aware: billing authorities carry a verified
+// 2026-27 area Band D (`band_d_2026`), so their latest diff is
+// 2025-26 → 2026-27 — matching `getAreaBandDChange()`. County councils have
+// no 2026-27 figure yet, so their series (and latest diff) ends at 2025-26.
 function generateTaxDiffs(council: Council): CivicDiff[] {
   const diffs: CivicDiff[] = [];
   const tax = council.council_tax;
@@ -32,6 +41,7 @@ function generateTaxDiffs(council: Council): CivicDiff[] {
 
   const slug = generateSlug(council.name);
   const years: [number, number | null][] = [
+    [2026, tax.band_d_2026 ?? null],
     [2025, tax.band_d_2025],
     [2024, tax.band_d_2024],
     [2023, tax.band_d_2023],
@@ -58,7 +68,7 @@ function generateTaxDiffs(council: Council): CivicDiff[] {
       amount_from: amountFrom,
       amount_to: amountTo,
       pct_change: Math.round(pctChange * 10) / 10,
-      summary: `${council.name} Band D council tax ${direction} by ${absPct}% (£${amountFrom.toFixed(2)} to £${amountTo.toFixed(2)}).`,
+      summary: `${council.name} Band D council tax ${direction} by ${absPct}% (£${amountFrom.toFixed(2)} in ${fyLabel(yearFrom)} to £${amountTo.toFixed(2)} in ${fyLabel(yearTo)}).`,
       type: 'council_tax',
     });
   }

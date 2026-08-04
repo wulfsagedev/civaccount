@@ -7,30 +7,33 @@ import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
-  title: 'Council Tax Increases 2025-26 — Year-on-Year Changes',
-  description: 'See which councils had the biggest and smallest council tax increases in 2025-26. Compare year-on-year Band D rate changes across all 317 English councils.',
+  title: 'Council Tax Increases 2026-27 — Year-on-Year Changes',
+  description: 'See which councils had the biggest and smallest council tax increases in 2026-27. Compare year-on-year Band D bill changes across all 296 English billing authorities.',
   alternates: {
     canonical: '/insights/council-tax-increases',
   },
   openGraph: {
-    title: 'Council Tax Increases 2025-26',
-    description: 'Which councils raised council tax the most in 2025-26? See the year-on-year changes.',
+    title: 'Council Tax Increases 2026-27',
+    description: 'Which councils raised council tax the most in 2026-27? See the year-on-year changes.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Council Tax Increases 2025-26',
-    description: 'Which councils raised council tax the most in 2025-26? See the year-on-year changes.',
+    title: 'Council Tax Increases 2026-27',
+    description: 'Which councils raised council tax the most in 2026-27? See the year-on-year changes.',
   },
 };
 
 export default function CouncilTaxIncreasesPage() {
+  // 2025-26 → 2026-27 change in the area Band D bill. Billing authorities
+  // only (296) — county councils are not billing authorities and have no
+  // published 2026-27 figure yet.
   const councilsWithChange = councils
-    .filter((c) => c.council_tax?.band_d_2025 && c.council_tax?.band_d_2024)
+    .filter((c) => c.council_tax?.band_d_2026 && c.council_tax?.band_d_2025)
     .map((c) => {
+      const bandD2026 = c.council_tax!.band_d_2026!;
       const bandD2025 = c.council_tax!.band_d_2025;
-      const bandD2024 = c.council_tax!.band_d_2024!;
-      const changeAmount = bandD2025 - bandD2024;
-      const changePercent = ((changeAmount) / bandD2024) * 100;
+      const changeAmount = bandD2026 - bandD2025;
+      const changePercent = ((changeAmount) / bandD2025) * 100;
       return { council: c, changeAmount, changePercent };
     });
 
@@ -50,11 +53,11 @@ export default function CouncilTaxIncreasesPage() {
 
   const faqs = [
     {
-      question: 'How much did council tax go up on average in 2025-26?',
-      answer: `Council tax went up by an average of ${avgChange.toFixed(1)}% in 2025-26 across English councils.`,
+      question: 'How much did council tax go up on average in 2026-27?',
+      answer: `The Band D bill went up by an average of ${avgChange.toFixed(1)}% in 2026-27 across England's ${councilsWithChange.length} billing authorities.`,
     },
     {
-      question: 'Which council had the biggest council tax rise in 2025-26?',
+      question: 'Which council had the biggest council tax rise in 2026-27?',
       answer: `${biggestName} had the biggest rise — ${biggestIncreases[0].changePercent.toFixed(1)}% (${formatCurrency(biggestIncreases[0].changeAmount, { decimals: 2 })} more than last year).`,
     },
   ];
@@ -63,16 +66,16 @@ export default function CouncilTaxIncreasesPage() {
     '@context': 'https://schema.org',
     '@graph': [
       buildWebPageSchema(
-        'Council Tax Increases 2025-26 — Year-on-Year Changes',
-        'Year-on-year Band D council tax changes for every English council in 2025-26.',
+        'Council Tax Increases 2026-27 — Year-on-Year Changes',
+        'Year-on-year Band D council tax changes for every English billing authority in 2026-27.',
         '/insights/council-tax-increases',
       ),
       buildArticleSchema({
-        headline: 'Council Tax Increases 2025-26 — Year-on-Year Changes',
-        description: `Council tax went up by an average of ${avgChange.toFixed(1)}% in 2025-26. ${biggestName} had the biggest rise at ${biggestIncreases[0].changePercent.toFixed(1)}%.`,
+        headline: 'Council Tax Increases 2026-27 — Year-on-Year Changes',
+        description: `Council tax went up by an average of ${avgChange.toFixed(1)}% in 2026-27. ${biggestName} had the biggest rise at ${biggestIncreases[0].changePercent.toFixed(1)}%.`,
         url: '/insights/council-tax-increases',
         about: 'Council tax increases in England',
-        keywords: ['council tax increase', 'Band D rise', 'council tax 2025-26', 'year-on-year change'],
+        keywords: ['council tax increase', 'Band D rise', 'council tax 2026-27', 'year-on-year change'],
       }),
       buildFAQPageSchema(faqs, '/insights/council-tax-increases'),
       buildBreadcrumbSchema(
@@ -101,16 +104,17 @@ export default function CouncilTaxIncreasesPage() {
           { label: 'Council Tax Increases' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Council Tax Increases 2025-26</h1>
+        <h1 className="type-title-1 mb-2">Council Tax Increases 2026-27</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
-          Council tax in England rose by an average of {avgChange.toFixed(1)}% in 2025-26.
+          The Band D council tax bill in England rose by an average of {avgChange.toFixed(1)}% from 2025-26 to 2026-27.
           The biggest rise was {biggestName} at {biggestIncreases[0].changePercent.toFixed(1)}%.
           The smallest change was {getCouncilDisplayName(smallestIncreases[0].council)} at {smallestIncreases[0].changePercent.toFixed(1)}%.
+          Figures cover the {councilsWithChange.length} billing authorities that send the bill — county councils are not included because their 2026-27 share is not yet published.
         </p>
 
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Biggest rises</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the largest rises since last year</p>
+          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the largest rises from 2025-26 to 2026-27</p>
 
           <RankedBarList>
             {biggestIncreases.map((item, index) => (
@@ -120,7 +124,7 @@ export default function CouncilTaxIncreasesPage() {
                 title={getCouncilDisplayName(item.council)}
                 href={`/council/${getCouncilSlug(item.council)}`}
                 value={`+${item.changePercent.toFixed(1)}%`}
-                subLeft={`${formatCurrency(item.council.council_tax!.band_d_2024!, { decimals: 2 })} → ${formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })}`}
+                subLeft={`${formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })} → ${formatCurrency(item.council.council_tax!.band_d_2026!, { decimals: 2 })}`}
                 subRight={`+${formatCurrency(item.changeAmount, { decimals: 2 })}`}
                 fillPct={maxIncrease > 0 ? (item.changePercent / maxIncrease) * 100 : 0}
               />
@@ -130,7 +134,7 @@ export default function CouncilTaxIncreasesPage() {
 
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Smallest changes</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the smallest changes since last year</p>
+          <p className="type-body-sm text-muted-foreground mb-6">The 20 councils with the smallest changes from 2025-26 to 2026-27</p>
 
           <RankedBarList>
             {smallestIncreases.map((item, index) => (
@@ -144,7 +148,7 @@ export default function CouncilTaxIncreasesPage() {
                     {item.changePercent > 0 ? '+' : ''}{item.changePercent.toFixed(1)}%
                   </span>
                 }
-                subLeft={`${formatCurrency(item.council.council_tax!.band_d_2024!, { decimals: 2 })} → ${formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })}`}
+                subLeft={`${formatCurrency(item.council.council_tax!.band_d_2025, { decimals: 2 })} → ${formatCurrency(item.council.council_tax!.band_d_2026!, { decimals: 2 })}`}
                 subRight={`${item.changeAmount >= 0 ? '+' : ''}${formatCurrency(item.changeAmount, { decimals: 2 })}`}
               />
             ))}

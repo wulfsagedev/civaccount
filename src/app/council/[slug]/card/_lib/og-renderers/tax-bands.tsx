@@ -1,13 +1,19 @@
 import type { Council } from '@/data/councils';
 import type { ReactElement } from 'react';
-import { calculateBands } from '@/data/councils';
+import { calculateBands, getAreaBandD, getTotalBandD } from '@/data/councils';
 import { OG, ogWrap, ogBrand, formatCurrencyOG } from '../og-shared';
 
 export function renderTaxBands(council: Council, councilName: string): ReactElement {
-  const bandD = council.council_tax?.band_d_2025;
-  if (!bandD) return <div style={{ display: 'flex' }}>No data</div>;
+  // Full-bill amount per band, in the most recent year we have a verified
+  // AREA total for: 2026-27 (MHCLG live table) for billing authorities,
+  // 2025-26 (precept-stack sum) for county councils. Mirrors the
+  // UnifiedDashboard TaxBandsCard logic.
+  const area = getAreaBandD(council);
+  const currentAreaTotal = area?.year === '2026-27' ? area.value : getTotalBandD(council);
+  const taxYear = area?.year === '2026-27' ? '2026-27' : '2025-26';
+  if (!currentAreaTotal) return <div style={{ display: 'flex' }}>No data</div>;
 
-  const bands = calculateBands(bandD);
+  const bands = calculateBands(currentAreaTotal);
   const bandEntries = Object.entries(bands) as [string, number][];
 
   return ogWrap(
@@ -17,7 +23,7 @@ export function renderTaxBands(council: Council, councilName: string): ReactElem
           Council tax by band
         </div>
         <div style={{ display: 'flex', fontSize: '36px', color: OG.secondary, marginBottom: '48px' }}>
-          This council&apos;s portion only, 2025-26
+          {`Full bill for your area, ${taxYear}`}
         </div>
 
         {/* 4×2 grid — readable numbers, plenty of breathing room */}
@@ -51,7 +57,7 @@ export function renderTaxBands(council: Council, councilName: string): ReactElem
         </div>
       </div>
 
-      {ogBrand(councilName, council.type_name)}
+      {ogBrand(councilName, council.type_name, taxYear)}
     </div>
   );
 }

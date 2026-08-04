@@ -1,18 +1,25 @@
 import type { Council } from '@/data/councils';
 import type { ReactElement } from 'react';
+import { getAreaBandD, getAreaBandDChange } from '@/data/councils';
 import { OG, ogWrap, ogBrand, formatCurrencyOG } from '../og-shared';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 
 export function renderTaxCard(council: Council, councilName: string): ReactElement {
   const precepts = council.detailed?.precepts;
+  // 2025-26 own-share figure — only used for the 2025-26-labelled service split.
   const bandD = council.council_tax?.band_d_2025;
-  const bandDPrev = council.council_tax?.band_d_2024;
 
   if (!bandD) return <div style={{ display: 'flex' }}>No data</div>;
 
-  const total = precepts?.length ? precepts.reduce((s, p) => s + p.band_d, 0) : bandD;
+  // Hero total: the most recent verified AREA Band D — 2026-27 (MHCLG live
+  // table) for billing authorities; county councils fall back to the 2025-26
+  // precept-stack sum. The year renders on the receipt header + brand strip.
+  const area = getAreaBandD(council);
+  const areaChange = getAreaBandDChange(council);
+  const preceptTotal = precepts?.length ? precepts.reduce((s, p) => s + p.band_d, 0) : bandD;
+  const total = area?.year === '2026-27' ? area.value : preceptTotal;
+  const taxYear = area?.year === '2026-27' ? '2026-27' : '2025-26';
   const weeklyCost = (total / 52).toFixed(2);
-  const changePct = bandDPrev ? (((bandD - bandDPrev) / bandDPrev) * 100).toFixed(1) : null;
 
   // Top 3 service weekly costs
   const budget = council.budget;
@@ -39,7 +46,7 @@ export function renderTaxCard(council: Council, councilName: string): ReactEleme
           {councilName}
         </span>
         <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
-          Council tax receipt · 2025-26
+          {`Council tax receipt · ${taxYear}`}
         </span>
       </div>
 
@@ -60,26 +67,32 @@ export function renderTaxCard(council: Council, councilName: string): ReactEleme
           </span>
         </div>
 
-        {/* Service weekly breakdown */}
+        {/* Service weekly breakdown — derived from the council's 2025-26
+            share and 2025-26 budget split, so it carries its own year label */}
         {serviceCosts.length > 0 && (
-          <div style={{ display: 'flex', gap: '48px', marginBottom: '40px' }}>
-            {serviceCosts.map((s) => (
-              <div key={s.label} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '32px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  {s.label}
-                </span>
-                <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text }}>
-                  {formatCurrencyOG(s.weekly, 2)}<span style={{ fontSize: '32px', color: OG.secondary }}>/wk</span>
-                </span>
-              </div>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '40px' }}>
+            <span style={{ fontSize: '32px', fontWeight: 500, color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Council share weekly split · 2025-26
+            </span>
+            <div style={{ display: 'flex', gap: '48px' }}>
+              {serviceCosts.map((s) => (
+                <div key={s.label} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '32px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    {s.label}
+                  </span>
+                  <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text }}>
+                    {formatCurrencyOG(s.weekly, 2)}<span style={{ fontSize: '32px', color: OG.secondary }}>/wk</span>
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {/* Footer — change + CTA */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `2px solid ${OG.border}`, paddingTop: '24px' }}>
           <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
-            {changePct ? `${Number(changePct) > 0 ? '+' : ''}${changePct}% from last year` : ''}
+            {areaChange ? `${areaChange.percent > 0 ? '+' : ''}${areaChange.percent.toFixed(1)}% vs ${areaChange.fromYear}` : ''}
           </span>
           <span style={{ fontSize: '40px', fontWeight: 600, color: OG.text }}>
             What do you pay?
@@ -88,7 +101,7 @@ export function renderTaxCard(council: Council, councilName: string): ReactEleme
       </div>
 
       {/* Brand */}
-      {ogBrand(councilName, council.type_name)}
+      {ogBrand(councilName, council.type_name, taxYear)}
     </div>
   );
 }

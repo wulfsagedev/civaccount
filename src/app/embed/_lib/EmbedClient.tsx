@@ -6,6 +6,8 @@ import {
   getAverageBandDByType,
   getCouncilPopulation,
   getTotalBandD,
+  getAreaBandD,
+  PREVIOUS_TAX_YEAR,
   type Council,
   type ServiceSpendingDetail,
 } from '@/data/councils';
@@ -94,9 +96,15 @@ export default function EmbedClient({
     ? ((councilTax.band_d_2025 - councilTax.band_d_2024) / councilTax.band_d_2024) * 100
     : null;
 
-  const typeAverage = getAverageBandDByType(council.type);
-  const vsAverage = typeAverage && councilTax ? councilTax.band_d_2025 - typeAverage : null;
+  const areaBandD = getAreaBandD(council);
 
+  const typeAverage = getAverageBandDByType(council.type);
+  // Same-year comparison: getAverageBandDByType averages the year
+  // getAreaBandD returns for that type.
+  const vsAverage = typeAverage && areaBandD ? areaBandD.value - typeAverage : null;
+
+  // 2025-26 precept-stack total — stays in the precepts' year so the
+  // YourBillCard breakdown always sums to its own total.
   const totalBandDBill = getTotalBandD(council);
   const totalDailyCost = totalBandDBill ? totalBandDBill / 365 : null;
 
@@ -104,25 +112,20 @@ export default function EmbedClient({
     ? councilTax.band_d_2025 - councilTax.band_d_2024
     : null;
 
+  // This council's own share per band (2025-26 precept split).
   const allBands = useMemo(() => {
     if (!councilTax) return null;
-    return calculateBands(councilTax.band_d_2025);
-  }, [councilTax]);
+    return calculateBands(thisCouncilBandD ?? councilTax.band_d_2025);
+  }, [councilTax, thisCouncilBandD]);
 
+  // Full-bill amount per band, in the most recent year with a verified
+  // area total (2026-27 for billing authorities, 2025-26 for counties).
+  const currentAreaTotal = areaBandD?.year === '2026-27' ? areaBandD.value : totalBandDBill;
+  const totalBandsYear = areaBandD?.year === '2026-27' ? areaBandD.year : PREVIOUS_TAX_YEAR;
   const totalBandAmounts = useMemo(() => {
-    if (!totalBandDBill || !allBands || !councilTax) return null;
-    const bandDRatio = totalBandDBill / councilTax.band_d_2025;
-    return {
-      A: allBands.A * bandDRatio,
-      B: allBands.B * bandDRatio,
-      C: allBands.C * bandDRatio,
-      D: totalBandDBill,
-      E: allBands.E * bandDRatio,
-      F: allBands.F * bandDRatio,
-      G: allBands.G * bandDRatio,
-      H: allBands.H * bandDRatio,
-    };
-  }, [totalBandDBill, allBands, councilTax]);
+    if (!currentAreaTotal) return null;
+    return calculateBands(currentAreaTotal);
+  }, [currentAreaTotal]);
 
   const spendingCategories = useMemo(() => {
     if (!budget) return [];
@@ -144,12 +147,13 @@ export default function EmbedClient({
       const amount = budget[service.key as keyof typeof budget] as number | null;
       if (amount && amount > 0) {
         const percentage = (amount / total) * 100;
-        const yourShare = councilTax ? (councilTax.band_d_2025 * percentage) / 100 : null;
+        // Split this council's OWN precept share — see UnifiedDashboard.
+        const yourShare = thisCouncilBandD !== null ? (thisCouncilBandD * percentage) / 100 : null;
         categories.push({ name: service.name, amount: amount * 1000, percentage, key: service.key, yourShare });
       }
     }
     return categories.sort((a, b) => b.percentage - a.percentage);
-  }, [budget, councilTax]);
+  }, [budget, thisCouncilBandD]);
 
   const serviceSpendingMap = useMemo(() => {
     const map = new Map<string, ServiceSpendingDetail>();
@@ -194,6 +198,7 @@ export default function EmbedClient({
             selectedCouncil={council}
             allBands={allBands}
             totalBandAmounts={totalBandAmounts}
+            taxYear={totalBandsYear}
           />
         );
       }

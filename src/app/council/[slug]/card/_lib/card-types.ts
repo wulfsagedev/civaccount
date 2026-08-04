@@ -23,13 +23,17 @@ export const CARD_TYPES: Record<string, CardType> = {
   'tax-bands': {
     slug: 'tax-bands',
     title: (name) => `Council Tax Bands A-H — ${name}`,
-    description: (name) => `Council tax by property band in ${name} for 2025-26.`,
+    // Year varies per council (2026-27 for billing authorities, 2025-26 for
+    // county councils) — the card itself states the year next to the figures.
+    description: (name) => `Council tax by property band in ${name} — the full bill for the area, with the year shown on the card.`,
     hasData: (c) => !!c.council_tax?.band_d_2025,
   },
   'bill-history': {
     slug: 'bill-history',
     title: (name) => `How Your Bill Has Changed — ${name}`,
-    description: (name) => `5-year council tax trend for ${name}, from 2021 to 2025.`,
+    // Trend runs 2021-22 up to the most recent published year, which varies
+    // per council — each point on the card is labelled with its year.
+    description: (name) => `Band D council tax trend for ${name}, year by year since 2021.`,
     hasData: (c) => !!c.council_tax?.band_d_2025 && !!c.council_tax?.band_d_2021,
   },
   'spending': {

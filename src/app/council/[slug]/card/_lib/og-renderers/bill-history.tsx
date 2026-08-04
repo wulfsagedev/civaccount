@@ -12,6 +12,10 @@ export function renderBillHistory(council: Council, councilName: string): ReactE
     { year: '2023', value: tax.band_d_2023 },
     { year: '2024', value: tax.band_d_2024 },
     { year: '2025', value: tax.band_d_2025 },
+    // County councils aren't billing authorities, so 2026-27 has no area
+    // figure for them yet — the chart simply ends at 2025-26 (mirrors
+    // src/components/dashboard/BillHistoryCard.tsx).
+    ...(typeof tax.band_d_2026 === 'number' ? [{ year: '2026', value: tax.band_d_2026 }] : []),
   ].filter((y): y is { year: string; value: number } => y.value != null);
 
   if (years.length < 2) return <div style={{ display: 'flex' }}>Not enough data</div>;
@@ -108,7 +112,7 @@ export function renderBillHistory(council: Council, councilName: string): ReactE
         </div>
       </div>
 
-      {ogBrand(councilName, council.type_name)}
+      {ogBrand(councilName, council.type_name, typeof tax.band_d_2026 === 'number' ? '2026-27' : '2025-26')}
     </div>
   );
 }

@@ -4,20 +4,20 @@ import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Terms of Use, Data Licence and Attribution',
-  description: 'Terms for using CivAccount. Code is MIT licensed. Council data is aggregated from .gov.uk sources under Open Government Licence v3.0. Attribution required on reuse.',
+  description: 'Terms for using CivAccount. Code is MIT licensed. Council data is aggregated from .gov.uk sources (OGL v3.0); the compiled dataset is under the CivAccount Data Licence. Attribution required on reuse.',
   alternates: {
     canonical: '/terms',
   },
   openGraph: {
     title: 'Terms of Use, Data Licence and Attribution',
-    description: 'CivAccount terms. MIT-licensed code. Council data under Open Government Licence v3.0. Attribution required on reuse.',
+    description: 'CivAccount terms. MIT-licensed code. OGL v3.0 source data; CivAccount Data Licence dataset. Attribution required on reuse.',
     type: 'website',
     siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Terms of Use, Data Licence and Attribution',
-    description: 'CivAccount terms. MIT code. OGL v3.0 data. Attribution required on reuse.',
+    description: 'CivAccount terms. MIT code. OGL v3.0 source data. Attribution required on reuse.',
   },
 };
 

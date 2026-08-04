@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { councils, formatCurrency, formatBudget, getCouncilDisplayName, getCouncilSlug, getCouncilPopulation } from '@/data/councils';
+import { councils, formatCurrency, formatBudget, getAreaBandD, getAreaBandDChange, getCouncilDisplayName, getCouncilSlug, getCouncilPopulation } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
@@ -45,7 +45,10 @@ function rankCouncils(types: readonly string[], metric: Metric): RankedCouncil[]
 
       switch (metric) {
         case 'bandD':
-          value = c.council_tax?.band_d_2025 ?? null;
+          // Most recent verified area Band D — 2026-27 for billing-authority
+          // types, 2025-26 (own share) for county councils. Year-consistent
+          // within each comparable group; the group label states the year.
+          value = getAreaBandD(c)?.value ?? null;
           formatted = value !== null ? formatCurrency(value, { decimals: 2 }) : '';
           break;
         case 'spendingPerResident': {
@@ -59,9 +62,10 @@ function rankCouncils(types: readonly string[], metric: Metric): RankedCouncil[]
           formatted = value !== null ? formatCurrency(value, { decimals: 0 }) : '';
           break;
         case 'yoyChange': {
-          const curr = c.council_tax?.band_d_2025;
-          const prev = c.council_tax?.band_d_2024;
-          value = curr && prev ? ((curr - prev) / prev) * 100 : null;
+          // Year-on-year change in the most recent verified area Band D:
+          // 2025-26 → 2026-27 for billing types, 2024-25 → 2025-26 for
+          // county councils. The group label states the years.
+          value = getAreaBandDChange(c)?.percent ?? null;
           formatted = value !== null ? `${value > 0 ? '+' : ''}${value.toFixed(1)}%` : '';
           break;
         }
@@ -82,11 +86,20 @@ function rankCouncils(types: readonly string[], metric: Metric): RankedCouncil[]
 }
 
 const METRICS: { key: Metric; label: string; description: string }[] = [
-  { key: 'bandD', label: 'Council Tax (Band D)', description: 'Cheapest to most expensive Band D rate for 2025-26' },
+  { key: 'bandD', label: 'Council Tax (Band D)', description: 'Cheapest to most expensive Band D bill for 2026-27. County councils show their own 2025-26 share — the latest published.' },
   { key: 'spendingPerResident', label: 'Spending per Resident', description: 'Total service budget divided by the local population' },
   { key: 'ceoSalary', label: 'CEO Salary', description: 'Chief executive salary, from each council’s published pay policy' },
-  { key: 'yoyChange', label: 'Change since last year', description: 'Change in Band D from 2024-25 to 2025-26, as a percentage' },
+  { key: 'yoyChange', label: 'Change since last year', description: 'Change in the Band D bill from 2025-26 to 2026-27, as a percentage. County councils show 2024-25 to 2025-26.' },
 ];
+
+/** Which financial year a group's Band D figures belong to, for the two
+ * tax metrics. County councils (SC) lag one year behind billing types. */
+function groupYearNote(types: readonly string[], metric: Metric): string | null {
+  if (metric !== 'bandD' && metric !== 'yoyChange') return null;
+  const isCounty = types.includes('SC');
+  if (metric === 'bandD') return isCounty ? '2025-26 figures' : '2026-27 figures';
+  return isCounty ? '2024-25 → 2025-26' : '2025-26 → 2026-27';
+}
 
 function LeaderboardTable({ ranked, metric }: { ranked: RankedCouncil[]; metric: Metric }) {
   const isHigherWorse = metric === 'bandD' || metric === 'ceoSalary' || metric === 'yoyChange';
@@ -202,6 +215,7 @@ export default function LeaderboardsPage() {
                     <h3 className="type-title-3 mb-1">{group.label}</h3>
                     <p className="type-caption text-muted-foreground mb-3">
                       {group.description} · {ranked.length} councils
+                      {groupYearNote(group.types, metric.key) ? ` · ${groupYearNote(group.types, metric.key)}` : ''}
                     </p>
                     <div className="card-elevated p-4 sm:p-5">
                       <LeaderboardTable ranked={ranked} metric={metric.key} />

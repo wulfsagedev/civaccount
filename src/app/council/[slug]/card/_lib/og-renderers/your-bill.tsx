@@ -3,6 +3,8 @@ import type { ReactElement } from 'react';
 import { OG, ogWrap, ogBrand, formatCurrencyOG } from '../og-shared';
 
 export function renderYourBill(council: Council, councilName: string): ReactElement {
+  // Deliberately the council's own 2025-26 share (precept-consistent) — NOT
+  // the 2026-27 area figure. The year is labelled on the hero and brand strip.
   const bandD = council.council_tax?.band_d_2025;
   const bandDPrev = council.council_tax?.band_d_2024;
 
@@ -17,7 +19,7 @@ export function renderYourBill(council: Council, councilName: string): ReactElem
       {/* Data — fills ~85% of the card */}
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
         <div style={{ display: 'flex', fontSize: '40px', color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '24px' }}>
-          You pay this council
+          You pay this council · 2025-26
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px' }}>
           <span style={{ fontSize: '260px', fontWeight: 700, color: OG.text, letterSpacing: '-0.03em', lineHeight: 0.9 }}>
@@ -28,7 +30,7 @@ export function renderYourBill(council: Council, councilName: string): ReactElem
         <div style={{ display: 'flex', gap: '40px', marginTop: '48px', alignItems: 'baseline' }}>
           {change != null && changePct != null && (
             <span style={{ fontSize: '52px', fontWeight: 700, color: change > 0 ? OG.negative : OG.positive }}>
-              {change > 0 ? '\u2197' : '\u2198'} {change > 0 ? '+' : ''}{changePct}% from last year
+              {change > 0 ? '\u2197' : '\u2198'} {change > 0 ? '+' : ''}{changePct}% vs 2024-25
             </span>
           )}
           <span style={{ fontSize: '44px', color: OG.secondary }}>

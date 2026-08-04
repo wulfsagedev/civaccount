@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { councils, getCouncilDisplayName, getCouncilPopulation, formatCurrency, formatBudget, getCouncilSlug, type Council } from '@/data/councils';
+import { councils, getCouncilDisplayName, getCouncilPopulation, formatCurrency, formatBudget, getCouncilSlug, getAreaBandD, getAreaBandDChange, type Council } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { CARD_STYLES } from '@/lib/utils';
@@ -45,7 +45,7 @@ export default function CompareClient() {
     return [...selected].sort((a, b) => {
       if (sortField === 'name') return a.name.localeCompare(b.name);
       if (sortField === 'band_d') {
-        return (b.council_tax?.band_d_2025 ?? 0) - (a.council_tax?.band_d_2025 ?? 0);
+        return (getAreaBandD(b)?.value ?? 0) - (getAreaBandD(a)?.value ?? 0);
       }
       return (b.budget?.total_service ?? 0) - (a.budget?.total_service ?? 0);
     });
@@ -182,40 +182,55 @@ export default function CompareClient() {
               );
             })()}
 
-            {/* Council Tax comparison */}
-            <div className={`${CARD_STYLES} p-5 sm:p-6 mb-4`}>
-              <h2 className="type-title-2 mb-1">Council Tax (Band D)</h2>
-              <p className="type-body-sm text-muted-foreground mb-5">2025-26 Band D rates</p>
-              <RankedBarList>
-                {sorted.map((c) => {
-                  const bandD = c.council_tax?.band_d_2025;
-                  const maxBandD = Math.max(...selected.map(s => s.council_tax?.band_d_2025 ?? 0));
-                  const pct = bandD && maxBandD ? (bandD / maxBandD) * 100 : 0;
-                  const change = c.council_tax?.band_d_2024
-                    ? ((bandD ?? 0) - c.council_tax.band_d_2024) / c.council_tax.band_d_2024 * 100
-                    : null;
+            {/* Council Tax comparison — most recent verified AREA Band D.
+                2026-27 for billing authorities; county councils lag on
+                2025-26, so when the selection mixes years each row carries
+                its own year label. */}
+            {(() => {
+              const bandDYears = new Set(
+                selected.map(c => getAreaBandD(c)?.year).filter((y): y is NonNullable<typeof y> => y != null)
+              );
+              const uniformYear = bandDYears.size === 1 ? [...bandDYears][0] : null;
+              const maxBandD = Math.max(...selected.map(s => getAreaBandD(s)?.value ?? 0));
 
-                  return (
-                    <RankedBarRow
-                      key={c.ons_code}
-                      title={getCouncilDisplayName(c)}
-                      href={`/council/${getCouncilSlug(c)}`}
-                      value={
-                        <span className="inline-flex items-center gap-2">
-                          {change !== null && (
-                            <span className={`type-caption ${change > 0 ? 'text-negative' : 'text-positive'}`}>
-                              {change > 0 ? '+' : ''}{change.toFixed(1)}%
+              return (
+                <div className={`${CARD_STYLES} p-5 sm:p-6 mb-4`}>
+                  <h2 className="type-title-2 mb-1">Council Tax (Band D)</h2>
+                  <p className="type-body-sm text-muted-foreground mb-5">
+                    {uniformYear
+                      ? `${uniformYear} Band D for the area`
+                      : 'Band D for the area — county councils show 2025-26 until their 2026-27 figures publish, so each row is labelled with its year'}
+                  </p>
+                  <RankedBarList>
+                    {sorted.map((c) => {
+                      const area = getAreaBandD(c);
+                      const pct = area && maxBandD ? (area.value / maxBandD) * 100 : 0;
+                      const change = getAreaBandDChange(c);
+
+                      return (
+                        <RankedBarRow
+                          key={c.ons_code}
+                          title={getCouncilDisplayName(c)}
+                          href={`/council/${getCouncilSlug(c)}`}
+                          value={
+                            <span className="inline-flex items-center gap-2">
+                              {change !== null && (
+                                <span className={`type-caption ${change.percent > 0 ? 'text-negative' : 'text-positive'}`}>
+                                  {change.percent > 0 ? '+' : ''}{change.percent.toFixed(1)}%
+                                </span>
+                              )}
+                              <span>{area ? formatCurrency(area.value, { decimals: 2 }) : '—'}</span>
                             </span>
-                          )}
-                          <span>{bandD ? formatCurrency(bandD, { decimals: 2 }) : '—'}</span>
-                        </span>
-                      }
-                      fillPct={pct}
-                    />
-                  );
-                })}
-              </RankedBarList>
-            </div>
+                          }
+                          subLeft={!uniformYear && area ? `${area.year} rates` : undefined}
+                          fillPct={pct}
+                        />
+                      );
+                    })}
+                  </RankedBarList>
+                </div>
+              );
+            })()}
 
             {/* Budget comparison */}
             <div className={`${CARD_STYLES} p-5 sm:p-6 mb-4`}>

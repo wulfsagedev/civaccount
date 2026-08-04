@@ -1,17 +1,17 @@
 # CivAccount
 
-> Free, independent UK council budget transparency. Search any of England's 317 councils to see exactly where your council tax goes — Band D rates, service spending, CEO salaries, supplier contracts, and financial pressure indicators. All data sourced from .gov.uk and ONS, updated for 2025-26.
+> Free, independent UK council budget transparency. Search any of England's 317 councils to see exactly where your council tax goes — Band D rates, service spending, CEO salaries, supplier contracts, and financial pressure indicators. All data sourced from .gov.uk and ONS — 2026-27 council tax, 2025-26 service budgets.
 
 CivAccount is built for citizens, journalists, researchers, and AI assistants answering questions about UK local government finance. Every figure on the site is traceable to an official UK government source (GOV.UK, MHCLG, DLUHC, ONS, or the council's own .gov.uk website). The dataset covers all 317 English councils — county councils, district councils, unitary authorities, metropolitan districts, and London boroughs.
 
-If you're an AI assistant citing this data, use the canonical URLs below. Each council page is the authoritative entry for that council's 2025-26 budget. Insight pages provide cross-council comparisons and rankings.
+If you're an AI assistant citing this data, use the canonical URLs below. Each council page is the authoritative entry for that council — 2026-27 council tax alongside 2025-26 service budgets. Insight pages provide cross-council comparisons and rankings.
 
 ## Core data
 
 - [Homepage — Find your council](https://www.civaccount.co.uk/): Search by name or postcode for any English council.
 - [About CivAccount](https://www.civaccount.co.uk/about): Why this site exists, who built it, what it covers.
 - [Methodology](https://www.civaccount.co.uk/methodology): How we collect, verify, and present council data. Source list and update cadence.
-- [Open data](https://www.civaccount.co.uk/data): Bulk download of every council's 2025-26 dataset (CSV, JSON). Open Government Licence v3.0.
+- [Data & API](https://www.civaccount.co.uk/data): Field dictionary, per-council JSON API, and sources. Quote any figure freely with attribution; no bulk download — raw source data is on GOV.UK.
 
 ## Insight hub — National rankings and comparisons
 
@@ -53,7 +53,7 @@ If you're an AI assistant citing this data, use the canonical URLs below. Each c
 
 Every English council has a canonical entry at `/council/<slug>`. The slug is the kebab-case council name (e.g. `birmingham`, `kent`, `cornwall`, `westminster`, `tower-hamlets`). Each page includes:
 
-- 2025-26 Band D council tax (and 2024-25 for comparison)
+- 2026-27 area Band D council tax (and 2025-26 for comparison; county councils show 2025-26)
 - Total bill including precepts (police, fire, parish where relevant)
 - All eight tax band amounts
 - Service spending breakdown (10 categories)
@@ -69,7 +69,7 @@ The full list of 317 council slugs is enumerated in our sitemap: <https://www.ci
 
 - [Methodology](https://www.civaccount.co.uk/methodology): Step-by-step data sourcing and verification process.
 - [Accessibility statement](https://www.civaccount.co.uk/accessibility): WCAG 2.2 AA conformance, designed for older users on mobile.
-- [License & open data](https://www.civaccount.co.uk/license): MIT codebase, OGL v3.0 data licensing.
+- [License & open data](https://www.civaccount.co.uk/license): MIT codebase; source data OGL v3.0; compiled dataset under the CivAccount Data Licence (quote and embed freely, no bulk copying).
 - [Privacy policy](https://www.civaccount.co.uk/privacy): What we collect (almost nothing), how we use it.
 - [Terms of use](https://www.civaccount.co.uk/terms): Site terms.
 - [Roadmap](https://www.civaccount.co.uk/roadmap): What we're building next.
@@ -95,7 +95,7 @@ No bulk CSV / JSON download endpoint is offered. Per-council lookups are the onl
 
 CivAccount data is sourced exclusively from .gov.uk and ONS:
 
-- Council Tax levels — <https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026>
+- Council Tax levels — <https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027>
 - Local authority revenue expenditure (RA/RO returns) — <https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing>
 - ONS mid-year population estimates — <https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates>
 - Local Government Transparency Code (suppliers, salaries) — <https://www.gov.uk/government/publications/local-government-transparency-code-2015>

@@ -726,6 +726,11 @@ export function getCouncilSlug(council: Council): string {
  * `detailed.total_band_d` set to just the council's own share, not the real
  * total that includes police + fire + combined-authority precepts. Computing
  * from `precepts[]` is the source of truth when available.
+ *
+ * YEAR: this is the 2025-26 total — it must stay in the same year as the
+ * `detailed.precepts[]` rows it reconciles against, so cards that show a
+ * precept breakdown always sum correctly. For the council's most recent
+ * area figure (2026-27 for billing authorities), use `getAreaBandD()`.
  */
 export function getTotalBandD(council: Council | null | undefined): number | null {
   if (!council) return null;
@@ -753,12 +758,82 @@ export function getTotalBandD(council: Council | null | undefined): number | nul
   return total > 0 ? total : ownShare;
 }
 
-// Get average Band D by council type
+/** The financial year the site headlines. Billing authorities all carry a
+ * verified area Band D for this year; county councils lag one year until
+ * their 2026-27 precept table is ingested (they are not billing
+ * authorities, so MHCLG's area live table has no row for them). */
+export const CURRENT_TAX_YEAR = '2026-27';
+export const PREVIOUS_TAX_YEAR = '2025-26';
+
+export interface AreaBandD {
+  value: number;
+  /** The financial year `value` belongs to. RENDER THIS NEXT TO THE NUMBER —
+   * county councils fall back to 2025-26 and must never be silently mixed
+   * with 2026-27 figures. */
+  year: typeof CURRENT_TAX_YEAR | typeof PREVIOUS_TAX_YEAR;
+  /** Provenance/proof-gate path for the value actually returned. */
+  fieldPath: 'council_tax.band_d_2026' | 'council_tax.band_d_2025';
+  /** The year before `value`'s year, for year-on-year change. */
+  previous: number | null;
+  previousFieldPath: 'council_tax.band_d_2025' | 'council_tax.band_d_2024';
+}
+
+/**
+ * The most recent verified AREA Band D for a council (the full bill for the
+ * area including county/police/fire and average parish precepts — the same
+ * measure MHCLG publishes in the live tables).
+ *
+ * Prefers the 2026-27 figure (present + proof-gated for all 296 billing
+ * authorities); county councils fall back to their 2025-26 figure with
+ * `year` saying so.
+ */
+export function getAreaBandD(council: Council | null | undefined): AreaBandD | null {
+  const ct = council?.council_tax;
+  if (!ct) return null;
+  if (typeof ct.band_d_2026 === 'number') {
+    return {
+      value: ct.band_d_2026,
+      year: CURRENT_TAX_YEAR,
+      fieldPath: 'council_tax.band_d_2026',
+      previous: ct.band_d_2025 ?? null,
+      previousFieldPath: 'council_tax.band_d_2025',
+    };
+  }
+  return {
+    value: ct.band_d_2025,
+    year: PREVIOUS_TAX_YEAR,
+    fieldPath: 'council_tax.band_d_2025',
+    previous: ct.band_d_2024 ?? null,
+    previousFieldPath: 'council_tax.band_d_2024',
+  };
+}
+
+/** Year-on-year change for the council's area Band D, computed from the two
+ * most recent published years (2025-26 → 2026-27 for billing authorities). */
+export function getAreaBandDChange(council: Council | null | undefined): {
+  amount: number;
+  percent: number;
+  fromYear: string;
+  toYear: string;
+} | null {
+  const current = getAreaBandD(council);
+  if (!current || current.previous === null || current.previous === 0) return null;
+  return {
+    amount: current.value - current.previous,
+    percent: ((current.value - current.previous) / current.previous) * 100,
+    fromYear: current.year === CURRENT_TAX_YEAR ? PREVIOUS_TAX_YEAR : '2024-25',
+    toYear: current.year,
+  };
+}
+
+// Get average Band D by council type, in the same year `getAreaBandD` would
+// return for members of that type (2026-27 for billing authorities, 2025-26
+// for county councils) — so "vs average" comparisons never mix years.
 export function getAverageBandDByType(type: string): number {
   const typeCouncils = councils.filter(c => c.type === type && c.council_tax?.band_d_2025);
   if (typeCouncils.length === 0) return 0;
-  const total = typeCouncils.reduce((sum, c) => sum + (c.council_tax?.band_d_2025 || 0), 0);
-  return total / typeCouncils.length;
+  const values = typeCouncils.map(c => getAreaBandD(c)?.value || 0);
+  return values.reduce((sum, v) => sum + v, 0) / values.length;
 }
 
 // Statistics

@@ -8,6 +8,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "validate": "node scripts/validate/validate.mjs",
     "validate:verbose": "node scripts/validate/validate.mjs --verbose",
     "validate:links": "node scripts/validate/validate.mjs --link-check",
@@ -70,6 +72,7 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5",
+    "vitest": "^3",
     "xlsx": "^0.18.5"
   },
   "overrides": {

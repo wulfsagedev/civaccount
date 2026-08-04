@@ -16,7 +16,7 @@ export const GUIDE_MARKDOWN: Record<string, string> = {
 
 Canonical URL: https://www.civaccount.co.uk/guide/council-tax
 Publisher: CivAccount (https://www.civaccount.co.uk)
-Licence: Open Government Licence v3.0 (data) + MIT (code)
+Licence: source data OGL v3.0 (Crown copyright); compiled dataset CivAccount Data Licence; code MIT
 Last reviewed: 2026-04-19
 
 ## What is council tax?
@@ -90,7 +90,7 @@ All figures CivAccount publishes cite the official GOV.UK source (Council Tax 20
 
 Canonical URL: https://www.civaccount.co.uk/guide/council-spending
 Publisher: CivAccount (https://www.civaccount.co.uk)
-Licence: Open Government Licence v3.0 (data) + MIT (code)
+Licence: source data OGL v3.0 (Crown copyright); compiled dataset CivAccount Data Licence; code MIT
 Last reviewed: 2026-04-19
 
 ## The big picture
@@ -153,7 +153,7 @@ Councils are audited by external auditors (PwC, Grant Thornton, BDO, Mazars, etc
 
 Canonical URL: https://www.civaccount.co.uk/guide/council-leadership
 Publisher: CivAccount (https://www.civaccount.co.uk)
-Licence: Open Government Licence v3.0 (data) + MIT (code)
+Licence: source data OGL v3.0 (Crown copyright); compiled dataset CivAccount Data Licence; code MIT
 Last reviewed: 2026-04-19
 
 ## The two leadership tracks
@@ -209,7 +209,7 @@ Members' Interests registers (financial, political, pecuniary) must be publicly 
 
 Canonical URL: https://www.civaccount.co.uk/guide/local-democracy
 Publisher: CivAccount (https://www.civaccount.co.uk)
-Licence: Open Government Licence v3.0 (data) + MIT (code)
+Licence: source data OGL v3.0 (Crown copyright); compiled dataset CivAccount Data Licence; code MIT
 Last reviewed: 2026-04-19
 
 ## The public rights you have

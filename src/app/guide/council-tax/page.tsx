@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import { councils, formatCurrency, getAreaBandD, getCouncilDisplayName, getCouncilSlug, CURRENT_TAX_YEAR } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
@@ -25,22 +25,24 @@ export const metadata: Metadata = {
 };
 
 export default function CouncilTaxGuidePage() {
-  const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025);
-  const bandDValues = councilsWithTax.map((c) => c.council_tax!.band_d_2025);
-  const avgBandD = bandDValues.reduce((s, v) => s + v, 0) / bandDValues.length;
+  // 2026-27 area Band D figures, computed from the dataset. Billing
+  // authorities only — county councils are not billing authorities, so they
+  // have no 2026-27 area figure.
+  const areaBills = councils.flatMap((council) => {
+    const area = getAreaBandD(council);
+    return area && area.year === CURRENT_TAX_YEAR ? [{ council, area }] : [];
+  });
+  const avgBandD = areaBills.reduce((s, e) => s + e.area.value, 0) / areaBills.length;
 
-  const cheapest = councilsWithTax.reduce((min, c) =>
-    c.council_tax!.band_d_2025 < min.council_tax!.band_d_2025 ? c : min
-  );
-  const mostExpensive = councilsWithTax.reduce((max, c) =>
-    c.council_tax!.band_d_2025 > max.council_tax!.band_d_2025 ? c : max
-  );
+  const sortedBills = [...areaBills].sort((a, b) => a.area.value - b.area.value);
+  const cheapest = sortedBills[0];
+  const mostExpensive = sortedBills[sortedBills.length - 1];
 
-  const councilsWithBothYears = councilsWithTax.filter((c) => c.council_tax?.band_d_2024);
-  const avgChange = councilsWithBothYears.length > 0
-    ? councilsWithBothYears.reduce((sum, c) => {
-        return sum + ((c.council_tax!.band_d_2025 - c.council_tax!.band_d_2024!) / c.council_tax!.band_d_2024!) * 100;
-      }, 0) / councilsWithBothYears.length
+  const withBothYears = areaBills.filter((e) => e.area.previous);
+  const avgChange = withBothYears.length > 0
+    ? withBothYears.reduce((sum, e) => {
+        return sum + ((e.area.value - e.area.previous!) / e.area.previous!) * 100;
+      }, 0) / withBothYears.length
     : null;
 
   // Band ratios relative to Band D
@@ -70,7 +72,7 @@ export default function CouncilTaxGuidePage() {
     },
     {
       question: 'How much is the average council tax in England?',
-      answer: `The average Band D council tax in England for 2025-26 is ${formatCurrency(avgBandD, { decimals: 0 })}. Rates range from ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })} to ${formatCurrency(mostExpensive.council_tax!.band_d_2025, { decimals: 2 })}.`,
+      answer: `The average Band D council tax in England for ${CURRENT_TAX_YEAR} is ${formatCurrency(avgBandD, { decimals: 0 })}. Rates range from ${formatCurrency(cheapest.area.value, { decimals: 2 })} to ${formatCurrency(mostExpensive.area.value, { decimals: 2 })}.`,
     },
     {
       question: 'Why is my council tax so high?',
@@ -99,7 +101,7 @@ export default function CouncilTaxGuidePage() {
         headline: 'The Complete Guide to Council Tax in England',
         description: 'Everything you need to know about council tax: how it works, how bands are calculated, discounts, and where your money goes.',
         datePublished: '2026-04-06',
-        dateModified: '2026-04-06',
+        dateModified: '2026-08-04',
         publisher: {
           '@type': 'Organization',
           '@id': 'https://www.civaccount.co.uk/#organization',
@@ -138,7 +140,7 @@ export default function CouncilTaxGuidePage() {
         <h1 className="type-title-1 mb-2">The Complete Guide to Council Tax</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
           Council tax is calculated by multiplying your home&apos;s Band D rate (set by your local council each year) by a fraction based on your property&apos;s band.
-          In 2025-26, the average English Band D council tax is {formatCurrency(avgBandD, { decimals: 0 })}{avgChange !== null ? `, up ${avgChange.toFixed(1)}% from last year` : ''}.
+          In {CURRENT_TAX_YEAR}, the average English Band D council tax is {formatCurrency(avgBandD, { decimals: 0 })}{avgChange !== null ? `, up ${avgChange.toFixed(1)}% from last year` : ''}.
           This guide explains how bands work, how the precept adds to your bill, who pays, and where your money goes.
         </p>
 
@@ -200,7 +202,7 @@ export default function CouncilTaxGuidePage() {
 
         {/* Section 3: How much is council tax */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">How much is council tax in 2025-26?</h2>
+          <h2 className="type-title-2 mb-1">How much is council tax in {CURRENT_TAX_YEAR}?</h2>
           <p className="type-body-sm text-muted-foreground mb-5">Band D rates across England</p>
 
           <div className="space-y-3">
@@ -211,20 +213,20 @@ export default function CouncilTaxGuidePage() {
             <div className="flex items-baseline justify-between py-2">
               <span className="type-body-sm text-muted-foreground">
                 Cheapest —{' '}
-                <Link href={`/council/${getCouncilSlug(cheapest)}`} className="hover:text-foreground transition-colors">
-                  {getCouncilDisplayName(cheapest)}
+                <Link href={`/council/${getCouncilSlug(cheapest.council)}`} className="hover:text-foreground transition-colors">
+                  {getCouncilDisplayName(cheapest.council)}
                 </Link>
               </span>
-              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}</span>
+              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(cheapest.area.value, { decimals: 2 })}</span>
             </div>
             <div className="flex items-baseline justify-between py-2">
               <span className="type-body-sm text-muted-foreground">
                 Most expensive —{' '}
-                <Link href={`/council/${getCouncilSlug(mostExpensive)}`} className="hover:text-foreground transition-colors">
-                  {getCouncilDisplayName(mostExpensive)}
+                <Link href={`/council/${getCouncilSlug(mostExpensive.council)}`} className="hover:text-foreground transition-colors">
+                  {getCouncilDisplayName(mostExpensive.council)}
                 </Link>
               </span>
-              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(mostExpensive.council_tax!.band_d_2025, { decimals: 2 })}</span>
+              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(mostExpensive.area.value, { decimals: 2 })}</span>
             </div>
             {avgChange !== null && (
               <div className="flex items-baseline justify-between py-2">
@@ -233,6 +235,10 @@ export default function CouncilTaxGuidePage() {
               </div>
             )}
           </div>
+
+          <p className="type-caption text-muted-foreground mt-4">
+            Figures are the full Band D bill for each of the {areaBills.length} billing-authority areas, including police and fire charges.
+          </p>
 
           <div className="mt-5 p-3 rounded-lg bg-muted/30">
             <p className="type-caption text-muted-foreground">

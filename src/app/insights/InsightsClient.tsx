@@ -25,7 +25,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ContributeBanner from '@/components/ContributeBanner';
-import { councils, COUNCIL_TYPE_NAMES, formatCurrency, getCouncilPopulation, getCouncilDisplayName, getCouncilSlug, getNationalEfficiencyStats } from '@/data/councils';
+import { councils, COUNCIL_TYPE_NAMES, formatCurrency, getAreaBandD, getAreaBandDChange, getCouncilPopulation, getCouncilDisplayName, getCouncilSlug, getNationalEfficiencyStats, CURRENT_TAX_YEAR, PREVIOUS_TAX_YEAR } from '@/data/councils';
 import { getServiceOutcomeBenchmarks } from '@/data/benchmarks';
 import { useCouncil } from '@/context/CouncilContext';
 
@@ -39,37 +39,38 @@ export default function InsightsClient() {
 
   // Calculate all statistics
   const stats = useMemo(() => {
-    const councilsWithTax = councils.filter(c => c.council_tax?.band_d_2025);
+    // 2026-27 area Band D — the 296 billing authorities all carry it. County
+    // councils (SC) are not billing authorities; their most recent published
+    // figure is their own 2025-26 share, so they are kept in a separate,
+    // clearly-labelled group and excluded from the England-wide money stats.
+    const billingWithTax = councils
+      .map(c => ({ council: c, area: getAreaBandD(c) }))
+      .filter((e): e is { council: typeof councils[0]; area: NonNullable<ReturnType<typeof getAreaBandD>> } => e.area !== null);
+    const currentYearBilling = billingWithTax.filter(e => e.area.year === CURRENT_TAX_YEAR);
     const councilsWithBudget = councils.filter(c => c.budget?.total_service);
 
     // Basic counts
     const totalCouncils = councils.length;
 
-    // Band D statistics
-    const bandDValues = councilsWithTax.map(c => c.council_tax!.band_d_2025);
+    // Band D statistics — 2026-27, billing authorities only
+    const bandDValues = currentYearBilling.map(e => e.area.value);
     const avgBandD = bandDValues.reduce((a, b) => a + b, 0) / bandDValues.length;
     const minBandD = Math.min(...bandDValues);
     const maxBandD = Math.max(...bandDValues);
     const medianBandD = [...bandDValues].sort((a, b) => a - b)[Math.floor(bandDValues.length / 2)];
 
-    // Find highest and lowest councils - NOW GROUPED BY COMPARABLE TYPES
-    // Group 1: "All-in-one" councils (UA, MD, LB) - these are directly comparable
-    // Group 2: District councils (SD) - only comparable to other districts
-    // Group 3: County councils (SC) - only comparable to other counties
+    // Find highest and lowest councils - GROUPED BY COMPARABLE TYPES
+    // Group 1: "All-in-one" councils (UA, MD, LB) — 2026-27 area bill
+    // Group 2: District councils (SD) — 2026-27 area bill
+    // Group 3: County councils (SC) — own 2025-26 share (latest published)
 
-    const allInOneCouncils = councilsWithTax.filter(c => ['UA', 'MD', 'LB'].includes(c.type));
-    const districtCouncils = councilsWithTax.filter(c => c.type === 'SD');
-    const countyCouncils = councilsWithTax.filter(c => c.type === 'SC');
+    const allInOneCouncils = billingWithTax.filter(e => ['UA', 'MD', 'LB'].includes(e.council.type));
+    const districtCouncils = billingWithTax.filter(e => e.council.type === 'SD');
+    const countyCouncils = billingWithTax.filter(e => e.council.type === 'SC');
 
-    const sortedAllInOne = [...allInOneCouncils].sort((a, b) =>
-      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
-    );
-    const sortedDistricts = [...districtCouncils].sort((a, b) =>
-      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
-    );
-    const sortedCounties = [...countyCouncils].sort((a, b) =>
-      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
-    );
+    const sortedAllInOne = [...allInOneCouncils].sort((a, b) => b.area.value - a.area.value);
+    const sortedDistricts = [...districtCouncils].sort((a, b) => b.area.value - a.area.value);
+    const sortedCounties = [...countyCouncils].sort((a, b) => b.area.value - a.area.value);
 
     // Top/bottom 5 for each comparable group
     const highestAllInOne = sortedAllInOne.slice(0, 5);
@@ -79,36 +80,38 @@ export default function InsightsClient() {
     const highestCounties = sortedCounties.slice(0, 5);
     const lowestCounties = sortedCounties.slice(-5).reverse();
 
-    // Keep overall for reference
-    const sortedByTax = [...councilsWithTax].sort((a, b) =>
-      (b.council_tax?.band_d_2025 || 0) - (a.council_tax?.band_d_2025 || 0)
-    );
+    // Keep overall for reference — 2026-27, billing authorities only
+    const sortedByTax = [...currentYearBilling].sort((a, b) => b.area.value - a.area.value);
     const highest5 = sortedByTax.slice(0, 5);
     const lowest5 = sortedByTax.slice(-5).reverse();
 
-    // Year-over-year changes
-    const councilsWithHistory = councilsWithTax.filter(c => c.council_tax?.band_d_2024);
-    const yoyChanges = councilsWithHistory.map(c => ({
-      council: c,
-      change: c.council_tax!.band_d_2025 - c.council_tax!.band_d_2024!,
-      percentChange: ((c.council_tax!.band_d_2025 - c.council_tax!.band_d_2024!) / c.council_tax!.band_d_2024!) * 100
-    }));
+    // Year-over-year changes — 2025-26 → 2026-27 (billing authorities)
+    const yoyChanges = currentYearBilling
+      .map(e => {
+        const change = getAreaBandDChange(e.council);
+        return change
+          ? { council: e.council, change: change.amount, percentChange: change.percent }
+          : null;
+      })
+      .filter((e): e is { council: typeof councils[0]; change: number; percentChange: number } => e !== null);
 
     const avgYoyChange = yoyChanges.reduce((sum, c) => sum + c.percentChange, 0) / yoyChanges.length;
     const biggestIncreases = [...yoyChanges].sort((a, b) => b.percentChange - a.percentChange).slice(0, 5);
     const smallestIncreases = [...yoyChanges].sort((a, b) => a.percentChange - b.percentChange).slice(0, 5);
 
-    // Statistics by council type
-    const typeStats: Record<string, { count: number; avgBandD: number; minBandD: number; maxBandD: number }> = {};
+    // Statistics by council type — year-aware: billing types are 2026-27,
+    // county councils (SC) are 2025-26. Each type carries its year label.
+    const typeStats: Record<string, { count: number; avgBandD: number; minBandD: number; maxBandD: number; year: string }> = {};
     Object.keys(COUNCIL_TYPE_NAMES).forEach(type => {
-      const typeCouncils = councilsWithTax.filter(c => c.type === type);
+      const typeCouncils = billingWithTax.filter(e => e.council.type === type);
       if (typeCouncils.length > 0) {
-        const values = typeCouncils.map(c => c.council_tax!.band_d_2025);
+        const values = typeCouncils.map(e => e.area.value);
         typeStats[type] = {
           count: typeCouncils.length,
           avgBandD: values.reduce((a, b) => a + b, 0) / values.length,
           minBandD: Math.min(...values),
-          maxBandD: Math.max(...values)
+          maxBandD: Math.max(...values),
+          year: typeCouncils[0].area.year,
         };
       }
     });
@@ -176,15 +179,14 @@ export default function InsightsClient() {
       }
     });
 
-    // Price bands distribution
+    // Price bands distribution — buckets sized for 2026-27 area Band D bills
     const priceBands = [
-      { label: 'Under £200', min: 0, max: 200, count: 0 },
-      { label: '£200 - £400', min: 200, max: 400, count: 0 },
-      { label: '£400 - £600', min: 400, max: 600, count: 0 },
-      { label: '£600 - £1,000', min: 600, max: 1000, count: 0 },
-      { label: '£1,000 - £1,500', min: 1000, max: 1500, count: 0 },
+      { label: 'Under £1,500', min: 0, max: 1500, count: 0 },
       { label: '£1,500 - £2,000', min: 1500, max: 2000, count: 0 },
-      { label: 'Over £2,000', min: 2000, max: Infinity, count: 0 },
+      { label: '£2,000 - £2,200', min: 2000, max: 2200, count: 0 },
+      { label: '£2,200 - £2,400', min: 2200, max: 2400, count: 0 },
+      { label: '£2,400 - £2,600', min: 2400, max: 2600, count: 0 },
+      { label: 'Over £2,600', min: 2600, max: Infinity, count: 0 },
     ];
 
     bandDValues.forEach(value => {
@@ -235,7 +237,7 @@ export default function InsightsClient() {
 
     return {
       totalCouncils,
-      councilsWithTax: councilsWithTax.length,
+      councilsWithTax: currentYearBilling.length,
       councilsWithBudget: councilsWithBudget.length,
       avgBandD,
       minBandD,
@@ -364,7 +366,7 @@ export default function InsightsClient() {
                 description="Council tax statistics and rankings for all 317 English councils on CivAccount"
               />
             </div>
-            <Badge variant="outline" className="mb-4">2025-26 Data</Badge>
+            <Badge variant="outline" className="mb-4">2026-27 Data</Badge>
             <h1 className="type-title-1 font-semibold mb-4">Council tax in England</h1>
             <p className="type-body-lg text-muted-foreground max-w-2xl mx-auto">
               This page helps explain how council tax works across {stats.totalCouncils} local authorities
@@ -377,28 +379,42 @@ export default function InsightsClient() {
           {/* Key Statistics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
             <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
-              <p className="type-caption text-muted-foreground mb-1">Band D average</p>
+              <p className="type-caption text-muted-foreground mb-1">Band D average · 2026-27</p>
               <p className="type-title-1 font-semibold tabular-nums">{formatCurrency(stats.avgBandD, { decimals: 0 })}</p>
             </div>
             <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
-              <p className="type-caption text-muted-foreground mb-1">Highest vs lowest</p>
+              <p className="type-caption text-muted-foreground mb-1">Highest vs lowest · 2026-27</p>
               <p className="type-title-1 font-semibold tabular-nums">{formatCurrency(stats.maxBandD - stats.minBandD, { decimals: 0 })}</p>
             </div>
             <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
-              <p className="type-caption text-muted-foreground mb-1">Average increase</p>
+              <p className="type-caption text-muted-foreground mb-1">Average rise from 2025-26</p>
               <p className="type-title-1 font-semibold tabular-nums">+{stats.avgYoyChange.toFixed(1)}%</p>
             </div>
             <div className="p-4 sm:p-5 rounded-xl bg-muted/30">
-              <p className="type-caption text-muted-foreground mb-1">Total spending</p>
+              <p className="type-caption text-muted-foreground mb-1">Total spending · 2025-26 budgets</p>
               <p className="type-title-1 font-semibold tabular-nums">{formatBillions(stats.totalBudget)}</p>
             </div>
           </div>
 
-          {/* Your council vs average */}
-          {selectedCouncil?.council_tax?.band_d_2025 && (() => {
-            const yourBandD = selectedCouncil.council_tax!.band_d_2025;
-            const diff = yourBandD - stats.avgBandD;
+          {/* Your council vs average — only when both sides are 2026-27 */}
+          {(() => {
+            if (!selectedCouncil) return null;
+            const area = getAreaBandD(selectedCouncil);
+            if (!area) return null;
             const name = getCouncilDisplayName(selectedCouncil);
+            if (area.year !== CURRENT_TAX_YEAR) {
+              // County councils: latest published figure is their own
+              // 2025-26 share — not comparable with the 2026-27 area average.
+              return (
+                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 mb-8">
+                  <p className="type-body-sm">
+                    <span className="font-semibold">{name}</span>&rsquo;s latest published figure is its own {PREVIOUS_TAX_YEAR} share of the bill
+                    ({formatCurrency(area.value, { decimals: 0 })}), so it is not compared against the {CURRENT_TAX_YEAR} average here.
+                  </p>
+                </div>
+              );
+            }
+            const diff = area.value - stats.avgBandD;
             return (
               <div className="p-4 rounded-xl bg-muted/30 border border-border/50 mb-8">
                 <p className="type-body-sm">
@@ -406,7 +422,7 @@ export default function InsightsClient() {
                   <span className={`font-semibold ${diff > 0 ? 'text-negative' : 'text-positive'}`}>
                     {formatCurrency(Math.abs(diff), { decimals: 0 })} {diff > 0 ? 'more' : 'less'}
                   </span>
-                  {' '}than the national average of {formatCurrency(stats.avgBandD, { decimals: 0 })}.
+                  {' '}than the national average of {formatCurrency(stats.avgBandD, { decimals: 0 })} for {CURRENT_TAX_YEAR}.
                 </p>
               </div>
             );
@@ -428,7 +444,7 @@ export default function InsightsClient() {
             <div className="mb-8">
               <div className="mb-4">
                 <p className="type-body-sm font-semibold">Unitary, Metropolitan & London Boroughs</p>
-                <p className="type-caption text-muted-foreground">{stats.allInOneCount} councils</p>
+                <p className="type-caption text-muted-foreground">{stats.allInOneCount} councils · 2026-27 Band D bill for the area</p>
               </div>
               <p className="type-body-sm text-muted-foreground mb-4">
                 These councils provide all services - education, social care, roads, bins, and more. Their tax covers everything.
@@ -440,11 +456,11 @@ export default function InsightsClient() {
                     <span className="type-body-sm font-medium">Highest</span>
                   </div>
                   <div className="space-y-2">
-                    {stats.highestAllInOne.map((council, i) => (
+                    {stats.highestAllInOne.map(({ council, area }, i) => (
                       <div key={council.ons_code} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
                         <span className="type-body-sm text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
                         <Link href={`/council/${getCouncilSlug(council)}`} className="type-body-sm font-medium truncate hover:underline cursor-pointer flex-1 min-w-0 !min-h-0">{council.name}</Link>
-                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(area.value, { decimals: 0 })}</span>
                       </div>
                     ))}
                   </div>
@@ -455,11 +471,11 @@ export default function InsightsClient() {
                     <span className="type-body-sm font-medium">Lowest</span>
                   </div>
                   <div className="space-y-2">
-                    {stats.lowestAllInOne.map((council, i) => (
+                    {stats.lowestAllInOne.map(({ council, area }, i) => (
                       <div key={council.ons_code} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
                         <span className="type-body-sm text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
                         <Link href={`/council/${getCouncilSlug(council)}`} className="type-body-sm font-medium truncate hover:underline cursor-pointer flex-1 min-w-0 !min-h-0">{council.name}</Link>
-                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(area.value, { decimals: 0 })}</span>
                       </div>
                     ))}
                   </div>
@@ -471,10 +487,10 @@ export default function InsightsClient() {
             <div className="mb-8 pt-6 border-t border-border/50">
               <div className="mb-4">
                 <p className="type-body-sm font-semibold">District Councils</p>
-                <p className="type-caption text-muted-foreground">{stats.districtCount} councils</p>
+                <p className="type-caption text-muted-foreground">{stats.districtCount} councils · 2026-27 Band D bill for the area</p>
               </div>
               <p className="type-body-sm text-muted-foreground mb-4">
-                District councils handle bins, planning, housing, and local services. You also pay county council tax on top.
+                District councils handle bins, planning, housing, and local services. The figure shown is the whole bill for the area — it includes the county council&apos;s share.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
@@ -483,11 +499,11 @@ export default function InsightsClient() {
                     <span className="type-body-sm font-medium">Highest</span>
                   </div>
                   <div className="space-y-2">
-                    {stats.highestDistricts.map((council, i) => (
+                    {stats.highestDistricts.map(({ council, area }, i) => (
                       <div key={council.ons_code} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
                         <span className="type-body-sm text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
                         <Link href={`/council/${getCouncilSlug(council)}`} className="type-body-sm font-medium truncate hover:underline cursor-pointer flex-1 min-w-0 !min-h-0">{council.name}</Link>
-                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(area.value, { decimals: 0 })}</span>
                       </div>
                     ))}
                   </div>
@@ -498,11 +514,11 @@ export default function InsightsClient() {
                     <span className="type-body-sm font-medium">Lowest</span>
                   </div>
                   <div className="space-y-2">
-                    {stats.lowestDistricts.map((council, i) => (
+                    {stats.lowestDistricts.map(({ council, area }, i) => (
                       <div key={council.ons_code} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
                         <span className="type-body-sm text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
                         <Link href={`/council/${getCouncilSlug(council)}`} className="type-body-sm font-medium truncate hover:underline cursor-pointer flex-1 min-w-0 !min-h-0">{council.name}</Link>
-                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(area.value, { decimals: 0 })}</span>
                       </div>
                     ))}
                   </div>
@@ -514,10 +530,10 @@ export default function InsightsClient() {
             <div className="pt-6 border-t border-border/50">
               <div className="mb-4">
                 <p className="type-body-sm font-semibold">County Councils</p>
-                <p className="type-caption text-muted-foreground">{stats.countyCount} councils</p>
+                <p className="type-caption text-muted-foreground">{stats.countyCount} councils · own 2025-26 share (2026-27 not yet published)</p>
               </div>
               <p className="type-body-sm text-muted-foreground mb-4">
-                County councils handle education, social care, and roads. Their share is the biggest part of your bill in two-tier areas.
+                County councils handle education, social care, and roads. Their share is the biggest part of your bill in two-tier areas. The figure shown is the county&apos;s own 2025-26 share, the latest published.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
@@ -526,11 +542,11 @@ export default function InsightsClient() {
                     <span className="type-body-sm font-medium">Highest</span>
                   </div>
                   <div className="space-y-2">
-                    {stats.highestCounties.map((council, i) => (
+                    {stats.highestCounties.map(({ council, area }, i) => (
                       <div key={council.ons_code} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
                         <span className="type-body-sm text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
                         <Link href={`/council/${getCouncilSlug(council)}`} className="type-body-sm font-medium truncate hover:underline cursor-pointer flex-1 min-w-0 !min-h-0">{council.name}</Link>
-                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(area.value, { decimals: 0 })}</span>
                       </div>
                     ))}
                   </div>
@@ -541,11 +557,11 @@ export default function InsightsClient() {
                     <span className="type-body-sm font-medium">Lowest</span>
                   </div>
                   <div className="space-y-2">
-                    {stats.lowestCounties.map((council, i) => (
+                    {stats.lowestCounties.map(({ council, area }, i) => (
                       <div key={council.ons_code} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
                         <span className="type-body-sm text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
                         <Link href={`/council/${getCouncilSlug(council)}`} className="type-body-sm font-medium truncate hover:underline cursor-pointer flex-1 min-w-0 !min-h-0">{council.name}</Link>
-                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(council.council_tax!.band_d_2025, { decimals: 0 })}</span>
+                        <span className="type-body-sm font-semibold tabular-nums shrink-0">{formatCurrency(area.value, { decimals: 0 })}</span>
                       </div>
                     ))}
                   </div>
@@ -557,9 +573,10 @@ export default function InsightsClient() {
               <div className="flex items-start gap-3">
                 <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
                 <p className="type-body-sm text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">Why group councils this way?</strong> Comparing a district council to a unitary authority
-                  is like comparing apples to oranges. Districts appear cheaper, but you also pay county council tax.
-                  By grouping similar councils together, you can see who really charges more for equivalent services.
+                  <strong className="text-foreground">Why group councils this way?</strong> Different council types do different jobs.
+                  For billing authorities the figure is the full 2026-27 Band D bill for the area, including any county, police and fire shares.
+                  County councils do not send the bill, so they show only their own 2025-26 share.
+                  Grouping similar councils together keeps every comparison like-for-like — and in one year.
                 </p>
               </div>
             </div>
@@ -573,7 +590,7 @@ export default function InsightsClient() {
               </div>
               <div>
                 <h2 className="type-title-2">This year&apos;s changes</h2>
-                <p className="type-body-sm text-muted-foreground">Biggest increases and smallest rises from 2024-25 to 2025-26</p>
+                <p className="type-body-sm text-muted-foreground">Biggest increases and smallest rises from 2025-26 to 2026-27</p>
               </div>
             </div>
 
@@ -628,7 +645,7 @@ export default function InsightsClient() {
               </div>
               <div>
                 <h2 className="type-title-2">How council tax rates are spread</h2>
-                <p className="type-body-sm text-muted-foreground">Distribution of Band D rates across all councils</p>
+                <p className="type-body-sm text-muted-foreground">Distribution of 2026-27 Band D bills across {stats.councilsWithTax} billing authorities</p>
               </div>
             </div>
 
@@ -674,7 +691,7 @@ export default function InsightsClient() {
               </div>
               <div>
                 <h2 className="type-title-2">By council type</h2>
-                <p className="type-body-sm text-muted-foreground">How rates vary across different types of local authority</p>
+                <p className="type-body-sm text-muted-foreground">How rates vary across different types of local authority. Billing types show the 2026-27 area bill; county councils show their own 2025-26 share.</p>
               </div>
             </div>
 
@@ -685,7 +702,7 @@ export default function InsightsClient() {
                 <div key={type} className="p-4 border border-border/50 rounded-xl">
                   <div className="flex items-center justify-between mb-3">
                     <span className="type-body-sm font-semibold">{COUNCIL_TYPE_NAMES[type]}</span>
-                    <Badge variant="outline" className="type-body-sm">{data.count}</Badge>
+                    <Badge variant="outline" className="type-body-sm">{data.count} · {data.year}</Badge>
                   </div>
                   <div className="space-y-2 type-body-sm">
                     <div className="flex justify-between">
@@ -705,9 +722,9 @@ export default function InsightsClient() {
               <div className="flex items-start gap-3">
                 <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
                 <p className="type-body-sm text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">Why the difference?</strong> Unitary authorities and metropolitan districts
-                  tend to have higher rates because they provide all services (social care, education, roads, bins, etc.) in one council.
-                  District councils have lower rates because county councils handle the expensive services like social care and education.
+                  <strong className="text-foreground">Why the difference?</strong> For billing types the figure is the whole Band D bill for the area,
+                  so district areas are close to unitary areas — their bill includes the county council&apos;s share.
+                  County councils look lower because they show only their own share of the bill, not the whole bill.
                 </p>
               </div>
             </div>
@@ -1218,7 +1235,7 @@ export default function InsightsClient() {
                   <span className="type-body-sm font-semibold">Council type explains a lot</span>
                 </div>
                 <p className="type-body-sm text-muted-foreground leading-relaxed">
-                  Unitary authorities charge more because they do everything. District councils charge less because counties handle expensive services.
+                  Different council types do different jobs, so we group them before comparing. The full area bill covers every council that serves your address.
                 </p>
               </div>
             </div>

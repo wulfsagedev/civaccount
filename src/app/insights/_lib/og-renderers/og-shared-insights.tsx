@@ -24,8 +24,12 @@ export function formatPoundsShort(pounds: number, decimals = 1): string {
  * National-variant brand strip. Sits at the bottom of national insight OG
  * images — same typography as `ogBrand()` but replaces the council name with
  * "England".
+ *
+ * `year` defaults to 2025-26 (budget / pay / supplier data and the pinned
+ * 2025-26 tax cards). Pass '2026-27' from renderers whose data is the
+ * current-year area Band D.
  */
-export function ogBrandNational(section?: string): ReactElement {
+export function ogBrandNational(section?: string, year = '2025-26'): ReactElement {
   return (
     <div
       style={{
@@ -53,7 +57,7 @@ export function ogBrandNational(section?: string): ReactElement {
         )}
         <span style={{ fontSize: '44px', fontWeight: 600, color: OG.text }}>England</span>
         <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>
-          · 2025-26
+          · {year}
         </span>
       </div>
     </div>

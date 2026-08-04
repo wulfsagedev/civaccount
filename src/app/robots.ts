@@ -10,8 +10,10 @@ import type { MetadataRoute } from 'next';
  *     PerplexityBot, etc.) — we WANT to be cited.
  *   - ALLOW user-initiated fetchers (ChatGPT-User, Claude-User, Perplexity-User)
  *     — these only fetch when a user asks for a page directly.
- *   - ALLOW training crawlers — CivAccount data is OGL v3.0 / MIT licensed
- *     and is explicitly published for civic reuse, including AI training.
+ *   - ALLOW training crawlers — the underlying source data is OGL v3.0 and
+ *     the code is MIT; per-council pages are explicitly published for civic
+ *     reuse and citation. (The compiled dataset itself is under the
+ *     CivAccount Data Licence — no bulk redistribution.)
  *
  * Disallowed paths apply to ALL crawlers:
  *   /api/         — JSON endpoints, no SEO value

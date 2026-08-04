@@ -10,7 +10,14 @@
  * the underlying council data is static.
  */
 
-import { councils, getCouncilPopulation, type Council } from '@/data/councils';
+import {
+  councils,
+  getAreaBandD,
+  getCouncilPopulation,
+  CURRENT_TAX_YEAR,
+  PREVIOUS_TAX_YEAR,
+  type Council,
+} from '@/data/councils';
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 
 // ── Shared service metadata (plain English names for the 10 service categories) ──
@@ -83,6 +90,11 @@ export function getNationalSpendStats(): NationalSpendStats {
 }
 
 // ── National bill (legacy card 1 — kept for back-compat) ──────────────────────
+//
+// YEAR NOTE: `getNationalBillStats` is the 2025-26 series (band_d_2025, all
+// 317 councils — mixes area totals with county own-shares). It is kept for
+// surfaces whose surrounding copy is pinned to 2025-26 (e.g. /press). New
+// "current bill" surfaces should use `getAreaBillStats()` below.
 
 export interface NationalBillStats {
   avg: number;
@@ -112,6 +124,158 @@ export function getNationalBillStats(): NationalBillStats {
     count: values.length,
   };
   return _nationalBill;
+}
+
+// ── Current-year area Band D stats (2026-27, billing authorities) ─────────────
+//
+// These are the year-aware equivalents of the legacy band_d_2025 stats above.
+// They use `getAreaBandD()` (the most recent verified AREA Band D — the full
+// bill for the area) restricted to billing authorities that carry the
+// 2026-27 figure. County councils (type SC) are not billing authorities and
+// have no 2026-27 area figure, so they are excluded from these money
+// rankings — copy that uses these stats should say "billing authorities".
+
+export interface AreaBillStats {
+  avg: number;
+  min: number;
+  max: number;
+  median: number;
+  /** Billing authorities included (those with a verified 2026-27 area Band D). */
+  count: number;
+  /** The financial year every number above belongs to. */
+  year: typeof CURRENT_TAX_YEAR;
+}
+
+let _areaBill: AreaBillStats | null = null;
+
+export function getAreaBillStats(): AreaBillStats {
+  if (_areaBill) return _areaBill;
+
+  const values = councils
+    .map((c) => getAreaBandD(c))
+    .filter((a): a is NonNullable<typeof a> => a !== null && a.year === CURRENT_TAX_YEAR)
+    .map((a) => a.value);
+
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+
+  _areaBill = {
+    avg: values.reduce((s, v) => s + v, 0) / values.length,
+    min: sorted[0],
+    max: sorted[sorted.length - 1],
+    median:
+      sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid],
+    count: values.length,
+    year: CURRENT_TAX_YEAR,
+  };
+  return _areaBill;
+}
+
+export interface AreaExtremesGroup {
+  label: string;
+  description: string;
+  types: readonly string[];
+  cheapest: Council;
+  cheapestValue: number;
+  mostExpensive: Council;
+  mostExpensiveValue: number;
+  count: number;
+  /** The financial year this group's figures belong to. County councils fall
+   * back to 2025-26 (their own share) — always render this next to the data. */
+  year: typeof CURRENT_TAX_YEAR | typeof PREVIOUS_TAX_YEAR;
+}
+
+let _areaExtremes: AreaExtremesGroup[] | null = null;
+
+/** Cheapest vs most expensive per comparable group, in the year
+ * `getAreaBandD` returns for that group's members (2026-27 for billing
+ * authorities, 2025-26 for county councils). */
+export function getAreaExtremesByGroup(): AreaExtremesGroup[] {
+  if (_areaExtremes) return _areaExtremes;
+
+  _areaExtremes = COMPARABLE_GROUPS.map((group): AreaExtremesGroup | null => {
+    const types = group.types as readonly string[];
+    const peers = councils
+      .filter((c) => types.includes(c.type))
+      .map((c) => ({ council: c, area: getAreaBandD(c) }))
+      .filter((p): p is { council: Council; area: NonNullable<ReturnType<typeof getAreaBandD>> } => p.area !== null)
+      .sort((a, b) => a.area.value - b.area.value);
+    if (peers.length === 0) return null;
+    const cheapest = peers[0];
+    const mostExpensive = peers[peers.length - 1];
+    return {
+      label: group.label,
+      description: group.description,
+      types,
+      cheapest: cheapest.council,
+      cheapestValue: cheapest.area.value,
+      mostExpensive: mostExpensive.council,
+      mostExpensiveValue: mostExpensive.area.value,
+      count: peers.length,
+      year: cheapest.area.year,
+    };
+  }).filter((g): g is AreaExtremesGroup => g !== null);
+
+  return _areaExtremes;
+}
+
+/** All-in-one cheapest vs most expensive on the 2026-27 area Band D. */
+export function getHeadlineAreaExtremes(): AreaExtremesGroup {
+  const all = getAreaExtremesByGroup();
+  return all.find((g) => g.label.startsWith('All-in-one')) ?? all[0];
+}
+
+export interface AreaTaxRiseEntry {
+  council: Council;
+  /** 2025-26 area Band D, pounds. */
+  from: number;
+  /** 2026-27 area Band D, pounds. */
+  to: number;
+  changeAbs: number;
+  changePct: number;
+}
+
+let _areaRises: AreaTaxRiseEntry[] | null = null;
+
+/** Year-on-year area Band D rises, 2025-26 → 2026-27. Billing authorities
+ * only (296) — county councils have no 2026-27 figure. */
+export function getAreaTaxRises(limit = 5): AreaTaxRiseEntry[] {
+  if (_areaRises) return _areaRises.slice(0, limit);
+
+  _areaRises = councils
+    .filter((c) => c.council_tax?.band_d_2026 && c.council_tax?.band_d_2025)
+    .map((c) => {
+      const from = c.council_tax!.band_d_2025;
+      const to = c.council_tax!.band_d_2026!;
+      return {
+        council: c,
+        from,
+        to,
+        changeAbs: to - from,
+        changePct: ((to - from) / from) * 100,
+      };
+    })
+    .sort((a, b) => b.changePct - a.changePct);
+
+  return _areaRises.slice(0, limit);
+}
+
+/** Average 2025-26 → 2026-27 area Band D rise across billing authorities. */
+export function getAverageAreaTaxRise(): number {
+  const all = getAreaTaxRises(Number.MAX_SAFE_INTEGER);
+  if (all.length === 0) return 0;
+  return all.reduce((s, e) => s + e.changePct, 0) / all.length;
+}
+
+/** Number of billing-authority areas where the 2026-27 Band D bill rose by
+ * `capPct` or more. Note: the referendum cap applies to each council's own
+ * element — this counts whole-area rises, so treat it as context, not a
+ * cap-compliance count. */
+export function getAreaRisesAtOrOverPct(capPct = 4.99): number {
+  return getAreaTaxRises(Number.MAX_SAFE_INTEGER).filter((e) => {
+    const pct = Math.round(e.changePct * 100) / 100;
+    return pct >= capPct;
+  }).length;
 }
 
 // ── Where every £1 goes (card 2.1) ────────────────────────────────────────────
@@ -170,6 +334,9 @@ export function getWhereEveryPoundGoes(): ServiceShare[] {
 }
 
 // ── Cheapest vs most expensive (card 1.2 · postcode lottery) ──────────────────
+//
+// YEAR NOTE: legacy 2025-26 series (band_d_2025), kept for /press. The
+// postcode-lottery surfaces now use `getAreaExtremesByGroup()` (2026-27).
 
 export interface ComparableGroupExtremes {
   label: string;
@@ -213,6 +380,10 @@ export function getHeadlineExtremes(): ComparableGroupExtremes {
 }
 
 // ── Biggest tax rises (card 1.3) ──────────────────────────────────────────────
+//
+// YEAR NOTE: legacy 2024-25 → 2025-26 series. Kept for the biggest-tax-rises
+// card, the cap cards, and /press — their copy (src/data/insights.ts) is
+// explicitly pinned to 2025-26. Current-year surfaces use `getAreaTaxRises()`.
 
 export interface TaxRiseEntry {
   council: Council;

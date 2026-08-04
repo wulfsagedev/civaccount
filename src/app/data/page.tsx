@@ -32,7 +32,7 @@ export default function DataPage() {
 
   const fields = [
     { name: 'Council identifiers', description: 'Name, ONS code, slug, type, population' },
-    { name: 'Council tax bands', description: 'Band D rates for 2021-2025 and year-on-year change' },
+    { name: 'Council tax bands', description: 'Band D rates from 2021-22 to 2026-27 and year-on-year change' },
     { name: 'Service budgets', description: '10 spending categories (education, social care, transport, etc.) in thousands of pounds' },
     { name: 'Leadership', description: 'Chief executive name, CEO salary, council leader, councillor basic allowance' },
     { name: 'Links', description: 'Council website URL and CivAccount dashboard URL' },
@@ -41,11 +41,11 @@ export default function DataPage() {
   const faqs = [
     {
       question: 'What data does the dataset cover?',
-      answer: `All ${councilsWithTax.length} English councils with Band D council tax rates (2021-2025), service budgets across 10 categories, CEO salaries, and council leadership information.`,
+      answer: `All ${councilsWithTax.length} English councils with Band D council tax rates (2021-22 to 2026-27; county councils to 2025-26), service budgets across 10 categories, CEO salaries, and council leadership information.`,
     },
     {
       question: 'What licence is the data released under?',
-      answer: 'Open Government Licence v3.0 (the underlying source data is already public under OGL). You are free to use, share, and adapt the data for any purpose, including commercial use.',
+      answer: 'The underlying GOV.UK source data is Crown copyright under the Open Government Licence v3.0 — free for anyone to use. The compiled CivAccount dataset is under the CivAccount Data Licence: quote any figure and embed any widget freely, including commercially; bulk copying or republishing the aggregation needs written permission. See /license for the plain-English version.',
     },
     {
       question: 'Where does the data come from?',

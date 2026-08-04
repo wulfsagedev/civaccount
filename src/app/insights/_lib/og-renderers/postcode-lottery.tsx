@@ -1,12 +1,13 @@
 import type { ReactElement } from 'react';
 import { OG, ogWrap, ogBrandNational, formatCurrencyOG } from './og-shared-insights';
-import { getHeadlineExtremes } from '@/lib/insights-stats';
+import { getHeadlineAreaExtremes } from '@/lib/insights-stats';
 import { getCouncilDisplayName } from '@/data/councils';
 
 export function renderPostcodeLottery(): ReactElement {
-  const { cheapest, mostExpensive } = getHeadlineExtremes();
-  const cheapestBandD = cheapest.council_tax!.band_d_2025;
-  const priciestBandD = mostExpensive.council_tax!.band_d_2025;
+  // 2026-27 area Band D extremes among all-in-one councils.
+  const headline = getHeadlineAreaExtremes();
+  const cheapestBandD = headline.cheapestValue;
+  const priciestBandD = headline.mostExpensiveValue;
   const gap = priciestBandD - cheapestBandD;
 
   return ogWrap(
@@ -68,7 +69,7 @@ export function renderPostcodeLottery(): ReactElement {
               {formatCurrencyOG(cheapestBandD, 0)}
             </span>
             <span style={{ fontSize: '40px', fontWeight: 600, color: OG.text }}>
-              {getCouncilDisplayName(cheapest)}
+              {getCouncilDisplayName(headline.cheapest)}
             </span>
           </div>
 
@@ -108,7 +109,7 @@ export function renderPostcodeLottery(): ReactElement {
               {formatCurrencyOG(priciestBandD, 0)}
             </span>
             <span style={{ fontSize: '40px', fontWeight: 600, color: OG.text }}>
-              {getCouncilDisplayName(mostExpensive)}
+              {getCouncilDisplayName(headline.mostExpensive)}
             </span>
           </div>
         </div>
@@ -124,7 +125,7 @@ export function renderPostcodeLottery(): ReactElement {
         </span>
       </div>
 
-      {ogBrandNational('The bill')}
+      {ogBrandNational('The bill', headline.year)}
     </div>,
   );
 }

@@ -2,7 +2,7 @@
 
 import { Building2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Council, formatCurrency, getCouncilDisplayName } from '@/data/councils';
+import { Council, formatCurrency, getCouncilDisplayName, getAreaBandD } from '@/data/councils';
 
 interface CouncilResultItemProps {
   council: Council;
@@ -20,8 +20,10 @@ export function CouncilResultItem({
   showBadge = true,
 }: CouncilResultItemProps) {
   const displayName = getCouncilDisplayName(council);
-  const bandDAmount = council.council_tax
-    ? formatCurrency(council.council_tax.band_d_2025, { decimals: 2 })
+  const areaBandD = getAreaBandD(council);
+  const yearSuffix = areaBandD?.year === '2025-26' ? ' (2025-26)' : '';
+  const bandDAmount = areaBandD
+    ? formatCurrency(areaBandD.value, { decimals: 2 })
     : null;
 
   if (variant === 'homepage') {
@@ -41,8 +43,8 @@ export function CouncilResultItem({
             <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
           </div>
           <div className="text-right shrink-0 type-body-sm text-muted-foreground tabular-nums">
-            {council.council_tax && (
-              <p>£{Math.round(council.council_tax.band_d_2025).toLocaleString('en-GB')}/yr</p>
+            {areaBandD && (
+              <p>£{Math.round(areaBandD.value).toLocaleString('en-GB')}/yr{yearSuffix}</p>
             )}
           </div>
         </div>
@@ -73,9 +75,9 @@ export function CouncilResultItem({
             </div>
           </div>
           <div className="text-right shrink-0">
-            {council.council_tax && (
+            {bandDAmount && (
               <p className="type-body-sm text-muted-foreground tabular-nums">
-                {bandDAmount}/year
+                {bandDAmount}/year{yearSuffix}
               </p>
             )}
           </div>
@@ -104,7 +106,7 @@ export function CouncilResultItem({
       </div>
       {showBadge && bandDAmount && (
         <Badge variant="outline" className="shrink-0 ml-2 tabular-nums">
-          Band D: {bandDAmount}
+          Band D: {bandDAmount}{yearSuffix}
         </Badge>
       )}
     </button>

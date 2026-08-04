@@ -72,7 +72,7 @@ const YourBillCard = ({
       <div className="mb-6">
         <div className="flex items-center gap-1.5 mb-1">
           <span className="type-caption text-muted-foreground">
-            Typical Band D share for this council
+            Typical Band D share for this council · 2025-26
           </span>
           <Popover>
             <PopoverTrigger asChild>
@@ -142,8 +142,8 @@ const YourBillCard = ({
       {/* Full bill breakdown with visual bar */}
       {detailed?.precepts && detailed.precepts.length > 0 && totalBill && (
         <div className="pt-5 border-t border-border/50">
-          <p className="type-body-sm font-semibold mb-1">Typical Band D bill</p>
-          <p className="type-caption text-muted-foreground mb-4">Average across {selectedCouncil.name}. Actual bills vary by band, parish and discounts.</p>
+          <p className="type-body-sm font-semibold mb-1">Typical Band D bill · 2025-26</p>
+          <p className="type-caption text-muted-foreground mb-4">How the 2025-26 bill was split. Average across {selectedCouncil.name} — actual bills vary by band, parish and discounts. The 2026-27 split publishes once each authority&apos;s precept is verified.</p>
 
           {/* Visual stacked bar with legend */}
           <div className="mb-4">
@@ -238,7 +238,7 @@ const YourBillCard = ({
           {/* Total */}
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
             <div>
-              <span className="type-body font-semibold">Typical Band D total</span>
+              <span className="type-body font-semibold">Typical Band D total · 2025-26</span>
               {totalDailyCost && (
                 <p className="type-caption text-muted-foreground">
                   <SourceAnnotation

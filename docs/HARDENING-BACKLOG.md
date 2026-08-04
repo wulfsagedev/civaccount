@@ -8,14 +8,14 @@ Legend: 🔴 critical (false-pass or system-down) · 🟠 high · 🟡 medium ·
 
 ---
 
-## 🔴 G8 — Trust-root checksum verifier is BROKEN (and exits 0)
+## ✅ G8 — Trust-root checksum verifier is BROKEN (and exits 0) — FIXED, verified 2026-08-04
 
-`scripts/validate/compare-checksums.mjs` throws `SyntaxError: Unexpected reserved
-word` (top-level `await import()` outside async at line 81) — yet **exits 0**, so
-CI's `data-freshness` job thinks it passed. This is the check that re-hashes the
-parsed CSVs against `source-manifest.json` (the root of all Tier-1 trust). It has
-been silently dead. **A dead safety check that reports success is worse than none.**
-Fix: wrap in async/IIFE, make it exit non-zero on mismatch AND on its own error.
+`scripts/validate/compare-checksums.mjs` previously threw `SyntaxError` yet
+**exited 0**, so CI's `data-freshness` job thought it passed. Now: whole run is
+wrapped in try/catch that exits 1 on any crash; a zero-files-checked run is
+treated as failure (a no-op "pass" can't happen); changed/missing files exit 1.
+Verified 2026-08-04: full run checks 15/15 parsed CSVs and matches the manifest;
+a simulated missing-file manifest correctly exits 1.
 
 ## 🔴 G2 — Nothing re-verifies the parsed CSV against the original GOV.UK file
 

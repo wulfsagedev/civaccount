@@ -493,7 +493,7 @@ export default function MethodologyPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-positive shrink-0" />
-                    <span className="text-muted-foreground">Data licensing disclosed (Open Government Licence v3.0)</span>
+                    <span className="text-muted-foreground">Data licensing disclosed (source data OGL v3.0; compiled dataset under the CivAccount Data Licence)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-positive shrink-0" />

@@ -18,6 +18,11 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
     { year: '2023-24', amount: councilTax.band_d_2023!, fieldPath: 'council_tax.band_d_2023' },
     { year: '2024-25', amount: councilTax.band_d_2024!, fieldPath: 'council_tax.band_d_2024' },
     { year: '2025-26', amount: councilTax.band_d_2025, fieldPath: 'council_tax.band_d_2025' },
+    // County councils aren't billing authorities, so 2026-27 has no area
+    // figure for them yet — the chart simply ends at 2025-26.
+    ...(typeof councilTax.band_d_2026 === 'number'
+      ? [{ year: '2026-27', amount: councilTax.band_d_2026, fieldPath: 'council_tax.band_d_2026' }]
+      : []),
   ];
   const values = data.map(d => d.amount);
   const minValue = Math.min(...values);
@@ -48,7 +53,7 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
       <CardShareHeader
         cardType="bill-history"
         title="How your bill has changed"
-        subtitle="Band D council tax over the last 5 years"
+        subtitle={`Band D council tax over the last ${data.length} years`}
         councilName={selectedCouncil.name}
       />
 

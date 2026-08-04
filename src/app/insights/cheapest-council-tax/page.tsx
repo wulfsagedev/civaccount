@@ -1,24 +1,34 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import {
+  councils,
+  formatCurrency,
+  getAreaBandD,
+  getAreaBandDChange,
+  getCouncilDisplayName,
+  getCouncilSlug,
+  CURRENT_TAX_YEAR,
+  PREVIOUS_TAX_YEAR,
+} from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
+import { getAreaBillStats, getAverageAreaTaxRise } from '@/lib/insights-stats';
 import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
 export const metadata: Metadata = {
-  title: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
-  description: 'The lowest council tax in England for 2026. See which councils charge the cheapest Band D rates — full top-20 rankings across unitary authorities, metropolitan districts, London boroughs, county and district councils. Sourced from .gov.uk.',
+  title: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
+  description: 'The lowest council tax in England for 2026-27. See which councils charge the cheapest Band D rates — full top-20 rankings across unitary authorities, metropolitan districts, London boroughs, county and district councils. Sourced from .gov.uk.',
   alternates: {
     canonical: '/insights/cheapest-council-tax',
   },
   openGraph: {
-    title: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
-    description: 'Which councils charge the lowest Band D council tax in 2026? See the full rankings.',
+    title: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
+    description: 'Which councils charge the lowest Band D council tax in 2026-27? See the full rankings.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
-    description: 'Which councils charge the lowest Band D council tax in 2026? See the full rankings.',
+    title: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
+    description: 'Which councils charge the lowest Band D council tax in 2026-27? See the full rankings.',
   },
 };
 
@@ -32,30 +42,38 @@ const GROUPS = COMPARABLE_GROUPS.map(g => ({
 }));
 
 export default function CheapestCouncilTaxPage() {
-  const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025);
+  // Most recent verified area Band D per council: 2026-27 for the 296 billing
+  // authorities, 2025-26 (own share) for the 21 county councils.
+  const councilsWithArea = councils
+    .map((c) => ({ council: c, area: getAreaBandD(c) }))
+    .filter((e): e is { council: typeof councils[0]; area: NonNullable<ReturnType<typeof getAreaBandD>> } => e.area !== null);
 
-  // Overall cheapest
-  const cheapest = councilsWithTax.reduce((min, c) =>
-    c.council_tax!.band_d_2025 < min.council_tax!.band_d_2025 ? c : min
-  );
-  const cheapestName = getCouncilDisplayName(cheapest);
+  // Overall cheapest — billing authorities only, so the headline claim is a
+  // clean 2026-27 comparison of full area bills.
+  const billing = councilsWithArea.filter((e) => e.area.year === CURRENT_TAX_YEAR);
+  const cheapest = billing.reduce((min, e) => (e.area.value < min.area.value ? e : min));
+  const cheapestName = getCouncilDisplayName(cheapest.council);
+  const cheapestChange = getAreaBandDChange(cheapest.council);
+
+  const areaStats = getAreaBillStats();
+  const avgRise = getAverageAreaTaxRise();
 
   const faqs = [
     {
-      question: 'Which council has the lowest council tax in England in 2026?',
-      answer: `${cheapestName} has the lowest Band D council tax in England for 2025-26 at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. The 2026-27 average English Band D bill is roughly £2,392, up 4.9% on last year — but Wandsworth households still pay the least at around £1,028.`,
+      question: 'Which council has the lowest council tax in England in 2026-27?',
+      answer: `${cheapestName} has the lowest Band D council tax in England for 2026-27 at ${formatCurrency(cheapest.area.value, { decimals: 2 })}. The average 2026-27 Band D bill across England's ${areaStats.count} billing authorities is ${formatCurrency(areaStats.avg, { decimals: 0 })}, up ${avgRise.toFixed(1)}% on last year.`,
     },
     {
       question: 'How are council tax rates compared fairly between different council types?',
-      answer: 'You can only fairly compare councils of the same type. Unitary authorities, metropolitan districts and London boroughs run all services in one council. District and county councils share services between them, so their bills look lower on their own.',
+      answer: 'You can only fairly compare councils of the same type. For unitary authorities, metropolitan districts, London boroughs and district councils, the figure shown is the full Band D bill for the area — including any county, police and fire shares. County councils show only their own share of the bill.',
     },
     {
       question: 'Why is council tax cheaper in some areas?',
       answer: "Lower-rate councils typically have a larger council tax base (more properties contributing), lower demand for adult social care, and may receive more central government funding per resident. London boroughs in particular often have lower headline rates because the Greater London Authority precept handles fire and police separately.",
     },
     {
-      question: 'Did all English councils raise council tax in 2026?',
-      answer: 'Almost all English councils raised council tax for 2026-27 by close to the 4.99% maximum. Even the cheapest councils raised rates — Wandsworth (the lowest-bill council) put Band D up by 3.1% from April 2026.',
+      question: 'Did all English councils raise council tax in 2026-27?',
+      answer: `Almost all English billing authorities raised the Band D bill for 2026-27 — the average rise was ${avgRise.toFixed(1)}%. Even the cheapest area went up: ${cheapestName}'s Band D rose by ${cheapestChange ? cheapestChange.percent.toFixed(1) : '—'}% from April 2026.`,
     },
   ];
 
@@ -63,23 +81,23 @@ export default function CheapestCouncilTaxPage() {
     '@context': 'https://schema.org',
     '@graph': [
       buildWebPageSchema(
-        'Lowest Council Tax in England 2026',
-        'The lowest Band D council tax rates in England for 2026, grouped by council type for fair comparison.',
+        'Lowest Council Tax in England 2026-27',
+        'The lowest Band D council tax rates in England for 2026-27, grouped by council type for fair comparison.',
         '/insights/cheapest-council-tax',
       ),
       buildArticleSchema({
-        headline: 'Lowest Council Tax in England 2026 — Top 20 Cheapest',
-        description: `The lowest Band D council tax in England for 2025-26 is ${cheapestName} at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. Full top-20 ranking by council type.`,
+        headline: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
+        description: `The lowest Band D council tax in England for 2026-27 is ${cheapestName} at ${formatCurrency(cheapest.area.value, { decimals: 2 })}. Full top-20 ranking by council type.`,
         url: '/insights/cheapest-council-tax',
         about: 'Council tax in England',
-        keywords: ['lowest council tax UK 2026', 'cheapest council tax', 'lowest Band D 2026', 'council tax 2026', 'England council tax rankings'],
+        keywords: ['lowest council tax UK 2026', 'cheapest council tax', 'lowest Band D 2026-27', 'council tax 2026-27', 'England council tax rankings'],
       }),
       buildFAQPageSchema(faqs, '/insights/cheapest-council-tax'),
       buildBreadcrumbSchema(
         [
           { name: 'Home', url: '/' },
           { name: 'Insights', url: '/insights' },
-          { name: 'Lowest Council Tax 2026' },
+          { name: 'Lowest Council Tax 2026-27' },
         ],
         '/insights/cheapest-council-tax'
       ),
@@ -96,46 +114,49 @@ export default function CheapestCouncilTaxPage() {
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Insights', href: '/insights' },
-          { label: 'Lowest Council Tax 2026' },
+          { label: 'Lowest Council Tax 2026-27' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Lowest Council Tax in England 2026</h1>
+        <h1 className="type-title-1 mb-2">Lowest Council Tax in England 2026-27</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
-          The lowest Band D council tax in England for 2025-26 is {cheapestName} at {formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.
-          Even the cheapest councils raised rates for 2026-27 — Wandsworth (lowest in England, around £1,028) put Band D up by 3.1% from April 2026.
-          Rates below are grouped by council type so you compare like with like — district councils look cheaper on their own because households in two-tier areas also pay a separate county bill.
+          The lowest Band D council tax in England for 2026-27 is {cheapestName} at {formatCurrency(cheapest.area.value, { decimals: 2 })}.
+          Bills still went up almost everywhere — the average 2026-27 rise across billing authorities was {avgRise.toFixed(1)}%{cheapestChange ? `, and even ${cheapestName} put Band D up by ${cheapestChange.percent.toFixed(1)}%` : ''}.
+          Figures for unitary, metropolitan, London borough and district councils are the full Band D bill for the area, including any county, police and fire shares.
+          County councils show only their own 2025-26 share — they do not send the bill, and their 2026-27 share is not yet published.
         </p>
 
         {GROUPS.map((group) => {
-          const groupCouncils = councilsWithTax
-            .filter((c) => group.types.includes(c.type))
-            .sort((a, b) => a.council_tax!.band_d_2025 - b.council_tax!.band_d_2025)
+          const groupCouncils = councilsWithArea
+            .filter((e) => group.types.includes(e.council.type))
+            .sort((a, b) => a.area.value - b.area.value)
             .slice(0, 20);
 
           if (groupCouncils.length === 0) return null;
 
-          const maxBandD = groupCouncils[groupCouncils.length - 1].council_tax!.band_d_2025;
+          const groupYear = groupCouncils[0].area.year;
+          const maxBandD = groupCouncils[groupCouncils.length - 1].area.value;
+          const yearNote = groupYear === CURRENT_TAX_YEAR
+            ? `${CURRENT_TAX_YEAR} · full Band D bill for the area`
+            : `${PREVIOUS_TAX_YEAR} · the county's own share of the bill (2026-27 not yet published)`;
 
           return (
             <section key={group.label} className="card-elevated p-5 sm:p-6 mb-5">
               <h2 className="type-title-2 mb-1">{group.label}</h2>
-              <p className="type-body-sm text-muted-foreground mb-6">{group.subtitle}</p>
+              <p className="type-body-sm text-muted-foreground mb-6">{group.subtitle} · {yearNote}</p>
 
               <RankedBarList>
-                {groupCouncils.map((council, index) => {
-                  const bandD = council.council_tax!.band_d_2025;
-                  return (
-                    <RankedBarRow
-                      key={council.ons_code}
-                      rank={index + 1}
-                      title={getCouncilDisplayName(council)}
-                      href={`/council/${getCouncilSlug(council)}`}
-                      value={formatCurrency(bandD, { decimals: 2 })}
-                      subLeft={council.type_name}
-                      fillPct={maxBandD > 0 ? (bandD / maxBandD) * 100 : 0}
-                    />
-                  );
-                })}
+                {groupCouncils.map((entry, index) => (
+                  <RankedBarRow
+                    key={entry.council.ons_code}
+                    rank={index + 1}
+                    title={getCouncilDisplayName(entry.council)}
+                    href={`/council/${getCouncilSlug(entry.council)}`}
+                    value={formatCurrency(entry.area.value, { decimals: 2 })}
+                    subLeft={entry.council.type_name}
+                    subRight={entry.area.year}
+                    fillPct={maxBandD > 0 ? (entry.area.value / maxBandD) * 100 : 0}
+                  />
+                ))}
               </RankedBarList>
             </section>
           );

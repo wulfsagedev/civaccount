@@ -157,7 +157,9 @@ export default async function ProvenancePage({ params }: Props) {
         ].join(', '),
         creator: { '@id': `${BASE_URL}/#organization` },
         publisher: { '@id': `${BASE_URL}/#organization` },
-        license: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+        // The compiled dataset is under the CivAccount Data Licence (the
+        // underlying GOV.UK source data remains OGL v3.0 — linked per-field).
+        license: `${BASE_URL}/license`,
         ...(lastVerified && { dateModified: lastVerified }),
         spatialCoverage: {
           '@type': 'Place',

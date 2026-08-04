@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronUp } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, getAreaBandD, PREVIOUS_TAX_YEAR, type ServiceSpendingDetail } from '@/data/councils';
 import ContributeBanner from '@/components/ContributeBanner';
 import YourBillCard from '@/components/dashboard/YourBillCard';
 import TaxBandsCard from '@/components/dashboard/TaxBandsCard';
@@ -56,15 +56,21 @@ const UnifiedDashboard = () => {
     return councilTax.band_d_2025;
   }, [selectedCouncil, councilTax, detailed]);
 
+  // Most recent verified AREA Band D (2026-27 for billing authorities;
+  // county councils fall back to 2025-26 — `areaBandD.year` says which).
+  const areaBandD = getAreaBandD(selectedCouncil);
+
   const taxChange = councilTax && councilTax.band_d_2024
     ? ((councilTax.band_d_2025 - councilTax.band_d_2024) / councilTax.band_d_2024 * 100)
     : null;
 
   const typeAverage = selectedCouncil ? getAverageBandDByType(selectedCouncil.type) : null;
-  const vsAverage = typeAverage && councilTax ? councilTax.band_d_2025 - typeAverage : null;
+  // Same-year comparison: getAverageBandDByType averages the year
+  // getAreaBandD returns for that type, so compare against areaBandD.value.
+  const vsAverage = typeAverage && areaBandD ? areaBandD.value - typeAverage : null;
 
-  // Use the true total (sum of all precepts) rather than the raw data field,
-  // which is wrong/stale on many county councils.
+  // 2025-26 total across all precepting authorities — stays in the precepts'
+  // year so the YourBillCard breakdown always sums to its own total.
   const totalBandDBill = getTotalBandD(selectedCouncil);
   const totalDailyCost = totalBandDBill ? totalBandDBill / 365 : null;
 
@@ -82,27 +88,23 @@ const UnifiedDashboard = () => {
     return weeks > 0 ? weeks : null;
   }, [detailed?.reserves, detailed?.revenue_budget, totalBudget]);
 
-  // Calculate all bands
+  // This council's own share per band (2025-26 — from the verified precept
+  // split). Bands scale by the statutory ninths, so calculateBands() on the
+  // own-share Band D gives the own share for every band.
   const allBands = useMemo(() => {
     if (!councilTax) return null;
-    return calculateBands(councilTax.band_d_2025);
-  }, [councilTax]);
+    return calculateBands(thisCouncilBandD ?? councilTax.band_d_2025);
+  }, [councilTax, thisCouncilBandD]);
 
-  // Calculate total band amounts including precepts
+  // Full-bill amount per band, in the most recent year we have a verified
+  // AREA total for: 2026-27 (MHCLG live table) for billing authorities,
+  // 2025-26 (precept-stack sum) for county councils.
+  const currentAreaTotal = areaBandD?.year === '2026-27' ? areaBandD.value : totalBandDBill;
+  const totalBandsYear = areaBandD?.year === '2026-27' ? areaBandD.year : PREVIOUS_TAX_YEAR;
   const totalBandAmounts = useMemo(() => {
-    if (!totalBandDBill || !allBands || !councilTax) return null;
-    const bandDRatio = totalBandDBill / councilTax.band_d_2025;
-    return {
-      A: allBands.A * bandDRatio,
-      B: allBands.B * bandDRatio,
-      C: allBands.C * bandDRatio,
-      D: totalBandDBill,
-      E: allBands.E * bandDRatio,
-      F: allBands.F * bandDRatio,
-      G: allBands.G * bandDRatio,
-      H: allBands.H * bandDRatio,
-    };
-  }, [totalBandDBill, allBands, councilTax]);
+    if (!currentAreaTotal) return null;
+    return calculateBands(currentAreaTotal);
+  }, [currentAreaTotal]);
 
   // Build spending categories with "your share" calculation
   const spendingCategories = useMemo(() => {
@@ -134,7 +136,11 @@ const UnifiedDashboard = () => {
       const amount = budget[service.key as keyof typeof budget] as number | null;
       if (amount && amount > 0) {
         const percentage = (amount / total) * 100;
-        const yourShare = councilTax ? (councilTax.band_d_2025 * percentage) / 100 : null;
+        // Split THIS council's own precept share (not the whole area bill):
+        // these percentages come from this council's service budget, and a
+        // district only receives its own slice. Splitting the area total
+        // here overstated a district's services by ~9x.
+        const yourShare = thisCouncilBandD !== null ? (thisCouncilBandD * percentage) / 100 : null;
 
         categories.push({
           name: service.name,
@@ -147,7 +153,7 @@ const UnifiedDashboard = () => {
     }
 
     return categories.sort((a, b) => b.percentage - a.percentage);
-  }, [budget, councilTax]);
+  }, [budget, thisCouncilBandD]);
 
   // Build lookup from service_spending for drill-down data
   const serviceSpendingMap = useMemo(() => {
@@ -195,6 +201,7 @@ const UnifiedDashboard = () => {
           selectedCouncil={selectedCouncil}
           allBands={allBands}
           totalBandAmounts={totalBandAmounts}
+          taxYear={totalBandsYear}
         />
       )}
 

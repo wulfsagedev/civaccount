@@ -61,7 +61,7 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
     title: "England's postcode lottery",
     subtitle: 'The cheapest and priciest Band D bills',
     metaDescription:
-      'The cheapest and most expensive Band D council tax bills in England for 2025-26, compared fairly between councils that do the same jobs.',
+      'The cheapest and most expensive Band D council tax bills in England for 2026-27, compared fairly between councils that do the same jobs.',
     shareText:
       "The gap between England's cheapest and priciest Band D council tax bill",
     longformCopy: [
@@ -72,12 +72,12 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
       {
         question: 'Which council has the cheapest council tax in England?',
         answer:
-          'The cheapest Band D council for 2025-26 is shown at the top of this page. Rates are grouped by council type so you compare like with like.',
+          'The cheapest Band D council for 2026-27 is shown at the top of this page. Rates are grouped by council type so you compare like with like.',
       },
       {
         question: 'Why group councils before comparing?',
         answer:
-          "Households in a two-tier area pay two bills — one to their district and one to their county. If you compare a district bill on its own to a unitary bill, the district looks much cheaper than it really is.",
+          "The figures here are the full Band D bill for each area, including the county, police and fire shares where they apply. Council types still differ in what they fund and in local costs, so we group them and compare like with like rather than ranking every council in one list.",
       },
     ],
     sources: [

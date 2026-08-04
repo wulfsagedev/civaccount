@@ -1,4 +1,5 @@
 import type { Council } from '@/data/councils';
+import { getAreaBandD } from '@/data/councils';
 import type { ReactElement } from 'react';
 import { OG, formatCurrencyOG, formatBudgetOG } from '@/app/council/[slug]/card/_lib/og-shared';
 import { ogStoryWrap, ogStoryBrand } from '@/lib/og-story-wrap';
@@ -7,10 +8,14 @@ import { BUDGET_CATEGORIES } from '@/lib/proposals';
 // ── Your Bill (Story) ─────────────────────────────────────────────────────────
 
 export function renderYourBillStory(council: Council, councilName: string): ReactElement {
-  const bandD = council.council_tax?.band_d_2025;
-  const bandDPrev = council.council_tax?.band_d_2024;
+  // Most recent verified area Band D — 2026-27 for billing authorities,
+  // 2025-26 fallback for county councils. `area.year` is rendered on the card.
+  const area = getAreaBandD(council);
 
-  if (!bandD) return <div style={{ display: 'flex' }}>No data</div>;
+  if (!area) return <div style={{ display: 'flex' }}>No data</div>;
+
+  const bandD = area.value;
+  const bandDPrev = area.previous;
 
   const change = bandDPrev ? bandD - bandDPrev : null;
   const changePct = bandDPrev ? ((change! / bandDPrev) * 100).toFixed(1) : null;
@@ -28,7 +33,7 @@ export function renderYourBillStory(council: Council, councilName: string): Reac
       {/* Centre — hero data */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
         <span style={{ fontSize: '40px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          You pay this council
+          {`Your Band D bill · ${area.year}`}
         </span>
         <span style={{ fontSize: '160px', fontWeight: 700, color: OG.text, letterSpacing: '-0.03em', lineHeight: 1 }}>
           {formatCurrencyOG(bandD, 2)}
@@ -82,7 +87,7 @@ export function renderSpendingStory(council: Council, councilName: string): Reac
           What your tax pays for
         </span>
         <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
-          {formatBudgetOG(budget.total_service)} total budget
+          {formatBudgetOG(budget.total_service)} total budget (2025-26)
         </span>
       </div>
 
@@ -124,6 +129,9 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
     { year: '2023', value: tax.band_d_2023 },
     { year: '2024', value: tax.band_d_2024 },
     { year: '2025', value: tax.band_d_2025 },
+    // 2026-27 area figure — absent for county councils, so their chart
+    // honestly ends at 2025.
+    { year: '2026', value: tax.band_d_2026 },
   ].filter((y): y is { year: string; value: number } => y.value != null);
 
   if (years.length < 2) return <div style={{ display: 'flex' }}>Not enough data</div>;

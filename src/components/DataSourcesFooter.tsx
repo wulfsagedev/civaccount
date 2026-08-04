@@ -26,7 +26,7 @@ export default function DataSourcesFooter() {
             <p className="type-body-sm font-semibold">Official UK government data</p>
           </div>
           <p className="type-caption text-muted-foreground">
-            {councilStats.totalCouncils} councils with council tax and budget data for 2025-26
+            {councilStats.totalCouncils} councils with 2026-27 council tax and 2025-26 budget data
           </p>
         </div>
       </footer>
@@ -83,8 +83,8 @@ export default function DataSourcesFooter() {
 
   // National sources (always shown in expanded)
   const nationalSources = [
-    { title: 'Council Tax 2025-26', url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026', meta: 'GOV.UK' },
-    { title: 'Revenue Expenditure 2024-25', url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing', meta: 'GOV.UK' },
+    { title: 'Council Tax 2026-27', url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027', meta: 'GOV.UK' },
+    { title: 'Revenue Expenditure 2025-26', url: 'https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing', meta: 'GOV.UK' },
     { title: 'Population Estimates', url: 'https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates', meta: 'ONS Mid-2024' },
   ];
 

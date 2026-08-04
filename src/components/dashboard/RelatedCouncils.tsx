@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Council, councils, getCouncilDisplayName, getCouncilSlug, formatCurrency, toSentenceTypeName } from '@/data/councils';
+import { Council, councils, getCouncilDisplayName, getCouncilSlug, getAreaBandD, formatCurrency, toSentenceTypeName } from '@/data/councils';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 
@@ -8,8 +8,12 @@ interface RelatedCouncilsProps {
 }
 
 export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
-  const bandD = council.council_tax?.band_d_2025;
-  if (!bandD) return null;
+  // Same-type councils share the same data year via getAreaBandD (2026-27
+  // for billing authority types, 2025-26 for counties), so the closeness
+  // comparison never mixes years.
+  const areaBandD = getAreaBandD(council);
+  if (!areaBandD) return null;
+  const bandD = areaBandD.value;
 
   const slug = getCouncilSlug(council);
 
@@ -18,12 +22,12 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
     .filter(
       (c) =>
         c.type === council.type &&
-        c.council_tax?.band_d_2025 &&
+        getAreaBandD(c) &&
         c.ons_code !== council.ons_code
     )
     .map((c) => ({
       council: c,
-      diff: Math.abs(c.council_tax!.band_d_2025 - bandD),
+      diff: Math.abs(getAreaBandD(c)!.value - bandD),
     }))
     .sort((a, b) => a.diff - b.diff)
     .slice(0, 5);
@@ -41,7 +45,8 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
         {related.map(({ council: c }) => {
           const relatedSlug = getCouncilSlug(c);
           const name = getCouncilDisplayName(c);
-          const relatedBandD = c.council_tax!.band_d_2025;
+          const relatedArea = getAreaBandD(c)!;
+          const relatedBandD = relatedArea.value;
 
           return (
             <div key={c.ons_code} className="flex items-baseline justify-between gap-3 py-2">
@@ -54,10 +59,10 @@ export default function RelatedCouncils({ council }: RelatedCouncilsProps) {
               <div className="flex items-baseline gap-3 shrink-0">
                 <span className="type-body-sm font-semibold tabular-nums whitespace-nowrap">
                   <SourceAnnotation
-                    provenance={getProvenance('council_tax.band_d_2025', c)}
+                    provenance={getProvenance(relatedArea.fieldPath, c)}
                     reportContext={{
                       council: c.name,
-                      field: 'Council tax Band D 2025-26',
+                      field: `Council tax Band D ${relatedArea.year}`,
                       value: formatCurrency(relatedBandD, { decimals: 2 }),
                     }}
                   >

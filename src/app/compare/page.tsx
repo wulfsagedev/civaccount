@@ -1,18 +1,8 @@
-import { councils, formatCurrency, getCouncilDisplayName } from '@/data/councils';
 import { buildBreadcrumbSchema } from '@/lib/structured-data';
 import CompareClient from './CompareClient';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export default function ComparePage() {
-  const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025);
-
-  const cheapest = councilsWithTax.reduce((min, c) =>
-    c.council_tax!.band_d_2025 < min.council_tax!.band_d_2025 ? c : min
-  );
-  const mostExpensive = councilsWithTax.reduce((max, c) =>
-    c.council_tax!.band_d_2025 > max.council_tax!.band_d_2025 ? c : max
-  );
-
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [

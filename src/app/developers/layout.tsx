@@ -5,7 +5,7 @@ import { serializeJsonLd } from '@/lib/safe-json-ld';
 export const metadata: Metadata = {
   title: 'Developers — Free UK Council Data API & Embeds',
   description:
-    'Free public API for UK council budget data. One-line iframe embeds for any of 317 English councils. Open Government Licence v3.0. No key required, 100 req/min.',
+    'Free public API for UK council budget data. One-line iframe embeds for any of 317 English councils. Built on OGL v3.0 GOV.UK source data. No key required, 100 req/min (60/min on councils search).',
   alternates: {
     canonical: '/developers',
   },

@@ -22,10 +22,28 @@ export type CivAccountUpdate = {
 
 export const updates: CivAccountUpdate[] = [
   {
+    version: '3.2',
+    date: '2026-08-04',
+    label: 'August 2026',
+    isCurrent: true,
+    title: 'V3.2 — 2026-27 council tax rates for every billing authority',
+    summary:
+      'Every council page, comparison and ranking now shows the 2026-27 council tax year — the bill you are actually paying — verified against the official MHCLG figures published in March 2026. County council precepts follow once their own tables are verified, and are clearly labelled until then.',
+    changes: [
+      'Band D council tax updated to 2026-27 for all 296 billing authorities',
+      'Every figure is labelled with its tax year — no mixed years anywhere',
+      'Bill history charts now run to 2026-27',
+      'Rankings and comparisons recalculated on 2026-27 rates',
+      'A clearer, friendlier data licence: quote any figure, embed any widget, free',
+      'Fixed the "council share" shown on district pages — it previously showed the whole bill',
+      'Fresh data-integrity checks now run automatically and fail loudly if data goes stale',
+    ],
+  },
+  {
     version: '3.1',
     date: '2026-06-17',
     label: 'June 2026',
-    isCurrent: true,
+    isCurrent: false,
     title: 'V3.1 — See the proof behind every number',
     summary:
       'Tap any figure to see exactly where it came from — the official document, the page, and the line it was taken from, with the date we checked it and a saved copy that can never change. Plus dozens more councils brought up to our highest standard.',

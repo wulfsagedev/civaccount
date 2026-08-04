@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { getCouncilBySlug, getCouncilDisplayName, getCouncilPopulation, formatCurrency } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, getCouncilPopulation, getAreaBandD } from '@/data/councils';
 import { OG, ogWrap, ogBrand, getGeistFonts, formatCurrencyOG } from '@/app/council/[slug]/card/_lib/og-shared';
 
 export const runtime = 'nodejs';
@@ -47,8 +47,11 @@ export default async function Image({ params }: { params: Promise<{ matchup: str
 
   const nameA = getCouncilDisplayName(councilA);
   const nameB = getCouncilDisplayName(councilB);
-  const bandDA = councilA.council_tax?.band_d_2025;
-  const bandDB = councilB.council_tax?.band_d_2025;
+  // Most recent verified AREA Band D per side — years can differ (billing
+  // authority 2026-27 vs county council 2025-26), so every row label carries
+  // its own year per column.
+  const areaA = getAreaBandD(councilA);
+  const areaB = getAreaBandD(councilB);
   const popA = getCouncilPopulation(councilA.name);
   const popB = getCouncilPopulation(councilB.name);
   const spendA = councilA.budget?.total_service && popA ? Math.round((councilA.budget.total_service * 1000) / popA) : null;
@@ -56,11 +59,18 @@ export default async function Image({ params }: { params: Promise<{ matchup: str
   const ceoA = councilA.detailed?.chief_executive_salary;
   const ceoB = councilB.detailed?.chief_executive_salary;
 
-  // Build comparison rows
-  const rows: { label: string; a: string; b: string }[] = [];
-  if (bandDA && bandDB) rows.push({ label: 'Band D', a: formatCurrencyOG(bandDA, 2), b: formatCurrencyOG(bandDB, 2) });
-  if (spendA && spendB) rows.push({ label: 'Per resident', a: formatCurrencyOG(spendA), b: formatCurrencyOG(spendB) });
-  if (ceoA && ceoB) rows.push({ label: 'CEO salary', a: formatCurrencyOG(ceoA), b: formatCurrencyOG(ceoB) });
+  // Build comparison rows — each side gets its own label so years stay honest
+  const rows: { labelA: string; labelB: string; a: string; b: string }[] = [];
+  if (areaA && areaB) {
+    rows.push({
+      labelA: `Band D · ${areaA.year}`,
+      labelB: `Band D · ${areaB.year}`,
+      a: formatCurrencyOG(areaA.value, 2),
+      b: formatCurrencyOG(areaB.value, 2),
+    });
+  }
+  if (spendA && spendB) rows.push({ labelA: 'Per resident · 2025-26', labelB: 'Per resident · 2025-26', a: formatCurrencyOG(spendA), b: formatCurrencyOG(spendB) });
+  if (ceoA && ceoB) rows.push({ labelA: 'CEO salary', labelB: 'CEO salary', a: formatCurrencyOG(ceoA), b: formatCurrencyOG(ceoB) });
 
   const nameASize = nameA.length > 25 ? 56 : 64;
   const nameBSize = nameB.length > 25 ? 56 : 64;
@@ -68,9 +78,9 @@ export default async function Image({ params }: { params: Promise<{ matchup: str
   return new ImageResponse(
     ogWrap(
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-        {/* Title */}
+        {/* Title — no single year: each figure below carries its own year */}
         <div style={{ display: 'flex', fontSize: '48px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Council Comparison · 2025-26
+          Council Comparison
         </div>
 
         {/* Two-column comparison */}
@@ -82,8 +92,8 @@ export default async function Image({ params }: { params: Promise<{ matchup: str
               <span style={{ fontSize: `${nameASize}px`, fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>{nameA}</span>
             </div>
             {rows.map(row => (
-              <div key={row.label} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{row.label}</span>
+              <div key={row.labelA} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{row.labelA}</span>
                 <span style={{ fontSize: '56px', fontWeight: 700, color: OG.text }}>{row.a}</span>
               </div>
             ))}
@@ -99,16 +109,16 @@ export default async function Image({ params }: { params: Promise<{ matchup: str
               <span style={{ fontSize: `${nameBSize}px`, fontWeight: 700, color: OG.text, lineHeight: 1.1 }}>{nameB}</span>
             </div>
             {rows.map(row => (
-              <div key={row.label} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{row.label}</span>
+              <div key={row.labelB} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <span style={{ fontSize: '36px', fontWeight: 600, color: OG.secondary, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{row.labelB}</span>
                 <span style={{ fontSize: '56px', fontWeight: 700, color: OG.text }}>{row.b}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Brand */}
-        {ogBrand(`${nameA} vs ${nameB}`)}
+        {/* Brand — no year stamp: each figure above is labelled per-year */}
+        {ogBrand(`${nameA} vs ${nameB}`, undefined, null)}
       </div>
     ),
     ogOptions

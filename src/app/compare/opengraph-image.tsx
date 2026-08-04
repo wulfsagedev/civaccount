@@ -19,7 +19,7 @@ export default async function Image() {
             See how councils compare on council tax, spending, and budgets. Side by side, up to 5 at once.
           </span>
         </div>
-        <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>All 317 English councils · 2025-26</span>
+        <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>All 317 English councils · sourced from .gov.uk</span>
       </div>
     ),
     { ...size, fonts: getGeistFonts() }

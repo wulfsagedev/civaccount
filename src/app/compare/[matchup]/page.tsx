@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getAreaBandD, getAreaBandDChange } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 import { getPopularComparisons } from '@/lib/comparisons';
@@ -30,9 +30,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const nameA = getCouncilDisplayName(councilA);
   const nameB = getCouncilDisplayName(councilB);
 
+  // Each side's most recent verified area Band D year — 2026-27 for billing
+  // authorities, 2025-26 for county councils. Same-type matchups always share
+  // a year; mixed matchups label each side explicitly.
+  const yearA = getAreaBandD(councilA)?.year ?? '2025-26';
+  const yearB = getAreaBandD(councilB)?.year ?? '2025-26';
+  const sameYear = yearA === yearB;
+
   return {
-    title: `${nameA} vs ${nameB} Council Tax 2025-26`,
-    description: `Compare ${nameA} and ${nameB} council tax rates, spending, and budgets for 2025-26. Side-by-side comparison of Band D rates, service budgets, and CEO salaries.`,
+    title: sameYear
+      ? `${nameA} vs ${nameB} Council Tax ${yearA}`
+      : `${nameA} vs ${nameB} Council Tax`,
+    description: sameYear
+      ? `Compare ${nameA} and ${nameB} council tax rates, spending, and budgets for ${yearA}. Side-by-side comparison of Band D rates, service budgets, and CEO salaries.`
+      : `Compare ${nameA} (${yearA} rates) and ${nameB} (${yearB} rates) council tax, spending, and budgets. Side-by-side comparison of Band D rates, service budgets, and CEO salaries.`,
     alternates: {
       canonical: `/compare/${matchup}`,
     },
@@ -76,32 +87,47 @@ export default async function MatchupPage({ params }: Props) {
   const slugA = getCouncilSlug(councilA);
   const slugB = getCouncilSlug(councilB);
 
-  const bandDA = councilA.council_tax?.band_d_2025;
-  const bandDB = councilB.council_tax?.band_d_2025;
+  // Most recent verified AREA Band D per side — 2026-27 for billing
+  // authorities, 2025-26 for county councils. When the two sides' years
+  // differ, every Band D value is labelled with its year and no "winner"
+  // is declared (a cross-year comparison would be misleading).
+  const areaA = getAreaBandD(councilA);
+  const areaB = getAreaBandD(councilB);
+  const sameTaxYear = areaA?.year === areaB?.year;
+  const bandDA = areaA?.value;
+  const bandDB = areaB?.value;
   const popA = getCouncilPopulation(councilA.name);
   const popB = getCouncilPopulation(councilB.name);
 
   // Comparison metrics
   const metrics: Array<{ label: string; valueA: string; valueB: string; winner?: 'a' | 'b' | null }> = [];
 
-  if (bandDA && bandDB) {
+  if (areaA && areaB && bandDA && bandDB) {
     metrics.push({
-      label: 'Band D Council Tax',
-      valueA: formatCurrency(bandDA, { decimals: 2 }),
-      valueB: formatCurrency(bandDB, { decimals: 2 }),
-      winner: bandDA < bandDB ? 'a' : bandDA > bandDB ? 'b' : null,
+      label: sameTaxYear ? `Band D Council Tax (${areaA.year})` : 'Band D Council Tax',
+      valueA: sameTaxYear
+        ? formatCurrency(bandDA, { decimals: 2 })
+        : `${formatCurrency(bandDA, { decimals: 2 })} (${areaA.year})`,
+      valueB: sameTaxYear
+        ? formatCurrency(bandDB, { decimals: 2 })
+        : `${formatCurrency(bandDB, { decimals: 2 })} (${areaB.year})`,
+      winner: sameTaxYear ? (bandDA < bandDB ? 'a' : bandDA > bandDB ? 'b' : null) : null,
     });
   }
 
-  // YoY change
-  if (councilA.council_tax?.band_d_2024 && bandDA && councilB.council_tax?.band_d_2024 && bandDB) {
-    const changeA = ((bandDA - councilA.council_tax.band_d_2024) / councilA.council_tax.band_d_2024) * 100;
-    const changeB = ((bandDB - councilB.council_tax.band_d_2024) / councilB.council_tax.band_d_2024) * 100;
+  // YoY change — computed from each side's two most recent published years
+  const changeA = getAreaBandDChange(councilA);
+  const changeB = getAreaBandDChange(councilB);
+  if (changeA && changeB) {
     metrics.push({
       label: 'Year-on-year change',
-      valueA: `${changeA > 0 ? '+' : ''}${changeA.toFixed(1)}%`,
-      valueB: `${changeB > 0 ? '+' : ''}${changeB.toFixed(1)}%`,
-      winner: changeA < changeB ? 'a' : changeA > changeB ? 'b' : null,
+      valueA: sameTaxYear
+        ? `${changeA.percent > 0 ? '+' : ''}${changeA.percent.toFixed(1)}%`
+        : `${changeA.percent > 0 ? '+' : ''}${changeA.percent.toFixed(1)}% (to ${changeA.toYear})`,
+      valueB: sameTaxYear
+        ? `${changeB.percent > 0 ? '+' : ''}${changeB.percent.toFixed(1)}%`
+        : `${changeB.percent > 0 ? '+' : ''}${changeB.percent.toFixed(1)}% (to ${changeB.toYear})`,
+      winner: sameTaxYear ? (changeA.percent < changeB.percent ? 'a' : changeA.percent > changeB.percent ? 'b' : null) : null,
     });
   }
 
@@ -157,21 +183,27 @@ export default async function MatchupPage({ params }: Props) {
   }
 
   // Direct-answer text
-  let openingText = `Compare ${nameA} and ${nameB} council tax and spending for 2025-26.`;
-  if (bandDA && bandDB) {
-    const diff = Math.abs(bandDA - bandDB);
-    const cheaper = bandDA < bandDB ? nameA : nameB;
-    openingText = `${nameA} charges ${formatCurrency(bandDA, { decimals: 2 })} Band D council tax in 2025-26, compared to ${formatCurrency(bandDB, { decimals: 2 })} for ${nameB} — a difference of ${formatCurrency(diff, { decimals: 2 })}. ${cheaper} is cheaper.`;
+  let openingText = `Compare ${nameA} and ${nameB} council tax and spending.`;
+  if (areaA && areaB && bandDA && bandDB) {
+    if (sameTaxYear) {
+      const diff = Math.abs(bandDA - bandDB);
+      const cheaper = bandDA < bandDB ? nameA : nameB;
+      openingText = `${nameA} charges ${formatCurrency(bandDA, { decimals: 2 })} Band D council tax in ${areaA.year}, compared to ${formatCurrency(bandDB, { decimals: 2 })} for ${nameB} — a difference of ${formatCurrency(diff, { decimals: 2 })}. ${cheaper} is cheaper.`;
+    } else {
+      openingText = `${nameA} charges ${formatCurrency(bandDA, { decimals: 2 })} Band D council tax in ${areaA.year}, while ${nameB} charged ${formatCurrency(bandDB, { decimals: 2 })} in ${areaB.year}. County council figures stay on ${areaA.year === '2025-26' ? areaA.year : areaB.year} until their next-year precepts are published, so the two figures cover different years.`;
+    }
   }
 
+  // "Which is cheaper" only makes sense when both figures are for the same
+  // year — a cross-year verdict would silently mix 2025-26 and 2026-27.
   const faqs = [
-    ...(bandDA && bandDB ? [{
+    ...(sameTaxYear && areaA && bandDA && bandDB ? [{
       question: `Which is cheaper, ${councilA.name} or ${councilB.name} council tax?`,
       answer: bandDA < bandDB
-        ? `${nameA} is cheaper at ${formatCurrency(bandDA, { decimals: 2 })} Band D, compared to ${formatCurrency(bandDB, { decimals: 2 })} for ${nameB}.`
+        ? `In ${areaA.year}, ${nameA} is cheaper at ${formatCurrency(bandDA, { decimals: 2 })} Band D, compared to ${formatCurrency(bandDB, { decimals: 2 })} for ${nameB}.`
         : bandDB < bandDA
-          ? `${nameB} is cheaper at ${formatCurrency(bandDB, { decimals: 2 })} Band D, compared to ${formatCurrency(bandDA, { decimals: 2 })} for ${nameA}.`
-          : `Both councils charge the same Band D rate of ${formatCurrency(bandDA, { decimals: 2 })}.`,
+          ? `In ${areaA.year}, ${nameB} is cheaper at ${formatCurrency(bandDB, { decimals: 2 })} Band D, compared to ${formatCurrency(bandDA, { decimals: 2 })} for ${nameA}.`
+          : `In ${areaA.year}, both councils charge the same Band D rate of ${formatCurrency(bandDA, { decimals: 2 })}.`,
     }] : []),
   ];
 
@@ -210,7 +242,11 @@ export default async function MatchupPage({ params }: Props) {
         {/* Key metrics comparison */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Key metrics</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">Side-by-side comparison for 2025-26</p>
+          <p className="type-body-sm text-muted-foreground mb-6">
+            {sameTaxYear && areaA
+              ? `Council tax for ${areaA.year} · budget figures for 2025-26`
+              : 'Council tax labelled with each council’s year · budget figures for 2025-26'}
+          </p>
 
           {/* Column headers */}
           <div className="flex items-baseline justify-between mb-4 pb-3 border-b border-border/50">
@@ -240,7 +276,7 @@ export default async function MatchupPage({ params }: Props) {
         {spendingComparison.length > 0 && (
           <section className="card-elevated p-5 sm:p-6 mb-5">
             <h2 className="type-title-2 mb-1">Spending by service</h2>
-            <p className="type-body-sm text-muted-foreground mb-6">Budget allocation comparison</p>
+            <p className="type-body-sm text-muted-foreground mb-6">Budget allocation comparison for 2025-26</p>
 
             <div className="flex items-baseline justify-between mb-4 pb-3 border-b border-border/50">
               <span className="type-body-sm font-medium w-1/3">&nbsp;</span>

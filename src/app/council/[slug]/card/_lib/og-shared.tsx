@@ -89,14 +89,21 @@ export function ogWrap(children: ReactElement): ReactElement {
 
 // ── Brand strip ──────────────────────────────────────────────────────────────
 
-export function ogBrand(councilName: string, typeName?: string): ReactElement {
+/**
+ * Brand strip. `year` is the financial year of the card's hero figure —
+ * defaults to 2025-26 (the year of all precept/budget-derived cards). Pass
+ * the year from `getAreaBandD()` for cards whose hero is the area Band D,
+ * or `null` to omit the year (e.g. when each figure is labelled per-year
+ * inside the image).
+ */
+export function ogBrand(councilName: string, typeName?: string, year: string | null = '2025-26'): ReactElement {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <span style={{ fontSize: '48px', fontWeight: 700, color: OG.text, letterSpacing: '-0.01em' }}>CivAccount</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         {typeName && <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>{typeName}</span>}
         <span style={{ fontSize: '44px', fontWeight: 600, color: OG.text }}>{councilName}</span>
-        <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>· 2025-26</span>
+        {year && <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>{`· ${year}`}</span>}
       </div>
     </div>
   );

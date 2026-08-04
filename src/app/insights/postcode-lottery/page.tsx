@@ -3,17 +3,31 @@ import Link from 'next/link';
 import { InsightHero } from '@/components/insights/InsightHero';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
-import { getExtremesByGroup, getHeadlineExtremes } from '@/lib/insights-stats';
+import { getAreaExtremesByGroup, getHeadlineAreaExtremes } from '@/lib/insights-stats';
 import {
   councils,
   formatCurrency,
+  getAreaBandD,
   getCouncilDisplayName,
   getCouncilSlug,
+  CURRENT_TAX_YEAR,
+  PREVIOUS_TAX_YEAR,
 } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
-const card = getInsightCard('postcode-lottery')!;
+// The registry entry (src/data/insights.ts) is shared copy. This page now
+// shows 2026-27 area Band D figures, so patch the year-pinned strings here to
+// keep every displayed claim in the same year as the data.
+const registryCard = getInsightCard('postcode-lottery')!;
+const card = {
+  ...registryCard,
+  metaDescription: registryCard.metaDescription.replace('2025-26', '2026-27'),
+  faq: registryCard.faq.map((f) => ({
+    question: f.question,
+    answer: f.answer.replace('2025-26', '2026-27'),
+  })),
+};
 
 export const metadata: Metadata = {
   title: `${card.title} · CivAccount`,
@@ -28,11 +42,11 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const { cheapest, mostExpensive } = getHeadlineExtremes();
-  const groups = getExtremesByGroup();
+  const headline = getHeadlineAreaExtremes();
+  const groups = getAreaExtremesByGroup();
 
-  const cheapestBandD = cheapest.council_tax!.band_d_2025;
-  const priciestBandD = mostExpensive.council_tax!.band_d_2025;
+  const cheapestBandD = headline.cheapestValue;
+  const priciestBandD = headline.mostExpensiveValue;
   const gap = priciestBandD - cheapestBandD;
 
   const jsonLd = {
@@ -67,10 +81,10 @@ export default function Page() {
               </p>
               <p className="type-body-sm font-medium">
                 <Link
-                  href={`/council/${getCouncilSlug(cheapest)}`}
+                  href={`/council/${getCouncilSlug(headline.cheapest)}`}
                   className="hover:underline"
                 >
-                  {getCouncilDisplayName(cheapest)}
+                  {getCouncilDisplayName(headline.cheapest)}
                 </Link>
               </p>
             </div>
@@ -81,63 +95,59 @@ export default function Page() {
               </p>
               <p className="type-body-sm font-medium">
                 <Link
-                  href={`/council/${getCouncilSlug(mostExpensive)}`}
+                  href={`/council/${getCouncilSlug(headline.mostExpensive)}`}
                   className="hover:underline"
                 >
-                  {getCouncilDisplayName(mostExpensive)}
+                  {getCouncilDisplayName(headline.mostExpensive)}
                 </Link>
               </p>
             </div>
             <p className="type-body-sm text-muted-foreground sm:col-span-2">
               A {formatCurrency(gap, { decimals: 0 })} gap on a Band D bill between the
-              cheapest and most expensive councils that run all services, for 2025-26.
+              cheapest and most expensive councils that run all services, for {headline.year}.
             </p>
           </div>
         }
       >
         {groups.map((group) => {
           const groupCouncils = councils
-            .filter(
-              (c) =>
-                group.types.includes(c.type) && c.council_tax?.band_d_2025,
-            )
-            .sort(
-              (a, b) =>
-                a.council_tax!.band_d_2025 - b.council_tax!.band_d_2025,
-            );
+            .filter((c) => group.types.includes(c.type))
+            .map((c) => ({ council: c, area: getAreaBandD(c) }))
+            .filter((e): e is { council: (typeof councils)[number]; area: NonNullable<ReturnType<typeof getAreaBandD>> } => e.area !== null)
+            .sort((a, b) => a.area.value - b.area.value);
 
           const cheapestRows = groupCouncils.slice(0, 5);
           const priciestRows = groupCouncils.slice(-5).reverse();
           const maxBandD =
-            groupCouncils[groupCouncils.length - 1]?.council_tax!.band_d_2025 ??
-            1;
+            groupCouncils[groupCouncils.length - 1]?.area.value ?? 1;
+          const yearNote = group.year === CURRENT_TAX_YEAR
+            ? `${CURRENT_TAX_YEAR} · full Band D bill for the area`
+            : `${PREVIOUS_TAX_YEAR} · the county's own share of the bill (2026-27 not yet published)`;
 
           const Row = ({
-            council,
+            entry,
             rank,
           }: {
-            council: (typeof groupCouncils)[number];
+            entry: (typeof groupCouncils)[number];
             rank: number;
             variant: 'cheap' | 'pricey';
-          }) => {
-            const bandD = council.council_tax!.band_d_2025;
-            return (
-              <RankedBarRow
-                rank={rank}
-                title={getCouncilDisplayName(council)}
-                href={`/council/${getCouncilSlug(council)}`}
-                value={formatCurrency(bandD, { decimals: 2 })}
-                subLeft={council.type_name}
-                fillPct={(bandD / maxBandD) * 100}
-              />
-            );
-          };
+          }) => (
+            <RankedBarRow
+              rank={rank}
+              title={getCouncilDisplayName(entry.council)}
+              href={`/council/${getCouncilSlug(entry.council)}`}
+              value={formatCurrency(entry.area.value, { decimals: 2 })}
+              subLeft={entry.council.type_name}
+              subRight={entry.area.year}
+              fillPct={(entry.area.value / maxBandD) * 100}
+            />
+          );
 
           return (
             <section key={group.label} className="card-elevated p-5 sm:p-6 mb-5">
               <h2 className="type-title-2 mb-1">{group.label}</h2>
               <p className="type-body-sm text-muted-foreground mb-6">
-                {group.description}
+                {group.description} · {yearNote}
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -146,10 +156,10 @@ export default function Page() {
                     Cheapest 5
                   </p>
                   <RankedBarList>
-                    {cheapestRows.map((c, i) => (
+                    {cheapestRows.map((e, i) => (
                       <Row
-                        key={c.ons_code}
-                        council={c}
+                        key={e.council.ons_code}
+                        entry={e}
                         rank={i + 1}
                         variant="cheap"
                       />
@@ -161,10 +171,10 @@ export default function Page() {
                     Most expensive 5
                   </p>
                   <RankedBarList>
-                    {priciestRows.map((c, i) => (
+                    {priciestRows.map((e, i) => (
                       <Row
-                        key={c.ons_code}
-                        council={c}
+                        key={e.council.ons_code}
+                        entry={e}
                         rank={groupCouncils.length - i}
                         variant="pricey"
                       />

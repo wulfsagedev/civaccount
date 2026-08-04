@@ -1,27 +1,33 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import {
+  councils,
+  formatCurrency,
+  getAreaBandD,
+  getCouncilDisplayName,
+  getCouncilSlug,
+} from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
-import { getBiggestTaxRises, getAverageTaxRise, getCouncilsAtOrOverCap } from '@/lib/insights-stats';
+import { getAreaTaxRises, getAverageAreaTaxRise, getAreaRisesAtOrOverPct } from '@/lib/insights-stats';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Compare Council Tax UK 2026 — National + Regional Breakdown',
-  description: 'Compare council tax across England for 2026. National average Band D, regional medians, biggest rises, highest and lowest councils — all 317 English councils, sourced from .gov.uk.',
+  description: 'Compare council tax across England for 2026-27. National average Band D, medians by council type, biggest rises, highest and lowest councils — all 296 English billing authorities, sourced from .gov.uk.',
   alternates: {
     canonical: '/insights/compare-council-tax-2026',
   },
   openGraph: {
     title: 'Compare Council Tax UK 2026 — National + Regional Breakdown',
-    description: 'How does council tax compare across England in 2026? National + regional medians, biggest rises, full rankings.',
+    description: 'How does council tax compare across England in 2026-27? National + regional medians, biggest rises, full rankings.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Compare Council Tax UK 2026 — National + Regional Breakdown',
-    description: 'How does council tax compare across England in 2026? National + regional medians, biggest rises, full rankings.',
+    description: 'How does council tax compare across England in 2026-27? National + regional medians, biggest rises, full rankings.',
   },
 };
 
@@ -33,30 +39,44 @@ function median(values: number[]): number {
 }
 
 export default function CompareCouncilTax2026Page() {
-  const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025);
-  const bandDValues = councilsWithTax.map((c) => c.council_tax!.band_d_2025);
+  // 2026-27 area Band D — the full bill for the area. Billing authorities
+  // only (296): county councils are not billing authorities and have no
+  // 2026-27 figure yet, so they appear only in the by-type section below,
+  // clearly labelled 2025-26.
+  const billing = councils.filter((c) => typeof c.council_tax?.band_d_2026 === 'number');
+  const bandDValues = billing.map((c) => c.council_tax!.band_d_2026!);
 
   const nationalAvg = bandDValues.reduce((s, v) => s + v, 0) / bandDValues.length;
   const nationalMedian = median(bandDValues);
   const nationalMin = Math.min(...bandDValues);
   const nationalMax = Math.max(...bandDValues);
 
-  const cheapest = councilsWithTax.reduce((min, c) =>
-    c.council_tax!.band_d_2025 < min.council_tax!.band_d_2025 ? c : min,
+  const cheapest = billing.reduce((min, c) =>
+    c.council_tax!.band_d_2026! < min.council_tax!.band_d_2026! ? c : min,
   );
-  const mostExpensive = councilsWithTax.reduce((max, c) =>
-    c.council_tax!.band_d_2025 > max.council_tax!.band_d_2025 ? c : max,
+  const mostExpensive = billing.reduce((max, c) =>
+    c.council_tax!.band_d_2026! > max.council_tax!.band_d_2026! ? c : max,
   );
 
-  const avgRise = getAverageTaxRise();
-  const overCapCount = getCouncilsAtOrOverCap(4.99);
+  // Rises: 2025-26 → 2026-27, plus last year's average on the same councils
+  // so the year-on-year comparison is computed, not hand-typed.
+  const avgRise = getAverageAreaTaxRise();
+  const overCapCount = getAreaRisesAtOrOverPct(4.99);
+  const withLastYear = billing.filter((c) => c.council_tax?.band_d_2025 && c.council_tax?.band_d_2024);
+  const lastYearAvgRise = withLastYear.length > 0
+    ? withLastYear.reduce((s, c) => s + ((c.council_tax!.band_d_2025 - c.council_tax!.band_d_2024!) / c.council_tax!.band_d_2024!) * 100, 0) / withLastYear.length
+    : 0;
 
-  // Regional breakdown — median Band D per comparable group
+  // Median Band D per comparable group — year-aware: billing types show
+  // 2026-27, county councils show their own 2025-26 share.
   const groupBreakdown = COMPARABLE_GROUPS.map((group) => {
     const types = group.types as readonly string[];
-    const peers = councilsWithTax.filter((c) => types.includes(c.type));
+    const peers = councils
+      .filter((c) => types.includes(c.type))
+      .map((c) => getAreaBandD(c))
+      .filter((a): a is NonNullable<typeof a> => a !== null);
     if (peers.length === 0) return null;
-    const peerValues = peers.map((c) => c.council_tax!.band_d_2025);
+    const peerValues = peers.map((a) => a.value);
     return {
       label: group.label,
       description: group.description,
@@ -65,41 +85,42 @@ export default function CompareCouncilTax2026Page() {
       min: Math.min(...peerValues),
       max: Math.max(...peerValues),
       count: peers.length,
+      year: peers[0].year,
     };
   }).filter((g): g is NonNullable<typeof g> => g !== null);
 
-  const top10Highest = [...councilsWithTax]
-    .sort((a, b) => b.council_tax!.band_d_2025 - a.council_tax!.band_d_2025)
+  const top10Highest = [...billing]
+    .sort((a, b) => b.council_tax!.band_d_2026! - a.council_tax!.band_d_2026!)
     .slice(0, 10);
-  const top10Lowest = [...councilsWithTax]
-    .sort((a, b) => a.council_tax!.band_d_2025 - b.council_tax!.band_d_2025)
+  const top10Lowest = [...billing]
+    .sort((a, b) => a.council_tax!.band_d_2026! - b.council_tax!.band_d_2026!)
     .slice(0, 10);
-  const top10Rises = getBiggestTaxRises(10);
+  const top10Rises = getAreaTaxRises(10);
 
   const faqs = [
     {
-      question: 'What is the average council tax in England for 2026?',
-      answer: `For 2025-26, the average Band D council tax across all 317 English councils is ${formatCurrency(nationalAvg, { decimals: 0 })}. For 2026-27 (effective April 2026), the new England-wide average rises to roughly £2,392, up 4.9% on last year — the smallest annual increase in three years.`,
+      question: 'What is the average council tax in England for 2026-27?',
+      answer: `For 2026-27 (effective April 2026), the average Band D council tax across England's ${billing.length} billing authorities is ${formatCurrency(nationalAvg, { decimals: 0 })} — up ${avgRise.toFixed(1)}% on last year, compared with a ${lastYearAvgRise.toFixed(1)}% average rise the year before.`,
     },
     {
       question: 'How do you compare council tax fairly between councils?',
-      answer: 'Compare Band D rates within the same council type. Unitary authorities, metropolitan districts, and London boroughs run all services in one council. Households in two-tier areas pay two bills — one to the district, one to the county — so a district bill on its own looks much lower than a unitary bill.',
+      answer: 'Compare Band D bills within the same council type. For billing authorities — unitary, metropolitan, London borough and district councils — the figure is the full Band D bill for the area, including any county, police and fire shares. County councils only show their own share, so they are compared separately.',
     },
     {
-      question: 'Why are some councils raising council tax by more than 5% in 2026?',
-      answer: '5% (technically 4.99%) is the maximum a council can raise council tax without holding a local referendum. Seven councils were given government permission to raise it further for 2026-27 because of severe financial pressure: Bournemouth Christchurch & Poole (6.74%), Trafford / Warrington / Windsor & Maidenhead (7.49% each), and North Somerset / Shropshire / Worcestershire (8.99% each).',
+      question: 'Why are some councils raising council tax by more than 5% in 2026-27?',
+      answer: `5% (technically 4.99%) is the most a council can normally add to its own share without holding a local referendum — councils in severe financial difficulty can get government permission to go higher. In ${overCapCount} of ${billing.length} billing areas the whole 2026-27 Band D bill rose by 4.99% or more; the biggest area rise was ${getCouncilDisplayName(top10Rises[0].council)} at ${top10Rises[0].changePct.toFixed(1)}%.`,
     },
     {
       question: 'Which English council charges the most council tax?',
-      answer: `${getCouncilDisplayName(mostExpensive)} charges the highest Band D council tax in England for 2025-26 at ${formatCurrency(mostExpensive.council_tax!.band_d_2025, { decimals: 2 })}. For 2026-27, Dorset takes the top spot at around £2,765.`,
+      answer: `${getCouncilDisplayName(mostExpensive)} has the highest Band D council tax in England for 2026-27 at ${formatCurrency(mostExpensive.council_tax!.band_d_2026!, { decimals: 2 })}.`,
     },
     {
       question: 'Which English council charges the least council tax?',
-      answer: `${getCouncilDisplayName(cheapest)} has the lowest Band D council tax in England for 2025-26 at ${formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}. For 2026-27, Wandsworth households pay the least, at around £1,028.`,
+      answer: `${getCouncilDisplayName(cheapest)} has the lowest Band D council tax in England for 2026-27 at ${formatCurrency(cheapest.council_tax!.band_d_2026!, { decimals: 2 })}.`,
     },
     {
       question: 'How much does the average household pay in council tax?',
-      answer: `Most households are below Band D. The average English household actually pays around £1,026 in council tax (across all bands), compared with the average Band D figure of ${formatCurrency(nationalAvg, { decimals: 0 })}. CivAccount shows your specific bill once you select your council.`,
+      answer: `Most homes are in bands A to C, which are charged less than Band D — so the typical household pays less than the average Band D figure of ${formatCurrency(nationalAvg, { decimals: 0 })}. CivAccount shows your specific bill once you select your council.`,
     },
   ];
 
@@ -108,15 +129,15 @@ export default function CompareCouncilTax2026Page() {
     '@graph': [
       buildWebPageSchema(
         'Compare Council Tax UK 2026 — National + Regional Breakdown',
-        'National average Band D, regional medians, biggest rises, and full England rankings for council tax in 2026.',
+        'National average Band D, medians by council type, biggest rises, and full England rankings for council tax in 2026-27.',
         '/insights/compare-council-tax-2026',
       ),
       buildArticleSchema({
         headline: 'Compare Council Tax UK 2026 — National + Regional Breakdown',
-        description: `The national average Band D council tax in England for 2025-26 is ${formatCurrency(nationalAvg, { decimals: 0 })}. For 2026-27, almost all councils raised rates by close to the 4.99% cap — average is now £2,392.`,
+        description: `The national average Band D council tax in England for 2026-27 is ${formatCurrency(nationalAvg, { decimals: 0 })}, up ${avgRise.toFixed(1)}% on last year across ${billing.length} billing authorities.`,
         url: '/insights/compare-council-tax-2026',
         about: 'Council tax in England',
-        keywords: ['compare council tax UK 2026', 'council tax UK 2026', 'England council tax comparison', 'Band D 2026', 'council tax average 2026'],
+        keywords: ['compare council tax UK 2026', 'council tax UK 2026', 'England council tax comparison', 'Band D 2026-27', 'council tax average 2026'],
       }),
       buildFAQPageSchema(faqs, '/insights/compare-council-tax-2026'),
       buildBreadcrumbSchema(
@@ -143,18 +164,20 @@ export default function CompareCouncilTax2026Page() {
           { label: 'Compare Council Tax 2026' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Compare Council Tax in England 2026</h1>
+        <h1 className="type-title-1 mb-2">Compare Council Tax in England 2026-27</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
-          The average Band D council tax across all 317 English councils for 2025-26 is {formatCurrency(nationalAvg, { decimals: 0 })}.
-          For 2026-27 (effective April 2026), the average rises to roughly £2,392 — up 4.9% on last year, the smallest annual rise in three years.
-          The highest is {getCouncilDisplayName(mostExpensive)} at {formatCurrency(mostExpensive.council_tax!.band_d_2025, { decimals: 2 })};
-          the lowest is {getCouncilDisplayName(cheapest)} at {formatCurrency(cheapest.council_tax!.band_d_2025, { decimals: 2 })}.
+          The average Band D council tax across England&apos;s {billing.length} billing authorities for 2026-27 is {formatCurrency(nationalAvg, { decimals: 0 })} —
+          up {avgRise.toFixed(1)}% on last year, compared with a {lastYearAvgRise.toFixed(1)}% average rise the year before.
+          The highest is {getCouncilDisplayName(mostExpensive)} at {formatCurrency(mostExpensive.council_tax!.band_d_2026!, { decimals: 2 })};
+          the lowest is {getCouncilDisplayName(cheapest)} at {formatCurrency(cheapest.council_tax!.band_d_2026!, { decimals: 2 })}.
         </p>
 
         {/* Section 1: National stats */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">England-wide stats 2025-26</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">All 317 English councils with published Band D rates.</p>
+          <h2 className="type-title-2 mb-1">England-wide stats 2026-27</h2>
+          <p className="type-body-sm text-muted-foreground mb-6">
+            All {billing.length} billing authorities with a published 2026-27 Band D bill. County councils are not billing authorities, so they are not counted here.
+          </p>
 
           <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
             <div>
@@ -174,11 +197,11 @@ export default function CompareCouncilTax2026Page() {
               <dd className="type-metric font-semibold tabular-nums">{formatCurrency(nationalMax, { decimals: 0 })}</dd>
             </div>
             <div>
-              <dt className="type-caption text-muted-foreground">Average YoY rise</dt>
+              <dt className="type-caption text-muted-foreground">Average rise from 2025-26</dt>
               <dd className="type-metric font-semibold tabular-nums">+{avgRise.toFixed(1)}%</dd>
             </div>
             <div>
-              <dt className="type-caption text-muted-foreground">Councils at or over the 4.99% cap</dt>
+              <dt className="type-caption text-muted-foreground">Areas where the bill rose 4.99% or more</dt>
               <dd className="type-metric font-semibold tabular-nums">{overCapCount}</dd>
             </div>
           </dl>
@@ -187,7 +210,9 @@ export default function CompareCouncilTax2026Page() {
         {/* Section 2: Group medians */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Median Band D by council type</h2>
-          <p className="type-body-sm text-muted-foreground mb-6">Compare like with like — different council types do different jobs.</p>
+          <p className="type-body-sm text-muted-foreground mb-6">
+            Compare like with like — different council types do different jobs. County councils show their own 2025-26 share, the latest published; everything else is the full 2026-27 area bill.
+          </p>
 
           <RankedBarList>
             {groupBreakdown.map((group) => (
@@ -195,7 +220,7 @@ export default function CompareCouncilTax2026Page() {
                 key={group.label}
                 title={group.label}
                 value={formatCurrency(group.median, { decimals: 0 })}
-                subLeft={group.description}
+                subLeft={`${group.description} · ${group.year}`}
                 subRight={`${group.count} councils`}
                 fillPct={Math.max(...groupBreakdown.map((g) => g.median)) > 0 ? (group.median / Math.max(...groupBreakdown.map((g) => g.median))) * 100 : 0}
               />
@@ -205,15 +230,15 @@ export default function CompareCouncilTax2026Page() {
 
         {/* Section 3: Top 10 highest */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Top 10 highest council tax 2025-26</h2>
+          <h2 className="type-title-2 mb-1">Top 10 highest council tax 2026-27</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Across all council types. <Link href="/insights/most-expensive-council-tax" className="text-foreground hover:underline">See full top 20 by type →</Link>
+            Across all billing authorities. <Link href="/insights/most-expensive-council-tax" className="text-foreground hover:underline">See full top 20 by type →</Link>
           </p>
 
           <RankedBarList>
             {top10Highest.map((council, index) => {
-              const bandD = council.council_tax!.band_d_2025;
-              const max = top10Highest[0].council_tax!.band_d_2025;
+              const bandD = council.council_tax!.band_d_2026!;
+              const max = top10Highest[0].council_tax!.band_d_2026!;
               return (
                 <RankedBarRow
                   key={council.ons_code}
@@ -231,15 +256,15 @@ export default function CompareCouncilTax2026Page() {
 
         {/* Section 4: Top 10 lowest */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Top 10 lowest council tax 2025-26</h2>
+          <h2 className="type-title-2 mb-1">Top 10 lowest council tax 2026-27</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Across all council types. <Link href="/insights/cheapest-council-tax" className="text-foreground hover:underline">See full top 20 by type →</Link>
+            Across all billing authorities. <Link href="/insights/cheapest-council-tax" className="text-foreground hover:underline">See full top 20 by type →</Link>
           </p>
 
           <RankedBarList>
             {top10Lowest.map((council, index) => {
-              const bandD = council.council_tax!.band_d_2025;
-              const max = top10Lowest[top10Lowest.length - 1].council_tax!.band_d_2025;
+              const bandD = council.council_tax!.band_d_2026!;
+              const max = top10Lowest[top10Lowest.length - 1].council_tax!.band_d_2026!;
               return (
                 <RankedBarRow
                   key={council.ons_code}
@@ -257,9 +282,9 @@ export default function CompareCouncilTax2026Page() {
 
         {/* Section 5: Biggest rises */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Biggest tax rises 2025-26</h2>
+          <h2 className="type-title-2 mb-1">Biggest tax rises 2026-27</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Top 10 councils that raised Band D the most year-on-year. <Link href="/insights/biggest-tax-rises" className="text-foreground hover:underline">See full breakdown →</Link>
+            Top 10 areas where the Band D bill rose the most from 2025-26 to 2026-27.
           </p>
 
           <RankedBarList>
@@ -297,7 +322,7 @@ export default function CompareCouncilTax2026Page() {
 
         {/* Section 7: FAQ */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Council tax 2026 FAQ</h2>
+          <h2 className="type-title-2 mb-1">Council tax 2026-27 FAQ</h2>
           <p className="type-body-sm text-muted-foreground mb-6">Common questions about how council tax compares across England.</p>
 
           <div className="space-y-5">
@@ -313,9 +338,9 @@ export default function CompareCouncilTax2026Page() {
         <nav className="mt-8 space-y-2">
           <p className="type-body-sm font-semibold mb-3">More insights</p>
           <ul className="space-y-2">
-            <li><Link href="/insights/most-expensive-council-tax" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Highest council tax 2026</Link></li>
-            <li><Link href="/insights/cheapest-council-tax" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Lowest council tax 2026</Link></li>
-            <li><Link href="/insights/biggest-tax-rises" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Biggest tax rises this year</Link></li>
+            <li><Link href="/insights/most-expensive-council-tax" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Highest council tax 2026-27</Link></li>
+            <li><Link href="/insights/cheapest-council-tax" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Lowest council tax 2026-27</Link></li>
+            <li><Link href="/insights/council-tax-increases" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Council tax increases 2026-27</Link></li>
             <li><Link href="/guide/council-tax" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">Complete guide to council tax</Link></li>
             <li><Link href="/insights" className="type-body-sm text-muted-foreground hover:text-foreground transition-colors">All insights</Link></li>
           </ul>

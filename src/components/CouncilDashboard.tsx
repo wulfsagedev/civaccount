@@ -12,7 +12,7 @@ import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
-import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, formatCurrency, formatBudget, toSentenceTypeName, type Council } from '@/data/councils';
+import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, getAreaBandD, formatCurrency, formatBudget, toSentenceTypeName, type Council } from '@/data/councils';
 
 interface CouncilDashboardProps {
   // When the route knows the council from its slug (e.g. /council/[slug]),
@@ -47,16 +47,19 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
     );
   }
 
-  // Build narrative summary
+  // Build narrative summary — the Band D figure is the most recent verified
+  // year for this council (2026-27 for billing authorities, 2025-26 for
+  // county councils), with the year stated in the sentence.
   const displayName = getCouncilDisplayName(selectedCouncil);
-  const bandD = selectedCouncil.council_tax?.band_d_2025;
-  const bandD2024 = selectedCouncil.council_tax?.band_d_2024;
+  const areaBandD = getAreaBandD(selectedCouncil);
   const population = getCouncilPopulation(selectedCouncil.name);
   const typeName = selectedCouncil.type_name || 'Council';
   const budget = selectedCouncil.budget;
   const totalBudget = budget?.total_service ? formatBudget(budget.total_service) : null;
 
-  const taxChange = bandD && bandD2024 ? ((bandD - bandD2024) / bandD2024) * 100 : null;
+  const taxChange = areaBandD && areaBandD.previous
+    ? ((areaBandD.value - areaBandD.previous) / areaBandD.previous) * 100
+    : null;
 
   // Compute top 3 spending categories (with £ amounts) for the answer-first
   // narrative. Lists the actual £ figure per service so AI engines can extract
@@ -139,17 +142,17 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                 </>
               ) : null}
               .
-              {bandD && (
+              {areaBandD && (
                 <>
-                  {' '}In 2025-26, Band D council tax is{' '}
+                  {' '}In {areaBandD.year}, Band D council tax is{' '}
                   <SourceAnnotation
-                    provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                    provenance={getProvenance(areaBandD.fieldPath, selectedCouncil)}
                     reportContext={{
                       council: selectedCouncil.name,
-                      field: 'Band D council tax 2025-26',
-                      value: formatCurrency(bandD, { decimals: 2 }),
+                      field: `Band D council tax ${areaBandD.year}`,
+                      value: formatCurrency(areaBandD.value, { decimals: 2 }),
                     }}
-                  >{formatCurrency(bandD, { decimals: 2 })}</SourceAnnotation>
+                  >{formatCurrency(areaBandD.value, { decimals: 2 })}</SourceAnnotation>
                   {taxChange !== null && (
                     <> — {Math.abs(taxChange).toFixed(1)}% {taxChange > 0 ? 'more' : 'less'} than last year</>
                   )}

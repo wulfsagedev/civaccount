@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { councils, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { parseIntParam } from '@/lib/api-params';
 
 /**
  * GET /api/v1/councils
@@ -25,7 +26,7 @@ import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
  */
 export async function GET(request: NextRequest) {
   const ip = getClientIP(request);
-  const { success: allowed, remaining } = await checkRateLimit(ip, { limit: 60, windowSeconds: 60 });
+  const { success: allowed, remaining } = await checkRateLimit(`v1-councils-list:${ip}`, { limit: 60, windowSeconds: 60 });
 
   if (!allowed) {
     return NextResponse.json(
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get('type');
   const search = searchParams.get('search');
-  const limit = Math.min(parseInt(searchParams.get('limit') ?? '20'), 20);
+  const limit = parseIntParam(searchParams.get('limit'), { fallback: 20, min: 1, max: 20 });
 
   if (!type && !search) {
     return NextResponse.json(

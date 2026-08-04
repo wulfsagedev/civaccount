@@ -25,7 +25,7 @@ Built for UK residents who pay council tax and want to know what happens to thei
 - **[National insights](https://www.civaccount.co.uk/insights)** — rankings, league tables, postcode lottery data
 - **[4 plain-English guides](https://www.civaccount.co.uk/guide/council-tax)** — how council tax works, how spending is structured, who runs your council, how to influence decisions
 - **[Town Hall](https://www.civaccount.co.uk/townhall)** — residents propose and vote on how their council should spend money
-- **[Developer API](https://www.civaccount.co.uk/developers)** — free JSON per-council endpoints + embeddable iframe widgets, no key, 100 req/min
+- **[Developer API](https://www.civaccount.co.uk/developers)** — free JSON per-council endpoints + embeddable iframe widgets, no key, 100 req/min (60/min on councils search)
 - **[Data provenance](https://www.civaccount.co.uk/council/kent/provenance)** — per-field source URLs for every council (317 pages)
 - **WCAG 2.1 AA accessible**, designed for 44px tap targets + plain English
 

@@ -20,14 +20,19 @@ const bandDescriptions: Record<string, string> = {
 
 interface TaxBandsCardProps {
   selectedCouncil: Council;
+  /** This council's OWN share per band (2025-26 precept split). */
   allBands: Record<string, number>;
+  /** Full-bill amount per band, in `taxYear`. */
   totalBandAmounts: Record<string, number> | null;
+  /** The financial year `totalBandAmounts` belongs to. */
+  taxYear: string;
 }
 
 const TaxBandsCard = ({
   selectedCouncil,
   allBands,
   totalBandAmounts,
+  taxYear,
 }: TaxBandsCardProps) => {
   const searchParams = useSearchParams();
   const bandFromUrl = searchParams.get('band')?.toUpperCase();
@@ -52,7 +57,7 @@ const TaxBandsCard = ({
       <CardShareHeader
         cardType="tax-bands"
         title="Council tax by band"
-        subtitle="Pick your property band to see how much you pay"
+        subtitle={`Pick your property band to see how much you pay in ${taxYear}`}
         councilName={selectedCouncil.name}
       />
 
@@ -83,7 +88,7 @@ const TaxBandsCard = ({
         key={selectedBand}
         className="p-4 sm:p-5 rounded-lg bg-muted/30 animate-in fade-in duration-180 ease-out-snap motion-reduce:animate-none"
       >
-        <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]}</p>
+        <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]} · {taxYear}</p>
         <p className="type-metric mb-4">
           <SourceAnnotation
             provenance={getProvenance('tax_bands', selectedCouncil)}
@@ -160,8 +165,13 @@ const TaxBandsCard = ({
         </div>
       </div>
 
-      {/* Council's share context - shown when total includes other authorities */}
-      {totalBandAmounts && (
+      {/* Council's share context — only when the own share is genuinely a
+          slice of the bill (two-tier areas etc.). When we can't identify the
+          own share, allBands falls back to the area figure and this box
+          would wrongly claim the whole bill is this council's — hide it.
+          The share comes from the 2025-26 precept split, so it is labelled
+          with its own year rather than silently mixed with the bill year. */}
+      {totalBandAmounts && allBands.D < totalBandAmounts.D * 0.95 && (
         <div className="mt-4 p-3 rounded-lg bg-muted/30">
           <p className="type-body-sm text-muted-foreground">
             <span className="font-medium text-foreground">{selectedCouncil.name}&apos;s share:</span>{' '}
@@ -177,7 +187,7 @@ const TaxBandsCard = ({
                 {formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 })}
               </SourceAnnotation>
             </span>
-            {' '}of your Band {selectedBand} bill
+            {' '}of the 2025-26 Band {selectedBand} bill
           </p>
         </div>
       )}

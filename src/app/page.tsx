@@ -21,8 +21,12 @@ const HomepageContent = memo(function HomepageContent() {
           <div className="text-center space-y-6">
             <DataFlowAnimation />
             <div className="space-y-3">
+              {/* £2,441 = median 2026-27 area Band D across all 296 English
+                  billing authorities, computed from the verified MHCLG live-
+                  table figures in the dataset (band_d_2026). Recompute when
+                  the 2027-28 tables land. */}
               <h1 className="type-title-1 font-semibold leading-tight">
-                The average English household pays £1,026 in council tax
+                Typical Band D council tax in England is £2,441 for 2026-27
               </h1>
               <p className="text-muted-foreground type-body-lg max-w-[360px] mx-auto">
                 See where your council tax goes — for all 317 English councils
@@ -33,7 +37,7 @@ const HomepageContent = memo(function HomepageContent() {
 
           {/* Trust signals */}
           <p className="type-caption text-center text-muted-foreground/70">
-            317 councils · 2025-26 data · Free and independent
+            317 councils · 2026-27 data · Free and independent
           </p>
 
           {/* Cross-promo CTAs */}

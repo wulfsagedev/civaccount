@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { councils, formatCurrency, getCouncilDisplayName, getCouncilSlug } from '@/data/councils';
+import {
+  councils,
+  formatCurrency,
+  getAreaBandD,
+  getCouncilDisplayName,
+  getCouncilSlug,
+  CURRENT_TAX_YEAR,
+  PREVIOUS_TAX_YEAR,
+} from '@/data/councils';
 import {
   getNationalSpendStats,
-  getNationalBillStats,
-  getHeadlineExtremes,
-  getAverageTaxRise,
   getCouncilsAtOrOverCap,
   getCeoPayStats,
   getHundredKClub,
@@ -52,10 +57,31 @@ export const metadata: Metadata = {
 export default function PressPage() {
   // ── Live-computed headline numbers (stay fresh as data updates) ──────────────
   const spend = getNationalSpendStats();
-  const bill = getNationalBillStats();
-  const extremes = getHeadlineExtremes();
-  const avgRise = getAverageTaxRise();
   const atCap = getCouncilsAtOrOverCap(4.99);
+
+  // 2026-27 area Band D stats, computed from the dataset. Billing authorities
+  // only — county councils are not billing authorities, so they carry no
+  // 2026-27 area figure and are excluded here rather than silently mixed in.
+  const areaBills = councils.flatMap((council) => {
+    const area = getAreaBandD(council);
+    return area && area.year === CURRENT_TAX_YEAR ? [{ council, area }] : [];
+  });
+  const avgAreaBandD = areaBills.reduce((s, e) => s + e.area.value, 0) / areaBills.length;
+  const withPrevYear = areaBills.filter((e) => e.area.previous);
+  const avgAreaRise =
+    withPrevYear.reduce(
+      (s, e) => s + ((e.area.value - e.area.previous!) / e.area.previous!) * 100,
+      0,
+    ) / withPrevYear.length;
+  // Round to 2dp so pound-level rounding can't drop a council targeting exactly
+  // 4.99% out of the bucket (same rule as insights-stats getCouncilsAtOrOverCap).
+  const atCapCurrent = withPrevYear.filter((e) => {
+    const raw = ((e.area.value - e.area.previous!) / e.area.previous!) * 100;
+    return Math.round(raw * 100) / 100 >= 4.99;
+  }).length;
+  const sortedBills = [...areaBills].sort((a, b) => a.area.value - b.area.value);
+  const cheapestArea = sortedBills[0];
+  const mostExpensiveArea = sortedBills[sortedBills.length - 1];
   const ceo = getCeoPayStats(1);
   const topCeo = ceo.highestPaid;
   const hundredK = getHundredKClub(1);
@@ -64,7 +90,7 @@ export default function PressPage() {
   const topSuppliers = getTopSuppliersNational(3);
   const pound = getWhereEveryPoundGoes();
 
-  const councilsWithTax = councils.filter((c) => c.council_tax?.band_d_2025).length;
+  const councilsWithTax = areaBills.length;
   const councilsWithSalary = councils.filter((c) => c.detailed?.chief_executive_salary).length;
 
   // ── Factual headline numbers anyone can lift ─────────────────────────────────
@@ -72,16 +98,16 @@ export default function PressPage() {
   // source. No commentary, no interpretation — just the number and where it comes from.
   const facts: Array<{ stat: string; source: string }> = [
     {
-      stat: `Average Band D council tax in England, 2025-26: ${formatCurrency(bill.avg, { decimals: 0 })} (${avgRise > 0 ? '+' : ''}${avgRise.toFixed(1)}% vs 2024-25).`,
-      source: 'GOV.UK Council Tax levels 2025-26',
+      stat: `Average Band D council tax in England, ${CURRENT_TAX_YEAR}: ${formatCurrency(avgAreaBandD, { decimals: 0 })} (${avgAreaRise > 0 ? '+' : ''}${avgAreaRise.toFixed(1)}% vs ${PREVIOUS_TAX_YEAR}).`,
+      source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
-      stat: `Councils that raised Band D to the 4.99% cap in 2025-26: ${atCap}.`,
-      source: 'GOV.UK Council Tax levels 2025-26',
+      stat: `Councils that raised Band D by 4.99% or more in ${CURRENT_TAX_YEAR}: ${atCapCurrent}.`,
+      source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
-      stat: `Cheapest Band D in England: ${formatCurrency(extremes.cheapest.council_tax!.band_d_2025!, { decimals: 2 })} (${getCouncilDisplayName(extremes.cheapest)}). Most expensive: ${formatCurrency(extremes.mostExpensive.council_tax!.band_d_2025!, { decimals: 2 })} (${getCouncilDisplayName(extremes.mostExpensive)}).`,
-      source: 'GOV.UK Council Tax levels 2025-26',
+      stat: `Cheapest Band D in England, ${CURRENT_TAX_YEAR}: ${formatCurrency(cheapestArea.area.value, { decimals: 2 })} (${getCouncilDisplayName(cheapestArea.council)}). Most expensive: ${formatCurrency(mostExpensiveArea.area.value, { decimals: 2 })} (${getCouncilDisplayName(mostExpensiveArea.council)}).`,
+      source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
       stat: `Total planned net service expenditure by English councils, 2025-26: ${formatCurrency(spend.totalSpend, { decimals: 0 })}.`,
@@ -125,8 +151,8 @@ export default function PressPage() {
   const namedDatasets = [
     {
       name: 'Postcode Lottery Index',
-      value: `${formatCurrency(extremes.mostExpensive.council_tax!.band_d_2025! - extremes.cheapest.council_tax!.band_d_2025!, { decimals: 0 })}`,
-      explanation: 'Gap between the cheapest and most expensive Band D council tax in England.',
+      value: `${formatCurrency(mostExpensiveArea.area.value - cheapestArea.area.value, { decimals: 0 })}`,
+      explanation: `Gap between the cheapest and most expensive Band D council tax in England, ${CURRENT_TAX_YEAR}.`,
       url: '/insights/postcode-lottery',
     },
     {
@@ -159,7 +185,7 @@ export default function PressPage() {
     {
       question: 'Can I reproduce CivAccount data in my article or research?',
       answer:
-        'Yes. All data is published under the Open Government Licence v3.0 (source data) and MIT (code). A credit such as "CivAccount (civaccount.co.uk)" is appreciated but not legally required.',
+        'Yes. Quote any figure freely — the source data is Open Government Licence v3.0 and the code is MIT; the compiled dataset is under the CivAccount Data Licence, which allows quoting and embedding without asking. Please credit "CivAccount (civaccount.co.uk)" and, where you can, the original .gov.uk source.',
     },
     {
       question: 'How often is the data updated?',
@@ -253,7 +279,7 @@ export default function PressPage() {
             </div>
             <div>
               <p className="type-display tabular-nums">{councilsWithTax}</p>
-              <p className="type-caption text-muted-foreground">With Band D 2025-26</p>
+              <p className="type-caption text-muted-foreground">With Band D {CURRENT_TAX_YEAR}</p>
             </div>
             <div>
               <p className="type-display tabular-nums">{councilsWithSalary}</p>
@@ -268,9 +294,9 @@ export default function PressPage() {
 
         {/* Headline facts — neutral, factual, with source */}
         <section className="card-elevated p-5 sm:p-6 mb-5">
-          <h2 className="type-title-2 mb-1">Headline figures (2025-26)</h2>
+          <h2 className="type-title-2 mb-1">Headline figures</h2>
           <p className="type-body-sm text-muted-foreground mb-5">
-            Auto-generated from the dataset. Each figure cites its original <code className="text-[13px] font-mono bg-muted px-1.5 py-0.5 rounded">.gov.uk</code> source — please verify at the source and cite it directly, not CivAccount.
+            Auto-generated from the dataset. Each figure states its financial year and cites its original <code className="text-[13px] font-mono bg-muted px-1.5 py-0.5 rounded">.gov.uk</code> source — please verify at the source and cite it directly, not CivAccount.
           </p>
 
           <ol className="space-y-5">
@@ -356,7 +382,7 @@ export default function PressPage() {
         <section className="card-elevated p-5 sm:p-6 mb-5">
           <h2 className="type-title-2 mb-1">Citing the data</h2>
           <p className="type-body-sm text-muted-foreground mb-5">
-            Not legally required (data is OGL v3.0), but appreciated. Cite the original <code className="text-[13px] font-mono bg-muted px-1.5 py-0.5 rounded">.gov.uk</code> source first where you can.
+            Appreciated, not legally required for individual figures. Cite the original <code className="text-[13px] font-mono bg-muted px-1.5 py-0.5 rounded">.gov.uk</code> source first where you can.
           </p>
 
           <div className="space-y-4">
@@ -371,7 +397,7 @@ export default function PressPage() {
               <p className="type-caption text-muted-foreground mb-1">Full (research / academic)</p>
               <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
                 <code className="type-body-sm font-mono">
-                  CivAccount (2026). &ldquo;[Name of dataset or page]&rdquo;. civaccount.co.uk. Accessed [date]. Open Government Licence v3.0.
+                  CivAccount (2026). &ldquo;[Name of dataset or page]&rdquo;. civaccount.co.uk. Accessed [date]. Source data: Open Government Licence v3.0.
                 </code>
               </div>
             </div>
@@ -380,7 +406,7 @@ export default function PressPage() {
               <p className="type-caption text-muted-foreground mb-1">Named dataset</p>
               <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
                 <code className="type-body-sm font-mono">
-                  CivAccount Postcode Lottery Index, 2025-26 (civaccount.co.uk/insights/postcode-lottery)
+                  CivAccount Postcode Lottery Index, 2026-27 (civaccount.co.uk/insights/postcode-lottery)
                 </code>
               </div>
             </div>
@@ -535,7 +561,7 @@ export default function PressPage() {
               <span className="font-semibold text-foreground">Short description:</span> &ldquo;An open-source tool that presents public UK council data in an accessible format.&rdquo;
             </li>
             <li className="type-body-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">Licence:</span> Code MIT; data Open Government Licence v3.0.
+              <span className="font-semibold text-foreground">Licence:</span> Code MIT; source data OGL v3.0; compiled dataset CivAccount Data Licence (quote and embed freely).
             </li>
           </ul>
         </section>

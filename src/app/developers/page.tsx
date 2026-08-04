@@ -100,7 +100,7 @@ export default function DevelopersPage() {
           <h1 className="type-title-1 font-semibold mb-4">Free UK council data API & embeds</h1>
           <p className="type-body-lg text-muted-foreground max-w-2xl mx-auto">
             Every figure on this site is available as a public API and as an embeddable widget.
-            No API key required. Open Government Licence v3.0.
+            No API key required. Built on OGL v3.0 GOV.UK source data.
           </p>
         </div>
 
@@ -166,7 +166,7 @@ export default function DevelopersPage() {
           </div>
           <p className="type-body-sm text-muted-foreground mb-5">
             Base URL: <code className="px-1.5 py-0.5 rounded bg-muted">https://www.civaccount.co.uk/api/v1</code>.
-            No key. 100 requests per minute per IP. All responses are JSON under
+            No key. 100 requests per minute per IP (60/min on councils search). All responses are JSON under
             CORS <code className="px-1.5 py-0.5 rounded bg-muted">*</code>.
           </p>
 
@@ -193,6 +193,10 @@ export default function DevelopersPage() {
             <div className="mt-2">
               <CodeBlock code={apiCouncilJson} language="json" />
             </div>
+            <p className="type-caption text-muted-foreground mt-2">
+              Billing authorities also carry <code className="px-1 py-0.5 rounded bg-muted">band_d_2026</code> — the 2026-27 area Band D.
+              County councils are not billing authorities, so their latest figure is <code className="px-1 py-0.5 rounded bg-muted">band_d_2025</code>.
+            </p>
           </details>
 
           {/* Diffs */}
@@ -230,8 +234,8 @@ export default function DevelopersPage() {
             <li className="flex gap-2">
               <span className="text-muted-foreground mt-1">•</span>
               <span>
-                <strong>Council Tax 2025-26</strong> —{' '}
-                <a href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026" target="_blank" rel="noopener" className="underline">GOV.UK Council Tax Levels</a>
+                <strong>Council Tax 2026-27</strong> —{' '}
+                <a href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027" target="_blank" rel="noopener" className="underline">GOV.UK Council Tax Levels</a>
               </span>
             </li>
             <li className="flex gap-2">
@@ -275,7 +279,7 @@ export default function DevelopersPage() {
           <ul className="space-y-2 type-body-sm text-muted-foreground">
             <li className="flex gap-2">
               <Check className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
-              <span>Data: <strong>Open Government Licence v3.0</strong> (because the source data is). Use commercially. Attribution appreciated, not required.</span>
+              <span>Data: source figures are <strong>OGL v3.0</strong> Crown copyright; the compiled dataset is under the <strong>CivAccount Data Licence</strong> — quote figures and embed widgets freely (commercially too); no bulk copying. Attribution appreciated.</span>
             </li>
             <li className="flex gap-2">
               <Check className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
@@ -283,7 +287,7 @@ export default function DevelopersPage() {
             </li>
             <li className="flex gap-2">
               <Check className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
-              <span>Rate limit: 100 req/min/IP. If you need more, get in touch.</span>
+              <span>Rate limit: 100 req/min/IP (60/min on councils search). If you need more, get in touch.</span>
             </li>
             <li className="flex gap-2">
               <Check className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />

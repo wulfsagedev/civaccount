@@ -18,7 +18,7 @@ import {
   getCeoPayStats,
   getClosestToBankruptcy,
   getCouncilsAtOrOverCap,
-  getHeadlineExtremes,
+  getHeadlineAreaExtremes,
   getHundredKClub,
   getNationalSpendStats,
   getSocialCareSqueeze,
@@ -65,7 +65,7 @@ function buildTileStats(): Record<
 > {
   const spend = getNationalSpendStats();
   const suppliers = getTopSuppliersNational(10);
-  const lottery = getHeadlineExtremes();
+  const lottery = getHeadlineAreaExtremes();
   const rises = getBiggestTaxRises(1);
   const avgRise = getAverageTaxRise();
   const overCap = getCouncilsAtOrOverCap(4.99);
@@ -79,9 +79,8 @@ function buildTileStats(): Record<
   const threeYear = getThreeYearSqueeze(1);
   const capEvery = getCapEveryYear(4.99);
 
-  const cheapestBandD = lottery.cheapest.council_tax!.band_d_2025;
-  const priciestBandD = lottery.mostExpensive.council_tax!.band_d_2025;
-  const gap = priciestBandD - cheapestBandD;
+  // 2026-27 area Band D extremes (all-in-one councils, full area bill).
+  const gap = lottery.mostExpensiveValue - lottery.cheapestValue;
 
   const topService = pound[0];
   const secondService = pound[1];
@@ -89,11 +88,11 @@ function buildTileStats(): Record<
   return {
     'postcode-lottery': {
       hero: `${formatCurrency(gap, { decimals: 0 })}`,
-      explainer: `The gap between England's cheapest and most expensive Band D council tax bill for 2025-26.`,
+      explainer: `The gap between England's cheapest and most expensive Band D council tax bill for ${lottery.year}.`,
     },
     'biggest-tax-rises': {
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
-      explainer: `${getCouncilDisplayName(rises[0].council)} raised Band D the most. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
+      explainer: `${getCouncilDisplayName(rises[0].council)} raised Band D the most in 2025-26. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
     },
     'three-year-squeeze': {
       hero: `+${formatCurrency(Math.round(threeYear.top[0].changeAbs), { decimals: 0 })}`,
