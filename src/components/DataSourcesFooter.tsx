@@ -94,7 +94,7 @@ export default function DataSourcesFooter() {
   const totalLinkCount = keyLinks.length + allLinks.length + nationalSources.length;
 
   return (
-    <footer className="border-t border-border/50 mt-12" aria-label="Data sources">
+    <footer data-provenance-caption="true" className="border-t border-border/50 mt-12" aria-label="Data sources">
       <div className="container mx-auto px-4 py-8 sm:px-6 max-w-3xl">
         {/* Trust line */}
         <div className="flex items-center justify-center gap-2 mb-5">
