@@ -18,8 +18,11 @@ export default function DataSourcesFooter() {
 
   // No council selected — generic footer
   if (!selectedCouncil) {
+    // The footer describes the DATASET (how many councils, which years,
+    // which GOV.UK sources, the dataset version) — it is provenance, not a
+    // rendered council figure, so the Phase 5b sweep skips it.
     return (
-      <footer className="border-t border-border/50 mt-12" aria-label="Data sources">
+      <footer data-provenance-caption="true" className="border-t border-border/50 mt-12" aria-label="Data sources">
         <div className="container mx-auto px-4 py-8 sm:px-6 max-w-3xl text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Shield className="h-4 w-4 text-muted-foreground" aria-hidden="true" />

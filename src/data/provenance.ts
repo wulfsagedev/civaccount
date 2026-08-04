@@ -267,6 +267,16 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     source_title: 'Multiple GOV.UK sources',
   },
 
+  // ── Accountability ──
+  // Section 114 notices are published by the council's own chief finance
+  // officer; statutory intervention is announced by MHCLG. Both are
+  // per-council documents, so the specific URL comes from the council's
+  // field_sources when present and this is the fallback label.
+  'detailed.accountability': {
+    label: 'official',
+    source_title: 'Section 114 notice / MHCLG intervention announcement',
+  },
+
   // ── Leadership ──
   'detailed.cabinet': {
     label: 'official',

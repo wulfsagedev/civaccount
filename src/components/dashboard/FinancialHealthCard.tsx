@@ -185,11 +185,23 @@ const FinancialHealthCard = ({
                           }}
                         >{new Date(detailed.accountability.section_114.dates![detailed.accountability.section_114.dates!.length - 1]).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</SourceAnnotation>)</>
                       )}
-                      . This is rare — only 8 councils have done this since 2018.
+                      {/* "only 8 councils have done this since 2018" removed
+                          2026-08-04: a hard-coded national count with no
+                          source and no update path — it was already stale.
+                          A sourced version belongs in the insights hub, not
+                          hard-coded in a per-council card. */}
+                      .
                     </p>
                     {detailed.accountability.section_114.reason && (
                       <p className="type-caption text-muted-foreground mt-2">
-                        {detailed.accountability.section_114.reason}
+                        <SourceAnnotation
+                          provenance={getProvenance('detailed.accountability', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Section 114 notice — reason',
+                            value: detailed.accountability.section_114.reason,
+                          }}
+                        >{detailed.accountability.section_114.reason}</SourceAnnotation>
                       </p>
                     )}
                   </div>
@@ -207,7 +219,18 @@ const FinancialHealthCard = ({
                       Government commissioners appointed
                     </p>
                     <p className="type-body-sm text-muted-foreground mt-1">
-                      {detailed.accountability.intervention_reason || `The government sent in commissioners to oversee ${selectedCouncil.name}'s finances.`}
+                      {detailed.accountability.intervention_reason ? (
+                        <SourceAnnotation
+                          provenance={getProvenance('detailed.accountability', selectedCouncil)}
+                          reportContext={{
+                            council: selectedCouncil.name,
+                            field: 'Government intervention — reason',
+                            value: detailed.accountability.intervention_reason,
+                          }}
+                        >{detailed.accountability.intervention_reason}</SourceAnnotation>
+                      ) : (
+                        `The government sent in commissioners to oversee ${selectedCouncil.name}'s finances.`
+                      )}
                     </p>
                   </div>
                 </div>

@@ -158,6 +158,11 @@ const sweepScript = `
     // descriptive text so a bare rendered amount can never match.
     if (/\\b(?:over|above|exceeding)\\s+£[\\d,]+/.test(r.text) && r.text.trim().split(/\\s+/).length > 4) return false;
     if (/^Supplier values come from Contracts Finder/.test(r.text)) return false;
+    // Statutory references: "Section 114 notice" is s.114 of the Local
+    // Government Finance Act 1988, not a council figure. Only the digits in
+    // the citation are ignored — any other number in the sentence still
+    // trips the sweep.
+    if (/\\bSection \\d+\\b/.test(r.text) && !/£/.test(r.text.replace(/\\bSection \\d+\\b/g, ''))) return false;
     // Source-entry descriptions naming an inspectorate rating + its date
     // (rendered as the caption under the link to that very report).
     if (/^(CQC|Ofsted|SEND)\\b.*\\b(rating|report|inspection)\\b/.test(r.text)) return false;
