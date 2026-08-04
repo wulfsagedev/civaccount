@@ -33,8 +33,18 @@ const BASE = (args.base || 'http://localhost:3000').replace(/\/$/, '');
 const CONCURRENCY = Math.max(1, parseInt(args.concurrency ?? '4', 10) || 4);
 const TOP = args.top ? parseInt(args.top, 10) : null;
 
+/** MUST match generateSlug() in src/data/councils.ts — in particular
+ * apostrophes are STRIPPED, not turned into separators, or "King's Lynn &
+ * West Norfolk" resolves to a 404 and the sweep reports the "404" text as a
+ * violation instead of the audit simply failing. */
 function slugify(name) {
-  return name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return name
+    .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-+/g, '-');
 }
 
 function runOne(council) {
@@ -58,6 +68,18 @@ function runOne(council) {
       const clean = out.replace(/\[[0-9;]*m/g, '');
       const m = clean.match(/(\d+)\s+violation\(s\)/);
       const pass = /0 violations/.test(clean);
+      // A missing page renders Next's 404, whose only "number" is the 404
+      // itself. Surface that as a broken URL — never as a data violation,
+      // which would send someone hunting for provenance on a page that
+      // doesn't exist.
+      if (!pass && /"404"|• 404\b/.test(clean)) {
+        resolve({
+          name: council.name, slug, ran: true, pass: false, violations: null,
+          unwrapped: 0, derived: 0,
+          error: `page not found at ${BASE}/council/${slug} — check the slug`,
+        });
+        return;
+      }
       const unwrapped = parseInt((clean.match(/(\d+) unwrapped/) || [])[1] ?? '0', 10);
       const derived = parseInt((clean.match(/(\d+) derived/) || [])[1] ?? '0', 10);
       resolve({
