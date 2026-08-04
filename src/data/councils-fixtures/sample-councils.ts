@@ -65,6 +65,7 @@ export const fixtureCouncils: Council[] = [
     type_name: 'Metropolitan District',
     population: 1149000,
     council_tax: {
+      band_d_2026: 2047.0,
       band_d_2025: 1950.0,
       band_d_2024: 1850.0,
       band_d_2023: 1760.0,
@@ -104,6 +105,7 @@ export const fixtureCouncils: Council[] = [
     type_name: 'London Borough',
     population: 211000,
     council_tax: {
+      band_d_2026: 1028.0,
       band_d_2025: 1000.0,
       band_d_2024: 920.0,
       band_d_2023: 870.0,

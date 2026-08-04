@@ -49,6 +49,29 @@ export default function CouncilTaxIncreasesPage() {
     .sort((a, b) => a.changePercent - b.changePercent)
     .slice(0, 20);
 
+  // Fixture mode (3 sample councils) and any future year where the new Band D
+  // table hasn't landed both produce an empty set. Bail to a plain notice
+  // rather than indexing into nothing — an empty dataset must never break the
+  // build, because fixtures are the documented fallback when the private data
+  // repo isn't reachable.
+  if (biggestIncreases.length === 0) {
+    return (
+      <main id="main-content" className="flex-1 container mx-auto px-4 max-w-3xl py-8">
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Insights', href: '/insights' },
+          { label: 'Council Tax Increases' },
+        ]} />
+        <h1 className="type-title-1 mb-2">Council Tax Increases</h1>
+        <p className="type-body-sm text-muted-foreground">
+          Year-on-year rises aren&apos;t available for this dataset yet. They
+          publish once the new Band D figures are released for every billing
+          authority.
+        </p>
+      </main>
+    );
+  }
+
   const biggestName = getCouncilDisplayName(biggestIncreases[0].council);
 
   const faqs = [
