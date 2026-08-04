@@ -3,7 +3,8 @@
  * live-site-reality-check.mjs — Phase 5b live-site reality check.
  *
  * For each council, confirm that 3 rendered values from their
- * Tier-3 field_sources entries appear VERBATIM in the archived PDF.
+ * Tier-3 field_sources entries appear VERBATIM in the archived
+ * source document (PDF, or HTML where that is what we archived).
  *
  * This is the "open council.gov.uk in another tab and confirm"
  * check from COUNCIL-ROLLOUT-PLAYBOOK.md §Phase 5b — but run
@@ -108,7 +109,7 @@ const CHECKS = {
   ],
   manchester: [
     { value: 'The only unearmarked reserve is the General Fund reserve at £19.9m', where: 'statement-of-accounts-2023-24.pdf', note: 'Reserves narrative' },
-    { value: 'Eamonn Boylan', where: 'statement-of-accounts-2023-24.pdf', note: 'CE name (interim)' },
+    { value: 'Tom Stannard', where: 'statement-of-accounts-2024-25.pdf', note: 'CE name — AGS signature p212 "Signed Tom Stannard (Chief Executive)" (commenced 3 Feb 2025 per Note p109)' },
     { value: 'Total Usable Reserves', where: 'statement-of-accounts-2023-24.pdf', note: 'Reserves section exists' },
   ],
   birmingham: [
@@ -122,9 +123,9 @@ const CHECKS = {
     { value: 'General Fund Reserve', where: 'statement-of-accounts-2024-25.pdf', note: 'Section exists' },
   ],
   surrey: [
-    { value: 'Terence Herbert', where: 'pay-policy-2025-26.pdf', note: 'CE name (Pay Policy)' },
-    { value: 'Pay Policy', where: 'pay-policy-2025-26.pdf', note: 'Document title' },
-    { value: 'Chief Executive', where: 'pay-policy-2025-26.pdf', note: 'Role name' },
+    { value: 'Terence Herbert', where: 'chief-executive-news-2024-08-19.html', note: 'CE name — the artefact field_sources.chief_executive actually cites (surreycc.gov.uk)' },
+    { value: 'Pay Policy', where: 'pay-policy-statement-2025-26.pdf', note: 'Document title' },
+    { value: 'Chief Executive', where: 'pay-policy-statement-2025-26.pdf', note: 'Role name — adopted statement, not the committee covering report' },
   ],
   cornwall: [
     { value: '201,661', where: 'statement-of-accounts-2024-25.pdf', note: 'Kate Kennally CE Note 10a' },
@@ -175,6 +176,31 @@ function pdfGrep(pdfPath, needle) {
   }
 }
 
+/** Some field_sources cite an archived HTML page rather than a PDF (e.g. a
+ *  council newsroom post). Strip tags to visible text, then count occurrences
+ *  of the needle — same "appears verbatim in the archived source" semantics. */
+function htmlGrep(htmlPath, needle) {
+  try {
+    const text = readFileSync(htmlPath, 'utf8')
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(Number(d)))
+      .replace(/\s+/g, ' ');
+    return text.split(needle).length - 1;
+  } catch {
+    return 0;
+  }
+}
+
+function archiveGrep(archivePath, needle) {
+  return /\.html?$/i.test(archivePath)
+    ? htmlGrep(archivePath, needle)
+    : pdfGrep(archivePath, needle);
+}
+
 const reports = [];
 for (const { name, slug } of BATCH_67) {
   const checks = CHECKS[slug] || [];
@@ -185,7 +211,7 @@ for (const { name, slug } of BATCH_67) {
       results.push({ ...check, pdfPath, pdfExists: false, found: false, count: 0 });
       continue;
     }
-    const count = pdfGrep(pdfPath, check.value);
+    const count = archiveGrep(pdfPath, check.value);
     results.push({ ...check, pdfPath, pdfExists: true, found: count > 0, count });
   }
   const passed = results.filter(r => r.found).length;
