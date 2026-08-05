@@ -5,7 +5,7 @@ import { useCouncil } from '@/context/CouncilContext';
 import { getCouncilSlug } from '@/data/councils';
 import { useIsEmbed } from '@/lib/embed-context';
 import ShareButton from '@/components/proposals/ShareButton';
-import { SITE_URL } from '@/lib/utils';
+import { SITE_URL, withReferral } from '@/lib/utils';
 
 interface CardShareHeaderProps {
   cardType: string;
@@ -34,9 +34,9 @@ export default function CardShareHeader({
   const isEmbed = useIsEmbed();
   const slug = params?.slug || (selectedCouncil ? getCouncilSlug(selectedCouncil) : undefined);
 
-  const shareUrl = slug ? `${SITE_URL}/council/${slug}/card/${cardType}` : undefined;
+  const shareUrl = slug ? withReferral(`${SITE_URL}/council/${slug}/card/${cardType}`, 'share', cardType) : undefined;
   const imageUrl = slug ? `/api/share/${slug}/${cardType}?format=story` : undefined;
-  const embedUrl = slug ? `${SITE_URL}/embed/council/${slug}/${cardType}` : undefined;
+  const embedUrl = slug ? withReferral(`${SITE_URL}/embed/council/${slug}/${cardType}`, 'embed', cardType) : undefined;
 
   return (
     <div>

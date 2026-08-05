@@ -19,7 +19,7 @@ import { useIsEmbed } from '@/lib/embed-context';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import { INFLATION_CONTEXT } from '@/lib/inflation-context';
-import { SITE_URL } from '@/lib/utils';
+import { SITE_URL, withReferral } from '@/lib/utils';
 
 // Helper function to find a linkable council from precept authority name
 const findLinkedCouncil = (authorityName: string) => {
@@ -268,7 +268,7 @@ const YourBillCard = ({
           {/* Check your exact bill CTA — links out to council's own calculator */}
           {detailed?.council_tax_url && (
             <a
-              href={detailed.council_tax_url}
+              href={withReferral(detailed.council_tax_url, 'cta', 'check-your-bill')}
               target="_blank"
               rel="noopener"
               className="cta-card mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted group cursor-pointer"
@@ -333,7 +333,7 @@ const YourBillCard = ({
           <ShareButton
             title={`${selectedCouncil.name} council tax`}
             text={`I pay ${thisCouncilBandD ? formatCurrency(thisCouncilBandD, { decimals: 2 }) : 'N/A'}/year to ${selectedCouncil.name}. See where your council tax goes.`}
-            url={`${SITE_URL}/council/${getCouncilSlug(selectedCouncil)}/card/your-bill`}
+            url={withReferral(`${SITE_URL}/council/${getCouncilSlug(selectedCouncil)}/card/your-bill`, 'share', 'your-bill')}
             imageUrl={`/api/share/${getCouncilSlug(selectedCouncil)}/your-bill?format=story`}
             variant="hero"
           />

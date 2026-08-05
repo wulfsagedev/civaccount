@@ -169,7 +169,7 @@ export default async function EmbedCouncilPage({ params }: Props) {
 
           <div className="footer">
             <span className="logo">CivAccount</span>
-            <a href={`https://www.civaccount.co.uk/council/${slug}`} target="_blank" rel="noopener">
+            <a href={`https://www.civaccount.co.uk/council/${slug}?utm_source=civaccount&utm_medium=embed&utm_content=council-card`} target="_blank" rel="noopener">
               View full dashboard
             </a>
           </div>
