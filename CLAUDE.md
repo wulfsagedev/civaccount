@@ -642,6 +642,11 @@ regardless.
 
 ## Data Sources (CRITICAL RULE)
 
+> **The binding rules live in [`DATA-CONSTITUTION.md`](DATA-CONSTITUTION.md)** —
+> nine rules, each enforced by a validator with a ratcheted floor, plus the
+> admission process every new data point must follow. This section is the
+> summary; the constitution is the law, and CI enforces it.
+
 **ONLY use .gov.uk websites for all data.** This is an unbreakable rule:
 
 - ✅ Council Tax: GOV.UK Council Tax 2025-26

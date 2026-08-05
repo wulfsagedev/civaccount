@@ -43,6 +43,7 @@ import { validate as validateTierClassification } from './validators/tier-classi
 import { validate as validateForbiddenSourceScan } from './validators/forbidden-source-scan.mjs';
 import { validate as validateLastVerifiedFreshness } from './validators/last-verified-freshness.mjs';
 import { validate as validateCtrCrossCheck } from './validators/ctr-cross-check.mjs';
+import { validate as validateCitationRequired } from './validators/citation-required.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -106,6 +107,7 @@ async function main() {
     ['field-staleness', validateFieldStaleness],
     ['last-verified-freshness', validateLastVerifiedFreshness],
     ['ctr-cross-check', validateCtrCrossCheck],
+    ['citation-required', validateCitationRequired],
     ['provenance-strict', validateProvenanceStrict],
     ['calculated-fields', validateCalculatedFields],
     ['field-source-years', validateFieldSourceYears],

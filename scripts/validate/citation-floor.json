@@ -1,0 +1,16 @@
+{
+  "max_uncited_values": 762,
+  "max_unlicensed_citations": 6,
+  "unlicensed_note": "Values cited to a document the council genuinely published but hosted off .gov.uk (Azure blob, Contentful CDN, council .org.uk download hosts). Each needs re-sourcing to the council's own .gov.uk page. May only DECREASE — a seventh fails CI. Baseline 2026-08-05: Blaby (lbcp.co.uk), Colchester (cbccrmdata.blob.core.windows.net), Stockport (assets.ctfassets.net), East Riding (downloads.eastriding.org.uk), Islington x2 (islingtonscp.org.uk).",
+  "note": "Ratchet floor — the number of per-council data values carrying NO source URL. May only DECREASE. CI errors the moment the live count exceeds this, so a new uncited value can never enter the dataset; existing debt is paid down by rollouts and audits. Lower this number as councils are cleaned. Raising it requires a deliberate, reviewed manual edit — that is the ratchet.",
+  "set_at": "2026-08-05",
+  "baseline_breakdown": {
+    "savings_target": 187,
+    "total_allowances_cost": 180,
+    "council_leader": 118,
+    "chief_executive": 118,
+    "councillor_basic_allowance": 89,
+    "budget_gap": 69,
+    "chief_executive_salary": 1
+  }
+}
