@@ -43,8 +43,18 @@ and analysis sites are explicitly forbidden.
 |---|---|
 | **Rule** | `scripts/validate/lib/source-licence.mjs` — `classifySourceUrl()` |
 | **Enforcers** | `forbidden-source-scan.mjs` (all URL surfaces) · `citation-required.mjs` (field citations) |
-| **Floors** | `source-licence-floor.json` → 39 · `citation-floor.json` → `max_unlicensed_citations` = 6 |
+| **Floors** | `source-licence-floor.json` → 33 · `citation-floor.json` → `max_unlicensed_citations` = 0 |
 | **Fails when** | either count rises |
+
+Field citations reached **zero** off-government hosts on 2026-08-05: the last six
+(Blaby, Colchester, Stockport, East Riding, Islington ×2) were re-sourced to the
+councils' own `.gov.uk` URLs, each verified HTTP 200 with its stored verbatim
+excerpt intact. Where a council publishes only via a commercial CDN — Azure blob
+(Colchester), Contentful (Stockport) — the citation points at the council's own
+`.gov.uk` landing page for the document rather than the CDN; the CDN was **not**
+admitted to `OGL_PUBLISHERS`, because a generic file host is not the council's
+publishing infrastructure. The 33 remaining `forbidden-source-scan` violations
+are on other URL surfaces (documents, sources, open-data links), not citations.
 
 The same rule is enforced at the pipeline gates (`01-inventory`, `05-populate`),
 so a bad source cannot enter during a rollout either.
@@ -176,8 +186,11 @@ Stated plainly, because a constitution that oversells itself is worse than none.
 - **762 per-council values have no citation at all.** Frozen by Rule 1's floor,
   so it cannot grow — but it is real debt: mostly `savings_target`,
   `total_allowances_cost`, `council_leader`, `chief_executive`.
-- **6 citations point at council documents on non-government hosts.** Frozen at
-  6 by Rule 2's floor.
+- ~~**6 citations point at council documents on non-government hosts.**~~
+  **Paid off 2026-08-05** — all six re-sourced to `.gov.uk`, floor lowered to 0.
+  Two of them (Colchester, Stockport) now cite a landing page rather than a
+  page-anchored PDF, because those councils publish only via a commercial CDN;
+  the page number, excerpt and page image still pin the exact spot.
 - **The verbatim check covers 20 councils** — the ones with archived PDFs. The
   other 297 have nothing archived to check against.
 - **Currency is not fully mechanised.** A chief executive who left last month
