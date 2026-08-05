@@ -78,7 +78,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                   <a
                     href={verifiedSupplierSource.sourceUrl}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="underline hover:text-foreground"
                   >
                     Open the source
@@ -180,7 +180,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                           <a
                             href={sourceUrl}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="noopener"
                             onClick={(e) => e.stopPropagation()}
                             className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
                           >
@@ -208,7 +208,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                         <a
                           href={sourceUrl}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="noopener"
                           className="inline-flex items-center gap-1 type-caption text-muted-foreground hover:text-foreground transition-colors mt-1"
                         >
                           <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
@@ -384,7 +384,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                           <a
                             href={grantSourceUrl}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="noopener"
                             onClick={(e) => e.stopPropagation()}
                             className="inline-flex items-center gap-1.5 type-caption font-medium text-foreground hover:underline"
                           >
@@ -412,7 +412,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                         <a
                           href={grantSourceUrl}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="noopener"
                           className="inline-flex items-center gap-1 type-caption text-muted-foreground hover:text-foreground transition-colors mt-1"
                         >
                           <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
@@ -464,7 +464,7 @@ const SuppliersGrantsCard = ({ selectedCouncil }: SuppliersGrantsCardProps) => {
                 <a
                   href={link.url}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="type-body-sm underline hover:text-foreground transition-colors inline-flex items-center gap-1"
                 >
                   {link.label}

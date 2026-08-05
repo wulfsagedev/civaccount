@@ -88,7 +88,7 @@ const WhoToContactCard = ({ selectedCouncil }: WhoToContactCardProps) => {
                 <a
                   href={detailed.website}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-foreground text-background type-body-sm font-semibold hover:bg-foreground/90 transition-colors cursor-pointer"
                 >
                   Contact {selectedCouncil.name}
@@ -135,7 +135,7 @@ const WhoToContactCard = ({ selectedCouncil }: WhoToContactCardProps) => {
                     <a
                       href={countyWebsite}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-muted text-foreground type-body-sm font-semibold hover:bg-muted/70 transition-colors cursor-pointer"
                     >
                       Contact {countyName}
@@ -179,7 +179,7 @@ const WhoToContactCard = ({ selectedCouncil }: WhoToContactCardProps) => {
                 <a
                   href={detailed.website}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-foreground text-background type-body-sm font-semibold hover:bg-foreground/90 transition-colors cursor-pointer"
                 >
                   Contact {selectedCouncil.name}
@@ -208,7 +208,7 @@ const WhoToContactCard = ({ selectedCouncil }: WhoToContactCardProps) => {
               <a
                 href="https://www.gov.uk/find-local-council"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-muted text-foreground type-body-sm font-semibold hover:bg-muted/70 transition-colors cursor-pointer"
               >
                 Find your district council

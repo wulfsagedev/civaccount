@@ -35,6 +35,15 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # Fetch the real dataset if the token is configured. Without it the
+      # validator skips and the Data Constitution's ratchets never run — a
+      # green check that verified nothing. Pre-wired so enforcement turns on
+      # the moment CIVACCOUNT_DATA_TOKEN is added as an Actions secret.
+      - name: Fetch private council data (if token configured)
+        env:
+          CIVACCOUNT_DATA_TOKEN: ${{ secrets.CIVACCOUNT_DATA_TOKEN }}
+        run: node scripts/fetch-private-data.mjs
+
       - name: Validate council data
         run: npm run validate
 

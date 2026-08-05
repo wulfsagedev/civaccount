@@ -199,7 +199,7 @@ const TaxBandsCard = ({
           <a
             href="https://www.gov.uk/council-tax-bands"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="underline hover:text-foreground transition-colors cursor-pointer"
           >
             Find your band on GOV.UK
@@ -215,7 +215,7 @@ const TaxBandsCard = ({
           <a
             href={detailed.council_tax_url}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="underline hover:text-foreground transition-colors cursor-pointer"
           >
             {selectedCouncil.name} council tax rates

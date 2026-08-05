@@ -259,7 +259,7 @@ const LeadershipCard = ({ selectedCouncil }: LeadershipCardProps) => {
           <a
             href={detailed.councillors_url || "https://www.writetothem.com/"}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted transition-colors group cursor-pointer"
           >
             <div>

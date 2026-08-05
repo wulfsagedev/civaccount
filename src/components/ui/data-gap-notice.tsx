@@ -92,7 +92,7 @@ export function DataGapNotice({
         <a
           href={ctaUrl}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
           className="type-body-sm underline hover:text-foreground transition-colors inline-flex items-center gap-1 pl-6"
         >
           {ex.nextStepLabel}

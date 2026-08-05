@@ -137,7 +137,7 @@ export default async function ParishPage({ params }: Props) {
                     <a
                       href={parish.website}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       className="type-body underline"
                     >
                       {parish.website.replace(/^https?:\/\//, '')}

@@ -57,7 +57,7 @@ export default function PrivacyPage() {
                       <a
                         href="https://github.com/wulfsagedev/civaccount"
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener"
                         className="text-primary hover:underline"
                       >
                         GitHub
@@ -105,7 +105,7 @@ export default function PrivacyPage() {
                       <a
                         href="https://vercel.com/legal/privacy-policy"
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener"
                         className="text-primary hover:underline"
                       >
                         Vercel&apos;s privacy policy
@@ -146,7 +146,7 @@ export default function PrivacyPage() {
                       <a
                         href="https://ico.org.uk/make-a-complaint/"
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener"
                         className="text-primary hover:underline"
                       >
                         Information Commissioner&apos;s Office (ICO)
@@ -161,7 +161,7 @@ export default function PrivacyPage() {
                       <a
                         href="https://github.com/wulfsagedev/civaccount"
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener"
                         className="text-primary hover:underline"
                       >
                         GitHub repository

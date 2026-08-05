@@ -19,7 +19,7 @@ export default function EmbedFooter({ councilName, viewHref, dataYear, pinned }:
       <a
         href={viewHref}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener"
         className="type-caption font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 shrink-0 transition-colors"
       >
         View on CivAccount

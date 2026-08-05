@@ -117,7 +117,7 @@ export function InsightHero({ entry, hero, children }: InsightHeroProps) {
                   <a
                     href={source.url}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="type-body-sm font-medium hover:underline"
                   >
                     {source.title}

@@ -301,7 +301,7 @@ export default function InsightsPage() {
               <a
                 href="https://www.gov.uk/government/collections/council-tax-statistics"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="font-medium hover:underline"
               >
                 Council Tax levels — GOV.UK
@@ -312,7 +312,7 @@ export default function InsightsPage() {
               <a
                 href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="font-medium hover:underline"
               >
                 Local authority revenue expenditure and financing — GOV.UK
@@ -323,7 +323,7 @@ export default function InsightsPage() {
               <a
                 href="https://www.gov.uk/government/publications/local-government-transparency-code-2015"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="font-medium hover:underline"
               >
                 Local Government Transparency Code — GOV.UK

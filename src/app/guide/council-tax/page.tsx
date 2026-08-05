@@ -191,7 +191,7 @@ export default function CouncilTaxGuidePage() {
             <a
               href="https://www.gov.uk/council-tax-bands"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="hover:text-foreground transition-colors"
             >
               Check your band on GOV.UK
@@ -359,7 +359,7 @@ export default function CouncilTaxGuidePage() {
             <ol className="space-y-3 list-decimal pl-5">
               <li>
                 <span className="font-medium text-foreground">Check your band</span> — Go to{' '}
-                <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-muted-foreground transition-colors">
+                <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="noopener" className="font-medium text-foreground hover:text-muted-foreground transition-colors">
                   GOV.UK council tax bands
                   <span className="sr-only"> (opens in new tab)</span>
                 </a>{' '}

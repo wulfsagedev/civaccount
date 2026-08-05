@@ -133,7 +133,7 @@ export default function AboutPage() {
                 <a
                   href="https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                 >
                   <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -145,7 +145,7 @@ export default function AboutPage() {
                 <a
                   href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                 >
                   <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -157,7 +157,7 @@ export default function AboutPage() {
                 <a
                   href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="flex items-center gap-3 p-4 border border-border/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
                 >
                   <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -176,7 +176,7 @@ export default function AboutPage() {
                   <a
                     href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="text-foreground underline hover:text-foreground/80 transition-colors"
                   >
                     Open Government Licence v3.0

@@ -111,7 +111,7 @@ const FinancialHealthCard = ({
               <a
                 href={detailed.budget_url}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 {selectedCouncil.name} budget
@@ -121,7 +121,7 @@ const FinancialHealthCard = ({
               <a
                 href={detailed.accounts_url}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 {selectedCouncil.name} accounts
@@ -131,7 +131,7 @@ const FinancialHealthCard = ({
               <a
                 href={detailed.website || `https://www.gov.uk/find-local-council`}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 {selectedCouncil.name} website
@@ -286,7 +286,7 @@ const FinancialHealthCard = ({
             <a
               href="https://www.instituteforgovernment.org.uk/explainer/local-authority-section-114-notices"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="underline hover:text-foreground transition-colors cursor-pointer"
             >
               Institute for Government

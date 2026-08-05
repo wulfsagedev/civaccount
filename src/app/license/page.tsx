@@ -187,7 +187,7 @@ export default function LicensePage() {
                     <a
                       href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       className="text-primary hover:underline"
                     >
                       Open Government Licence v3.0
@@ -234,7 +234,7 @@ export default function LicensePage() {
                 <a
                   href="https://github.com/wulfsagedev/civaccount"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors type-body-sm font-medium cursor-pointer"
                 >
                   <GithubIcon className="h-4 w-4" />

@@ -262,7 +262,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
               <><a
                 href="https://www.gov.uk/government/statistical-data-sets/env18-local-authority-collected-waste-annual-results-tables"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 DEFRA waste statistics
@@ -273,7 +273,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
               <>{detailed.service_outcomes.waste ? ' · ' : ''}<a
                 href="https://www.gov.uk/government/statistical-data-sets/live-tables-on-net-supply-of-housing"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 MHCLG housing supply
@@ -284,7 +284,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
               <>{(detailed.service_outcomes.waste || detailed.service_outcomes.housing?.homes_built) ? ' · ' : ''}<a
                 href="https://www.gov.uk/government/statistical-data-sets/road-condition-statistics-data-tables-rdc"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 DfT road condition
@@ -295,7 +295,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
               <>{' · '}<a
                 href="https://www.gov.uk/government/publications/five-year-ofsted-inspection-data"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground transition-colors cursor-pointer"
               >
                 Ofsted
@@ -380,7 +380,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                   <a
                     href={detailed.sources[0].url}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="underline hover:text-foreground transition-colors"
                   >
                     {detailed.sources[0].title}
@@ -480,7 +480,7 @@ const ServiceOutcomesCard = ({ selectedCouncil }: ServiceOutcomesCardProps) => {
                     <a
                       href={link.url}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       className="type-body-sm underline hover:text-foreground transition-colors inline-flex items-center gap-1"
                     >
                       {link.label}

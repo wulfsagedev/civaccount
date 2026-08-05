@@ -143,7 +143,7 @@ const BillHistoryCard = ({ selectedCouncil }: BillHistoryCardProps) => {
         <a
           href="https://www.gov.uk/government/collections/council-tax-statistics"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
           className="underline hover:text-foreground transition-colors cursor-pointer"
         >
           GOV.UK Council Tax Statistics

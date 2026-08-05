@@ -514,7 +514,7 @@ export default function PressPage() {
                 <a
                   href="https://github.com/wulfsagedev/civaccount"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="hover:text-foreground transition-colors"
                 >
                   GitHub
@@ -543,14 +543,14 @@ export default function PressPage() {
             </li>
             <li className="type-body-sm text-muted-foreground">
               <span className="font-semibold text-foreground">Logo:</span>{' '}
-              <a href="/icon-512" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+              <a href="/icon-512" target="_blank" rel="noopener" className="hover:text-foreground transition-colors">
                 /icon-512
               </a>{' '}
               (512×512 PNG, transparent background). SVG in the{' '}
               <a
                 href="https://github.com/wulfsagedev/civaccount"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="hover:text-foreground transition-colors"
               >
                 GitHub repo

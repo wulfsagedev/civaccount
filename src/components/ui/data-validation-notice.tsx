@@ -81,7 +81,7 @@ export function DataValidationNotice({
               <a
                 href={sourceUrl}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="underline hover:text-foreground inline-flex items-center gap-1"
               >
                 {sourceLabel ?? 'Open source document'}

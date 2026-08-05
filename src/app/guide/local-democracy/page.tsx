@@ -169,7 +169,7 @@ export default function LocalDemocracyGuidePage() {
             </div>
             <p>
               If the council refuses your request, you can appeal to the Information Commissioner&apos;s Office (ICO) at{' '}
-              <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-muted-foreground transition-colors">
+              <a href="https://ico.org.uk" target="_blank" rel="noopener" className="font-medium text-foreground hover:text-muted-foreground transition-colors">
                 ico.org.uk
                 <span className="sr-only"> (opens in new tab)</span>
               </a>.
@@ -242,7 +242,7 @@ export default function LocalDemocracyGuidePage() {
             </div>
             <p>
               You can stand as a member of a political party or as an independent. Contact the{' '}
-              <a href="https://www.electoralcommission.org.uk" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-muted-foreground transition-colors">
+              <a href="https://www.electoralcommission.org.uk" target="_blank" rel="noopener" className="font-medium text-foreground hover:text-muted-foreground transition-colors">
                 Electoral Commission
                 <span className="sr-only"> (opens in new tab)</span>
               </a>

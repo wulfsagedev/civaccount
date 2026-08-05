@@ -196,7 +196,7 @@ export default function SourceAnnotation({
                 <a
                   href={provenance.source_url}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="hover:underline inline-flex items-center gap-1"
                 >
                   {provenance.source_title}
@@ -332,7 +332,7 @@ export default function SourceAnnotation({
                 <a
                   href={provenance.wayback_url}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="type-caption text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors"
                 >
                   <Landmark className="h-3 w-3 shrink-0" aria-hidden="true" />

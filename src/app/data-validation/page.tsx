@@ -207,7 +207,7 @@ export default function DataValidationPage() {
               <a
                 href="https://github.com/wulfsagedev/civaccount/blob/main/PROVENANCE-INTEGRITY-PLAN.md"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="type-body underline hover:text-foreground inline-flex items-center gap-1"
               >
                 PROVENANCE-INTEGRITY-PLAN.md — the technical plan driving this work

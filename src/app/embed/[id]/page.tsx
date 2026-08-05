@@ -91,7 +91,7 @@ export default function EmbedPage() {
         <a
           href={proposalUrl}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
           style={{ textDecoration: 'none', color: 'inherit' }}
         >
           <h3 style={{ fontSize: '16px', fontWeight: 600, margin: '0 0 8px', lineHeight: 1.3, color: '#111' }}>
@@ -120,7 +120,7 @@ export default function EmbedPage() {
       <a
         href={proposalUrl}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener"
         style={{
           display: 'flex',
           alignItems: 'center',

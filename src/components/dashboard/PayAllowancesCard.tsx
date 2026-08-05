@@ -228,7 +228,7 @@ const PayAllowancesCard = ({ selectedCouncil }: PayAllowancesCardProps) => {
                 <a
                   href={link.url}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="type-body-sm underline hover:text-foreground transition-colors inline-flex items-center gap-1"
                 >
                   {link.label}

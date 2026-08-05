@@ -270,7 +270,7 @@ const YourBillCard = ({
             <a
               href={detailed.council_tax_url}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="cta-card mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted group cursor-pointer"
             >
               <div className="leading-tight">

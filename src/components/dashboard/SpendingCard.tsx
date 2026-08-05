@@ -265,7 +265,7 @@ const SpendingCard = ({
                                 <a
                                   href={contract.source_url}
                                   target="_blank"
-                                  rel="noopener noreferrer"
+                                  rel="noopener"
                                   className="type-body-sm text-muted-foreground underline hover:text-foreground transition-colors inline-flex items-center gap-1 mt-0.5"
                                 >
                                   Source
@@ -289,7 +289,7 @@ const SpendingCard = ({
                               <a
                                 href={link.url}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener"
                                 className="type-body-sm underline hover:text-foreground transition-colors inline-flex items-center gap-1"
                               >
                                 {link.label}
@@ -362,7 +362,7 @@ const SpendingCard = ({
             <a
               href={detailed.budget_url}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="underline hover:text-foreground transition-colors cursor-pointer"
             >
               {selectedCouncil.name} budget
@@ -372,7 +372,7 @@ const SpendingCard = ({
             <a
               href="https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="underline hover:text-foreground transition-colors cursor-pointer"
             >
               GOV.UK Local Authority Finance

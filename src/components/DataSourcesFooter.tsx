@@ -110,7 +110,7 @@ export default function DataSourcesFooter() {
                 key={i}
                 href={link.url}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="inline-flex items-center gap-1 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 {link.title}
@@ -155,7 +155,7 @@ export default function DataSourcesFooter() {
                         key={i}
                         href={link.url}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener"
                         className="flex items-center gap-1.5 py-0.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                       >
                         {link.title}
@@ -178,7 +178,7 @@ export default function DataSourcesFooter() {
                     key={i}
                     href={link.url}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="flex items-center gap-1.5 py-0.5 type-caption text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   >
                     {link.title}

@@ -278,7 +278,7 @@ export default async function ProvenancePage({ params }: Props) {
                   <a
                     href={s.url}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="shrink-0 inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Open source
@@ -351,7 +351,7 @@ export default async function ProvenancePage({ params }: Props) {
                       <a
                         href={evidenceUrl}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener"
                         className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors"
                       >
                         Open source
@@ -362,7 +362,7 @@ export default async function ProvenancePage({ params }: Props) {
                         <a
                           href={waybackUrl}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="noopener"
                           className="inline-flex items-center gap-1.5 type-caption text-muted-foreground hover:text-foreground transition-colors"
                         >
                           Archived copy
@@ -376,7 +376,7 @@ export default async function ProvenancePage({ params }: Props) {
                     <a
                       href={src.page_image_url}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       className="mt-2 inline-flex items-center gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted transition-colors group"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}

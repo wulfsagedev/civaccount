@@ -54,7 +54,7 @@ export default function Footer() {
             <a
               href="https://github.com/wulfsagedev/civaccount"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center"
             >
               GitHub
@@ -71,7 +71,7 @@ export default function Footer() {
             <a
               href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="hover:text-foreground transition-colors"
             >
               Open Government Licence v3.0
@@ -85,7 +85,7 @@ export default function Footer() {
               <a
                 href="https://wulfsage.com"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 wulfsage
