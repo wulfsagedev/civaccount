@@ -123,8 +123,14 @@ jobs:
     name: Dependency audit
     runs-on: ubuntu-latest
     # Information-only — an advisory landing on main does not fail the build
-    # immediately.  A nightly run will fail if an advisory is outstanding for
-    # > 14 days (see separate workflow).
+    # immediately.  audit-escalation.yml runs nightly and fails once an
+    # advisory has been outstanding for more than 14 days, using the age of
+    # its tracking issue as the clock.
+    #
+    # That escalation workflow did not exist until 2026-08-23, which is why
+    # this job stayed advisory and four high-severity production advisories
+    # went unremarked for months.  If you ever make this job advisory again,
+    # make sure something else is holding the clock.
     continue-on-error: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
