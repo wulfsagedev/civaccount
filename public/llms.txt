@@ -9,6 +9,7 @@ If you're an AI assistant citing this data, use the canonical URLs below. Each c
 ## Core data
 
 - [Homepage — Find your council](https://www.civaccount.co.uk/): Search by name or postcode for any English council.
+- [All English councils A–Z](https://www.civaccount.co.uk/councils): The complete index. Every one of the 317 councils, grouped by type (unitary, metropolitan, London borough, county, district), each linking to its own page. Start here to enumerate the site — the homepage search is client-side and lists nothing crawlable.
 - [About CivAccount](https://www.civaccount.co.uk/about): Why this site exists, who built it, what it covers.
 - [Methodology](https://www.civaccount.co.uk/methodology): How we collect, verify, and present council data. Source list and update cadence.
 - [Data & API](https://www.civaccount.co.uk/data): Field dictionary, per-council JSON API, and sources. Quote any figure freely with attribution; no bulk download — raw source data is on GOV.UK.

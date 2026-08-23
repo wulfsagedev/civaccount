@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageShareButton } from '@/components/ui/page-share-button';
@@ -247,6 +248,25 @@ export default function InsightsPage() {
             ];
           })}
         </div>
+
+        {/* Browse-all — this hub previously linked to zero council pages, so
+            authority stopped here instead of flowing down to the 317. */}
+        <section className="mt-12">
+          <h2 className="type-title-2 font-semibold mb-1">Looking for one council?</h2>
+          <p className="type-body-sm text-muted-foreground mb-5">
+            The rankings above cover England as a whole. To go straight to a single council, browse the full list.
+          </p>
+          <Link
+            href="/councils"
+            className="card-elevated p-4 flex items-center justify-between hover:bg-muted/30 transition-colors cursor-pointer"
+          >
+            <div className="leading-tight">
+              <p className="type-body-sm font-semibold mb-1">All English councils A&ndash;Z</p>
+              <p className="type-caption text-muted-foreground">Every council, grouped by type, linking to its own breakdown.</p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+          </Link>
+        </section>
 
         {/* Related pillar guides — topical-authority internal links */}
         <section className="mt-12">

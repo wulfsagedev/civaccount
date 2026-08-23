@@ -38,6 +38,10 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-wrap gap-x-4 gap-y-1 type-body-sm">
+            {/* Sitewide link to the A–Z index. Being in the footer puts every
+                council page two clicks from anywhere on the site, not just
+                from the homepage. */}
+            <Link href="/councils" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">All councils</Link>
             <Link href="/townhall" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Town Hall</Link>
             <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">About</Link>
             <Link href="/methodology" className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer min-h-[44px] inline-flex items-center">Methodology</Link>
