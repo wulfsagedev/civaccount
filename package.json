@@ -19,6 +19,8 @@
     "proof:verify-lock": "node scripts/validate/verify-council-lock.mjs",
     "proof:bradford": "node scripts/validate/bradford-absolute.mjs",
     "proof:ratchet": "node scripts/validate/proof-ratchet.mjs",
+    "reverify": "node scripts/validate/reverify.mjs",
+    "reverify:write": "node scripts/validate/reverify.mjs --write",
     "checksum:update": "node scripts/validate/update-checksums.mjs",
     "sync:band-d": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
     "generate:coverage": "node scripts/generate-coverage-stats.mjs",

@@ -14,6 +14,23 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
+// Any slug not in generateStaticParams() must 404 with a real HTTP 404.
+//
+// Without this, an unknown slug falls through to on-demand rendering and
+// page.tsx — a client component — calls notFound(). That renders the
+// not-found UI but cannot set the status code, because the response has
+// already been streamed with a 200. The result was a soft 404 across an
+// unbounded URL space: /council/anything-at-all returned 200 with the
+// homepage canonical, which burns crawl budget and reads to Google as a
+// site-quality problem.
+//
+// Safe to force: getCouncilBySlug() matches on generateSlug(name) and
+// getAllCouncilSlugs() returns generateSlug(name) for every council, so the
+// two sets are identical — there are no aliases to strand. Nested dynamic
+// segments keep their own dynamicParams, so runtime-created proposal IDs
+// under /council/<slug>/proposals/<id> are unaffected.
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const council = getCouncilBySlug(slug);

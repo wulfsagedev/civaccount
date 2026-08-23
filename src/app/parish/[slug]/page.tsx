@@ -13,6 +13,16 @@ export async function generateStaticParams() {
   return getAllParishSlugs().map((slug) => ({ slug }));
 }
 
+// Unknown parish slugs must 404 for real. `notFound()` below is not enough on
+// its own: with dynamicParams left on, Next generates the unknown path on
+// demand, caches the not-found render as a successful prerender
+// (`x-nextjs-prerender: 1`, `s-maxage=31536000`) and serves it 200 forever.
+// getAllParishSlugs() is the complete set, so closing the door is safe. Note
+// PARISHES is currently empty — the feature has no data yet — so every
+// /parish/<slug> now 404s, which is the correct answer while there is nothing
+// to show. It starts serving pages again the moment parishes are added.
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const parish = getParishBySlug(slug);
