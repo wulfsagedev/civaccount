@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { DataFlowAnimation } from '@/components/ui/data-flow-animation';
 import Link from 'next/link';
-import { ChevronRight, Vote, GitCompareArrows, BarChart3, BookOpen } from 'lucide-react';
+import { ChevronRight, Vote, GitCompareArrows, BarChart3, BookOpen, ListTree } from 'lucide-react';
 import { getCouncilSlug } from '@/data/councils';
 
 // Memoized homepage content to prevent re-renders
@@ -42,6 +42,25 @@ const HomepageContent = memo(function HomepageContent() {
 
           {/* Cross-promo CTAs */}
           <div className="space-y-2">
+            {/* First card deliberately. The search box above is client-side, so
+                before this the homepage linked to zero council pages and no
+                crawler could reach one from the root. This is the only
+                homepage link that leads to all 317. */}
+            <Link
+              href="/councils"
+              className="flex items-center justify-between p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <ListTree className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                </div>
+                <div className="leading-tight">
+                  <p className="type-body-sm font-semibold">All councils A&ndash;Z</p>
+                  <p className="type-caption text-muted-foreground">Browse every English council by name and type</p>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
+            </Link>
             <Link
               href="/townhall"
               className="flex items-center justify-between p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group cursor-pointer"

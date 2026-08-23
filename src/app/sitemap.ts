@@ -48,6 +48,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: baseUrl, lastModified: dataDriven },
     // Hubs that surface dataset content — tied to data freshness.
     { url: `${baseUrl}/insights`, lastModified: dataDriven },
+    // A–Z index of all 317 councils — the internal-linking hub that puts every
+    // council page two clicks from the homepage.
+    { url: `${baseUrl}/councils`, lastModified: dataDriven },
     { url: `${baseUrl}/compare`, lastModified: dataDriven },
     { url: `${baseUrl}/townhall`, lastModified: dataDriven },
     { url: `${baseUrl}/data`, lastModified: dataDriven },
