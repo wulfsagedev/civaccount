@@ -52,6 +52,26 @@ Every sensitive row does.
 
 Highest priority: this token grants read access to the compiled dataset.
 
+> ### How you find out it has expired
+>
+> **Symptom: the Preview deploy succeeds and the Production deploy fails on
+> the same commit.** That combination means one thing — `fetch-private-data.mjs`
+> soft-failed to the 3-council fixture, and the guard in `next.config.ts`
+> refused to build production from it. Preview has no such guard, so it builds
+> happily on fixtures and goes green.
+>
+> This happened on 2026-08-23: the token expired around mid-July, the last
+> successful production deploy was 2026-06-17, and the failure only surfaced
+> at the next deploy attempt five weeks later. **Nothing warns you in between.**
+> The site keeps serving the last good build, so there is no outage to notice —
+> the project is simply un-deployable until someone tries.
+>
+> Read the build log (`npx vercel inspect <dpl_id> --logs`) and expect:
+> `Refusing to build production from fixture data.` Then rotate below.
+>
+> Because a 90-day token means this recurs, treat "my deploy failed" as
+> "check the token first" rather than a code problem.
+
 1. In GitHub → Settings → Developer settings → Personal access tokens →
    Fine-grained tokens, find the `civaccount-data-readonly` token.
 2. Click **Revoke** first. Do not wait until you've created the
