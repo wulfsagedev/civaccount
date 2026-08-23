@@ -26,7 +26,13 @@ import { getDataLastVerified } from '@/lib/data-freshness'
 
 // Single edit point for utility / policy page content changes. Bump this
 // when you edit /about, /methodology, /privacy, /terms, /accessibility, etc.
-const STATIC_PAGE_LASTMOD = '2026-04-19';
+//
+// This drifted for four months once (left at 2026-04-19 while the pages
+// themselves changed through to August), which is the failure mode a manual
+// constant invites. If you touch anything under the static routes listed
+// below, bump this in the same commit. Check with:
+//   git log -1 --format=%cs -- src/app/about src/app/methodology src/app/guide
+const STATIC_PAGE_LASTMOD = '2026-08-05';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.civaccount.co.uk'

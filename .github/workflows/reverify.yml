@@ -1,0 +1,144 @@
+name: Monthly Source Re-verification
+
+# Re-checks every cited source document across all 317 councils: still live,
+# still hashing to what we recorded, still containing the excerpt the figure
+# came from. Clean councils get a `last_auto_verified` stamp; everything else
+# is raised as an issue for a human.
+#
+# Why monthly, and why this exists at all: last-verified-freshness.mjs errors
+# at 180 days, and as of 2026-08-23 the stamps were clustered such that 284 of
+# 317 councils crossed that line inside a two-week window in October. Clearing
+# that by hand is 400+ hours. Without mechanising the half of re-verification
+# that IS mechanisable, CI goes permanently red — and a permanently red CI is
+# an ignored CI, which disables every ratchet in the Data Constitution.
+#
+# Runs a week after the data-freshness sweep so the two don't collide.
+
+# NOTE: this job reports only. It never stamps `last_auto_verified`, because
+# the dataset lives in the private civaccount-data repo and this workflow runs
+# in the public one. Stamping is `npm run reverify:write` from a checkout that
+# has the private data, committed there.
+
+on:
+  schedule:
+    - cron: '0 7 8 * *'   # 8th of every month, 07:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  reverify:
+    runs-on: ubuntu-latest
+    # 946 documents at concurrency 6, fetched politely from council servers.
+    # The first full sweep took 100s; the ceiling is generous because council
+    # sites are slow and some sit behind bot-walls that burn the full timeout.
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # poppler gives us pdftotext, which the sweep uses to re-check excerpts
+      # in any PDF whose hash has moved since we recorded it.
+      - name: Install poppler
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Fetch private council data
+        env:
+          CIVACCOUNT_DATA_TOKEN: ${{ secrets.CIVACCOUNT_DATA_TOKEN }}
+        run: node scripts/fetch-private-data.mjs
+
+      # Without the real dataset there is nothing to re-verify, and a green
+      # check that verified nothing is worse than no check.
+      - name: Require real data
+        run: |
+          if [ ! -f src/data/councils/index.ts ]; then
+            echo "::error::Private dataset not present — CIVACCOUNT_DATA_TOKEN missing or expired. See ROTATION-RUNBOOK.md."
+            exit 1
+          fi
+
+      - name: Run re-verification sweep
+        id: sweep
+        run: node scripts/validate/reverify.mjs --concurrency=6 2>&1 | tee reverify-output.txt
+
+      - name: Summarise
+        if: always()
+        run: |
+          node -e "
+            const r = require('./scripts/validate/reports/reverify-latest.json');
+            const s = r.summary;
+            const md = [
+              '## Source re-verification — ' + new Date().toISOString().slice(0,10),
+              '',
+              '| | councils | documents |',
+              '|---|---|---|',
+              '| clean / unchanged | ' + s.councils_clean + ' | ' + (s.documents_unchanged + s.documents_republished) + ' |',
+              '| drifted | ' + s.councils_drifted + ' | ' + s.documents_drifted + ' |',
+              '| broken | ' + s.councils_broken + ' | ' + s.documents_broken + ' |',
+              '| unverifiable | ' + s.councils_unverifiable + ' | ' + s.documents_unverifiable + ' |',
+            ].join('\n');
+            require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, md);
+          "
+
+      - name: Raise an issue for councils needing a human
+        if: always()
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'scripts/validate/reports/reverify-latest.json';
+            if (!fs.existsSync(path)) {
+              core.setFailed('No report produced — the sweep did not complete.');
+              return;
+            }
+            const report = JSON.parse(fs.readFileSync(path, 'utf-8'));
+            const s = report.summary;
+            const needsHuman = report.councils.filter(c => c.verdict === 'drifted' || c.verdict === 'broken');
+            if (needsHuman.length === 0) {
+              core.notice(`All ${s.councils_clean} checkable councils came back clean — no issue raised.`);
+              return;
+            }
+
+            const section = (verdict, title, render) => {
+              const rows = needsHuman.filter(c => c.verdict === verdict);
+              if (!rows.length) return '';
+              return [`### ${title} (${rows.length})`, '', ...rows.map(render), ''].join('\n');
+            };
+
+            const body = [
+              `Monthly sweep of every cited source document across ${s.councils_total} councils.`,
+              '',
+              `- **${s.councils_clean}** clean — sources unchanged, or republished with the excerpt intact`,
+              `- **${s.councils_drifted}** drifted — the excerpt no longer appears in the live document`,
+              `- **${s.councils_broken}** broken — a cited document is gone`,
+              `- **${s.councils_unverifiable}** unverifiable — nothing re-derivable stored yet`,
+              '',
+              '**Drifted is the interesting one.** When a council replaces a leader or',
+              'chief executive and updates the page, the stored excerpt stops matching —',
+              'so these are usually genuine currency failures, not broken tooling.',
+              '',
+              section('drifted', 'Drifted — figure may no longer be current', c =>
+                `- **${c.council}** — ${c.drifted.map(d => d.failures.map(f => f.field).join(', ')).join('; ')}`),
+              section('broken', 'Broken — cited document is gone', c =>
+                `- **${c.council}** — ${c.broken.map(b => `${b.detail}: ${b.url}`).join('<br>')}`),
+              '---',
+              'Reproduce locally with `npm run reverify`. Fix a single council with',
+              '`/rollout-council <Name>`, or re-source the specific field and re-run',
+              '`npm run reverify -- --council=<Name>`.',
+            ].filter(Boolean).join('\n');
+
+            const title = `Source re-verification: ${needsHuman.length} councils need a human (${new Date().toISOString().slice(0,10)})`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['data-integrity'],
+            });
