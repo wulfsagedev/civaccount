@@ -12,23 +12,24 @@ import {
   type InsightCardEntry,
 } from '@/data/insights';
 import {
-  getAverageTaxRise,
+  getAreaTaxRises,
+  getAverageAreaTaxRise,
   getBigFiveOutsourcers,
-  getBiggestTaxRises,
-  getCapEveryYear,
   getCeoPayStats,
   getClosestToBankruptcy,
-  getCouncilsAtOrOverCap,
   getHeadlineAreaExtremes,
   getHundredKClub,
   getNationalSpendStats,
   getSocialCareSqueeze,
-  getTaxCapBreakers,
   getThreeYearSqueeze,
   getTopSuppliersNational,
   getWhereEveryPoundGoes,
 } from '@/lib/insights-stats';
-import { formatCurrency, getCouncilDisplayName } from '@/data/councils';
+import {
+  formatCurrency,
+  getCouncilDisplayName,
+  CURRENT_TAX_YEAR,
+} from '@/data/councils';
 import {
   buildFAQPageSchema,
   buildBreadcrumbSchema,
@@ -67,18 +68,15 @@ function buildTileStats(): Record<
   const spend = getNationalSpendStats();
   const suppliers = getTopSuppliersNational(10);
   const lottery = getHeadlineAreaExtremes();
-  const rises = getBiggestTaxRises(1);
-  const avgRise = getAverageTaxRise();
-  const overCap = getCouncilsAtOrOverCap(4.99);
+  const rises = getAreaTaxRises(1);
+  const avgRise = getAverageAreaTaxRise();
   const bankruptcy = getClosestToBankruptcy(1);
   const ceo = getCeoPayStats(1);
   const care = getSocialCareSqueeze(1);
   const pound = getWhereEveryPoundGoes();
   const bigFive = getBigFiveOutsourcers();
   const hundredK = getHundredKClub(1);
-  const capBreakers = getTaxCapBreakers(4.99);
   const threeYear = getThreeYearSqueeze(1);
-  const capEvery = getCapEveryYear(4.99);
 
   // 2026-27 area Band D extremes (all-in-one councils, full area bill).
   const gap = lottery.mostExpensiveValue - lottery.cheapestValue;
@@ -93,7 +91,7 @@ function buildTileStats(): Record<
     },
     'biggest-tax-rises': {
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
-      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised Band D the most in 2025-26. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
+      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised the area Band D bill the most for ${CURRENT_TAX_YEAR}. Average rise across billing authorities: ${avgRise.toFixed(1)}%.`,
     },
     'three-year-squeeze': {
       hero: `+${formatCurrency(Math.round(threeYear.top[0]?.changeAbs ?? 0), { decimals: 0 })}`,
@@ -126,14 +124,6 @@ function buildTileStats(): Record<
     'closest-to-bankruptcy': {
       hero: formatShort(bankruptcy.top[0]?.gapPounds ?? 0),
       explainer: `Biggest budget gap in pounds — ${bankruptcy.top[0] ? getCouncilDisplayName(bankruptcy.top[0].council) : 'not available'}. ${bankruptcy.over10pct} councils have a gap of 10% or more of their net budget.`,
-    },
-    'tax-cap-breakers': {
-      hero: `${capBreakers.atOrOverCap.length}`,
-      explainer: `Councils that raised Band D by 4.99% or more in 2025-26. ${capBreakers.overCap.length} went above the cap, with special permission from government.`,
-    },
-    'cap-every-year': {
-      hero: `${capEvery.bothYearsAtCap.length}`,
-      explainer: `Councils that pushed Band D to 4.99% or more in BOTH 2024-25 and 2025-26 — a longer-term sign of pressure. ${capEvery.bothYearsOverCap.length} went above the cap in both years.`,
     },
   };
 }

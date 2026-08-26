@@ -3,14 +3,15 @@ import { InsightHero } from '@/components/insights/InsightHero';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
 import { getInsightCard } from '@/data/insights';
 import {
-  getAverageTaxRise,
-  getBiggestTaxRises,
-  getCouncilsAtOrOverCap,
+  getAreaTaxRises,
+  getAverageAreaTaxRise,
 } from '@/lib/insights-stats';
 import {
   formatCurrency,
   getCouncilDisplayName,
   getCouncilSlug,
+  PREVIOUS_TAX_YEAR,
+  CURRENT_TAX_YEAR,
 } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
@@ -30,9 +31,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const top = getBiggestTaxRises(10);
-  const avg = getAverageTaxRise();
-  const overCap = getCouncilsAtOrOverCap(4.99);
+  const top = getAreaTaxRises(10);
+  const avg = getAverageAreaTaxRise();
+  const year = CURRENT_TAX_YEAR;
   const maxPct = top[0]?.changePct ?? 1;
 
   const jsonLd = {
@@ -61,13 +62,13 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              Councils raising Band D by 4.99% or more this year
+              Biggest rise in the area Band D bill for {year}
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
-              {overCap}
+              +{top[0]?.changePct.toFixed(1)}%
             </p>
             <p className="type-body-sm text-muted-foreground">
-              National average rise: {avg.toFixed(1)}%.
+              Average rise across billing authorities: {avg.toFixed(1)}%.
             </p>
           </div>
         }
@@ -75,7 +76,7 @@ export default function Page() {
         <section className="card-elevated p-5 sm:p-6">
           <h2 className="type-title-2 mb-1">Top 10 biggest rises</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Ranked by percentage change from 2024-25 Band D to 2025-26 Band D.
+            Ranked by percentage change in the area Band D bill, {PREVIOUS_TAX_YEAR} to {year}.
           </p>
 
           <RankedBarList>
@@ -94,8 +95,11 @@ export default function Page() {
           </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: percentage change = (2025-26 Band D − 2024-25 Band D) ÷
-            2024-25 Band D. We rank every council that has published both figures.
+            How we got this: percentage change = ({year} Band D −{' '}
+            {PREVIOUS_TAX_YEAR} Band D) ÷ {PREVIOUS_TAX_YEAR} Band D, using the
+            area bill — the whole amount a household in
+            that area pays. County councils are not billing authorities and set
+            no area Band D, so they are not in this ranking.
           </p>
         </section>
       </InsightHero>

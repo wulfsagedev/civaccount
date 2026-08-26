@@ -78,8 +78,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/insights/ceo-pay-league`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/hundred-k-club`, lastModified: dataDriven },
     { url: `${baseUrl}/insights/closest-to-bankruptcy`, lastModified: dataDriven },
-    { url: `${baseUrl}/insights/tax-cap-breakers`, lastModified: dataDriven },
-    { url: `${baseUrl}/insights/cap-every-year`, lastModified: dataDriven },
     // Trust & policy — tied to static content edits.
     { url: `${baseUrl}/about`, lastModified: STATIC_PAGE_LASTMOD },
     { url: `${baseUrl}/methodology`, lastModified: STATIC_PAGE_LASTMOD },

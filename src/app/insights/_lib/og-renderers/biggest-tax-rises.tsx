@@ -1,11 +1,12 @@
 import type { ReactElement } from 'react';
 import { OG, ogWrap, ogBrandNational } from './og-shared-insights';
-import { getBiggestTaxRises, getAverageTaxRise } from '@/lib/insights-stats';
+import { getAreaTaxRises, getAverageAreaTaxRise } from '@/lib/insights-stats';
+import { CURRENT_TAX_YEAR } from '@/data/councils';
 import { getCouncilDisplayName } from '@/data/councils';
 
 export function renderBiggestTaxRises(): ReactElement {
-  const top = getBiggestTaxRises(5);
-  const avg = getAverageTaxRise();
+  const top = getAreaTaxRises(5);
+  const avg = getAverageAreaTaxRise();
   const max = top[0]?.changePct ?? 1;
 
   return ogWrap(
@@ -28,7 +29,7 @@ export function renderBiggestTaxRises(): ReactElement {
               letterSpacing: '0.08em',
             }}
           >
-            Biggest Band D tax rises · 2025-26
+            Biggest Band D tax rises · {CURRENT_TAX_YEAR}
           </span>
           <span
             style={{
@@ -39,7 +40,7 @@ export function renderBiggestTaxRises(): ReactElement {
               lineHeight: 1.05,
             }}
           >
-            National average rise: {avg.toFixed(1)}%
+            Average rise: {avg.toFixed(1)}%
           </span>
         </div>
 

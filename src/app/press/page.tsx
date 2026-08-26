@@ -11,7 +11,6 @@ import {
 } from '@/data/councils';
 import {
   getNationalSpendStats,
-  getCouncilsAtOrOverCap,
   getCeoPayStats,
   getHundredKClub,
   getClosestToBankruptcy,
@@ -57,7 +56,6 @@ export const metadata: Metadata = {
 export default function PressPage() {
   // ── Live-computed headline numbers (stay fresh as data updates) ──────────────
   const spend = getNationalSpendStats();
-  const atCap = getCouncilsAtOrOverCap(4.99);
 
   // 2026-27 area Band D stats, computed from the dataset. Billing authorities
   // only — county councils are not billing authorities, so they carry no
@@ -73,12 +71,6 @@ export default function PressPage() {
       (s, e) => s + ((e.area.value - e.area.previous!) / e.area.previous!) * 100,
       0,
     ) / withPrevYear.length;
-  // Round to 2dp so pound-level rounding can't drop a council targeting exactly
-  // 4.99% out of the bucket (same rule as insights-stats getCouncilsAtOrOverCap).
-  const atCapCurrent = withPrevYear.filter((e) => {
-    const raw = ((e.area.value - e.area.previous!) / e.area.previous!) * 100;
-    return Math.round(raw * 100) / 100 >= 4.99;
-  }).length;
   const sortedBills = [...areaBills].sort((a, b) => a.area.value - b.area.value);
   const cheapestArea = sortedBills[0];
   const mostExpensiveArea = sortedBills[sortedBills.length - 1];
@@ -99,10 +91,6 @@ export default function PressPage() {
   const facts: Array<{ stat: string; source: string }> = [
     {
       stat: `Average Band D council tax in England, ${CURRENT_TAX_YEAR}: ${formatCurrency(avgAreaBandD, { decimals: 0 })} (${avgAreaRise > 0 ? '+' : ''}${avgAreaRise.toFixed(1)}% vs ${PREVIOUS_TAX_YEAR}).`,
-      source: 'GOV.UK Council Tax levels 2026-27',
-    },
-    {
-      stat: `Councils that raised Band D by 4.99% or more in ${CURRENT_TAX_YEAR}: ${atCapCurrent}.`,
       source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
@@ -166,12 +154,6 @@ export default function PressPage() {
       value: topCeo ? formatCurrency(topCeo.total, { decimals: 0 }) : 'N/A',
       explanation: 'Highest chief-executive total remuneration disclosed in 2025-26.',
       url: '/insights/ceo-pay-league',
-    },
-    {
-      name: 'Cap Every Year',
-      value: `${atCap} councils`,
-      explanation: 'English councils that raised Band D to the 4.99% statutory cap in 2025-26.',
-      url: '/insights/cap-every-year',
     },
     {
       name: 'Big Five Outsourcers',

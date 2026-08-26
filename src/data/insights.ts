@@ -35,6 +35,13 @@ export interface InsightSource {
 export interface InsightCardEntry {
   /** URL slug — route is /insights/<slug>/ */
   slug: string;
+  /**
+   * Set when a card is pulled because it cannot currently be computed
+   * honestly. The route stays up and explains itself, but the card drops out
+   * of the hub, the sitemap and llms.txt, and the page goes noindex. Prefer
+   * this over deleting: the copy and sources survive for when it returns.
+   */
+  withdrawn?: { since: string; reason: string };
   /** Section this card belongs to — drives grouping on the hub. */
   section: InsightSectionKey;
   /** Short, plain-English card title. Also used as the SEO <h1>. */
@@ -90,26 +97,31 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   {
     slug: 'biggest-tax-rises',
     section: 'bill',
-    title: 'Biggest tax rises this year',
-    subtitle: 'Councils that put Band D up the most in 2025-26',
+    title: 'Biggest council tax rises',
+    subtitle: 'Councils that put Band D up the most this year',
     metaDescription:
-      "The English councils that raised council tax the most in 2025-26, ranked by how much Band D went up compared with 2024-25.",
+      'The English billing authorities that raised council tax the most for 2026-27, ranked by how much the area Band D bill went up on 2025-26.',
     shareText:
-      'The English councils that raised council tax the most this year',
+      'The councils that put Band D up the most this year — ranked',
     longformCopy: [
-      "Every year most councils put their Band D rate up. Some go up by more than others — a few with special permission from government.",
-      "This card ranks councils by how much their Band D bill changed from last year. It is a like-for-like comparison of the same number in two years.",
+      'This card ranks councils by how much the Band D bill for their area changed on last year. It is a like-for-like comparison of the same number in two years.',
+      'The figure is the area bill — the whole amount a household pays, including the county, police and fire shares where those apply. County councils are not ranked here: they do not set the area bill, the district council does.',
     ],
     faq: [
       {
-        question: 'Which councils raised council tax the most in 2025-26?',
+        question: 'Which councils raised council tax the most this year?',
         answer:
-          'The councils with the biggest rises are listed on this page, alongside the national average for context.',
+          'The ranked list on this page is worked out from the published Band D rates each time the page is built, so it always matches the data on the site. The top of the list is the biggest percentage rise.',
       },
       {
-        question: 'Why can some councils raise council tax by more than others?',
+        question: 'Is a big rise the same as breaking the cap?',
         answer:
-          'There is usually a limit on how much councils can put bills up without holding a local vote. Councils in financial difficulty can ask central government for permission to go above this limit.',
+          'No. Every council has a limit on how far it can raise Band D before it has to hold a local vote, and that limit is not the same for everyone — a few councils are granted a higher one. A council can appear high in this ranking and still be well inside its own limit. The Tax cap breakers card measures each council against its own limit.',
+      },
+      {
+        question: 'Where does this data come from?',
+        answer:
+          "Band D council tax rates are published by the Ministry of Housing, Communities and Local Government. We take each council's headline figure straight from GOV.UK.",
       },
     ],
     sources: [
@@ -123,31 +135,32 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   {
     slug: 'three-year-squeeze',
     section: 'bill',
-    title: 'Bigger bills, 2 years on',
+    title: 'Bigger bills, 3 years on',
     subtitle: 'How much more Band D costs than in 2023-24',
     metaDescription:
-      'The rise in Band D council tax from 2023-24 to 2025-26 for every English council — in pounds, not percentages. Shows how much more a typical household now pays each year.',
+      'The rise in Band D council tax from 2023-24 to 2026-27 for every English billing authority — in pounds, not percentages. Shows how much more a typical household now pays each year.',
     shareText:
-      "How much more Band D costs per year than 2 years ago — every English council ranked",
+      'How much more Band D costs per year than 3 years ago — every English billing authority ranked',
     longformCopy: [
-      'Each spring, councils tell people their new Band D rate and the percentage rise. Two years of rises add up fast — a council that raised by 5% then 5% is now charging 10.25% more, not 10%.',
-      "This card shows the story in pounds: how much more a Band D household pays each year now than in 2023-24. The biggest rises are over £300 more per year. The middle (median) is around £160. All 317 English councils are included — both years' rates are on the public record.",
+      'Each spring, councils tell people their new Band D rate and the percentage rise. Three years of rises add up faster than they look — a council that raised by 5% three years running is charging 15.8% more, not 15%.',
+      'This card shows the story in pounds: how much more a Band D household pays each year now than in 2023-24. The ranked list and the figures above it are worked out from the published rates each time the page is built, so they always match the data on the site.',
+      'County councils are not in this ranking. They do not set the area bill — the district council does — so there is no area Band D to compare.',
     ],
     faq: [
       {
-        question: 'How much has my Band D bill gone up in the last 2 years?',
+        question: 'How much has my Band D bill gone up in the last 3 years?',
         answer:
-          "Find your council in the ranked list to see the exact figure. Across England, the middle (median) council has added around £160 to a Band D bill since 2023-24. The biggest rises are more than double that.",
+          'Find your council in the ranked list to see the exact figure. The middle (median) figure across England is shown at the top of this page, worked out from the published rates rather than typed in.',
       },
       {
-        question: 'Why is the total rise more than the two percentages added together?',
+        question: 'Why is the total rise more than the yearly percentages added together?',
         answer:
-          "Each year's rise is added on top of the new, higher bill — not the original. So a 5% rise followed by another 5% works out at 10.25%, not 10%. Across two years, most councils are up around 10% — about £160 on a typical Band D bill.",
+          "Each year's rise is added on top of the new, higher bill — not the original. So 5% three years running works out at 15.8%, not 15%. That compounding is why the pound figures grow faster than people expect.",
       },
       {
         question: 'Where does this data come from?',
         answer:
-          "Band D council tax rates for 2023-24 and 2025-26 are published by the Ministry of Housing, Communities and Local Government. We take each council's headline figure straight from GOV.UK and subtract one from the other.",
+          "Band D council tax rates for 2023-24 and 2026-27 are published by the Ministry of Housing, Communities and Local Government. We take each council's headline figure straight from GOV.UK and subtract one from the other.",
       },
     ],
     sources: [
@@ -409,70 +422,90 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   },
   {
     slug: 'cap-every-year',
+    withdrawn: {
+      since: '2026-08-23',
+      reason:
+        'The referendum limit applies to each council\u2019s own share of the bill. Our Band D figures are the area bill \u2014 the whole amount a household pays, including the county, police and fire shares \u2014 and we do not yet hold the 2026-27 own-share split. Measuring an area rise against an own-share limit would name councils wrongly, which is how the earlier version of this card came to list four councils that had stayed inside limits government granted them. It returns when the per-authority figures are in the dataset.',
+    },
     section: 'redflags',
-    title: 'Cap every year',
-    subtitle: 'Councils that hit the 4.99% cap in both 2024 and 2025',
+    title: 'At the limit, every year',
+    subtitle: 'Councils that went to their limit two years running',
     metaDescription:
-      'The English councils that pushed Band D to — or past — the 4.99% cap in two years in a row. A pattern of ongoing financial pressure, not a one-off rise.',
+      'The English councils that raised Band D to the most they were allowed in both 2025-26 and 2026-27 — a pattern of ongoing financial pressure, not a one-off rise.',
     shareText:
-      'The councils that hit the 4.99% council tax cap two years running',
+      'The councils that went to their council tax limit two years running',
     longformCopy: [
-      "Most councils are limited to a Band D rise of 4.99% (a 2.99% basic rise plus a 2% extra charge for adult social care). To go higher, they normally have to hold a local vote. A few councils in serious financial difficulty get special permission from government to go above this limit.",
-      "This card shows the councils that raised Band D by 4.99% or more in both 2024-25 AND 2025-26. One big rise can follow a one-off change. Two in a row is a longer-term sign of financial pressure — a pattern you only see by comparing all 317 councils year by year.",
+      'One big rise can follow a one-off change. Two in a row is a longer-term sign of financial pressure — a pattern you only see by comparing councils year by year.',
+      'Each year is measured against that year\u2019s own limit for that council. The limits move between years, and which councils hold a higher one changes, so a council can be at its limit in both years having set two quite different percentages.',
     ],
     faq: [
       {
-        question: 'Why does hitting the cap two years running matter?',
+        question: 'Why does going to the limit two years running matter?',
         answer:
-          "Most years, most councils raise Band D by well under the cap. Hitting the highest allowed rise in two years in a row shows the council has little room to manoeuvre — and that each year's rise is sitting on top of an already higher bill.",
+          'Most years, most councils raise Band D by less than they are allowed. Going to the maximum twice in a row suggests a council has little room left — and each year\u2019s rise is charged on top of the last.',
       },
       {
-        question: 'How is this different from the "Above the cap" card?',
+        question: 'How is this different from the Tax cap breakers card?',
         answer:
-          "The other card lists councils that went above 4.99% this year. This one narrows that list to councils that pushed to — or past — the cap in BOTH 2024-25 and 2025-26. That is a longer-term sign of pressure, not a one-year response.",
+          'That card covers this year only. This one narrows it to councils that went to their limit in both of the last two years, which is a longer-term signal.',
       },
       {
         question: 'Where does this data come from?',
         answer:
-          "Band D council tax rates for 2023-24, 2024-25 and 2025-26 are published on GOV.UK. We work out each year's rise and pick out the councils that cleared 4.99% in both 2024-25 and 2025-26.",
+          "Band D rates and the referendum principles for both years come from the Ministry of Housing, Communities and Local Government's 'Council Tax levels set by local authorities in England' releases on GOV.UK. We work out each year's rise, rounded to 2 decimal places to match how councils publish it, and compare it with that council's limit for that year.",
       },
     ],
     sources: [
       {
-        title: 'Council Tax levels set by local authorities — GOV.UK',
-        url: 'https://www.gov.uk/government/collections/council-tax-statistics',
+        title: 'Council Tax levels set by local authorities in England 2026 to 2027 — GOV.UK',
+        url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027',
+      },
+      {
+        title: 'Council Tax levels set by local authorities in England 2025 to 2026 — GOV.UK',
+        url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',
       },
     ],
   },
   {
     slug: 'tax-cap-breakers',
+    withdrawn: {
+      since: '2026-08-23',
+      reason:
+        'The referendum limit applies to each council\u2019s own share of the bill. Our Band D figures are the area bill \u2014 the whole amount a household pays, including the county, police and fire shares \u2014 and we do not yet hold the 2026-27 own-share split. Measuring an area rise against an own-share limit would name councils wrongly, which is how the earlier version of this card came to list four councils that had stayed inside limits government granted them. It returns when the per-authority figures are in the dataset.',
+    },
     section: 'redflags',
-    title: 'Above the cap',
-    subtitle: 'Councils that raised Band D by 4.99% or more this year',
+    title: 'Tax cap breakers',
+    subtitle: 'Councils that raised Band D to the most they were allowed',
     metaDescription:
-      "The English councils that pushed council tax to — or above — the 4.99% cap in 2025-26, and the ones that needed government permission to go higher.",
+      'The English councils that raised council tax to the limit for 2026-27 — each measured against its own limit, including the councils government granted a higher one.',
     shareText:
-      'The councils that raised Band D to — or above — the 4.99% cap this year',
+      'The councils that went to their council tax limit this year',
     longformCopy: [
-      "Most councils are limited to a Band D rise of 4.99% (a 2.99% basic rise plus a 2% extra charge for adult social care). To go higher, they normally have to hold a local vote. A few councils in financial difficulty get special permission from government to go above this limit.",
-      "This card counts every council at or above the cap, shows the national average rise for context, and lists the councils that went above it. Going above the cap is one of the clearer signs of financial pressure.",
+      'Each year government sets the rise at which a council would have to hold a local vote before it could go further. A council can raise Band D right up to that point without asking anyone.',
+      'The limit is not one number. Councils that run adult social care have one limit, district councils have another, and a small number of councils are granted a higher limit than others of their type. This card measures every council against its own limit.',
+      'That distinction matters. A council granted a higher limit that uses it has not broken a rule — it did exactly what it was permitted to do, and the second list on this page shows who those councils are and what they actually set.',
     ],
     faq: [
       {
         question: 'What is the council tax cap?',
         answer:
-          "Each year, government sets a cap on how much councils can raise Band D without holding a local vote. For 2025-26 the basic cap is 2.99%, plus a 2% extra charge for adult social care — 4.99% in total for councils that run social care.",
+          'It is the point at which a council would have to hold a local referendum to raise Band D any further. For 2026-27 that is 5% for councils that run adult social care — 3% plus a 2% charge for adult social care — and the greater of £5 or 3% for district councils, which do not run social care.',
       },
       {
-        question: 'Why can some councils go above the cap?',
+        question: 'Why do some councils go higher than that?',
         answer:
-          "Councils in serious financial difficulty can apply to the Ministry of Housing, Communities and Local Government for an 'exceptional financial support' package. One condition of that support is often a council tax rise above the normal cap.",
+          'Government can grant an individual council a higher limit. For 2026-27 it did so for a handful of councils, listed on this page with the limit each was given. Those councils did not break a rule by using it.',
+      },
+      {
+        question: 'Where does this data come from?',
+        answer:
+          "Band D rates and the referendum principles both come from the Ministry of Housing, Communities and Local Government's annual 'Council Tax levels set by local authorities in England' release on GOV.UK. The exact wording of the limits is quoted at the bottom of this page.",
       },
     ],
     sources: [
       {
-        title: 'Council Tax levels set by local authorities — GOV.UK',
-        url: 'https://www.gov.uk/government/collections/council-tax-statistics',
+        title: 'Council Tax levels set by local authorities in England 2026 to 2027 — GOV.UK',
+        url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027',
       },
     ],
   },
@@ -485,7 +518,10 @@ export function getInsightCard(slug: string): InsightCardEntry | undefined {
 /** Ordered list of section keys that contain at least one active card. */
 export function getActiveSectionKeys(): InsightSectionKey[] {
   const keys = new Set<InsightSectionKey>();
-  for (const card of INSIGHT_CARDS) keys.add(card.section);
+  for (const card of INSIGHT_CARDS) {
+    if (card.withdrawn) continue;
+    keys.add(card.section);
+  }
   // Preserve the order defined in INSIGHT_SECTIONS.
   return (Object.keys(INSIGHT_SECTIONS) as InsightSectionKey[]).filter((k) =>
     keys.has(k),
@@ -493,5 +529,5 @@ export function getActiveSectionKeys(): InsightSectionKey[] {
 }
 
 export function getCardsForSection(section: InsightSectionKey): InsightCardEntry[] {
-  return INSIGHT_CARDS.filter((c) => c.section === section);
+  return INSIGHT_CARDS.filter((c) => c.section === section && !c.withdrawn);
 }
