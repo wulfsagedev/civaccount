@@ -15,19 +15,21 @@ import {
   getAreaTaxRises,
   getAverageAreaTaxRise,
   getBigFiveOutsourcers,
-  getCapEveryYear,
   getCeoPayStats,
   getClosestToBankruptcy,
   getHeadlineAreaExtremes,
   getHundredKClub,
   getNationalSpendStats,
   getSocialCareSqueeze,
-  getTaxCapBreakers,
   getThreeYearSqueeze,
   getTopSuppliersNational,
   getWhereEveryPoundGoes,
 } from '@/lib/insights-stats';
-import { formatCurrency, getCouncilDisplayName } from '@/data/councils';
+import {
+  formatCurrency,
+  getCouncilDisplayName,
+  CURRENT_TAX_YEAR,
+} from '@/data/councils';
 import {
   buildFAQPageSchema,
   buildBreadcrumbSchema,
@@ -74,9 +76,7 @@ function buildTileStats(): Record<
   const pound = getWhereEveryPoundGoes();
   const bigFive = getBigFiveOutsourcers();
   const hundredK = getHundredKClub(1);
-  const capBreakers = getTaxCapBreakers();
   const threeYear = getThreeYearSqueeze(1);
-  const capEvery = getCapEveryYear();
 
   // 2026-27 area Band D extremes (all-in-one councils, full area bill).
   const gap = lottery.mostExpensiveValue - lottery.cheapestValue;
@@ -91,7 +91,7 @@ function buildTileStats(): Record<
     },
     'biggest-tax-rises': {
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
-      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised Band D the most in ${capBreakers.year}. ${capBreakers.atOrOverCap.length} councils went to the most they were allowed. Average rise: ${avgRise.toFixed(1)}%.`,
+      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised the area Band D bill the most for ${CURRENT_TAX_YEAR}. Average rise across billing authorities: ${avgRise.toFixed(1)}%.`,
     },
     'three-year-squeeze': {
       hero: `+${formatCurrency(Math.round(threeYear.top[0]?.changeAbs ?? 0), { decimals: 0 })}`,
@@ -124,14 +124,6 @@ function buildTileStats(): Record<
     'closest-to-bankruptcy': {
       hero: formatShort(bankruptcy.top[0]?.gapPounds ?? 0),
       explainer: `Biggest budget gap in pounds — ${bankruptcy.top[0] ? getCouncilDisplayName(bankruptcy.top[0].council) : 'not available'}. ${bankruptcy.over10pct} councils have a gap of 10% or more of their net budget.`,
-    },
-    'tax-cap-breakers': {
-      hero: `${capBreakers.atOrOverCap.length}`,
-      explainer: `Councils that raised Band D to the most they were allowed in ${capBreakers.year}, each measured against its own limit. ${capBreakers.bespokeGranted.length} were granted a higher limit than others of their type.`,
-    },
-    'cap-every-year': {
-      hero: `${capEvery.bothYearsAtCap.length}`,
-      explainer: `Councils that went to their own limit in BOTH ${capEvery.years[0]} and ${capEvery.years[1]} — a longer-term sign of pressure, not a one-off rise.`,
     },
   };
 }

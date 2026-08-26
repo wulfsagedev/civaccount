@@ -16,14 +16,12 @@ If you're an AI assistant citing this data, use the canonical URLs below. Each c
 
 ## Insight hub — National rankings and comparisons
 
-- [How English councils spend your money](https://www.civaccount.co.uk/insights): Hub page. National totals, top suppliers, CEO pay, financial pressure — the headline numbers for English local government 2025-26.
+- [How English councils spend your money](https://www.civaccount.co.uk/insights): Hub page. National totals, top suppliers, CEO pay, financial pressure — the headline numbers for English local government — 2026-27 council tax, 2025-26 service budgets.
 - [Cheapest council tax in England](https://www.civaccount.co.uk/insights/cheapest-council-tax): Ranked Band D rates, grouped by council type for fair comparison.
-- [Most expensive council tax in England](https://www.civaccount.co.uk/insights/most-expensive-council-tax): The councils charging the highest Band D rates in 2025-26.
-- [Council tax increases 2025-26](https://www.civaccount.co.uk/insights/council-tax-increases): Year-on-year Band D changes, ranked.
-- [Biggest tax rises](https://www.civaccount.co.uk/insights/biggest-tax-rises): Councils raising Band D the most this year.
-- [Three-year squeeze](https://www.civaccount.co.uk/insights/three-year-squeeze): Cumulative council tax increases since 2023-24 in absolute pounds.
-- [Tax cap breakers](https://www.civaccount.co.uk/insights/tax-cap-breakers): Councils that went above the 4.99% government cap with special permission.
-- [Cap every year](https://www.civaccount.co.uk/insights/cap-every-year): Councils that pushed Band D to the cap in both 2024-25 and 2025-26.
+- [Most expensive council tax in England](https://www.civaccount.co.uk/insights/most-expensive-council-tax): The councils charging the highest Band D rates in 2026-27.
+- [Council tax increases](https://www.civaccount.co.uk/insights/council-tax-increases): Year-on-year Band D changes, ranked.
+- [Biggest tax rises](https://www.civaccount.co.uk/insights/biggest-tax-rises): Councils raising the area Band D bill the most for 2026-27.
+- [Three-year squeeze](https://www.civaccount.co.uk/insights/three-year-squeeze): Cumulative Band D increases from 2023-24 to 2026-27 in absolute pounds, billing authorities only.
 - [Postcode lottery](https://www.civaccount.co.uk/insights/postcode-lottery): The gap between England's cheapest and priciest Band D bills.
 - [Where every pound goes](https://www.civaccount.co.uk/insights/where-every-pound-goes): National breakdown of English council spending by service category.
 - [Social care squeeze](https://www.civaccount.co.uk/insights/social-care-squeeze): Share of council budgets going to adult and children's social care.

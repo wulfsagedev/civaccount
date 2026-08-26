@@ -35,6 +35,13 @@ export interface InsightSource {
 export interface InsightCardEntry {
   /** URL slug — route is /insights/<slug>/ */
   slug: string;
+  /**
+   * Set when a card is pulled because it cannot currently be computed
+   * honestly. The route stays up and explains itself, but the card drops out
+   * of the hub, the sitemap and llms.txt, and the page goes noindex. Prefer
+   * this over deleting: the copy and sources survive for when it returns.
+   */
+  withdrawn?: { since: string; reason: string };
   /** Section this card belongs to — drives grouping on the hub. */
   section: InsightSectionKey;
   /** Short, plain-English card title. Also used as the SEO <h1>. */
@@ -415,6 +422,11 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   },
   {
     slug: 'cap-every-year',
+    withdrawn: {
+      since: '2026-08-23',
+      reason:
+        'The referendum limit applies to each council\u2019s own share of the bill. Our Band D figures are the area bill \u2014 the whole amount a household pays, including the county, police and fire shares \u2014 and we do not yet hold the 2026-27 own-share split. Measuring an area rise against an own-share limit would name councils wrongly, which is how the earlier version of this card came to list four councils that had stayed inside limits government granted them. It returns when the per-authority figures are in the dataset.',
+    },
     section: 'redflags',
     title: 'At the limit, every year',
     subtitle: 'Councils that went to their limit two years running',
@@ -456,6 +468,11 @@ export const INSIGHT_CARDS: InsightCardEntry[] = [
   },
   {
     slug: 'tax-cap-breakers',
+    withdrawn: {
+      since: '2026-08-23',
+      reason:
+        'The referendum limit applies to each council\u2019s own share of the bill. Our Band D figures are the area bill \u2014 the whole amount a household pays, including the county, police and fire shares \u2014 and we do not yet hold the 2026-27 own-share split. Measuring an area rise against an own-share limit would name councils wrongly, which is how the earlier version of this card came to list four councils that had stayed inside limits government granted them. It returns when the per-authority figures are in the dataset.',
+    },
     section: 'redflags',
     title: 'Tax cap breakers',
     subtitle: 'Councils that raised Band D to the most they were allowed',
@@ -501,7 +518,10 @@ export function getInsightCard(slug: string): InsightCardEntry | undefined {
 /** Ordered list of section keys that contain at least one active card. */
 export function getActiveSectionKeys(): InsightSectionKey[] {
   const keys = new Set<InsightSectionKey>();
-  for (const card of INSIGHT_CARDS) keys.add(card.section);
+  for (const card of INSIGHT_CARDS) {
+    if (card.withdrawn) continue;
+    keys.add(card.section);
+  }
   // Preserve the order defined in INSIGHT_SECTIONS.
   return (Object.keys(INSIGHT_SECTIONS) as InsightSectionKey[]).filter((k) =>
     keys.has(k),
@@ -509,5 +529,5 @@ export function getActiveSectionKeys(): InsightSectionKey[] {
 }
 
 export function getCardsForSection(section: InsightSectionKey): InsightCardEntry[] {
-  return INSIGHT_CARDS.filter((c) => c.section === section);
+  return INSIGHT_CARDS.filter((c) => c.section === section && !c.withdrawn);
 }

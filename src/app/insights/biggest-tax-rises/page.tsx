@@ -5,13 +5,13 @@ import { getInsightCard } from '@/data/insights';
 import {
   getAreaTaxRises,
   getAverageAreaTaxRise,
-  getTaxCapBreakers,
 } from '@/lib/insights-stats';
 import {
   formatCurrency,
   getCouncilDisplayName,
   getCouncilSlug,
   PREVIOUS_TAX_YEAR,
+  CURRENT_TAX_YEAR,
 } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 export default function Page() {
   const top = getAreaTaxRises(10);
   const avg = getAverageAreaTaxRise();
-  const { atOrOverCap, year } = getTaxCapBreakers();
+  const year = CURRENT_TAX_YEAR;
   const maxPct = top[0]?.changePct ?? 1;
 
   const jsonLd = {
@@ -62,10 +62,10 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              Councils that raised Band D to the most they were allowed in {year}
+              Biggest rise in the area Band D bill for {year}
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
-              {atOrOverCap.length}
+              +{top[0]?.changePct.toFixed(1)}%
             </p>
             <p className="type-body-sm text-muted-foreground">
               Average rise across billing authorities: {avg.toFixed(1)}%.

@@ -11,11 +11,6 @@
  */
 
 import {
-  getCouncilLimit,
-  isAtPermittedMaximum,
-  isExcessive,
-} from '@/data/referendum-principles';
-import {
   councils,
   getAreaBandD,
   getCouncilPopulation,
@@ -766,85 +761,6 @@ export function getHundredKClub(limit = 10): HundredKClubStats {
 
 // ── Tax cap breakers (card 6.2) ───────────────────────────────────────────────
 
-export interface TaxCapBreakerEntry {
-  council: Council;
-  from: number;
-  to: number;
-  risePct: number;
-  /** The referendum limit that applies to THIS council in this year. */
-  limitPct: number;
-  /** The limit its type would normally get — differs when `bespoke`. */
-  standardPct: number;
-  /** Government granted this council a higher limit than its type. */
-  bespoke: boolean;
-  /** Raised to the most it was permitted — a penny under the trigger. */
-  atPermittedMaximum: boolean;
-  /** Rise met or passed this council's own referendum trigger. */
-  excessive: boolean;
-}
-
-export interface TaxCapBreakersStats {
-  /** Councils that raised to their own permitted maximum. */
-  atOrOverCap: TaxCapBreakerEntry[];
-  /** Councils whose rise met or passed their own referendum trigger. */
-  overCap: TaxCapBreakerEntry[];
-  /** Councils granted a higher limit than their type this year. */
-  bespokeGranted: TaxCapBreakerEntry[];
-  /** Number of councils with data. */
-  councilsWithData: number;
-  /** Financial year these figures describe. */
-  year: string;
-}
-
-let _capBreakers: TaxCapBreakersStats | null = null;
-
-/**
- * Councils measured against THEIR OWN referendum limit for the current year.
- *
- * Previously this applied a flat 4.99% to all 317 councils, which produced a
- * "cap breakers" list headed by four councils that had stayed inside a higher
- * limit government granted them. Districts and social care authorities have
- * different principles, and each year a handful of councils are granted a
- * bespoke limit — see referendum-principles.ts.
- */
-export function getTaxCapBreakers(): TaxCapBreakersStats {
-  if (_capBreakers) return _capBreakers;
-
-  const year = CURRENT_TAX_YEAR;
-  const entries: TaxCapBreakerEntry[] = [];
-
-  for (const c of councils) {
-    const to = c.council_tax?.band_d_2026;
-    const from = c.council_tax?.band_d_2025;
-    if (!to || !from) continue;
-
-    const limit = getCouncilLimit({ type: c.type, slug: getCouncilSlug(c) }, year);
-    if (!limit) continue;
-
-    entries.push({
-      council: c,
-      from,
-      to,
-      risePct: Math.round(((to - from) / from) * 10000) / 100,
-      limitPct: limit.pct,
-      standardPct: limit.standardPct,
-      bespoke: limit.bespoke,
-      atPermittedMaximum: isAtPermittedMaximum(limit, from, to),
-      excessive: isExcessive(limit, from, to),
-    });
-  }
-
-  entries.sort((a, b) => b.risePct - a.risePct);
-
-  _capBreakers = {
-    atOrOverCap: entries.filter((e) => e.atPermittedMaximum),
-    overCap: entries.filter((e) => e.excessive),
-    bespokeGranted: entries.filter((e) => e.bespoke),
-    councilsWithData: entries.length,
-    year,
-  };
-  return _capBreakers;
-}
 
 // ── Three-year Band D squeeze (card 1.4) ──────────────────────────────────────
 
@@ -943,79 +859,6 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
 
 // ── Cap every year (card 6.3) ─────────────────────────────────────────────────
 
-export interface CapEveryYearEntry {
-  council: Council;
-  /** Rise into the previous year, percentage to 2dp. */
-  risePrev: number;
-  /** Rise into the current year, percentage to 2dp. */
-  riseCurr: number;
-  /** This council's referendum limit in the previous year. */
-  limitPrevPct: number;
-  /** This council's referendum limit in the current year. */
-  limitCurrPct: number;
-  /** Held a bespoke higher limit in at least one of the two years. */
-  bespokeEitherYear: boolean;
-  /** Compound rise across both years. */
-  compoundPct: number;
-  atMaxPrev: boolean;
-  atMaxCurr: boolean;
-}
-
-export interface CapEveryYearStats {
-  /** Councils at their own permitted maximum in BOTH years. */
-  bothYearsAtCap: CapEveryYearEntry[];
-  /** Councils with Band D for all three years needed to compute two rises. */
-  councilsWithData: number;
-  /** The two financial years compared, oldest first. */
-  years: [string, string];
-}
-
-let _capEvery: CapEveryYearStats | null = null;
-
-/**
- * Councils that went to their permitted maximum in BOTH of the last two years.
- *
- * Each year is judged against that year's own principles, because the limits
- * move and the bespoke grants change hands — Bradford held a 10% limit in
- * 2025-26 and a standard one in 2026-27.
- */
-export function getCapEveryYear(): CapEveryYearStats {
-  if (_capEvery) return _capEvery;
-
-  const entries: CapEveryYearEntry[] = [];
-  for (const c of councils) {
-    const y24 = c.council_tax?.band_d_2024;
-    const y25 = c.council_tax?.band_d_2025;
-    const y26 = c.council_tax?.band_d_2026;
-    if (!y24 || !y25 || !y26) continue;
-
-    const id = { type: c.type, slug: getCouncilSlug(c) };
-    const limitPrev = getCouncilLimit(id, PREVIOUS_TAX_YEAR);
-    const limitCurr = getCouncilLimit(id, CURRENT_TAX_YEAR);
-    if (!limitPrev || !limitCurr) continue;
-
-    entries.push({
-      council: c,
-      risePrev: Math.round(((y25 - y24) / y24) * 10000) / 100,
-      riseCurr: Math.round(((y26 - y25) / y25) * 10000) / 100,
-      limitPrevPct: limitPrev.pct,
-      limitCurrPct: limitCurr.pct,
-      bespokeEitherYear: limitPrev.bespoke || limitCurr.bespoke,
-      compoundPct: (y26 / y24 - 1) * 100,
-      atMaxPrev: isAtPermittedMaximum(limitPrev, y24, y25),
-      atMaxCurr: isAtPermittedMaximum(limitCurr, y25, y26),
-    });
-  }
-
-  entries.sort((a, b) => b.compoundPct - a.compoundPct);
-
-  _capEvery = {
-    bothYearsAtCap: entries.filter((e) => e.atMaxPrev && e.atMaxCurr),
-    councilsWithData: entries.length,
-    years: [PREVIOUS_TAX_YEAR, CURRENT_TAX_YEAR],
-  };
-  return _capEvery;
-}
 
 // ── Social care squeeze (card 2.2) ────────────────────────────────────────────
 

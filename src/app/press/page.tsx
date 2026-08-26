@@ -11,7 +11,6 @@ import {
 } from '@/data/councils';
 import {
   getNationalSpendStats,
-  getTaxCapBreakers,
   getCeoPayStats,
   getHundredKClub,
   getClosestToBankruptcy,
@@ -57,7 +56,6 @@ export const metadata: Metadata = {
 export default function PressPage() {
   // ── Live-computed headline numbers (stay fresh as data updates) ──────────────
   const spend = getNationalSpendStats();
-  const capBreakers = getTaxCapBreakers();
 
   // 2026-27 area Band D stats, computed from the dataset. Billing authorities
   // only — county councils are not billing authorities, so they carry no
@@ -73,10 +71,6 @@ export default function PressPage() {
       (s, e) => s + ((e.area.value - e.area.previous!) / e.area.previous!) * 100,
       0,
     ) / withPrevYear.length;
-  // Measured against each council's OWN referendum limit — social care
-  // authorities, districts and the handful granted a higher limit all differ.
-  // See src/data/referendum-principles.ts.
-  const atCapCurrent = capBreakers.atOrOverCap.length;
   const sortedBills = [...areaBills].sort((a, b) => a.area.value - b.area.value);
   const cheapestArea = sortedBills[0];
   const mostExpensiveArea = sortedBills[sortedBills.length - 1];
@@ -97,10 +91,6 @@ export default function PressPage() {
   const facts: Array<{ stat: string; source: string }> = [
     {
       stat: `Average Band D council tax in England, ${CURRENT_TAX_YEAR}: ${formatCurrency(avgAreaBandD, { decimals: 0 })} (${avgAreaRise > 0 ? '+' : ''}${avgAreaRise.toFixed(1)}% vs ${PREVIOUS_TAX_YEAR}).`,
-      source: 'GOV.UK Council Tax levels 2026-27',
-    },
-    {
-      stat: `Councils that raised Band D to the most they were allowed in ${CURRENT_TAX_YEAR}: ${atCapCurrent}.`,
       source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
@@ -164,12 +154,6 @@ export default function PressPage() {
       value: topCeo ? formatCurrency(topCeo.total, { decimals: 0 }) : 'N/A',
       explanation: 'Highest chief-executive total remuneration disclosed in 2025-26.',
       url: '/insights/ceo-pay-league',
-    },
-    {
-      name: 'Cap Every Year',
-      value: `${capBreakers.atOrOverCap.length} councils`,
-      explanation: `English councils that raised Band D to their own statutory limit in ${capBreakers.year}.`,
-      url: '/insights/cap-every-year',
     },
     {
       name: 'Big Five Outsourcers',

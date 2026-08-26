@@ -29,6 +29,29 @@
  * the referendum trigger". We model the trigger, and derive "went to their
  * maximum" from it, rather than hard-coding the shorthand.
  *
+ * ─── NOT YET USABLE FOR THE CAP CARDS — what is missing ──────────────────
+ *
+ * The limits below are correct and sourced, but nothing renders them yet,
+ * because the principles apply to each authority's OWN Band D precept and our
+ * `council_tax.band_d_*` fields hold the AREA bill — the whole amount a
+ * household pays, including the county, police and fire shares.
+ *
+ * Adur is the clearest example: £2,548 area against a £365 own share. The area
+ * rose £115, almost all of it West Sussex County Council. Measuring that rise
+ * against Adur's own-share limit is meaningless, and a first attempt reported
+ * 162 of 164 districts "at their limit" as a result.
+ *
+ * `detailed.precepts[]` carries the own-share split, but it is the 2025-26
+ * breakdown and reconciles for only 60 of 317 councils. There is no 2026-27
+ * own-share figure in the dataset at all.
+ *
+ * To bring the cap cards back, admit MHCLG's per-authority Band D table (same
+ * release as the limits below) through the Data Constitution's process:
+ * archive it, hash it, cite it with a verbatim excerpt. Then a council's own
+ * rise can be compared with its own limit, which is the only comparison that
+ * means anything. Until then `/insights/tax-cap-breakers` and
+ * `/insights/cap-every-year` render a withdrawal notice.
+ *
  * ─── Adding a year ───────────────────────────────────────────────────────
  *
  * Take the wording from that year's "Council Tax levels set by local
