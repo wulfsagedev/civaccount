@@ -4,7 +4,7 @@ import { getCapEveryYear } from '@/lib/insights-stats';
 import { getCouncilDisplayName } from '@/data/councils';
 
 export function renderCapEveryYear(): ReactElement {
-  const { bothYearsAtCap, bothYearsOverCap } = getCapEveryYear(4.99);
+  const { bothYearsAtCap, councilsWithData } = getCapEveryYear();
 
   return ogWrap(
     <div
@@ -40,7 +40,7 @@ export function renderCapEveryYear(): ReactElement {
             {bothYearsAtCap.length}
           </span>
           <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
-            {bothYearsOverCap.length} strictly exceeded the cap in both years
+            of {councilsWithData} billing authorities, in both of the last two years
           </span>
         </div>
 

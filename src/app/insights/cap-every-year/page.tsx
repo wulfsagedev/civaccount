@@ -22,7 +22,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const { bothYearsAtCap, bothYearsOverCap, councilsWithData } = getCapEveryYear(4.99);
+  const { bothYearsAtCap, councilsWithData, years } = getCapEveryYear();
+  const [prevYear, currYear] = years;
+  const bespokeCount = bothYearsAtCap.filter((e) => e.bespokeEitherYear).length;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -50,50 +52,51 @@ export default function Page() {
         hero={
           <div>
             <p className="type-caption text-muted-foreground mb-1">
-              English councils that hit the 4.99% cap in both 2024-25 and 2025-26
+              Councils that went to their limit in both {prevYear} and {currYear}
             </p>
             <p className="type-display font-semibold tabular-nums mb-2">
               {bothYearsAtCap.length}
             </p>
             <p className="type-body-sm text-muted-foreground">
-              Out of the {councilsWithData} councils with rates on record for
-              all three years. {bothYearsOverCap.length} went above 4.99% in
-              both years — the group that needed special permission from
-              government to do so.
+              Out of {councilsWithData} billing authorities with rates on record
+              for all three years.
+              {bespokeCount > 0
+                ? ` ${bespokeCount} of them held a higher limit than others of their type in at least one year.`
+                : ''}
             </p>
           </div>
         }
       >
         <section className="card-elevated p-5 sm:p-6">
-          <h2 className="type-title-2 mb-1">Two years at the cap</h2>
+          <h2 className="type-title-2 mb-1">Two years at the limit</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
-            Ranked by the combined 2-year rise. Every council listed here put
-            Band D up by 4.99% or more in both 2024-25 and 2025-26.
+            Ranked by the combined two-year rise. Each year is measured against
+            that year&rsquo;s own limit for that council — the limits move, and
+            which councils hold a higher one changes.
           </p>
 
           <RankedBarList>
-            {bothYearsAtCap.map((e, i) => {
-              const overBoth = e.rise2024 > 4.99 && e.rise2025 > 4.99;
-              return (
-                <RankedBarRow
-                  key={e.council.ons_code}
-                  rank={i + 1}
-                  title={getCouncilDisplayName(e.council)}
-                  href={`/council/${getCouncilSlug(e.council)}`}
-                  value={`+${e.compoundPct.toFixed(1)}%`}
-                  subLeft={`2024: +${e.rise2024.toFixed(2)}% · 2025: +${e.rise2025.toFixed(2)}%${overBoth ? ' · above cap both years' : ''}`}
-                />
-              );
-            })}
+            {bothYearsAtCap.map((e, i) => (
+              <RankedBarRow
+                key={e.council.ons_code}
+                rank={i + 1}
+                title={getCouncilDisplayName(e.council)}
+                href={`/council/${getCouncilSlug(e.council)}`}
+                value={`+${e.compoundPct.toFixed(1)}%`}
+                subLeft={`${prevYear}: +${e.risePrev.toFixed(2)}% (limit ${e.limitPrevPct}%) · ${currYear}: +${e.riseCurr.toFixed(2)}% (limit ${e.limitCurrPct}%)`}
+              />
+            ))}
           </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: we take the 2023-24, 2024-25 and 2025-26 Band D
-            rates from GOV.UK, work out each year&rsquo;s rise rounded to 2
-            decimal places (to match how councils publish it) and keep the
-            councils where both 2024-25 and 2025-26 rises cleared 4.99%. The
-            combined column multiplies the two rises together — it is not the
-            two yearly rises added up.
+            How we got this: we take the Band D rate for each of the three years
+            from GOV.UK, work out each year&rsquo;s rise rounded to 2 decimal
+            places (to match how councils publish it), and keep the councils
+            that went to the most they were allowed in both years. A council
+            that raised less than another can still appear here if its own limit
+            was lower. The combined figure multiplies the two rises together —
+            it is not the two added up. County councils set no area Band D, so
+            they are not in this ranking.
           </p>
         </section>
       </InsightHero>

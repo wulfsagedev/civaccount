@@ -11,12 +11,18 @@
  */
 
 import {
+  getCouncilLimit,
+  isAtPermittedMaximum,
+  isExcessive,
+} from '@/data/referendum-principles';
+import {
   councils,
   getAreaBandD,
   getCouncilPopulation,
   CURRENT_TAX_YEAR,
   PREVIOUS_TAX_YEAR,
   type Council,
+  getCouncilSlug,
 } from '@/data/councils';
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 
@@ -89,42 +95,6 @@ export function getNationalSpendStats(): NationalSpendStats {
   return _nationalSpend;
 }
 
-// ── National bill (legacy card 1 — kept for back-compat) ──────────────────────
-//
-// YEAR NOTE: `getNationalBillStats` is the 2025-26 series (band_d_2025, all
-// 317 councils — mixes area totals with county own-shares). It is kept for
-// surfaces whose surrounding copy is pinned to 2025-26 (e.g. /press). New
-// "current bill" surfaces should use `getAreaBillStats()` below.
-
-export interface NationalBillStats {
-  avg: number;
-  min: number;
-  max: number;
-  median: number;
-  count: number;
-}
-
-let _nationalBill: NationalBillStats | null = null;
-
-export function getNationalBillStats(): NationalBillStats {
-  if (_nationalBill) return _nationalBill;
-
-  const values = councils
-    .filter((c) => c.council_tax?.band_d_2025)
-    .map((c) => c.council_tax!.band_d_2025);
-
-  const sorted = [...values].sort((a, b) => a - b);
-  const avg = values.reduce((s, v) => s + v, 0) / values.length;
-
-  _nationalBill = {
-    avg,
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
-    median: sorted[Math.floor(sorted.length / 2)],
-    count: values.length,
-  };
-  return _nationalBill;
-}
 
 // ── Current-year area Band D stats (2026-27, billing authorities) ─────────────
 //
@@ -331,117 +301,6 @@ export function getWhereEveryPoundGoes(): ServiceShare[] {
     .sort((a, b) => b.pence - a.pence);
 
   return _whereEveryPoundGoes;
-}
-
-// ── Cheapest vs most expensive (card 1.2 · postcode lottery) ──────────────────
-//
-// YEAR NOTE: legacy 2025-26 series (band_d_2025), kept for /press. The
-// postcode-lottery surfaces now use `getAreaExtremesByGroup()` (2026-27).
-
-export interface ComparableGroupExtremes {
-  label: string;
-  description: string;
-  types: readonly string[];
-  cheapest: Council;
-  mostExpensive: Council;
-  count: number;
-}
-
-let _extremesByGroup: ComparableGroupExtremes[] | null = null;
-
-export function getExtremesByGroup(): ComparableGroupExtremes[] {
-  if (_extremesByGroup) return _extremesByGroup;
-
-  _extremesByGroup = COMPARABLE_GROUPS.map((group) => {
-    const types = group.types as readonly string[];
-    const peers = councils.filter(
-      (c) => types.includes(c.type) && c.council_tax?.band_d_2025,
-    );
-    const sorted = [...peers].sort(
-      (a, b) => a.council_tax!.band_d_2025 - b.council_tax!.band_d_2025,
-    );
-    return {
-      label: group.label,
-      description: group.description,
-      types,
-      cheapest: sorted[0],
-      mostExpensive: sorted[sorted.length - 1],
-      count: peers.length,
-    };
-  }).filter((g) => g.count > 0);
-
-  return _extremesByGroup;
-}
-
-/** All-in-one cheapest vs most expensive — the headline comparison. */
-export function getHeadlineExtremes(): ComparableGroupExtremes {
-  const all = getExtremesByGroup();
-  return all.find((g) => g.label.startsWith('All-in-one')) ?? all[0];
-}
-
-// ── Biggest tax rises (card 1.3) ──────────────────────────────────────────────
-//
-// YEAR NOTE: legacy 2024-25 → 2025-26 series. Kept for the biggest-tax-rises
-// card, the cap cards, and /press — their copy (src/data/insights.ts) is
-// explicitly pinned to 2025-26. Current-year surfaces use `getAreaTaxRises()`.
-
-export interface TaxRiseEntry {
-  council: Council;
-  from: number;
-  to: number;
-  changePct: number;
-  changeAbs: number;
-}
-
-let _biggestRises: TaxRiseEntry[] | null = null;
-
-export function getBiggestTaxRises(limit = 5): TaxRiseEntry[] {
-  if (_biggestRises) return _biggestRises.slice(0, limit);
-
-  _biggestRises = councils
-    .filter((c) => c.council_tax?.band_d_2025 && c.council_tax?.band_d_2024)
-    .map((c) => {
-      const from = c.council_tax!.band_d_2024!;
-      const to = c.council_tax!.band_d_2025;
-      return {
-        council: c,
-        from,
-        to,
-        changeAbs: to - from,
-        changePct: ((to - from) / from) * 100,
-      };
-    })
-    .sort((a, b) => b.changePct - a.changePct);
-
-  return _biggestRises.slice(0, limit);
-}
-
-export function getAverageTaxRise(): number {
-  const withBoth = councils.filter(
-    (c) => c.council_tax?.band_d_2025 && c.council_tax?.band_d_2024,
-  );
-  if (withBoth.length === 0) return 0;
-  const sum = withBoth.reduce((s, c) => {
-    const from = c.council_tax!.band_d_2024!;
-    const to = c.council_tax!.band_d_2025;
-    return s + ((to - from) / from) * 100;
-  }, 0);
-  return sum / withBoth.length;
-}
-
-/** Number of councils that raised Band D by 4.99% or more (the standard cap). */
-export function getCouncilsAtOrOverCap(capPct = 4.99): number {
-  return councils.filter((c) => {
-    if (!c.council_tax?.band_d_2025 || !c.council_tax?.band_d_2024) return false;
-    // Round to 2dp so pound-level rounding can't push a council targeting
-    // exactly 4.99% out of this bucket (matches getTaxCapBreakers).
-    const raw =
-      ((c.council_tax.band_d_2025 - c.council_tax.band_d_2024) /
-        c.council_tax.band_d_2024) *
-      100;
-    const pct = Math.round(raw * 100) / 100;
-    return pct >= capPct;
-  }).length;
 }
 
 // ── CEO pay league (card 4.3) ─────────────────────────────────────────────────
@@ -912,42 +771,77 @@ export interface TaxCapBreakerEntry {
   from: number;
   to: number;
   risePct: number;
+  /** The referendum limit that applies to THIS council in this year. */
+  limitPct: number;
+  /** The limit its type would normally get — differs when `bespoke`. */
+  standardPct: number;
+  /** Government granted this council a higher limit than its type. */
+  bespoke: boolean;
+  /** Raised to the most it was permitted — a penny under the trigger. */
+  atPermittedMaximum: boolean;
+  /** Rise met or passed this council's own referendum trigger. */
+  excessive: boolean;
 }
 
 export interface TaxCapBreakersStats {
-  /** Councils whose Band D rise was ≥ 4.99% — the referendum cap. */
+  /** Councils that raised to their own permitted maximum. */
   atOrOverCap: TaxCapBreakerEntry[];
-  /** Councils whose rise exceeded the cap (special permission required). */
+  /** Councils whose rise met or passed their own referendum trigger. */
   overCap: TaxCapBreakerEntry[];
+  /** Councils granted a higher limit than their type this year. */
+  bespokeGranted: TaxCapBreakerEntry[];
   /** Number of councils with data. */
   councilsWithData: number;
+  /** Financial year these figures describe. */
+  year: string;
 }
 
 let _capBreakers: TaxCapBreakersStats | null = null;
 
-export function getTaxCapBreakers(capPct = 4.99): TaxCapBreakersStats {
+/**
+ * Councils measured against THEIR OWN referendum limit for the current year.
+ *
+ * Previously this applied a flat 4.99% to all 317 councils, which produced a
+ * "cap breakers" list headed by four councils that had stayed inside a higher
+ * limit government granted them. Districts and social care authorities have
+ * different principles, and each year a handful of councils are granted a
+ * bespoke limit — see referendum-principles.ts.
+ */
+export function getTaxCapBreakers(): TaxCapBreakersStats {
   if (_capBreakers) return _capBreakers;
 
+  const year = CURRENT_TAX_YEAR;
   const entries: TaxCapBreakerEntry[] = [];
 
   for (const c of councils) {
-    const to = c.council_tax?.band_d_2025;
-    const from = c.council_tax?.band_d_2024;
+    const to = c.council_tax?.band_d_2026;
+    const from = c.council_tax?.band_d_2025;
     if (!to || !from) continue;
-    // Councils set and publish their rise to 2dp — compare on the same
-    // rounded value so floating-point noise doesn't push a council targeting
-    // exactly 4.99% into the "exceeds cap" bucket.
-    const rawRise = ((to - from) / from) * 100;
-    const risePct = Math.round(rawRise * 100) / 100;
-    entries.push({ council: c, from, to, risePct });
+
+    const limit = getCouncilLimit({ type: c.type, slug: getCouncilSlug(c) }, year);
+    if (!limit) continue;
+
+    entries.push({
+      council: c,
+      from,
+      to,
+      risePct: Math.round(((to - from) / from) * 10000) / 100,
+      limitPct: limit.pct,
+      standardPct: limit.standardPct,
+      bespoke: limit.bespoke,
+      atPermittedMaximum: isAtPermittedMaximum(limit, from, to),
+      excessive: isExcessive(limit, from, to),
+    });
   }
 
   entries.sort((a, b) => b.risePct - a.risePct);
 
   _capBreakers = {
-    atOrOverCap: entries.filter((e) => e.risePct >= capPct),
-    overCap: entries.filter((e) => e.risePct > capPct),
+    atOrOverCap: entries.filter((e) => e.atPermittedMaximum),
+    overCap: entries.filter((e) => e.excessive),
+    bespokeGranted: entries.filter((e) => e.bespoke),
     councilsWithData: entries.length,
+    year,
   };
   return _capBreakers;
 }
@@ -958,18 +852,18 @@ export interface ThreeYearSqueezeEntry {
   council: Council;
   /** 2023-24 Band D rate, pounds. */
   from: number;
-  /** 2025-26 Band D rate, pounds. */
+  /** 2026-27 Band D rate, pounds. */
   to: number;
-  /** Absolute pound increase over the 2-year window. */
+  /** Absolute pound increase over the three-year window. */
   changeAbs: number;
-  /** Compound percentage rise 2023 → 2025. */
+  /** Compound percentage rise 2023-24 → 2026-27. */
   changePct: number;
 }
 
 export interface ThreeYearSqueezeStats {
-  /** Councils ranked by absolute £ rise, descending. 100% parity (317/317). */
+  /** Councils ranked by absolute £ rise, descending. */
   top: ThreeYearSqueezeEntry[];
-  /** National median absolute £ rise over the 2-year window. */
+  /** National median absolute £ rise over the three-year window. */
   medianAbs: number;
   /** National mean absolute £ rise. */
   meanAbs: number;
@@ -977,16 +871,24 @@ export interface ThreeYearSqueezeStats {
   medianPct: number;
   /** National mean compound % rise. */
   meanPct: number;
-  /** Councils included (those with both 2023 and 2025 Band D rates). */
+  /** Councils included — billing authorities with 2023-24 and 2026-27. */
   councilsWithData: number;
+  /** Start of the window. */
+  fromYear: string;
+  /** End of the window. */
+  toYear: string;
 }
 
 let _threeYear: ThreeYearSqueezeStats | null = null;
 
 /**
- * Compound Band D rise from 2023-24 to 2025-26. Uses ct_2023 + ct_2025 because
- * both hit 100% parity across all 317 English councils — safe for ranking.
- * Exposes the compounding effect that single-year rise cards miss.
+ * Compound Band D rise from 2023-24 to 2026-27 — a genuine three-year window.
+ *
+ * This ran 2023-24 → 2025-26 until now, which is two years, on a card called
+ * "three-year squeeze"; the old code comment said "the 2-year window" outright.
+ * With 2026-27 published for every billing authority the window finally matches
+ * the name. County councils drop out: they are precepting, not billing,
+ * authorities and carry no 2026-27 area figure.
  */
 export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
   if (_threeYear) {
@@ -996,7 +898,7 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
   const entries: ThreeYearSqueezeEntry[] = [];
   for (const c of councils) {
     const from = c.council_tax?.band_d_2023;
-    const to = c.council_tax?.band_d_2025;
+    const to = c.council_tax?.band_d_2026;
     if (!from || !to) continue;
     entries.push({
       council: c,
@@ -1008,7 +910,7 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
   }
 
   // Rank by absolute £ rise — the hero figure. Councils paying more per
-  // household over the 2-year window tell a more concrete story than %s.
+  // household over the three-year window tell a more concrete story than %s.
   entries.sort((a, b) => b.changeAbs - a.changeAbs);
 
   const sortedAbs = entries.map((e) => e.changeAbs).sort((a, b) => a - b);
@@ -1033,6 +935,8 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
     medianPct,
     meanPct,
     councilsWithData: entries.length,
+    fromYear: '2023-24',
+    toYear: CURRENT_TAX_YEAR,
   };
   return { ..._threeYear, top: _threeYear.top.slice(0, limit) };
 }
@@ -1041,58 +945,74 @@ export function getThreeYearSqueeze(limit = 10): ThreeYearSqueezeStats {
 
 export interface CapEveryYearEntry {
   council: Council;
-  /** 2024-25 rise over 2023-24 (percentage, rounded to 2dp). */
-  rise2024: number;
-  /** 2025-26 rise over 2024-25 (percentage, rounded to 2dp). */
-  rise2025: number;
-  /** Compound 2-year rise 2023 → 2025 (percentage). */
+  /** Rise into the previous year, percentage to 2dp. */
+  risePrev: number;
+  /** Rise into the current year, percentage to 2dp. */
+  riseCurr: number;
+  /** This council's referendum limit in the previous year. */
+  limitPrevPct: number;
+  /** This council's referendum limit in the current year. */
+  limitCurrPct: number;
+  /** Held a bespoke higher limit in at least one of the two years. */
+  bespokeEitherYear: boolean;
+  /** Compound rise across both years. */
   compoundPct: number;
+  atMaxPrev: boolean;
+  atMaxCurr: boolean;
 }
 
 export interface CapEveryYearStats {
-  /** Councils at or above the 4.99% cap in BOTH 2024 AND 2025. */
+  /** Councils at their own permitted maximum in BOTH years. */
   bothYearsAtCap: CapEveryYearEntry[];
-  /** Councils that STRICTLY exceeded 4.99% in both years (needed permission). */
-  bothYearsOverCap: CapEveryYearEntry[];
-  /** Number of councils with data for all three years (2023/2024/2025). */
+  /** Councils with Band D for all three years needed to compute two rises. */
   councilsWithData: number;
+  /** The two financial years compared, oldest first. */
+  years: [string, string];
 }
 
 let _capEvery: CapEveryYearStats | null = null;
 
 /**
- * Councils that have hit the 4.99% referendum cap consistently — at or above
- * in BOTH 2024-25 and 2025-26. Uses ct_2023/2024/2025 (100% parity). Reveals
- * persistent cap-pressure, which single-year cards miss.
+ * Councils that went to their permitted maximum in BOTH of the last two years.
+ *
+ * Each year is judged against that year's own principles, because the limits
+ * move and the bespoke grants change hands — Bradford held a 10% limit in
+ * 2025-26 and a standard one in 2026-27.
  */
-export function getCapEveryYear(capPct = 4.99): CapEveryYearStats {
+export function getCapEveryYear(): CapEveryYearStats {
   if (_capEvery) return _capEvery;
 
   const entries: CapEveryYearEntry[] = [];
   for (const c of councils) {
-    const y23 = c.council_tax?.band_d_2023;
     const y24 = c.council_tax?.band_d_2024;
     const y25 = c.council_tax?.band_d_2025;
-    if (!y23 || !y24 || !y25) continue;
+    const y26 = c.council_tax?.band_d_2026;
+    if (!y24 || !y25 || !y26) continue;
 
-    // Match the rounding used by other cap-related cards so the same council
-    // lands in the same bucket everywhere.
-    const rise2024 = Math.round(((y24 - y23) / y23) * 10000) / 100;
-    const rise2025 = Math.round(((y25 - y24) / y24) * 10000) / 100;
-    const compoundPct = (y25 / y23 - 1) * 100;
-    entries.push({ council: c, rise2024, rise2025, compoundPct });
+    const id = { type: c.type, slug: getCouncilSlug(c) };
+    const limitPrev = getCouncilLimit(id, PREVIOUS_TAX_YEAR);
+    const limitCurr = getCouncilLimit(id, CURRENT_TAX_YEAR);
+    if (!limitPrev || !limitCurr) continue;
+
+    entries.push({
+      council: c,
+      risePrev: Math.round(((y25 - y24) / y24) * 10000) / 100,
+      riseCurr: Math.round(((y26 - y25) / y25) * 10000) / 100,
+      limitPrevPct: limitPrev.pct,
+      limitCurrPct: limitCurr.pct,
+      bespokeEitherYear: limitPrev.bespoke || limitCurr.bespoke,
+      compoundPct: (y26 / y24 - 1) * 100,
+      atMaxPrev: isAtPermittedMaximum(limitPrev, y24, y25),
+      atMaxCurr: isAtPermittedMaximum(limitCurr, y25, y26),
+    });
   }
 
   entries.sort((a, b) => b.compoundPct - a.compoundPct);
 
   _capEvery = {
-    bothYearsAtCap: entries.filter(
-      (e) => e.rise2024 >= capPct && e.rise2025 >= capPct,
-    ),
-    bothYearsOverCap: entries.filter(
-      (e) => e.rise2024 > capPct && e.rise2025 > capPct,
-    ),
+    bothYearsAtCap: entries.filter((e) => e.atMaxPrev && e.atMaxCurr),
     councilsWithData: entries.length,
+    years: [PREVIOUS_TAX_YEAR, CURRENT_TAX_YEAR],
   };
   return _capEvery;
 }

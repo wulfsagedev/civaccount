@@ -4,7 +4,7 @@ import { getTaxCapBreakers } from '@/lib/insights-stats';
 import { getCouncilDisplayName } from '@/data/councils';
 
 export function renderTaxCapBreakers(): ReactElement {
-  const { atOrOverCap, overCap } = getTaxCapBreakers(4.99);
+  const { atOrOverCap, bespokeGranted } = getTaxCapBreakers();
 
   return ogWrap(
     <div
@@ -40,7 +40,7 @@ export function renderTaxCapBreakers(): ReactElement {
             {atOrOverCap.length}
           </span>
           <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
-            {overCap.length} exceeded the cap with special government permission
+            {bespokeGranted.length} were granted a higher limit than others of their type
           </span>
         </div>
 

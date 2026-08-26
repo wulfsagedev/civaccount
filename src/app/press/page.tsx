@@ -11,7 +11,7 @@ import {
 } from '@/data/councils';
 import {
   getNationalSpendStats,
-  getCouncilsAtOrOverCap,
+  getTaxCapBreakers,
   getCeoPayStats,
   getHundredKClub,
   getClosestToBankruptcy,
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
 export default function PressPage() {
   // ── Live-computed headline numbers (stay fresh as data updates) ──────────────
   const spend = getNationalSpendStats();
-  const atCap = getCouncilsAtOrOverCap(4.99);
+  const capBreakers = getTaxCapBreakers();
 
   // 2026-27 area Band D stats, computed from the dataset. Billing authorities
   // only — county councils are not billing authorities, so they carry no
@@ -73,12 +73,10 @@ export default function PressPage() {
       (s, e) => s + ((e.area.value - e.area.previous!) / e.area.previous!) * 100,
       0,
     ) / withPrevYear.length;
-  // Round to 2dp so pound-level rounding can't drop a council targeting exactly
-  // 4.99% out of the bucket (same rule as insights-stats getCouncilsAtOrOverCap).
-  const atCapCurrent = withPrevYear.filter((e) => {
-    const raw = ((e.area.value - e.area.previous!) / e.area.previous!) * 100;
-    return Math.round(raw * 100) / 100 >= 4.99;
-  }).length;
+  // Measured against each council's OWN referendum limit — social care
+  // authorities, districts and the handful granted a higher limit all differ.
+  // See src/data/referendum-principles.ts.
+  const atCapCurrent = capBreakers.atOrOverCap.length;
   const sortedBills = [...areaBills].sort((a, b) => a.area.value - b.area.value);
   const cheapestArea = sortedBills[0];
   const mostExpensiveArea = sortedBills[sortedBills.length - 1];
@@ -102,7 +100,7 @@ export default function PressPage() {
       source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
-      stat: `Councils that raised Band D by 4.99% or more in ${CURRENT_TAX_YEAR}: ${atCapCurrent}.`,
+      stat: `Councils that raised Band D to the most they were allowed in ${CURRENT_TAX_YEAR}: ${atCapCurrent}.`,
       source: 'GOV.UK Council Tax levels 2026-27',
     },
     {
@@ -169,8 +167,8 @@ export default function PressPage() {
     },
     {
       name: 'Cap Every Year',
-      value: `${atCap} councils`,
-      explanation: 'English councils that raised Band D to the 4.99% statutory cap in 2025-26.',
+      value: `${capBreakers.atOrOverCap.length} councils`,
+      explanation: `English councils that raised Band D to their own statutory limit in ${capBreakers.year}.`,
       url: '/insights/cap-every-year',
     },
     {

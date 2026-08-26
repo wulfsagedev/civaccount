@@ -12,13 +12,12 @@ import {
   type InsightCardEntry,
 } from '@/data/insights';
 import {
-  getAverageTaxRise,
+  getAreaTaxRises,
+  getAverageAreaTaxRise,
   getBigFiveOutsourcers,
-  getBiggestTaxRises,
   getCapEveryYear,
   getCeoPayStats,
   getClosestToBankruptcy,
-  getCouncilsAtOrOverCap,
   getHeadlineAreaExtremes,
   getHundredKClub,
   getNationalSpendStats,
@@ -67,18 +66,17 @@ function buildTileStats(): Record<
   const spend = getNationalSpendStats();
   const suppliers = getTopSuppliersNational(10);
   const lottery = getHeadlineAreaExtremes();
-  const rises = getBiggestTaxRises(1);
-  const avgRise = getAverageTaxRise();
-  const overCap = getCouncilsAtOrOverCap(4.99);
+  const rises = getAreaTaxRises(1);
+  const avgRise = getAverageAreaTaxRise();
   const bankruptcy = getClosestToBankruptcy(1);
   const ceo = getCeoPayStats(1);
   const care = getSocialCareSqueeze(1);
   const pound = getWhereEveryPoundGoes();
   const bigFive = getBigFiveOutsourcers();
   const hundredK = getHundredKClub(1);
-  const capBreakers = getTaxCapBreakers(4.99);
+  const capBreakers = getTaxCapBreakers();
   const threeYear = getThreeYearSqueeze(1);
-  const capEvery = getCapEveryYear(4.99);
+  const capEvery = getCapEveryYear();
 
   // 2026-27 area Band D extremes (all-in-one councils, full area bill).
   const gap = lottery.mostExpensiveValue - lottery.cheapestValue;
@@ -93,7 +91,7 @@ function buildTileStats(): Record<
     },
     'biggest-tax-rises': {
       hero: `+${rises[0]?.changePct.toFixed(1)}%`,
-      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised Band D the most in 2025-26. ${overCap} councils went up by 4.99% or more. National average rise: ${avgRise.toFixed(1)}%.`,
+      explainer: `${rises[0] ? getCouncilDisplayName(rises[0].council) : 'No council'} raised Band D the most in ${capBreakers.year}. ${capBreakers.atOrOverCap.length} councils went to the most they were allowed. Average rise: ${avgRise.toFixed(1)}%.`,
     },
     'three-year-squeeze': {
       hero: `+${formatCurrency(Math.round(threeYear.top[0]?.changeAbs ?? 0), { decimals: 0 })}`,
@@ -129,11 +127,11 @@ function buildTileStats(): Record<
     },
     'tax-cap-breakers': {
       hero: `${capBreakers.atOrOverCap.length}`,
-      explainer: `Councils that raised Band D by 4.99% or more in 2025-26. ${capBreakers.overCap.length} went above the cap, with special permission from government.`,
+      explainer: `Councils that raised Band D to the most they were allowed in ${capBreakers.year}, each measured against its own limit. ${capBreakers.bespokeGranted.length} were granted a higher limit than others of their type.`,
     },
     'cap-every-year': {
       hero: `${capEvery.bothYearsAtCap.length}`,
-      explainer: `Councils that pushed Band D to 4.99% or more in BOTH 2024-25 and 2025-26 — a longer-term sign of pressure. ${capEvery.bothYearsOverCap.length} went above the cap in both years.`,
+      explainer: `Councils that went to their own limit in BOTH ${capEvery.years[0]} and ${capEvery.years[1]} — a longer-term sign of pressure, not a one-off rise.`,
     },
   };
 }

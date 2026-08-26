@@ -26,7 +26,8 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const { top, medianAbs, meanAbs, councilsWithData } = getThreeYearSqueeze(20);
+  const { top, medianAbs, meanAbs, councilsWithData, fromYear, toYear } =
+    getThreeYearSqueeze(20);
   const max = top[0]?.changeAbs ?? 1;
   const topCouncilName = top[0] ? getCouncilDisplayName(top[0].council) : '';
 
@@ -62,8 +63,9 @@ export default function Page() {
               +{formatCurrency(Math.round(medianAbs), { decimals: 0 })} a year
             </p>
             <p className="type-body-sm text-muted-foreground">
-              The middle (median) English council — across all {councilsWithData} with
-              2023-24 and 2025-26 rates on record. Average (mean): +
+              The middle (median) English billing authority — across all{' '}
+              {councilsWithData} with {fromYear} and {toYear} rates on record.
+              Average (mean): +
               {formatCurrency(Math.round(meanAbs), { decimals: 0 })}. The
               biggest rise is in {topCouncilName}, where Band D is now +
               {formatCurrency(Math.round(top[0].changeAbs), { decimals: 0 })} a
@@ -73,7 +75,7 @@ export default function Page() {
         }
       >
         <section className="card-elevated p-5 sm:p-6">
-          <h2 className="type-title-2 mb-1">Biggest 2-year rises, in pounds</h2>
+          <h2 className="type-title-2 mb-1">Biggest 3-year rises, in pounds</h2>
           <p className="type-body-sm text-muted-foreground mb-6">
             Ranked by how much more a Band D household pays each year now than
             in 2023-24. Councils that started from a higher bill tend to rise
@@ -96,11 +98,12 @@ export default function Page() {
           </RankedBarList>
 
           <p className="type-caption text-muted-foreground mt-6 pt-4 border-t border-border/50">
-            How we got this: we take each council&rsquo;s 2023-24 and 2025-26
+            How we got this: we take each council&rsquo;s {fromYear} and {toYear}
             headline Band D rate from GOV.UK and subtract one from the other.
-            All 317 English councils are in the ranking — both rates are on the
-            public record for every one. Councils that started from a higher
-            bill show bigger rises in pounds, even at similar percentages.
+            {' '}{councilsWithData} billing authorities are in the ranking. County
+            councils are not: they do not set the area bill, so there is no
+            area Band D to compare. Councils that started from a higher bill
+            show bigger rises in pounds, even at similar percentages.
           </p>
         </section>
       </InsightHero>
