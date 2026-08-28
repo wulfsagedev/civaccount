@@ -9,6 +9,7 @@ import {
 import {
   buildWebPageSchema,
   buildBreadcrumbSchema,
+  buildDatasetSchema,
 } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
@@ -141,32 +142,20 @@ export default async function ProvenancePage({ params }: Props) {
         `Every data point CivAccount publishes for ${name} has a direct link to its official source.`,
         url,
       ),
-      {
-        '@type': 'Dataset',
-        '@id': `${BASE_URL}${url}#dataset`,
+      buildDatasetSchema({
+        url,
         name: `${name} — CivAccount data provenance`,
         description: `Source-URL manifest for every financial, leadership, and performance data point CivAccount publishes for ${name}.`,
-        url: `${BASE_URL}${url}`,
-        isAccessibleForFree: true,
+        areaName: council.name,
         keywords: [
           name,
           'council data provenance',
           'local government finance',
           'data sources',
           'open government licence',
-        ].join(', '),
-        creator: { '@id': `${BASE_URL}/#organization` },
-        publisher: { '@id': `${BASE_URL}/#organization` },
-        // The compiled dataset is under the CivAccount Data Licence (the
-        // underlying GOV.UK source data remains OGL v3.0 — linked per-field).
-        license: `${BASE_URL}/license`,
+        ],
         ...(lastVerified && { dateModified: lastVerified }),
-        spatialCoverage: {
-          '@type': 'Place',
-          name,
-          addressCountry: 'GB',
-        },
-      },
+      }),
       buildBreadcrumbSchema(
         [
           { name: 'Home', url: '/' },

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD, getAreaBandD, getAreaBandDChange, PREVIOUS_TAX_YEAR } from '@/data/councils';
-import { buildFAQPageSchema } from '@/lib/structured-data';
+import { buildFAQPageSchema, buildDatasetSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 
@@ -234,24 +234,15 @@ export default async function CouncilLayout({ params, children }: Props) {
           },
         ],
       },
-      {
-        '@type': 'Dataset',
-        '@id': `https://www.civaccount.co.uk/council/${slug}#dataset`,
-        name: `${displayName} Budget & Council Tax Data ${area?.year ?? '2025-26'}`,
+      buildDatasetSchema({
+        url: `/council/${slug}`,
+        name: `${displayName} Budget & Council Tax Data ${area?.year ?? PREVIOUS_TAX_YEAR}`,
         description: `Budget breakdown, council tax bands, and spending data for ${displayName}`,
-        // Compiled dataset → CivAccount Data Licence (source data stays OGL,
-        // linked per-field in the provenance UI).
-        license: 'https://www.civaccount.co.uk/license',
+        areaName: council.name,
         temporalCoverage: area?.year === '2026-27' ? '2026/2027' : '2025/2026',
-        spatialCoverage: {
-          '@type': 'AdministrativeArea',
-          name: displayName,
-        },
-        publisher: {
-          '@type': 'Organization',
-          '@id': 'https://www.civaccount.co.uk/#organization',
-          name: 'CivAccount',
-        },
+        ...(council.detailed?.last_verified && {
+          dateModified: council.detailed.last_verified,
+        }),
         ...(area && {
           variableMeasured: {
             '@type': 'PropertyValue',
@@ -272,7 +263,7 @@ export default async function CouncilLayout({ params, children }: Props) {
             contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=json',
           },
         ],
-      },
+      }),
       // FAQPage schema for AI/search visibility
       ...(faqs.length > 0 ? [buildFAQPageSchema(faqs, `/council/${slug}`)] : []),
     ],

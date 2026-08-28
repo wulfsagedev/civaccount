@@ -156,3 +156,66 @@ export function buildInsightGraph(opts: {
     ],
   };
 }
+
+/**
+ * Dataset schema for council pages.
+ *
+ * Exists because two pages hand-rolled their own Dataset block and drifted
+ * apart, which Search Console caught on 2026-08-26 (WNC-10030322):
+ *
+ *   - "Missing field creator" — the council page had `publisher` but no
+ *     `creator`. Recommended, not required, but it is the field that says who
+ *     compiled the data as opposed to who serves it, and on this site those
+ *     happen to be the same organisation.
+ *
+ *   - "Invalid object type for field spatialCoverage" — the council page used
+ *     `AdministrativeArea`. That IS a subclass of Place in schema.org, so it
+ *     is semantically fine, but Google's Dataset parser accepts only Text or
+ *     Place and rejects the subtype. The provenance page used Place but hung
+ *     `addressCountry` directly on it, which belongs to PostalAddress.
+ *
+ * Both now go through here. Add Dataset properties in this function, not at
+ * the call site, so the two can't diverge again.
+ */
+export function buildDatasetSchema(opts: {
+  /** Path the dataset belongs to, e.g. `/council/bradford`. */
+  url: string;
+  name: string;
+  description: string;
+  /** Place name for spatialCoverage — the AREA, not the organisation. */
+  areaName: string;
+  keywords?: string[];
+  /** ISO date the underlying data was last verified. */
+  dateModified?: string;
+  temporalCoverage?: string;
+  variableMeasured?: Record<string, unknown>;
+  distribution?: Array<Record<string, unknown>>;
+}) {
+  return {
+    '@type': 'Dataset',
+    '@id': `${BASE_URL}${opts.url}#dataset`,
+    name: opts.name,
+    description: opts.description,
+    url: `${BASE_URL}${opts.url}`,
+    isAccessibleForFree: true,
+    // Who compiled it and who publishes it. Same organisation here, but
+    // Google asks for both and they are genuinely different roles.
+    creator: { '@id': ORG_ID },
+    publisher: { '@id': ORG_ID },
+    // The compiled dataset is under the CivAccount Data Licence; the
+    // underlying GOV.UK source data stays OGL v3.0, linked per field.
+    license: `${BASE_URL}/license`,
+    // Place, never AdministrativeArea — see the note above. The country goes
+    // in the name rather than a nested address, matching Google's own
+    // "Tahoe City, CA" example; a council area has no postal address.
+    spatialCoverage: {
+      '@type': 'Place',
+      name: `${opts.areaName}, England, United Kingdom`,
+    },
+    ...(opts.keywords?.length && { keywords: opts.keywords.join(', ') }),
+    ...(opts.dateModified && { dateModified: opts.dateModified }),
+    ...(opts.temporalCoverage && { temporalCoverage: opts.temporalCoverage }),
+    ...(opts.variableMeasured && { variableMeasured: opts.variableMeasured }),
+    ...(opts.distribution?.length && { distribution: opts.distribution }),
+  };
+}
