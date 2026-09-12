@@ -9,7 +9,8 @@ import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'The Complete Guide to Council Tax in England',
-  description: 'Everything you need to know about council tax in England: how it works, how bands are calculated, who has to pay, discounts and exemptions, and how your money is spent.',
+  // Trimmed to fit what Google renders (was 168 chars, cut mid-sentence).
+  description: 'How council tax works in England: how your band is set, who has to pay, which discounts you can claim, and where the money actually goes.',
   alternates: {
     canonical: '/guide/council-tax',
   },

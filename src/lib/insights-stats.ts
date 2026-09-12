@@ -185,6 +185,56 @@ export function getAreaExtremesByGroup(): AreaExtremesGroup[] {
 }
 
 /** All-in-one cheapest vs most expensive on the 2026-27 area Band D. */
+export interface AreaBillExtremes {
+  cheapest: Council;
+  cheapestValue: number;
+  mostExpensive: Council;
+  mostExpensiveValue: number;
+  /** Always CURRENT_TAX_YEAR — billing authorities only, so the comparison is
+   * like-for-like. County councils are excluded because they have no 2026-27
+   * area figure, only their own 2025-26 share. */
+  year: typeof CURRENT_TAX_YEAR;
+  count: number;
+}
+
+let _areaBillExtremes: AreaBillExtremes | null = null;
+
+/**
+ * The single cheapest and single most expensive area Band D bill in England,
+ * across billing authorities only.
+ *
+ * This is the headline claim on /insights/cheapest-council-tax and
+ * /insights/most-expensive-council-tax, and it is also what those pages put in
+ * their title and meta description. Both must come from here so a rendered
+ * figure and the snippet Google shows for it can never disagree.
+ *
+ * Ties resolve to the first council encountered, matching the reduce these
+ * pages have always used.
+ */
+export function getAreaBillExtremes(): AreaBillExtremes {
+  if (_areaBillExtremes) return _areaBillExtremes;
+
+  const billing = councils
+    .map((council) => ({ council, area: getAreaBandD(council) }))
+    .filter(
+      (e): e is { council: Council; area: NonNullable<ReturnType<typeof getAreaBandD>> } =>
+        e.area !== null && e.area.year === CURRENT_TAX_YEAR,
+    );
+
+  const cheapest = billing.reduce((min, e) => (e.area.value < min.area.value ? e : min));
+  const mostExpensive = billing.reduce((max, e) => (e.area.value > max.area.value ? e : max));
+
+  _areaBillExtremes = {
+    cheapest: cheapest.council,
+    cheapestValue: cheapest.area.value,
+    mostExpensive: mostExpensive.council,
+    mostExpensiveValue: mostExpensive.area.value,
+    year: CURRENT_TAX_YEAR,
+    count: billing.length,
+  };
+  return _areaBillExtremes;
+}
+
 export function getHeadlineAreaExtremes(): AreaExtremesGroup {
   const all = getAreaExtremesByGroup();
   return all.find((g) => g.label.startsWith('All-in-one')) ?? all[0];
