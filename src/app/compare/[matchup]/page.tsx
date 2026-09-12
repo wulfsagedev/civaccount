@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getAreaBandD, getAreaBandDChange } from '@/data/councils';
+import { getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getAreaBandD, getAreaBandDChange } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
-import { getPopularComparisons } from '@/lib/comparisons';
+import { getPopularComparisons, resolveMatchup } from '@/lib/comparisons';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -20,12 +20,23 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { matchup } = await params;
-  const parts = matchup.split('-vs-');
-  if (parts.length !== 2) return { title: 'Compare Councils' };
 
-  const councilA = getCouncilBySlug(parts[0]);
-  const councilB = getCouncilBySlug(parts[1]);
-  if (!councilA || !councilB) return { title: 'Compare Councils' };
+  // An unknown matchup must 404 HERE, not in the page body.
+  //
+  // generateStaticParams() prerenders only ~13 popular matchups; the other
+  // ~50,000 possible pairs render on demand. That must stay: 569 on-demand
+  // comparisons carry real search impressions, so closing the door with
+  // `dynamicParams = false` (the fix used for /council and /parish) would
+  // delete a quarter of the site's search surface.
+  //
+  // notFound() in the page body is too late to set a status once the response
+  // has begun streaming. Calling it from generateMetadata, which runs before
+  // the stream opens, produces a real 404. This also depends on there being no
+  // Suspense boundary above this route — see the note in
+  // src/lib/comparisons.test.ts about why src/app/loading.tsx must not return.
+  const resolved = resolveMatchup(matchup);
+  if (!resolved) notFound();
+  const { councilA, councilB } = resolved;
 
   const nameA = getCouncilDisplayName(councilA);
   const nameB = getCouncilDisplayName(councilB);
@@ -75,12 +86,13 @@ const SERVICE_MAP = [
 
 export default async function MatchupPage({ params }: Props) {
   const { matchup } = await params;
-  const parts = matchup.split('-vs-');
-  if (parts.length !== 2) notFound();
 
-  const councilA = getCouncilBySlug(parts[0]);
-  const councilB = getCouncilBySlug(parts[1]);
-  if (!councilA || !councilB) notFound();
+  // Unreachable in practice — generateMetadata() has already 404'd an unknown
+  // matchup before this runs. Kept as a guard so the page stays correct on its
+  // own terms if the metadata export is ever changed or removed.
+  const resolved = resolveMatchup(matchup);
+  if (!resolved) notFound();
+  const { councilA, councilB } = resolved;
 
   const nameA = getCouncilDisplayName(councilA);
   const nameB = getCouncilDisplayName(councilB);

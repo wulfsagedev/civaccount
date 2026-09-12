@@ -1,4 +1,4 @@
-import { councils, getCouncilSlug, getAreaBandD } from '@/data/councils';
+import { councils, getCouncilSlug, getAreaBandD, getCouncilBySlug } from '@/data/councils';
 
 /**
  * Generate popular comparison matchup slugs for static generation and sitemap.
@@ -50,4 +50,21 @@ export function getPopularComparisons(): string[] {
   }
 
   return matchups;
+}
+
+/**
+ * Resolve a `<a>-vs-<b>` matchup slug to its two councils, or null when either
+ * half is not a real council slug (or the slug is not a well-formed pair).
+ *
+ * Lives here rather than in the page so generateMetadata() and the page body
+ * cannot drift apart about whether a matchup exists, and so the rule is
+ * unit-testable without rendering.
+ */
+export function resolveMatchup(matchup: string) {
+  const parts = matchup.split('-vs-');
+  if (parts.length !== 2) return null;
+  const councilA = getCouncilBySlug(parts[0]);
+  const councilB = getCouncilBySlug(parts[1]);
+  if (!councilA || !councilB) return null;
+  return { councilA, councilB };
 }
