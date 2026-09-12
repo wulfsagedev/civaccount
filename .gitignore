@@ -64,6 +64,8 @@ scripts/*
 !scripts/fetch-private-data.mjs
 !scripts/council-research/
 !scripts/council-research/**
+!scripts/seo/
+!scripts/seo/**
 scripts/validate/reports/*.json
 council_pdfs/
 pdf_downloads/
@@ -79,3 +81,11 @@ temp_images/
 # fallback when the token is absent or the fetch fails.
 /src/data/councils/
 /scripts/data-scripts/
+
+# Search Console exports + derived metrics.
+# The importer script is public (it is just a CSV parser); its inputs and
+# outputs are performance metrics, which belong in the private
+# civaccount-data repo under tracking/press/. See scripts/seo/README.md.
+scripts/seo/exports/*.csv
+scripts/seo/exports/*.zip
+scripts/seo/data/*.json

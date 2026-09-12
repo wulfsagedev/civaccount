@@ -25,7 +25,9 @@
  *   +       evidence + coverage: how many rendered numbers are backed by
  *           re-derivable archived evidence (the proof engine's own scoreboard)
  *
- * Priority order: population descending. Search demand for "<council> council
+ * Priority order: real Search Console impressions when an import exists
+ * (scripts/seo/import-search-console.mjs), else population descending.
+ * Population is only a proxy: search demand for "<council> council
  * tax" tracks population closely, and it is data we hold and can verify —
  * unlike search volume, which needs Search Console (not yet connected). When
  * GSC is wired up, swap PRIORITY_SOURCE for real impressions.
@@ -48,7 +50,8 @@ import { loadCouncils, loadPopulation } from './load-councils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPORTS_DIR = join(__dirname, 'reports');
-const PRIORITY_SOURCE = 'ONS mid-2024 population (proxy for search demand)';
+const POPULATION_SOURCE = 'ONS mid-2024 population (proxy for search demand)';
+const GSC_PATH = join(__dirname, '..', 'seo', 'data', 'gsc-pages.json');
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -67,6 +70,25 @@ function readJsonIfPresent(path) {
   } catch {
     return null;
   }
+}
+
+/**
+ * Mirror of generateSlug() in src/data/councils.ts — the rule that actually
+ * builds the live URLs, and therefore the only rule that can match a Search
+ * Console export. Note this differs from the looser slugify() in proof.mjs /
+ * audit-north-star.mjs, which does not strip apostrophes: for "King's Lynn &
+ * West Norfolk" the app serves /council/kings-lynn-and-west-norfolk while the
+ * looser rule yields king-s-lynn-and-west-norfolk. Using the wrong one here
+ * would silently score that council as having zero search demand.
+ */
+function slugify(name) {
+  return name
+    .toLowerCase()
+    .replace(/['\u2018\u2019]/g, '')
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-+/g, '-');
 }
 
 /** Run the authoritative structural auditor for one council. */
@@ -164,11 +186,40 @@ async function main() {
     else t.info++;
   }
 
-  // Priority: population desc. Councils with no population figure sort last
-  // rather than silently ranking as zero-demand.
+  // Priority: measured search demand beats a proxy for it. When a Search
+  // Console import exists, rank by impressions. Councils absent from the
+  // export have genuinely no measured demand yet, so they fall back to the
+  // population proxy and sort below every council that has real data —
+  // never mixed into the same scale, which would compare unlike units.
+  const gsc = readJsonIfPresent(GSC_PATH);
+  const gscCouncils = gsc?.councils ?? null;
+  const usingGsc = !!gscCouncils && Object.keys(gscCouncils).length > 0;
+
+  const PRIORITY_SOURCE = usingGsc
+    ? `Search Console impressions (${gsc.source}, imported ${gsc.generated.slice(0, 10)}) — ` +
+      `${Object.keys(gscCouncils).length}/${councils.length} councils measured, rest by population`
+    : POPULATION_SOURCE;
+
   const ranked = councils
-    .map((c) => ({ council: c, pop: population[c.name] ?? null }))
-    .sort((a, b) => (b.pop ?? -1) - (a.pop ?? -1));
+    .map((c) => {
+      const pop = population[c.name] ?? null;
+      const g = usingGsc ? gscCouncils[slugify(c.name)] : undefined;
+      return {
+        council: c,
+        pop,
+        impressions: g ? g.impressions : null,
+        clicks: g ? g.clicks : null,
+        position: g ? g.bestPosition : null,
+      };
+    })
+    .sort((a, b) => {
+      // Measured councils first, ordered by impressions.
+      if (a.impressions != null && b.impressions != null) return b.impressions - a.impressions;
+      if (a.impressions != null) return -1;
+      if (b.impressions != null) return 1;
+      // Unmeasured: population proxy, nulls last.
+      return (b.pop ?? -1) - (a.pop ?? -1);
+    });
 
   const selected = TOP ? ranked.slice(0, TOP) : ranked;
 
@@ -180,7 +231,7 @@ async function main() {
   console.log('');
 
   let done = 0;
-  const rows = await mapWithConcurrency(selected, CONCURRENCY, async ({ council, pop }, i) => {
+  const rows = await mapWithConcurrency(selected, CONCURRENCY, async ({ council, pop, impressions, clicks, position }, i) => {
     const p = proofByOns.get(council.ons_code) || {};
     const structural = args['skip-structural']
       ? { ran: false, parsed: false, totalGaps: null, gaps: {} }
@@ -195,9 +246,12 @@ async function main() {
     const row = {
       rank: i + 1,
       name: council.name,
-      slug: p.slug || council.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      slug: p.slug || slugify(council.name),
       type: council.type,
       population: pop,
+      impressions,
+      clicks,
+      searchPosition: position,
       tier1: {
         applicable: p.tier1?.applicable ?? null,
         checked: p.tier1?.checked ?? 0,
