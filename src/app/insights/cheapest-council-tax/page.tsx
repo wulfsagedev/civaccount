@@ -11,26 +11,61 @@ import {
   PREVIOUS_TAX_YEAR,
 } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
-import { getAreaBillStats, getAverageAreaTaxRise } from '@/lib/insights-stats';
+import { getAreaBillStats, getAverageAreaTaxRise, getAreaBillExtremes } from '@/lib/insights-stats';
+import { TITLE_MAX, DESCRIPTION_MAX, pickWithinLimit } from '@/lib/seo-limits';
 import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
-export const metadata: Metadata = {
-  title: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
-  description: 'The lowest council tax in England for 2026-27. See which councils charge the cheapest Band D rates — full top-20 rankings across unitary authorities, metropolitan districts, London boroughs, county and district councils. Sourced from .gov.uk.',
-  alternates: {
-    canonical: '/insights/cheapest-council-tax',
-  },
-  openGraph: {
-    title: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
-    description: 'Which councils charge the lowest Band D council tax in 2026-27? See the full rankings.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Lowest Council Tax in England 2026-27 — Top 20 Cheapest',
-    description: 'Which councils charge the lowest Band D council tax in 2026-27? See the full rankings.',
-  },
-};
+// Title and description are generated from the same figures the page renders,
+// via getAreaBillExtremes(), so the snippet Google shows can never contradict
+// the page — and so both update themselves when new .gov.uk data lands.
+//
+// They lead with the answer on purpose. The old copy described the page ("Top
+// 20 Cheapest") and ran to 242 characters, well past the ~160 Google renders,
+// so the tail was cut and the searcher got no reason to click. Naming the
+// council and the figure is also what makes a page quotable by AI answer
+// engines rather than merely relevant to them.
+export function generateMetadata(): Metadata {
+  const extremes = getAreaBillExtremes();
+  // Short name for the title (tight budget), full display name for the
+  // description (room to be precise). Using the display name in the title
+  // would push 218 of 317 councils past 60 characters; the short name pushes
+  // only one.
+  const shortName = extremes.cheapest.name;
+  const name = getCouncilDisplayName(extremes.cheapest);
+  const amount = formatCurrency(extremes.cheapestValue, { decimals: 0 });
+
+  // Best-first. Every tier still leads with the answer except the last, which
+  // exists only so a pathologically long council name cannot produce a title
+  // Google would cut mid-word.
+  const title = pickWithinLimit(
+    [
+      `Cheapest Council Tax in England ${extremes.year}: ${shortName} ${amount}`,
+      `${shortName}: Cheapest Council Tax in England ${extremes.year}`,
+      `${shortName}: Cheapest Council Tax in England`,
+      `Cheapest Council Tax in England ${extremes.year}: Full Rankings`,
+    ],
+    TITLE_MAX,
+  );
+
+  const description = pickWithinLimit(
+    [
+      `${name} charges England's lowest Band D council tax in ${extremes.year} at ${amount}. See the 20 cheapest councils, sourced from .gov.uk.`,
+      `The lowest Band D council tax in England for ${extremes.year}, ranked across all ${extremes.count} billing authorities. Sourced from .gov.uk.`,
+    ],
+    DESCRIPTION_MAX,
+  );
+
+  const social = `Which council charges England's lowest council tax in ${extremes.year}? ${name}, at ${amount}.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: '/insights/cheapest-council-tax' },
+    openGraph: { title, description: social },
+    twitter: { card: 'summary_large_image', title, description: social },
+  };
+}
 
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import { serializeJsonLd } from '@/lib/safe-json-ld';

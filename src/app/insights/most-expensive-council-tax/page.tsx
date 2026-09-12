@@ -10,26 +10,56 @@ import {
   PREVIOUS_TAX_YEAR,
 } from '@/data/councils';
 import { RankedBarList, RankedBarRow } from '@/components/insights/RankedBarRow';
-import { getAreaBillStats, getAreaTaxRises, getAverageAreaTaxRise, getAreaRisesAtOrOverPct } from '@/lib/insights-stats';
+import { getAreaBillStats, getAreaTaxRises, getAverageAreaTaxRise, getAreaRisesAtOrOverPct, getAreaBillExtremes } from '@/lib/insights-stats';
+import { TITLE_MAX, DESCRIPTION_MAX, pickWithinLimit } from '@/lib/seo-limits';
 import { buildFAQPageSchema, buildBreadcrumbSchema, buildArticleSchema, buildWebPageSchema } from '@/lib/structured-data';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 
-export const metadata: Metadata = {
-  title: 'Highest Council Tax in England 2026-27 — Top 20 Most Expensive',
-  description: 'The highest council tax in England for 2026-27. See which councils charge the most expensive Band D rates — full top-20 rankings across unitary authorities, metropolitan districts, London boroughs, county and district councils. Sourced from .gov.uk.',
-  alternates: {
-    canonical: '/insights/most-expensive-council-tax',
-  },
-  openGraph: {
-    title: 'Highest Council Tax in England 2026-27 — Top 20 Most Expensive',
-    description: 'Which councils charge the highest Band D council tax in 2026-27? See the full rankings.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Highest Council Tax in England 2026-27 — Top 20 Most Expensive',
-    description: 'Which councils charge the highest Band D council tax in 2026-27? See the full rankings.',
-  },
-};
+// See the note on the sibling page (cheapest-council-tax): metadata is derived
+// from the same figures the page renders, leads with the answer, and stays
+// inside what Google actually displays. The old title was 62 characters and the
+// old description 249, so both were being cut.
+export function generateMetadata(): Metadata {
+  const extremes = getAreaBillExtremes();
+  // Short name for the title (tight budget), full display name for the
+  // description (room to be precise). Using the display name in the title
+  // would push 218 of 317 councils past 60 characters; the short name pushes
+  // only one.
+  const shortName = extremes.mostExpensive.name;
+  const name = getCouncilDisplayName(extremes.mostExpensive);
+  const amount = formatCurrency(extremes.mostExpensiveValue, { decimals: 0 });
+
+  // Best-first — see the sibling page. "Dorset UA Council" is long enough that
+  // the richest form overflows, so this page normally lands on tier two, which
+  // still names the council.
+  const title = pickWithinLimit(
+    [
+      `Highest Council Tax in England ${extremes.year}: ${shortName} ${amount}`,
+      `${shortName}: Highest Council Tax in England ${extremes.year}`,
+      `${shortName}: Highest Council Tax in England`,
+      `Highest Council Tax in England ${extremes.year}: Full Rankings`,
+    ],
+    TITLE_MAX,
+  );
+
+  const description = pickWithinLimit(
+    [
+      `${name} charges England's highest Band D council tax in ${extremes.year} at ${amount}. See the 20 most expensive councils, sourced from .gov.uk.`,
+      `The highest Band D council tax in England for ${extremes.year}, ranked across all ${extremes.count} billing authorities. Sourced from .gov.uk.`,
+    ],
+    DESCRIPTION_MAX,
+  );
+
+  const social = `Which council charges England's highest council tax in ${extremes.year}? ${name}, at ${amount}.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: '/insights/most-expensive-council-tax' },
+    openGraph: { title, description: social },
+    twitter: { card: 'summary_large_image', title, description: social },
+  };
+}
 
 import { COMPARABLE_GROUPS } from '@/lib/council-averages';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
