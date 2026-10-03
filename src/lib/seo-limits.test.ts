@@ -77,10 +77,11 @@ describe('search snippets stay inside what Google renders', () => {
       name: getCouncilDisplayName(x.mostExpensive),
       amount: formatCurrency(x.mostExpensiveValue, { decimals: 0 }),
       titles: (n: string, a: string) => [
-        `Highest Council Tax in England ${x.year}: ${n} ${a}`,
+        `Most Expensive Council Tax in England ${x.year}: ${n} ${a}`,
+        `${n}: Most Expensive Council Tax in England ${x.year}`,
         `${n}: Highest Council Tax in England ${x.year}`,
         `${n}: Highest Council Tax in England`,
-        `Highest Council Tax in England ${x.year}: Full Rankings`,
+        `Most Expensive Council Tax in England ${x.year}: Full Rankings`,
       ],
       descriptions: (n: string, a: string) => [
         `${n} charges England's highest Band D council tax in ${x.year} at ${a}. See the 20 most expensive councils, sourced from .gov.uk.`,

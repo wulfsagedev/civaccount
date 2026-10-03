@@ -35,6 +35,14 @@ export default function CouncilTaxGuidePage() {
   });
   const avgBandD = areaBills.reduce((s, e) => s + e.area.value, 0) / areaBills.length;
 
+  // Monthly figures. In England the bill is split into 10 monthly
+  // instalments (April to January) unless you ask for 12, which you are
+  // entitled to do. Band A, the cheapest band, is 6/9 of Band D.
+  const monthlyBandD10 = avgBandD / 10;
+  const monthlyBandD12 = avgBandD / 12;
+  const avgBandA = avgBandD * (6 / 9);
+  const monthlyBandA10 = avgBandA / 10;
+
   const sortedBills = [...areaBills].sort((a, b) => a.area.value - b.area.value);
   const cheapest = sortedBills[0];
   const mostExpensive = sortedBills[sortedBills.length - 1];
@@ -66,6 +74,14 @@ export default function CouncilTaxGuidePage() {
     {
       question: 'How are council tax bands calculated?',
       answer: 'Council tax bands are based on the value of your property on 1 April 1991. There are 8 bands from A (cheapest) to H (most expensive). Band D is used as the reference point, with other bands calculated as a fraction of Band D.',
+    },
+    {
+      question: 'Which council tax band is cheapest?',
+      answer: `Band A is the cheapest council tax band. It covers homes worth up to £40,000 in April 1991 and pays two thirds (6/9) of the Band D rate. Based on the ${CURRENT_TAX_YEAR} average Band D bill of ${formatCurrency(avgBandD, { decimals: 0 })}, an average Band A bill is about ${formatCurrency(avgBandA, { decimals: 0 })} a year.`,
+    },
+    {
+      question: 'How much is council tax a month?',
+      answer: `Council tax is normally paid in 10 monthly instalments from April to January, though you can ask your council to spread it over 12. On the ${CURRENT_TAX_YEAR} average Band D bill of ${formatCurrency(avgBandD, { decimals: 0 })}, that is about ${formatCurrency(monthlyBandD10, { decimals: 0 })} a month over 10 months, or ${formatCurrency(monthlyBandD12, { decimals: 0 })} over 12. An average Band A home pays about ${formatCurrency(monthlyBandA10, { decimals: 0 })} a month over 10. Your own bill depends on your council and your band.`,
     },
     {
       question: 'Who has to pay council tax?',
@@ -102,7 +118,7 @@ export default function CouncilTaxGuidePage() {
         headline: 'The Complete Guide to Council Tax in England',
         description: 'Everything you need to know about council tax: how it works, how bands are calculated, discounts, and where your money goes.',
         datePublished: '2026-04-06',
-        dateModified: '2026-08-04',
+        dateModified: '2026-10-03',
         publisher: {
           '@type': 'Organization',
           '@id': 'https://www.civaccount.co.uk/#organization',
@@ -157,7 +173,7 @@ export default function CouncilTaxGuidePage() {
             </p>
             <p>
               Every home is placed in one of 8 bands (A to H) based on how much it was worth in April 1991.
-              Band A homes pay the least, Band H homes pay the most.
+              Band A is the cheapest band and Band H the most expensive.
             </p>
             <p>
               Your total bill usually includes charges from more than one body. For example, if you live in a district council area,
@@ -229,6 +245,18 @@ export default function CouncilTaxGuidePage() {
               </span>
               <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(mostExpensive.area.value, { decimals: 2 })}</span>
             </div>
+            <div className="flex items-baseline justify-between py-2">
+              <span className="type-body-sm text-muted-foreground">Average Band D per month (10 instalments)</span>
+              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(monthlyBandD10, { decimals: 0 })}</span>
+            </div>
+            <div className="flex items-baseline justify-between py-2">
+              <span className="type-body-sm text-muted-foreground">Average Band D per month (12 instalments)</span>
+              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(monthlyBandD12, { decimals: 0 })}</span>
+            </div>
+            <div className="flex items-baseline justify-between py-2">
+              <span className="type-body-sm text-muted-foreground">Average Band A (cheapest band) per year</span>
+              <span className="type-body-sm font-semibold tabular-nums">{formatCurrency(avgBandA, { decimals: 0 })}</span>
+            </div>
             {avgChange !== null && (
               <div className="flex items-baseline justify-between py-2">
                 <span className="type-body-sm text-muted-foreground">Average increase from last year</span>
@@ -239,6 +267,7 @@ export default function CouncilTaxGuidePage() {
 
           <p className="type-caption text-muted-foreground mt-4">
             Figures are the full Band D bill for each of the {areaBills.length} billing-authority areas, including police and fire charges.
+            Bills are paid in 10 monthly instalments (April to January) unless you ask your council for 12.
           </p>
 
           <div className="mt-5 p-3 rounded-lg bg-muted/30">

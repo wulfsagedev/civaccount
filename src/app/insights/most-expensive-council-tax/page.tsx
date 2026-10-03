@@ -34,10 +34,13 @@ export function generateMetadata(): Metadata {
   // still names the council.
   const title = pickWithinLimit(
     [
-      `Highest Council Tax in England ${extremes.year}: ${shortName} ${amount}`,
+      `Most Expensive Council Tax in England ${extremes.year}: ${shortName} ${amount}`,
+      `${shortName}: Most Expensive Council Tax in England ${extremes.year}`,
+      // "Most expensive" is the page's top search query, so it leads. "Highest"
+      // is six characters shorter and keeps a long council name in the title.
       `${shortName}: Highest Council Tax in England ${extremes.year}`,
       `${shortName}: Highest Council Tax in England`,
-      `Highest Council Tax in England ${extremes.year}: Full Rankings`,
+      `Most Expensive Council Tax in England ${extremes.year}: Full Rankings`,
     ],
     TITLE_MAX,
   );
@@ -94,6 +97,13 @@ export default function MostExpensiveCouncilTaxPage() {
       answer: `${expensiveName} has the highest Band D council tax in England for 2026-27 at ${formatCurrency(mostExpensive.area.value, { decimals: 2 })}. The average 2026-27 Band D bill across England's ${areaStats.count} billing authorities is ${formatCurrency(areaStats.avg, { decimals: 0 })}, up ${avgRise.toFixed(1)}% on last year.`,
     },
     {
+      // "most expensive council tax in uk" is the page's biggest query. The
+      // dataset is England only, so answer the UK question honestly rather
+      // than claiming a UK-wide ranking we cannot back.
+      question: 'Which council has the most expensive council tax in the UK?',
+      answer: `CivAccount covers England's councils, where the most expensive Band D bill for 2026-27 is ${expensiveName} at ${formatCurrency(mostExpensive.area.value, { decimals: 2 })}. Scotland and Wales set council tax under their own systems, and Northern Ireland uses domestic rates instead of council tax, so their bills are not ranked here.`,
+    },
+    {
       question: 'Why do some councils charge more than others?',
       answer: "Council tax rates depend on a few things: the range of services the council runs, where the council chooses to spend its money, how much funding it gets from government, and how many homes share the bill. Councils with fewer homes, or with higher demand for services, tend to charge more per household.",
     },
@@ -147,12 +157,13 @@ export default function MostExpensiveCouncilTaxPage() {
           { label: 'Highest Council Tax 2026-27' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Highest Council Tax in England 2026-27</h1>
+        <h1 className="type-title-1 mb-2">Most Expensive Council Tax in England 2026-27</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
           The highest Band D council tax in England for 2026-27 is {expensiveName} at {formatCurrency(mostExpensive.area.value, { decimals: 2 })}.
           The average 2026-27 rise across billing authorities was {avgRise.toFixed(1)}%, and in {risesAtOrOverCap} of {areaStats.count} areas the whole Band D bill went up by 4.99% or more.
           Figures for unitary, metropolitan, London borough and district councils are the full Band D bill for the area, including any county, police and fire shares.
           County councils show only their own 2025-26 share — they do not send the bill, and their 2026-27 share is not yet published.
+          These rankings cover England&apos;s councils. Scotland and Wales run their own council tax systems, and Northern Ireland uses domestic rates instead.
         </p>
 
         {GROUPS.map((group) => {
@@ -191,6 +202,23 @@ export default function MostExpensiveCouncilTaxPage() {
             </section>
           );
         })}
+
+        {/* Visible FAQ — the FAQPage schema above must describe content that is
+            actually on the page, and these answer the exact questions people
+            search ("cheapest council tax in uk", "most expensive ..."). */}
+        <section className="card-elevated p-5 sm:p-6 mb-5">
+          <h2 className="type-title-2 mb-1">Common questions</h2>
+          <p className="type-body-sm text-muted-foreground mb-5">Quick answers, from the same figures as the rankings</p>
+
+          <div className="space-y-3">
+            {faqs.map((faq) => (
+              <div key={faq.question} className="p-3 rounded-lg bg-muted/30">
+                <h3 className="type-body-sm font-semibold mb-1">{faq.question}</h3>
+                <p className="type-caption text-muted-foreground">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <nav className="mt-8 space-y-2">
           <p className="type-body-sm font-semibold mb-3">More insights</p>
