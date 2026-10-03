@@ -40,6 +40,12 @@ Every home is placed in one of 8 bands (A–H) based on its value on 1 April 199
 
 Check your band at https://www.gov.uk/council-tax-bands.
 
+**Which band is cheapest?** Band A — two thirds (6/9) of the Band D rate.
+
+## How much is council tax a month?
+
+In England the yearly bill is normally paid in 10 monthly instalments, April to January. You can ask your council to spread it over 12 instead. To estimate your monthly payment, take your council's Band D figure, multiply by your band's percentage above, and divide by 10 (or 12). The live average Band D figure is at https://www.civaccount.co.uk/guide/council-tax.
+
 ## Who has to pay
 
 Anyone aged 18+ who lives in a property normally has to pay council tax. Common discounts and exemptions:

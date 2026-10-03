@@ -99,12 +99,18 @@ export default function CheapestCouncilTaxPage() {
       answer: `${cheapestName} has the lowest Band D council tax in England for 2026-27 at ${formatCurrency(cheapest.area.value, { decimals: 2 })}. The average 2026-27 Band D bill across England's ${areaStats.count} billing authorities is ${formatCurrency(areaStats.avg, { decimals: 0 })}, up ${avgRise.toFixed(1)}% on last year.`,
     },
     {
+      // "cheapest council tax in uk" is the page's biggest query. The dataset
+      // is England only — see the sibling page.
+      question: 'Where is the cheapest council tax in the UK?',
+      answer: `CivAccount covers England's councils, where the cheapest Band D bill for 2026-27 is ${cheapestName} at ${formatCurrency(cheapest.area.value, { decimals: 2 })}. Scotland and Wales set council tax under their own systems, and Northern Ireland uses domestic rates instead of council tax, so their bills are not ranked here.`,
+    },
+    {
       question: 'How are council tax rates compared fairly between different council types?',
       answer: 'You can only fairly compare councils of the same type. For unitary authorities, metropolitan districts, London boroughs and district councils, the figure shown is the full Band D bill for the area — including any county, police and fire shares. County councils show only their own share of the bill.',
     },
     {
       question: 'Why is council tax cheaper in some areas?',
-      answer: "Lower-rate councils typically have a larger council tax base (more properties contributing), lower demand for adult social care, and may receive more central government funding per resident. London boroughs in particular often have lower headline rates because the Greater London Authority precept handles fire and police separately.",
+      answer: "Lower-rate councils typically have a larger council tax base (more properties contributing), lower demand for adult social care, and may receive more central government funding per resident. Several inner London boroughs have some of the lowest bills in England even though their figure includes the Greater London Authority's share for police and fire.",
     },
     {
       question: 'Did all English councils raise council tax in 2026-27?',
@@ -152,12 +158,13 @@ export default function CheapestCouncilTaxPage() {
           { label: 'Lowest Council Tax 2026-27' },
         ]} />
 
-        <h1 className="type-title-1 mb-2">Lowest Council Tax in England 2026-27</h1>
+        <h1 className="type-title-1 mb-2">Cheapest Council Tax in England 2026-27</h1>
         <p className="type-body-sm text-muted-foreground mb-8">
           The lowest Band D council tax in England for 2026-27 is {cheapestName} at {formatCurrency(cheapest.area.value, { decimals: 2 })}.
           Bills still went up almost everywhere — the average 2026-27 rise across billing authorities was {avgRise.toFixed(1)}%{cheapestChange ? `, and even ${cheapestName} put Band D up by ${cheapestChange.percent.toFixed(1)}%` : ''}.
           Figures for unitary, metropolitan, London borough and district councils are the full Band D bill for the area, including any county, police and fire shares.
           County councils show only their own 2025-26 share — they do not send the bill, and their 2026-27 share is not yet published.
+          These rankings cover England&apos;s councils. Scotland and Wales run their own council tax systems, and Northern Ireland uses domestic rates instead.
         </p>
 
         {GROUPS.map((group) => {
@@ -196,6 +203,23 @@ export default function CheapestCouncilTaxPage() {
             </section>
           );
         })}
+
+        {/* Visible FAQ — the FAQPage schema above must describe content that is
+            actually on the page, and these answer the exact questions people
+            search ("cheapest council tax in uk", "most expensive ..."). */}
+        <section className="card-elevated p-5 sm:p-6 mb-5">
+          <h2 className="type-title-2 mb-1">Common questions</h2>
+          <p className="type-body-sm text-muted-foreground mb-5">Quick answers, from the same figures as the rankings</p>
+
+          <div className="space-y-3">
+            {faqs.map((faq) => (
+              <div key={faq.question} className="p-3 rounded-lg bg-muted/30">
+                <h3 className="type-body-sm font-semibold mb-1">{faq.question}</h3>
+                <p className="type-caption text-muted-foreground">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <nav className="mt-8 space-y-2">
           <p className="type-body-sm font-semibold mb-3">More insights</p>
