@@ -100,7 +100,7 @@ const WhoToContactCard = ({ selectedCouncil }: WhoToContactCardProps) => {
 
             {/* County council card */}
             {(() => {
-              const countyPrecept = detailed?.precepts?.find(p => p.authority.toLowerCase().includes('county'));
+              const countyPrecept = detailed?.precepts?.find(p => (p.kind ? p.kind === 'county' : p.authority.toLowerCase().includes('county')));
               const countyLink = countyPrecept ? findLinkedCouncil(countyPrecept.authority) : null;
               const countyName = countyPrecept?.authority.replace(' Council', '') || null;
               const countyWebsite = countyLink?.council?.detailed?.website;

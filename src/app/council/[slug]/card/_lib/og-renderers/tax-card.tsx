@@ -1,24 +1,23 @@
 import type { Council } from '@/data/councils';
 import type { ReactElement } from 'react';
-import { getAreaBandD, getAreaBandDChange } from '@/data/councils';
+import { getAreaBandD, getAreaBandDChange, getTotalBandD, getOwnBandD, getBillSplitYear } from '@/data/councils';
 import { OG, ogWrap, ogBrand, formatCurrencyOG } from '../og-shared';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 
 export function renderTaxCard(council: Council, councilName: string): ReactElement {
-  const precepts = council.detailed?.precepts;
-  // 2025-26 own-share figure — only used for the 2025-26-labelled service split.
   const bandD = council.council_tax?.band_d_2025;
-
   if (!bandD) return <div style={{ display: 'flex' }}>No data</div>;
 
-  // Hero total: the most recent verified AREA Band D — 2026-27 (MHCLG live
-  // table) for billing authorities; county councils fall back to the 2025-26
-  // precept-stack sum. The year renders on the receipt header + brand strip.
+  // Hero total: the 2026-27 area Band D for billing authorities (the same
+  // figure their bill split adds up to). County councils have no area total,
+  // so their receipt shows the county's own 2025-26 share.
   const area = getAreaBandD(council);
   const areaChange = getAreaBandDChange(council);
-  const preceptTotal = precepts?.length ? precepts.reduce((s, p) => s + p.band_d, 0) : bandD;
-  const total = area?.year === '2026-27' ? area.value : preceptTotal;
+  const total = area?.year === '2026-27' ? area.value : (getTotalBandD(council) ?? getOwnBandD(council) ?? bandD);
   const taxYear = area?.year === '2026-27' ? '2026-27' : '2025-26';
+  // This council's own share (excluding parish precepts), for the service split.
+  const ownBandD = getOwnBandD(council) ?? bandD;
+  const splitYear = getBillSplitYear(council);
   const weeklyCost = (total / 52).toFixed(2);
 
   // Top 3 service weekly costs
@@ -28,7 +27,7 @@ export function renderTaxCard(council: Council, councilName: string): ReactEleme
         .map(([key, label]) => {
           const amount = (budget[key as keyof typeof budget] as number | null) ?? 0;
           if (amount <= 0) return null;
-          return { label, weekly: ((bandD / 52) * (amount / budget.total_service!)) };
+          return { label, weekly: ((ownBandD / 52) * (amount / budget.total_service!)) };
         })
         .filter((x): x is NonNullable<typeof x> => x !== null)
         .sort((a, b) => b.weekly - a.weekly)
@@ -67,12 +66,12 @@ export function renderTaxCard(council: Council, councilName: string): ReactEleme
           </span>
         </div>
 
-        {/* Service weekly breakdown — derived from the council's 2025-26
-            share and 2025-26 budget split, so it carries its own year label */}
+        {/* Service weekly breakdown — derived from the council's own share
+            (bill split year) and its budget split, so it carries its own year label */}
         {serviceCosts.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '40px' }}>
             <span style={{ fontSize: '32px', fontWeight: 500, color: OG.muted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Council share weekly split · 2025-26
+              {`Council share weekly split · ${splitYear}`}
             </span>
             <div style={{ display: 'flex', gap: '48px' }}>
               {serviceCosts.map((s) => (

@@ -9,6 +9,11 @@ Source: GOV.UK Live Table, sheet "Area_CT" (Table 5)
 Output: CSV with ONS code, name, class, and band_d for 2021-2026
   This CSV is the single derived artifact that the validator checks against.
 
+Values come from each cell's stored value (office:value), not its display
+text. The live table stores pence but formats Area_CT to whole pounds, so
+the display text for Bradford 2026-27 reads "2,361" while the cell holds
+2360.73 — the same figure MHCLG prints in Table 9 and Table 10 line 17.
+
 Run: python3 scripts/parse-area-band-d.py
 """
 
@@ -104,6 +109,10 @@ def main():
             if repeat and int(repeat) > 20:
                 break
             count = int(repeat) if repeat else 1
+            value = cell.getAttribute('value')
+            if value:
+                # Stored value to the penny; drop trailing zeros (2246.10 → 2246.1, 2246.00 → 2246)
+                text = f'{round(float(value), 2):.2f}'.rstrip('0').rstrip('.')
             vals.extend([text] * count)
 
         if len(vals) < 6:

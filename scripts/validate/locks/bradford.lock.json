@@ -1,18 +1,18 @@
 {
   "lock_version": 1,
-  "lock_sha256": "4bf037b6c295786ebf97ae1592366722d613fb780d0f35e6203393c4d8ed440a",
+  "lock_sha256": "46840813a1e4a6232cd11e95a1f33f5c47b8134a2c61de2d66920b299930ba0d",
   "council": "Bradford",
   "ons_code": "E08000032",
   "type": "MD",
   "slug": "bradford",
   "fully_covered": true,
   "tier1_band_d": {
-    "band_d_2021": 1796,
-    "band_d_2022": 1857,
-    "band_d_2023": 1956,
-    "band_d_2024": 2055,
-    "band_d_2025": 2246,
-    "band_d_2026": 2361
+    "band_d_2021": 1796.19,
+    "band_d_2022": 1857.47,
+    "band_d_2023": 1955.79,
+    "band_d_2024": 2055.35,
+    "band_d_2025": 2246.15,
+    "band_d_2026": 2360.73
   },
   "tier1_summary": {
     "checked": 6,

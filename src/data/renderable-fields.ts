@@ -65,6 +65,9 @@ const CATEGORY_A: RenderableField[] = [
   // Council tax (MHCLG live tables, 2026-27 release published 25 March 2026)
   { path: 'council_tax.band_d_2026', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2026', label: 'Band D council tax 2026-27', status: 'verified_source' },
   { path: 'council_tax.band_d_2025', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2025', label: 'Band D council tax 2025-26', status: 'verified_source' },
+  // Bill split ("Your bill" rows + total) — MHCLG Table 10 local authority level data
+  { path: 'bill_split.2026-27', origin: 'national_csv', dataset_id: 'band-d-components', source_file: 'parsed-band-d-components.csv', csv_column: 'area_band_d', label: 'Council tax bill split 2026-27', status: 'verified_source' },
+  { path: 'bill_split.2025-26', origin: 'national_csv', dataset_id: 'precepting-band-d', source_file: 'parsed-precepting-band-d.csv', csv_column: 'band_d', label: 'Council tax bill split 2025-26 (county councils)', status: 'verified_source' },
   { path: 'council_tax.band_d_2024', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2024', label: 'Band D council tax 2024-25', status: 'verified_source' },
   { path: 'council_tax.band_d_2023', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2023', label: 'Band D council tax 2023-24', status: 'verified_source' },
   { path: 'council_tax.band_d_2022', origin: 'national_csv', dataset_id: 'area-council-tax', source_file: 'parsed-area-band-d.csv', csv_column: 'band_d_2022', label: 'Band D council tax 2022-23', status: 'verified_source' },
