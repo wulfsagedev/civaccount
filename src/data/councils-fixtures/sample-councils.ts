@@ -48,6 +48,14 @@ export const fixtureCouncils: Council[] = [
       net_current: 1150000,
     },
     detailed: {
+      // County bill split shape (illustrative): no total_band_d — the district's
+      // share and any parish precept sit on top.
+      precepts: [
+        { authority: 'Kent County Council', band_d: 1800.0, kind: 'council' },
+        { authority: 'Kent Police and Crime Commissioner', band_d: 270.0, kind: 'police' },
+        { authority: 'Kent and Medway Fire Authority', band_d: 95.0, kind: 'fire' },
+      ],
+      precepts_year: '2025-26',
       website: 'https://www.kent.gov.uk',
       council_tax_url: 'https://www.kent.gov.uk/council-tax',
       council_leader: 'Example Leader',
@@ -88,6 +96,15 @@ export const fixtureCouncils: Council[] = [
       net_current: 1000000,
     },
     detailed: {
+      // Bill split shape (illustrative figures): rows sum to total_band_d,
+      // which equals band_d_2026. See scripts/validate/validators/bill-split.mjs.
+      precepts: [
+        { authority: 'Birmingham City Council', band_d: 1730.0, kind: 'council', includes_parish_average: true, band_d_excluding_parish: 1720.0 },
+        { authority: 'West Midlands Police and Crime Commissioner', band_d: 237.0, kind: 'police' },
+        { authority: 'West Midlands Fire and Rescue Authority', band_d: 80.0, kind: 'fire' },
+      ],
+      precepts_year: '2026-27',
+      total_band_d: 2047.0,
       website: 'https://www.birmingham.gov.uk',
       council_tax_url: 'https://www.birmingham.gov.uk/counciltax',
       council_leader: 'Example Leader',

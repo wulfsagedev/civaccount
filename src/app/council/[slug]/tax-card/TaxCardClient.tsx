@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, calculateBands, getCouncilSlug, toSentenceTypeName, getTotalBandD } from '@/data/councils';
+import { formatCurrency, calculateBands, getCouncilSlug, toSentenceTypeName, getTotalBandD, getOwnBandD, getBillSplitYear, getAreaBandDChange } from '@/data/councils';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { getTypeAverages } from '@/lib/council-averages';
 import ShareButton from '@/components/proposals/ShareButton';
@@ -79,24 +79,21 @@ export default function TaxCardClient() {
 
   const council = selectedCouncil;
   const councilTax = council.council_tax!;
-  // The whole receipt stays in 2025-26 — the hero, per-band totals, and
-  // per-precept rows must all sum against the same-year precept stack
-  // (detailed.precepts is 2025-26 data). The year is stamped on the receipt
-  // header and footer. The 2026-27 area figure lives on the dashboard and
-  // metadata/OG surfaces, where no precept breakdown sits next to it.
-  const bandD = councilTax.band_d_2025;
-  const bandDPrev = councilTax.band_d_2024;
-  const allBands = calculateBands(bandD);
+  // The receipt is in the bill split's year (2026-27 for billing authorities,
+  // 2025-26 for county councils). The hero, per-band totals and per-row
+  // amounts all come from the same MHCLG Table 10 split, so they add up.
+  // A county has no area total, so its receipt shows the county's own share.
+  const receiptYear = getBillSplitYear(council);
   const precepts = council.detailed?.precepts;
-  // Prefer the derived total (sum of precepts) — the raw data field is wrong
-  // for many county councils where it equals only the council's own share.
   const totalBandD = getTotalBandD(council);
+  const ownBandD = getOwnBandD(council) ?? councilTax.band_d_2025;
+  const baseBandD = totalBandD ?? ownBandD;
+  const allBands = calculateBands(baseBandD);
   const budget = council.budget;
 
   // Calculate amounts for selected band
-  const bandDAmount = allBands[selectedBand as keyof typeof allBands];
-  const ratio = bandDAmount / bandD;
-  const totalForBand = totalBandD ? totalBandD * ratio : bandDAmount;
+  const totalForBand = allBands[selectedBand as keyof typeof allBands];
+  const ratio = totalForBand / baseBandD;
   const preceptsForBand = precepts?.map(p => ({
     ...p,
     amount: p.band_d * ratio,
@@ -104,8 +101,9 @@ export default function TaxCardClient() {
 
   const weeklyCost = totalForBand / 52;
   const monthlyCost = totalForBand / 10;
-  const changePct = bandDPrev ? ((bandD - bandDPrev) / bandDPrev * 100) : null;
-  const changeWeekly = bandDPrev ? (totalForBand - (totalBandD ? totalBandD * ((allBands[selectedBand as keyof typeof allBands] / bandDPrev) * (bandDPrev / bandD)) : bandDPrev * ratio)) / 52 : null;
+  // Year-on-year change ending in the receipt's year.
+  const areaChange = getAreaBandDChange(council);
+  const changePct = areaChange?.percent ?? null;
 
   // Service-level weekly costs (from budget — council's share only, not precepts)
   const serviceWeeklyCosts = budget?.total_service
@@ -114,7 +112,7 @@ export default function TaxCardClient() {
           const amount = (budget[key as keyof typeof budget] as number | null) ?? 0;
           if (amount <= 0) return null;
           const pct = amount / budget.total_service!;
-          const weeklyAmount = (bandDAmount / 52) * pct;
+          const weeklyAmount = ((ownBandD * ratio) / 52) * pct;
           return { key, label, weeklyAmount, pct };
         })
         .filter((x): x is NonNullable<typeof x> => x !== null)
@@ -126,15 +124,14 @@ export default function TaxCardClient() {
   const bandIdx = validBands.indexOf(selectedBand);
   const lowerBand = bandIdx > 0 ? validBands[bandIdx - 1] : null;
   const higherBand = bandIdx < validBands.length - 1 ? validBands[bandIdx + 1] : null;
-  const lowerTotal = lowerBand ? (totalBandD ? totalBandD * (allBands[lowerBand as keyof typeof allBands] / bandD) : allBands[lowerBand as keyof typeof allBands]) : null;
-  const higherTotal = higherBand ? (totalBandD ? totalBandD * (allBands[higherBand as keyof typeof allBands] / bandD) : allBands[higherBand as keyof typeof allBands]) : null;
+  const lowerTotal = lowerBand ? allBands[lowerBand as keyof typeof allBands] : null;
+  const higherTotal = higherBand ? allBands[higherBand as keyof typeof allBands] : null;
 
-  // Compared to average. This card's figures are all 2025-26 (the receipt has
-  // to reconcile against the 2025-26 precept stack), so it compares against
-  // the 2025-26 type average — never the 2026-27 one, which would make every
-  // council look cheaper than its peers.
+  // Compared to average, in the same year as the receipt: getTypeAverages'
+  // bandD is in 2026-27 for billing-authority types and 2025-26 for county
+  // councils — the same years as their bill splits.
   const typeAvg = getTypeAverages(council.type);
-  const avgWeekly = typeAvg.bandD2025 / 52;
+  const avgWeekly = typeAvg.bandD / 52;
   const vAvgWeekly = weeklyCost - avgWeekly;
 
   // Time-to-earn
@@ -184,14 +181,17 @@ export default function TaxCardClient() {
           <div className="text-center mb-6">
             <p className="type-overline text-muted-foreground tracking-widest mb-1">{council.type_name}</p>
             <h1 className="type-title-2 mb-1">{council.name}</h1>
-            <p className="type-caption text-muted-foreground">Council tax receipt · 2025-26</p>
+            <p className="type-caption text-muted-foreground">Council tax receipt · {receiptYear}</p>
           </div>
 
           <Divider />
 
           {/* Hero amount */}
           <div className="text-center mb-2">
-            <p className="type-caption text-muted-foreground mb-1">Band {selectedBand} · {bandDescriptions[selectedBand]}</p>
+            <p className="type-caption text-muted-foreground mb-1">
+              Band {selectedBand} · {bandDescriptions[selectedBand]}
+              {council.type === 'SC' && ` · ${council.name} County Council's share`}
+            </p>
             <p className="type-display tabular-nums">
               {formatCurrency(totalForBand, { decimals: 2 })}
               <span className="type-body-sm text-muted-foreground font-normal">/year</span>
@@ -215,7 +215,7 @@ export default function TaxCardClient() {
               <span className={`font-semibold ${changePct > 0 ? 'text-negative' : 'text-positive'}`}>
                 {changePct > 0 ? '+' : ''}{changePct.toFixed(1)}%
               </span>
-              {' '}from 2024-25
+              {' '}from {areaChange?.fromYear}
             </p>
           )}
 
@@ -228,14 +228,27 @@ export default function TaxCardClient() {
               <div className="space-y-2 mb-1">
                 {preceptsForBand.map((p) => (
                   <div key={p.authority} className="flex items-baseline justify-between py-1">
-                    <p className="type-body-sm font-medium truncate min-w-0 flex-1 mr-3">{p.authority}</p>
+                    <div className="min-w-0 flex-1 mr-3">
+                      <p className="type-body-sm font-medium truncate">{p.authority}</p>
+                      {p.includes_parish_average && (
+                        <p className="type-caption text-muted-foreground">Includes the average for parish and other local councils</p>
+                      )}
+                    </div>
                     <p className="type-body-sm tabular-nums shrink-0">
                       <span className="font-semibold">{formatCurrency(p.amount, { decimals: 2 })}</span>
-                      <span className="text-muted-foreground ml-2">{((p.amount / totalForBand) * 100).toFixed(0)}%</span>
+                      {/* Shares only where the rows make up the whole bill */}
+                      {totalBandD && (
+                        <span className="text-muted-foreground ml-2">{((p.amount / totalForBand) * 100).toFixed(0)}%</span>
+                      )}
                     </p>
                   </div>
                 ))}
               </div>
+              {!totalBandD && (
+                <p className="type-caption text-muted-foreground mt-2">
+                  Your district council and any parish council add their own charge on top.
+                </p>
+              )}
               <Divider />
             </>
           )}
@@ -321,7 +334,7 @@ export default function TaxCardClient() {
 
           {/* Branding */}
           <p className="type-caption text-muted-foreground text-center">
-            CivAccount · {council.name} · 2025-26
+            CivAccount · {council.name} · {receiptYear}
           </p>
         </div>
 

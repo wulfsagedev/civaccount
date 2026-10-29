@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { formatCurrency, type Council } from '@/data/councils';
+import { formatCurrency, getBillSplitYear, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
@@ -40,6 +40,7 @@ const TaxBandsCard = ({
   const initialBand = bandFromUrl && validBands.includes(bandFromUrl) ? bandFromUrl : 'D';
   const [selectedBand, setSelectedBand] = useState(initialBand);
   const detailed = selectedCouncil.detailed;
+  const splitYear = getBillSplitYear(selectedCouncil);
 
   // Sync band selection to URL (without adding history entries)
   useEffect(() => {
@@ -169,15 +170,14 @@ const TaxBandsCard = ({
           slice of the bill (two-tier areas etc.). When we can't identify the
           own share, allBands falls back to the area figure and this box
           would wrongly claim the whole bill is this council's — hide it.
-          The share comes from the 2025-26 precept split, so it is labelled
-          with its own year rather than silently mixed with the bill year. */}
+          The share comes from the bill split, so it carries the split's year. */}
       {totalBandAmounts && allBands.D < totalBandAmounts.D * 0.95 && (
         <div className="mt-4 p-3 rounded-lg bg-muted/30">
           <p className="type-body-sm text-muted-foreground">
             <span className="font-medium text-foreground">{selectedCouncil.name}&apos;s share:</span>{' '}
             <span className="font-semibold text-foreground tabular-nums">
               <SourceAnnotation
-                provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}
                 reportContext={{
                   council: selectedCouncil.name,
                   field: `Council's share of Band ${selectedBand}`,
@@ -187,7 +187,18 @@ const TaxBandsCard = ({
                 {formatCurrency(allBands[selectedBand as keyof typeof allBands], { decimals: 2 })}
               </SourceAnnotation>
             </span>
-            {' '}of the 2025-26 Band {selectedBand} bill
+            {' '}of the {splitYear} Band {selectedBand} bill
+          </p>
+        </div>
+      )}
+
+      {/* County councils have no area total: the amounts above are the
+          county's own share, and the district and any parish add to them. */}
+      {!totalBandAmounts && selectedCouncil.type === 'SC' && (
+        <div className="mt-4 p-3 rounded-lg bg-muted/30">
+          <p className="type-body-sm text-muted-foreground">
+            <span className="font-medium text-foreground">This is {selectedCouncil.name} County Council&apos;s share only.</span>{' '}
+            Your district council and any parish council add their own charge.
           </p>
         </div>
       )}
