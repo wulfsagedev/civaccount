@@ -56,6 +56,7 @@ Deno.serve(async () => {
     .select('id, title, council_slug, budget_category, score, comment_count, created_at')
     .gte('created_at', oneWeekAgo)
     .neq('status', 'flagged')
+    .neq('status', 'deleted')
     .order('score', { ascending: false })
     .limit(20);
 
@@ -91,7 +92,7 @@ Deno.serve(async () => {
     const proposalListHtml = proposalsToSend.map((p: Proposal) => `
       <tr>
         <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
-          <a href="${SITE_URL}/council/${p.council_slug}/proposals/${p.id}" style="text-decoration: none; color: #111;">
+          <a href="${SITE_URL}/council/${encodeURIComponent(p.council_slug)}/proposals/${encodeURIComponent(p.id)}" style="text-decoration: none; color: #111;">
             <strong style="font-size: 15px;">${escapeHtml(p.title)}</strong>
           </a>
           <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">

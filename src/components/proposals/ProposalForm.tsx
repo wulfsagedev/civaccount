@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { StatusPanel } from '@/components/ui/status-panel';
-import { BUDGET_CATEGORIES, PROPOSAL_LABELS, saveDraft, loadDraft, clearDraft, getCategoryLabel } from '@/lib/proposals';
+import { BUDGET_CATEGORIES, PROPOSAL_LABELS, saveDraft, loadDraft, clearDraft, getCategoryLabel, editErrorMessage } from '@/lib/proposals';
 import { formatBudget } from '@/data/councils';
 import { toast } from 'sonner';
 import { isUKUser } from '@/lib/geo';
@@ -134,7 +134,7 @@ export default function ProposalForm({
         .eq('author_id', user.id);
 
       if (updateError) {
-        setError('Could not save your changes. Try again.');
+        setError(editErrorMessage(updateError));
         setIsSubmitting(false);
         return;
       }

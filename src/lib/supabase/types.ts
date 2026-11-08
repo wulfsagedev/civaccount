@@ -19,23 +19,14 @@ export type Database = {
           role: 'reader' | 'voter' | 'admin';
           created_at: string;
         };
+        // Insert and Update list what the API may write. See 005_town_hall_access_rules.sql.
         Insert: {
           id?: string;
           email: string;
           display_name?: string | null;
-          council_slug?: string | null;
-          reputation?: number;
-          role?: 'reader' | 'voter' | 'admin';
-          created_at?: string;
         };
         Update: {
-          id?: string;
-          email?: string;
           display_name?: string | null;
-          council_slug?: string | null;
-          reputation?: number;
-          role?: 'reader' | 'voter' | 'admin';
-          created_at?: string;
         };
         Relationships: [];
       };
@@ -55,31 +46,18 @@ export type Database = {
           edited_at: string | null;
         };
         Insert: {
-          id?: string;
           council_slug: string;
           budget_category: string;
           title: string;
           body: string;
           author_id?: string;
-          score?: number;
-          status?: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged' | 'deleted';
           labels?: string[];
-          created_at?: string;
-          comment_count?: number;
-          edited_at?: string | null;
         };
         Update: {
-          id?: string;
-          council_slug?: string;
-          budget_category?: string;
           title?: string;
           body?: string;
-          author_id?: string;
-          score?: number;
-          status?: 'open' | 'acknowledged' | 'in_progress' | 'resolved' | 'closed' | 'flagged' | 'deleted';
+          status?: 'deleted';
           labels?: string[];
-          created_at?: string;
-          comment_count?: number;
           edited_at?: string | null;
         };
         Relationships: [
@@ -101,18 +79,12 @@ export type Database = {
           created_at: string;
         };
         Insert: {
-          id?: string;
           proposal_id: string;
           user_id?: string;
           direction: 'up' | 'down';
-          created_at?: string;
         };
         Update: {
-          id?: string;
-          proposal_id?: string;
-          user_id?: string;
           direction?: 'up' | 'down';
-          created_at?: string;
         };
         Relationships: [
           {
@@ -144,25 +116,14 @@ export type Database = {
           edited_at: string | null;
         };
         Insert: {
-          id?: string;
           proposal_id: string;
           parent_id?: string | null;
           author_id?: string;
           body: string;
-          status?: 'visible' | 'flagged' | 'removed';
-          flag_count?: number;
-          created_at?: string;
-          edited_at?: string | null;
         };
         Update: {
-          id?: string;
-          proposal_id?: string;
-          parent_id?: string | null;
-          author_id?: string;
           body?: string;
-          status?: 'visible' | 'flagged' | 'removed';
-          flag_count?: number;
-          created_at?: string;
+          status?: 'removed';
           edited_at?: string | null;
         };
         Relationships: [

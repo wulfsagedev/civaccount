@@ -25,7 +25,8 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from('proposals')
     .select('id, council_slug, budget_category, title, body, score, status, labels, comment_count, created_at')
-    .neq('status', 'flagged');
+    .neq('status', 'flagged')
+    .neq('status', 'deleted');
 
   if (councilSlug) {
     query = query.eq('council_slug', councilSlug);

@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { isUKUser } from '@/lib/geo';
+import { editErrorMessage } from '@/lib/proposals';
 
 interface CommentFormProps {
   proposalId: string;
@@ -88,7 +89,7 @@ export default function CommentForm({
         .eq('author_id', user.id);
 
       if (updateError) {
-        setError('Could not save your changes. Try again.');
+        setError(editErrorMessage(updateError));
         setIsSubmitting(false);
         return;
       }
