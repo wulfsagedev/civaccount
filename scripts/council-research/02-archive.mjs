@@ -32,8 +32,10 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, basename, extname } from 'node:path';
+import { dirname, join } from 'node:path';
 
+import { classifySourceUrl } from '../validate/lib/source-licence.mjs';
+import { deriveFilename } from './lib/discovery.mjs';
 import { fetchUrl } from './lib/fetch.mjs';
 import { robustFetchPdf } from './lib/robust-fetch.mjs';
 import { hashBuffer, hashFile } from './lib/sha256.mjs';
@@ -140,6 +142,16 @@ function statusIcon(s) {
 
 async function archiveOne(entry, { councilDir, skipWayback }) {
   const url = entry.source_url;
+
+  // SOURCE-LICENCE GATE, again: inventory.json can be edited by hand and
+  // re-verification reads URLs back from _meta.json, so passing 01-inventory
+  // is not enough to reach the fetchers below.
+  const licence = classifySourceUrl(url);
+  if (!licence.allowed) {
+    console.warn(`  ! refused by the source-licence gate: ${licence.reason}`);
+    return { status: 'failed', error: licence.reason, path: null };
+  }
+
   const filename = entry.filename || deriveFilename(url);
   const pdfPath = join(councilDir, filename);
   const metaPath = join(councilDir, `${filename.replace(/\.[^.]+$/, '')}_meta.json`);
@@ -278,18 +290,6 @@ async function archiveOne(entry, { councilDir, skipWayback }) {
 }
 
 // ── Helpers ──────────────────────────────────────────────────────
-
-function deriveFilename(url) {
-  try {
-    const u = new URL(url);
-    const lastSegment = u.pathname.split('/').filter(Boolean).pop() || 'document';
-    const ext = extname(lastSegment) || '.pdf';
-    const base = basename(lastSegment, extname(lastSegment)) || 'document';
-    return `${base.toLowerCase().replace(/[^a-z0-9-]+/g, '-')}${ext.toLowerCase()}`;
-  } catch {
-    return 'document.bin';
-  }
-}
 
 function classifyUrl(url) {
   const u = url.toLowerCase();

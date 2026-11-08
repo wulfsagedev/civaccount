@@ -172,7 +172,7 @@ async function cdxSweep(domain) {
   for (const kw of patterns) {
     const api =
       `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(domain)}%2F*` +
-      `&matchType=domain&filter=original:.*${kw}.*%5C.pdf.*&collapse=urlkey` +
+      `&matchType=domain&filter=original:.*${kw}.*%5C.pdf.*&filter=statuscode:200&collapse=urlkey` +
       `&from=2023&fl=original,timestamp&limit=60`;
     const res = await fetchUrl(api, { timeout: 30_000, retries: 0 });
     if (!res.ok) { await sleep(800); continue; }

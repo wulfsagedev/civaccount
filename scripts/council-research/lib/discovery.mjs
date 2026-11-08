@@ -6,6 +6,25 @@
  * single network request.
  */
 
+import { basename, extname } from 'node:path';
+
+/**
+ * Local filename for a source URL. Every part of it is reduced to a small
+ * character set, because the URL is crawled text and the name ends up in
+ * file paths and tool arguments.
+ */
+export function deriveFilename(url) {
+  try {
+    const u = new URL(url);
+    const lastSegment = u.pathname.split('/').filter(Boolean).pop() || 'document';
+    const ext = (extname(lastSegment) || '.pdf').toLowerCase().replace(/[^a-z0-9.]+/g, '');
+    const base = basename(lastSegment, extname(lastSegment)) || 'document';
+    return `${base.toLowerCase().replace(/[^a-z0-9-]+/g, '-')}${ext}`;
+  } catch {
+    return 'document.bin';
+  }
+}
+
 export const DOC_KEYWORDS = [
   { re: /pay[\s_-]?policy/i, type: 'pay-policy' },
   { re: /statement[\s_-]?of[\s_-]?accounts|statement%20of%20accounts|soa[\s_-]?20/i, type: 'statement-of-accounts' },

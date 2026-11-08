@@ -17,13 +17,13 @@
  * Exit: 0 all pass · 1 any failure (with a list of exactly what broke).
  */
 
-import { writeFileSync, readFileSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdtempSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { parseAmounts, DETECTORS } from './lib/detectors.mjs';
-import { classifyDoc, guessFiscalYear, isCurrentEnough, harvestLinks } from './lib/discovery.mjs';
-import { isPdfFile } from './lib/robust-fetch.mjs';
+import { classifyDoc, guessFiscalYear, isCurrentEnough, harvestLinks, deriveFilename } from './lib/discovery.mjs';
+import { isPdfFile, robustFetchPdf } from './lib/robust-fetch.mjs';
 import { classifySourceUrl, collectCouncilUrls, unwrapWayback } from '../validate/lib/source-licence.mjs';
 import {
   buildFieldSourceEntry,
@@ -317,6 +317,64 @@ function check(name, cond, detail = '') {
   const rec = lines.length ? JSON.parse(lines[lines.length - 1]) : null;
   check('journal: run recorded with script/council/status', rec?.script === 'selftest-script' && rec?.council === 'Testshire' && rec?.status === 'ok' && rec?.proof === 42, JSON.stringify(rec));
   rmSync(dir, { recursive: true, force: true });
+}
+
+// ════ 7. Fetch ladder treats URLs as data ═════════════════════════════
+{
+  const dir = mkdtempSync(join(tmpdir(), 'civaccount-ladder-'));
+  const bin = join(dir, 'bin');
+  mkdirSync(bin);
+  const urlLog = join(dir, 'urls.log');
+  const marker = join(dir, 'marker');
+
+  // A stand-in for curl, first on PATH: it records each URL it is given,
+  // answers the availability API, and only returns a PDF for the snapshot
+  // fetch, so every rung of the ladder runs. Nothing touches the network.
+  writeFileSync(join(bin, 'curl'), `#!/bin/sh
+url=""; out=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --url) url="$2"; shift 2 ;;
+    -o) out="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+printf '%s\\n' "$url" >> "$SELFTEST_URL_LOG"
+case "$url" in
+  *wayback/available*) printf '{"timestamp":"20260101000000"}' ;;
+  *id_/*) { printf '%%PDF-1.4\\n'; head -c 2048 /dev/zero; } > "$out" ;;
+esac
+`, { mode: 0o755 });
+
+  const saved = { PATH: process.env.PATH, log: process.env.SELFTEST_URL_LOG, marker: process.env.SELFTEST_MARKER };
+  process.env.PATH = `${bin}:${process.env.PATH}`;
+  process.env.SELFTEST_URL_LOG = urlLog;
+  process.env.SELFTEST_MARKER = marker;
+
+  const stderrWrite = process.stderr.write;
+  process.stderr.write = () => true; // the ladder narrates each rung; keep test output clean
+  const url = 'https://www.testshire.gov.uk/media/budget$(touch$IFS$SELFTEST_MARKER)-`touch$IFS$SELFTEST_MARKER`.pdf?year=2026';
+  const result = await robustFetchPdf(url, join(dir, 'budget.pdf'), { pollIntervalMs: 1 });
+  const refused = await robustFetchPdf('file:///etc/hosts', join(dir, 'refused.pdf'), { pollIntervalMs: 1 });
+  process.stderr.write = stderrWrite;
+
+  process.env.PATH = saved.PATH;
+  for (const [key, value] of [['SELFTEST_URL_LOG', saved.log], ['SELFTEST_MARKER', saved.marker]]) {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+
+  const seen = existsSync(urlLog) ? readFileSync(urlLog, 'utf8').trim().split('\n') : [];
+  const href = new URL(url).href;
+  check('robust-fetch: ladder reaches the snapshot rung', result.ok === true && result.strategy === 'wayback-save-poll', JSON.stringify(result));
+  check('robust-fetch: shell characters in a URL are not interpreted', !existsSync(marker));
+  check('robust-fetch: URL reaches curl unchanged on every rung', seen.length > 0 && seen.filter((u) => !u.includes('wayback/available')).every((u) => u.endsWith(href)), JSON.stringify(seen));
+  check('robust-fetch: non-web URL refused before curl runs', refused.ok === false && !seen.some((u) => u.includes('etc/hosts')), JSON.stringify(seen));
+  rmSync(dir, { recursive: true, force: true });
+
+  check('deriveFilename: keeps an ordinary name', deriveFilename('https://x.gov.uk/docs/Budget-2026-27.PDF') === 'budget-2026-27.pdf');
+  check('deriveFilename: reduces the base name', deriveFilename('https://x.gov.uk/docs/Budget%202026.pdf') === 'budget-202026.pdf');
+  check('deriveFilename: reduces the extension', /^[a-z0-9-]+\.[a-z0-9.]*$/.test(deriveFilename('https://x.gov.uk/docs/budget.$(x y)')), deriveFilename('https://x.gov.uk/docs/budget.$(x y)'));
 }
 
 // ════ Summary ═════════════════════════════════════════════════════════
