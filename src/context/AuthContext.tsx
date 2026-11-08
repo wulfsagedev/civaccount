@@ -42,15 +42,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         setUser(session?.user ?? null);
         if (session?.user) {
-          const { data } = await supabase
-            .from('users')
-            .select('display_name')
-            .eq('id', session.user.id)
-            .single();
-          setDisplayName(data?.display_name ?? null);
+          const userId = session.user.id;
+          // Supabase runs this callback inside its auth lock, and every query
+          // needs that lock. Waiting for a query here would freeze all of them,
+          // so it starts just after the callback has returned.
+          setTimeout(async () => {
+            const { data } = await supabase
+              .from('users')
+              .select('display_name')
+              .eq('id', userId)
+              .single();
+            setDisplayName(data?.display_name ?? null);
+          }, 0);
         } else {
           setDisplayName(null);
         }
