@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CARD_STYLES } from '@/lib/utils';
+import { safeLocalPath } from '@/lib/security';
 import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/Header';
@@ -27,7 +28,7 @@ export default function LoginPage() {
 function LoginContent() {
   const { signInWithEmail } = useAuth();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') ?? '/';
+  const redirectTo = safeLocalPath(searchParams.get('redirect'));
   const error = searchParams.get('error');
 
   const [email, setEmail] = useState('');
