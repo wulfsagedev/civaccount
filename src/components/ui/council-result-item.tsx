@@ -2,7 +2,7 @@
 
 import { Building2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Council, formatCurrency, getCouncilDisplayName, getAreaBandD } from '@/data/councils';
+import { Council, getCouncilDisplayName, formatListBandD } from '@/data/councils';
 
 interface CouncilResultItemProps {
   council: Council;
@@ -20,11 +20,7 @@ export function CouncilResultItem({
   showBadge = true,
 }: CouncilResultItemProps) {
   const displayName = getCouncilDisplayName(council);
-  const areaBandD = getAreaBandD(council);
-  const yearSuffix = areaBandD?.year === '2025-26' ? ' (2025-26)' : '';
-  const bandDAmount = areaBandD
-    ? formatCurrency(areaBandD.value, { decimals: 2 })
-    : null;
+  const bandDAmount = formatListBandD(council);
 
   if (variant === 'homepage') {
     return (
@@ -39,13 +35,11 @@ export function CouncilResultItem({
       >
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-semibold type-body-sm truncate text-foreground">{displayName}</p>
+            <p className="font-semibold type-body-sm text-foreground">{displayName}</p>
             <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
           </div>
           <div className="text-right shrink-0 type-body-sm text-muted-foreground tabular-nums">
-            {areaBandD && (
-              <p>£{Math.round(areaBandD.value).toLocaleString('en-GB')}/yr{yearSuffix}</p>
-            )}
+            {bandDAmount && <p>{bandDAmount}</p>}
           </div>
         </div>
       </button>
@@ -65,7 +59,7 @@ export function CouncilResultItem({
       >
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className={`font-medium type-body-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
+            <p className={`font-medium type-body-sm ${isHighlighted ? 'text-primary' : ''}`}>
               {displayName}
             </p>
             <div className="flex items-center gap-2 mt-2">
@@ -77,7 +71,7 @@ export function CouncilResultItem({
           <div className="text-right shrink-0">
             {bandDAmount && (
               <p className="type-body-sm text-muted-foreground tabular-nums">
-                {bandDAmount}/year{yearSuffix}
+                {bandDAmount}
               </p>
             )}
           </div>
@@ -100,13 +94,13 @@ export function CouncilResultItem({
       <div className="flex items-center gap-3 min-w-0">
         <Building2 className={`h-4 w-4 shrink-0 ${isHighlighted ? 'text-primary' : 'text-muted-foreground'}`} aria-hidden="true" />
         <div className="min-w-0">
-          <div className="font-medium type-body-sm truncate">{displayName}</div>
+          <div className="font-medium type-body-sm">{displayName}</div>
           <div className="type-body-sm text-muted-foreground">{council.type_name}</div>
         </div>
       </div>
       {showBadge && bandDAmount && (
         <Badge variant="outline" className="shrink-0 ml-2 tabular-nums">
-          Band D: {bandDAmount}{yearSuffix}
+          {bandDAmount}
         </Badge>
       )}
     </button>

@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Council, getCouncilSlug, getAreaBandD, councils as allCouncilsList } from '@/data/councils';
+import { Council, getCouncilSlug, getAreaBandD, councils as allCouncilsList, formatListBandD } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 import { searchCouncilsFast, getDefaultCouncils } from '@/lib/search-index';
@@ -57,7 +57,7 @@ const SearchResultItem = memo(function SearchResultItem({
       </div>
       {bandD && (
         <span className="type-body-sm text-muted-foreground shrink-0 ml-2 tabular-nums">
-          £{Math.round(bandD).toLocaleString('en-GB')}/yr{areaBandD?.year === '2025-26' ? ' (2025-26)' : ''}
+          {formatListBandD(council)}
         </span>
       )}
     </button>

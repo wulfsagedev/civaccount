@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect, useCallback, memo } from 'react';
-import { councils as allCouncilsList } from '@/data/councils';
+import { councils as allCouncilsList, formatListBandD } from '@/data/councils';
 import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -43,11 +43,11 @@ const HomepageResultItem = memo(function HomepageResultItem({
     >
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-semibold type-body-sm truncate text-foreground">{council.name}</p>
+          <p className="font-semibold type-body-sm text-foreground">{council.name}</p>
           <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
         </div>
         <div className="text-right shrink-0">
-          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">£{Math.round(bandD).toLocaleString('en-GB')}/yr{areaBandD?.year === '2025-26' ? ' (2025-26)' : ''}</p>}
+          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">{formatListBandD(council)}</p>}
           {yoyChange !== null && (
             <p className={`type-body-sm tabular-nums ${yoyChange > 0 ? 'text-negative' : yoyChange < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
               {yoyChange > 0 ? '+' : ''}{yoyChange.toFixed(1)}% from last year
@@ -83,7 +83,7 @@ const DashboardResultItem = memo(function DashboardResultItem({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className={`font-medium type-body-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
+          <p className={`font-medium type-body-sm ${isHighlighted ? 'text-primary' : ''}`}>
             {displayName}
           </p>
           <div className="flex items-center gap-2 mt-2">
@@ -95,7 +95,7 @@ const DashboardResultItem = memo(function DashboardResultItem({
         <div className="text-right shrink-0">
           {areaBandD && (
             <p className="type-body-sm text-muted-foreground tabular-nums">
-              £{areaBandD.value.toFixed(2)}/year{areaBandD.year === '2025-26' ? ' (2025-26)' : ''}
+              {formatListBandD(council)}
             </p>
           )}
         </div>
