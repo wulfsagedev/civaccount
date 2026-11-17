@@ -76,17 +76,6 @@ export default function ProposalForm({
     }
   }, [councilSlug, mode, initialData]);
 
-  // Auto-submit if returning from auth with a saved draft
-  useEffect(() => {
-    if (mode === 'create' && user && title && body && category) {
-      const draft = loadDraft(councilSlug);
-      if (draft) {
-        handleSubmit();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   const toggleLabel = (value: string) => {
     setLabels((prev) =>
       prev.includes(value) ? prev.filter((l) => l !== value) : [...prev, value]
@@ -181,6 +170,18 @@ export default function ProposalForm({
     setIsSubmitting(false);
     setSubmitted({ id: data.id });
   };
+
+  // Auto-submit if returning from auth with a saved draft. Declared after
+  // handleSubmit so it never reads the function before it exists.
+  useEffect(() => {
+    if (mode === 'create' && user && title && body && category) {
+      const draft = loadDraft(councilSlug);
+      if (draft) {
+        handleSubmit();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // Success state after creation
   if (submitted) {
