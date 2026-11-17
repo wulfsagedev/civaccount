@@ -59,9 +59,12 @@ export default function FeedbackModal() {
       // A form opened with a template (the report form) leaves it behind for
       // the next plain open only if someone wrote into it (launch QA, 29 Oct 2026)
       const template = detail?.prefillMessage;
+      // read the last template now: React may run the updater after the line
+      // below has already replaced it (independent review, 17 Nov 2026)
+      const previous = lastTemplate.current;
       setFormData((prev) => ({
         ...prev,
-        message: template ?? (prev.message === lastTemplate.current ? '' : prev.message),
+        message: template ?? (prev.message === previous ? '' : prev.message),
       }));
       lastTemplate.current = template ?? null;
       if (detail?.title) setDialogTitle(detail.title);

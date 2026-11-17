@@ -41,4 +41,15 @@ describe('reporting', () => {
     expect(terms).toContain('under penalty of perjury');
     expect(terms).toContain('close the accounts');
   });
+
+  it('leaves no report template behind in the plain feedback form', () => {
+    // the last template is read before setFormData, never inside its updater,
+    // which React may run after lastTemplate has changed
+    const dialog = read('src/components/FeatureRequestDialog.tsx');
+    const at = (s: string) => dialog.indexOf(s);
+    expect(at('const previous = lastTemplate.current;')).toBeGreaterThan(-1);
+    expect(at('const previous = lastTemplate.current;')).toBeLessThan(at('setFormData((prev) => ({'));
+    expect(dialog).toContain("prev.message === previous ? '' : prev.message");
+    expect(dialog).not.toContain('prev.message === lastTemplate.current');
+  });
 });
