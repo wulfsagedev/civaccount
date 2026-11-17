@@ -77,7 +77,9 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+      // api.postcodes.io: the postcode search asks it which council covers a postcode, from the browser. Missing here,
+      // every postcode search failed with "Could not look up postcode" (launch QA, 29 Oct 2026; src/lib/csp.test.ts).
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://api.postcodes.io",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self' https://checkout.stripe.com",
