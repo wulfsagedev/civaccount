@@ -5,7 +5,7 @@ import { ChevronUp } from 'lucide-react';
 import { councils, getCouncilSlug } from '@/data/councils';
 import CouncilSelector from '@/components/CouncilSelector';
 import { createClient } from '@/lib/supabase/client';
-import { timeAgo, getCurrentMilestone } from '@/lib/proposals';
+import { timeAgo, getCurrentMilestone, isExamplePost } from '@/lib/proposals';
 import { CARD_STYLES } from '@/lib/utils';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -19,6 +19,7 @@ interface RecentProposal {
   score: number;
   comment_count: number;
   created_at: string;
+  author_id: string;
 }
 
 export default function TownHallPage() {
@@ -30,7 +31,7 @@ export default function TownHallPage() {
       const supabase = createClient();
       const { data } = await supabase
         .from('proposals')
-        .select('id, council_slug, budget_category, title, score, comment_count, created_at')
+        .select('id, council_slug, budget_category, title, score, comment_count, created_at, author_id')
         .neq('status', 'flagged')
         .order('created_at', { ascending: false })
         .limit(10);
@@ -117,7 +118,7 @@ export default function TownHallPage() {
         <div className={`${CARD_STYLES} p-5 sm:p-6`}>
           <h2 className="type-title-2 mb-1">What people are saying</h2>
           <p className="type-body-sm text-muted-foreground mb-5">
-            Real ideas from real residents across England.
+            Ideas people have shared. Posts marked Example were written by CivAccount to show how Town Hall works.
           </p>
 
           {isLoading ? (
@@ -147,6 +148,7 @@ export default function TownHallPage() {
                       <p className="type-body-sm text-muted-foreground mt-0.5">
                         {councilName} · {timeAgo(p.created_at)}
                         {milestone && <span className="ml-1">· {milestone.label}</span>}
+                        {isExamplePost(p.author_id) && <span className="ml-1 font-semibold text-foreground">· Example</span>}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 type-body-sm text-muted-foreground tabular-nums">

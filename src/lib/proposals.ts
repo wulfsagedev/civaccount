@@ -140,3 +140,11 @@ export function loadDraft(councilSlug: string): ProposalDraft | null {
 export function clearDraft() {
   localStorage.removeItem(DRAFT_KEY);
 }
+
+/** The 25 accounts supabase/migrations/seed-proposals.sql created to show how
+ * Town Hall works. Their posts are examples, not residents' ideas, and say so. */
+export const EXAMPLE_AUTHOR_ID_PREFIX = '00000000-0000-4000-a000-';
+
+export function isExamplePost(authorId: string | null | undefined): boolean {
+  return typeof authorId === 'string' && authorId.startsWith(EXAMPLE_AUTHOR_ID_PREFIX);
+}

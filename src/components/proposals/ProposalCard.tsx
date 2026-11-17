@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare } from 'lucide-react';
-import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS, PROPOSAL_STATUS_STYLES, PROPOSAL_STATUS_DESCRIPTIONS } from '@/lib/proposals';
+import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS, PROPOSAL_STATUS_STYLES, PROPOSAL_STATUS_DESCRIPTIONS, isExamplePost } from '@/lib/proposals';
 import VoteButton from './VoteButton';
 import ShareButton from './ShareButton';
 import MilestoneBar from './MilestoneBar';
@@ -21,6 +21,7 @@ interface ProposalCardProps {
     comment_count: number;
     created_at: string;
     council_slug: string;
+    author_id?: string;
     author: {
       display_name: string | null;
     } | null;
@@ -68,6 +69,9 @@ export default function ProposalCard({ proposal, userVote, isHighlighted }: Prop
 
           {/* Meta row */}
           <div className="flex items-center flex-wrap gap-2 mt-3">
+            {isExamplePost(proposal.author_id) && (
+              <Badge variant="secondary" className="type-caption">Example</Badge>
+            )}
             <Badge variant="outline" className="type-caption bg-navy-50 text-navy-600 border-navy-200">
               {getCategoryLabel(proposal.budget_category)}
             </Badge>
