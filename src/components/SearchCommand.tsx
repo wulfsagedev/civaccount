@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, useCallback, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -345,7 +346,9 @@ export default function SearchCommand({ forceDesktopStyle = false, renderOverlay
           Header mounts three responsive instances (desktop / tablet / mobile);
           only the first is the overlay owner. `forceDesktopStyle` is the
           sticky-nav variant which is always button-only. */}
-      {renderOverlay && !forceDesktopStyle && shouldRenderOverlay && (
+      {/* Portalled to the body: the owning instance sits in the header's desktop-only row, so below 1024px the
+          overlay opened inside a hidden box and phones saw nothing (launch QA, 29 Oct 2026; audit 17 Nov 2026). */}
+      {renderOverlay && !forceDesktopStyle && shouldRenderOverlay && typeof document !== 'undefined' && createPortal(
         <div ref={dialogRef} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Search councils" data-state={overlayState}>
           <div
             className="absolute inset-0 modal-overlay ease-out-snap data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-240 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-180 motion-reduce:animate-none"
@@ -424,7 +427,8 @@ export default function SearchCommand({ forceDesktopStyle = false, renderOverlay
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
