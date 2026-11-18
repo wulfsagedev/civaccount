@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { resolveMatchup, getPopularComparisons } from './comparisons';
+import { resolveMatchup, getPopularComparisons, canonicalMatchup } from './comparisons';
 import { councils, getCouncilSlug } from '@/data/councils';
 
 const a = councils[0];
@@ -60,5 +60,20 @@ describe('soft-404 invariant', () => {
   it('has no root app/loading.tsx, which would reintroduce soft 404s', () => {
     const rootLoading = resolve(__dirname, '..', 'app', 'loading.tsx');
     expect(existsSync(rootLoading)).toBe(false);
+  });
+});
+
+describe('one address per pair (CA-B15)', () => {
+  it('rejects a council compared with itself', () => {
+    expect(resolveMatchup(`${getCouncilSlug(a)}-vs-${getCouncilSlug(a)}`)).toBeNull();
+  });
+
+  it('gives both orders the same canonical address, the sitemap one', () => {
+    const [first, second] = [getCouncilSlug(a), getCouncilSlug(b)].sort();
+    expect(canonicalMatchup(`${second}-vs-${first}`)).toBe(`${first}-vs-${second}`);
+    expect(canonicalMatchup(`${first}-vs-${second}`)).toBe(`${first}-vs-${second}`);
+    for (const matchup of getPopularComparisons()) {
+      expect(canonicalMatchup(matchup)).toBe(matchup);
+    }
   });
 });
