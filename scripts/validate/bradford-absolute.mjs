@@ -153,7 +153,7 @@ try {
   restore();
 
   // C6: drift a Band D year
-  mutateTs('band_d_2025: 2246,', 'band_d_2025: 2250,');
+  mutateTs('band_d_2025: 2246.15,', 'band_d_2025: 2250.15,');
   {
     const broke = lockVerify().code !== 0;
     assert('C6  drifted Band D vs GOV.UK CSV → breaks lock', broke);

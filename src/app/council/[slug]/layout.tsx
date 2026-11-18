@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD, getAreaBandD, getAreaBandDChange, PREVIOUS_TAX_YEAR } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD, getOwnBandD, getBillSplitYear, getAreaBandD, getAreaBandDChange, PREVIOUS_TAX_YEAR } from '@/data/councils';
 import { buildFAQPageSchema, buildDatasetSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
@@ -90,8 +90,9 @@ export default async function CouncilLayout({ params, children }: Props) {
   }
 
   const displayName = getCouncilDisplayName(council);
-  // 2025-26 own-share figure — stays next to the 2025-26 precept breakdown.
-  const bandD = council.council_tax?.band_d_2025;
+  // This council's own share (excluding parish precepts), in the bill split's year.
+  const bandD = getOwnBandD(council);
+  const splitYear = getBillSplitYear(council);
   const typeName = council.type_name || 'Council';
   const detailed = council.detailed;
   const budget = council.budget;
@@ -126,7 +127,8 @@ export default async function CouncilLayout({ params, children }: Props) {
   // Build FAQ pairs for schema
   const faqs: Array<{ question: string; answer: string }> = [];
 
-  // Precept-based split — stays in 2025-26, the year the precept rows belong to.
+  // From the bill split, whose rows add up to totalBill (bill-split.mjs).
+  // County councils have no area total, so they get no percentage.
   const totalBill = getTotalBandD(council);
   if (totalBill && bandD) {
     const pct = Math.round((bandD / totalBill) * 100);
@@ -134,8 +136,8 @@ export default async function CouncilLayout({ params, children }: Props) {
     faqs.push({
       question: `What percentage of my bill goes to ${council.name}?`,
       answer: isSoleAuthority
-        ? `In 2025-26, all of your council tax (${formatCurrency(bandD, { decimals: 2 })}) goes to ${council.name}.`
-        : `In 2025-26, ${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(totalBill, { decimals: 2 })}).`,
+        ? `In ${splitYear}, all of your council tax (${formatCurrency(bandD, { decimals: 2 })}) goes to ${council.name}.`
+        : `In ${splitYear}, ${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(totalBill, { decimals: 2 })}).`,
     });
   }
 

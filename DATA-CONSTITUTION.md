@@ -88,6 +88,28 @@ each rendered value is compared against the source cell at penny precision.
 That last clause matters: the verifier used to crash and still exit 0. A safety
 check that reports success while doing nothing is worse than no check.
 
+**The bill split adds up, and matches the government's table.** Every
+council's "Your bill" rows come from MHCLG Table 10 (local authority level
+data). For a billing authority the rows are its own Band D including average
+parish precepts (line 8) plus each county/GLA, police, fire and combined
+authority precept (line 16), and they sum to the area Band D (line 17) to the
+penny — the same figure as `council_tax.band_d_2026`. A county council lists
+its own, police and fire Band D with no total, because each district's share
+and any parish precept sit on top. Area Band D figures are read from the
+workbook's stored values: the live table stores pence but displays whole
+pounds.
+
+| | |
+|---|---|
+| **Enforcer** | `scripts/validate/validators/bill-split.mjs` (errors, not warnings) |
+| **Current** | **317 / 317** councils match Table 10 row for row (2026-10-29) |
+| **Fails when** | rows don't sum to the total, any row or total differs from Table 10, a preceptor is missing or extra, the split's year isn't the headline year, or a county carries a total |
+
+Precedent: on 2026-10-29 all five launch-QA testers found bills that didn't add
+up — 282 of 317 councils were off by more than £1. The only sum check was a
+warning, and the loader never read `total_band_d`, so two other checks that
+used it had been skipping silently.
+
 ## Rule 5 — Values must be re-derivable from an archived copy
 
 The strong bar: the source document is archived, hashed, and the figure

@@ -1,5 +1,5 @@
 import type { Council } from '@/data/councils';
-import { getAreaBandD } from '@/data/councils';
+import { getAreaBandD, getAreaBandDChange, getTotalBandD, getOwnBandD, getBillSplitYear } from '@/data/councils';
 import type { ReactElement } from 'react';
 import { OG, formatCurrencyOG, formatBudgetOG } from '@/app/council/[slug]/card/_lib/og-shared';
 import { ogStoryWrap, ogStoryBrand } from '@/lib/og-story-wrap';
@@ -237,15 +237,19 @@ export function renderBillHistoryStory(council: Council, councilName: string): R
 // ── Tax Card Receipt (Story) ─────────────────────────────────────────────────
 
 export function renderTaxCardStory(council: Council, councilName: string): ReactElement {
-  const precepts = council.detailed?.precepts;
   const bandD = council.council_tax?.band_d_2025;
-  const bandDPrev = council.council_tax?.band_d_2024;
 
   if (!bandD) return <div style={{ display: 'flex' }}>No data</div>;
 
-  const total = precepts?.length ? precepts.reduce((s, p) => s + p.band_d, 0) : bandD;
+  // One year throughout: the bill split's (2026-27 for billing authorities,
+  // 2025-26 for county councils). A county has no area total, so its receipt
+  // shows the county's own share.
+  const year = getBillSplitYear(council);
+  const ownBandD = getOwnBandD(council) ?? bandD;
+  const total = getTotalBandD(council) ?? ownBandD;
   const weeklyCost = (total / 52).toFixed(2);
-  const changePct = bandDPrev ? (((bandD - bandDPrev) / bandDPrev) * 100).toFixed(1) : null;
+  const areaChange = getAreaBandDChange(council);
+  const changePct = areaChange ? areaChange.percent.toFixed(1) : null;
 
   // Top service weekly costs (council's share only)
   const budget = council.budget;
@@ -254,7 +258,7 @@ export function renderTaxCardStory(council: Council, councilName: string): React
         .map(([key, label]) => {
           const amount = (budget[key as keyof typeof budget] as number | null) ?? 0;
           if (amount <= 0) return null;
-          return { label, weekly: ((bandD / 52) * (amount / budget.total_service!)) };
+          return { label, weekly: ((ownBandD / 52) * (amount / budget.total_service!)) };
         })
         .filter((x): x is NonNullable<typeof x> => x !== null)
         .sort((a, b) => b.weekly - a.weekly)
@@ -272,7 +276,7 @@ export function renderTaxCardStory(council: Council, councilName: string): React
           {councilName}
         </span>
         <span style={{ fontSize: '28px', fontWeight: 500, color: OG.secondary }}>
-          Council tax receipt · 2025-26
+          {`Council tax receipt · ${year}`}
         </span>
       </div>
 
@@ -304,7 +308,7 @@ export function renderTaxCardStory(council: Council, councilName: string): React
         {/* Divider + change */}
         <div style={{ display: 'flex', width: '100%', height: '2px', backgroundColor: OG.border, marginBottom: '20px' }} />
         <span style={{ fontSize: '32px', fontWeight: 500, color: OG.secondary }}>
-          {changePct ? `${Number(changePct) > 0 ? '+' : ''}${changePct}% from last year` : `${formatCurrencyOG(total, 2)} per year`}
+          {changePct ? `${Number(changePct) > 0 ? '+' : ''}${changePct}% from ${areaChange?.fromYear}` : `${formatCurrencyOG(total, 2)} per year`}
         </span>
       </div>
 

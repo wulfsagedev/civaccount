@@ -28,6 +28,7 @@
  *
  * Usage:
  *   node scripts/council-research/render-csv-evidence.mjs --council=Bradford
+ *   node scripts/council-research/render-csv-evidence.mjs --council=Bradford --only=council_tax.band_d --force
  *
  * Requires puppeteer (already a dependency for fetch-pdf-puppeteer).
  */
@@ -211,6 +212,14 @@ async function main() {
         }),
       });
     }
+  }
+
+  // --only=<field-path prefix> re-renders a subset (e.g. --only=council_tax.band_d
+  // --force after the Band D CSV changed) without touching the other images.
+  if (typeof args.only === 'string') {
+    const keep = jobs.filter((j) => j.fieldPath.startsWith(args.only));
+    jobs.length = 0;
+    jobs.push(...keep);
   }
 
   if (jobs.length === 0) {

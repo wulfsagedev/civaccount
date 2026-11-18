@@ -6,6 +6,7 @@ import {
   getAverageBandDByType,
   getCouncilPopulation,
   getTotalBandD,
+  getOwnBandD,
   getAreaBandD,
   PREVIOUS_TAX_YEAR,
   type Council,
@@ -78,19 +79,11 @@ export default function EmbedClient({
   const totalBudget = budget?.total_service ? budget.total_service * 1000 : null;
   const population = getCouncilPopulation(council.name);
 
-  const thisCouncilBandD = useMemo(() => {
-    if (!councilTax) return null;
-    if (detailed?.precepts && detailed.precepts.length > 0) {
-      const councilNameLower = council.name.toLowerCase();
-      const matching = detailed.precepts.find(p => {
-        const authLower = p.authority.toLowerCase();
-        return authLower.includes(councilNameLower) ||
-               councilNameLower.split(' ').some(word => word.length > 3 && authLower.includes(word));
-      });
-      if (matching) return matching.band_d;
-    }
-    return councilTax.band_d_2025;
-  }, [council, councilTax, detailed]);
+  // This council's own share (excluding parish precepts), in the bill split's year.
+  const thisCouncilBandD = useMemo(
+    () => (councilTax ? getOwnBandD(council) : null),
+    [council, councilTax],
+  );
 
   const taxChange = councilTax && councilTax.band_d_2024
     ? ((councilTax.band_d_2025 - councilTax.band_d_2024) / councilTax.band_d_2024) * 100
@@ -103,8 +96,7 @@ export default function EmbedClient({
   // getAreaBandD returns for that type.
   const vsAverage = typeAverage && areaBandD ? areaBandD.value - typeAverage : null;
 
-  // 2025-26 precept-stack total — stays in the precepts' year so the
-  // YourBillCard breakdown always sums to its own total.
+  // Area total the bill split adds up to (null for county councils).
   const totalBandDBill = getTotalBandD(council);
   const totalDailyCost = totalBandDBill ? totalBandDBill / 365 : null;
 
@@ -112,14 +104,14 @@ export default function EmbedClient({
     ? councilTax.band_d_2025 - councilTax.band_d_2024
     : null;
 
-  // This council's own share per band (2025-26 precept split).
+  // This council's own share per band, in the bill split's year.
   const allBands = useMemo(() => {
     if (!councilTax) return null;
     return calculateBands(thisCouncilBandD ?? councilTax.band_d_2025);
   }, [councilTax, thisCouncilBandD]);
 
-  // Full-bill amount per band, in the most recent year with a verified
-  // area total (2026-27 for billing authorities, 2025-26 for counties).
+  // Full-bill amount per band: the 2026-27 area Band D for billing
+  // authorities. County councils have no area total, so none here.
   const currentAreaTotal = areaBandD?.year === '2026-27' ? areaBandD.value : totalBandDBill;
   const totalBandsYear = areaBandD?.year === '2026-27' ? areaBandD.year : PREVIOUS_TAX_YEAR;
   const totalBandAmounts = useMemo(() => {

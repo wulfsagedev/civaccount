@@ -6,7 +6,6 @@
  * Derivations covered:
  *   - tax_bands (A–H)        : band_d * statutory_ratio
  *   - council_tax_increase_%  : (band_d_2025 / band_d_2024 - 1) * 100
- *   - council_tax_shares      : precept share of band_d_2025 total
  *   - per_capita_spend        : budget.total_service * 1000 / population
  *
  * Any rendered override of the derivation is a bug — the UI should
@@ -47,17 +46,8 @@ export function validate(councils, population, report) {
       }
     }
 
-    // ── council_tax_shares ──
-    // Sum of precept band_d values should equal total_band_d (== band_d_2025).
-    if (d.precepts && d.precepts.length > 0 && bandD2025) {
-      report.tick();
-      const sum = d.precepts.reduce((n, p) => n + (p.band_d || 0), 0);
-      if (Math.abs(sum - bandD2025) > 0.05) {
-        report.finding(c, 'calculated-fields', 'precept_sum_drift', 'warning',
-          `Sum of precept band_d values (£${sum.toFixed(2)}) does not equal band_d_2025 (£${bandD2025})`,
-          'detailed.precepts', sum, bandD2025);
-      }
-    }
+    // Precept rows summing to the total moved to bill-split.mjs (an error
+    // there, not a warning, and checked against MHCLG Table 10).
 
     // ── per_capita_spend ──
     // Rendered at display time (we don't store it), but validate it's computable.

@@ -121,6 +121,22 @@ export const FIELD_PROVENANCE: Record<string, DataProvenance> = {
     source_title: 'GOV.UK Council Tax Live Tables',
     data_year: '2025-26',
   },
+  // Bill split ("Your bill" rows and their total) — MHCLG Table 10. Keyed by
+  // the split's year: getProvenance(`bill_split.${getBillSplitYear(c)}`, c).
+  'bill_split.2026-27': {
+    label: 'published',
+    source_url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027',
+    source_title: 'GOV.UK Council Tax levels 2026-27 — Table 10, local authority level data',
+    data_year: '2026-27',
+    methodology: 'Each amount is the Band D charge that authority set for this area, taken from the government\'s own table. The amounts add up to the total. Where the area has parish or town councils, their average charge is included in the council\'s own amount.',
+  },
+  'bill_split.2025-26': {
+    label: 'published',
+    source_url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',
+    source_title: 'GOV.UK Council Tax levels 2025-26 (revised) — Table 10, local authority level data',
+    data_year: '2025-26',
+    methodology: 'Each amount is the Band D charge that authority set, taken from the government\'s own table. A county council\'s area has no single total: each district council adds its own charge, and so do parish councils.',
+  },
   'council_tax.band_d_2024': {
     label: 'published',
     source_url: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',

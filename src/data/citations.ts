@@ -44,6 +44,20 @@ const NATIONAL_SOURCES: Record<string, NationalSource> = {
     parsed_csv: 'parsed-area-band-d.csv',
     last_downloaded: '2026-04-21',
   },
+  'band-d-components': {
+    gov_uk_page: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027',
+    publisher: 'MHCLG',
+    data_year: '2026-27',
+    parsed_csv: 'parsed-band-d-components.csv',
+    last_downloaded: '2026-10-29',
+  },
+  'precepting-band-d': {
+    gov_uk_page: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',
+    publisher: 'MHCLG',
+    data_year: '2025-26',
+    parsed_csv: 'parsed-precepting-band-d.csv',
+    last_downloaded: '2026-10-29',
+  },
   'council-tax-2025': {
     gov_uk_page: 'https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026',
     publisher: 'MHCLG',

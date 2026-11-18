@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui/popover';
-import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceTypeName, getTotalBandD, type Council } from '@/data/councils';
+import { formatCurrency, getCouncilByName, getCouncilSlug, councils, toSentenceTypeName, getTotalBandD, getBillSplitYear, getOwnPrecept, type Council, type PreceptBreakdown } from '@/data/councils';
 import ShareButton from '@/components/proposals/ShareButton';
 import { useIsEmbed } from '@/lib/embed-context';
 import SourceAnnotation from '@/components/ui/source-annotation';
@@ -40,6 +40,25 @@ const findLinkedCouncil = (authorityName: string) => {
   return null;
 };
 
+// Plain-English line under each bill row, by who the money goes to.
+const describePrecept = (precept: PreceptBreakdown): string | null => {
+  switch (precept.kind) {
+    case 'council':
+      return precept.includes_parish_average ? 'Includes the average for parish and other local councils' : null;
+    case 'county': return 'Education, social care, highways';
+    case 'gla': return 'Mayor of London';
+    case 'police': return 'Local policing and crime prevention';
+    case 'fire': return 'Fire and rescue services';
+    case 'combined_authority': return 'Mayor and combined authority';
+  }
+  // Rows without a kind (build fixtures): guess from the name.
+  const name = precept.authority.toLowerCase();
+  if (name.includes('police')) return 'Local policing and crime prevention';
+  if (name.includes('fire')) return 'Fire and rescue services';
+  if (name.includes('county')) return 'Education, social care, highways';
+  return null;
+};
+
 interface YourBillCardProps {
   selectedCouncil: Council;
   thisCouncilBandD: number | null;
@@ -60,11 +79,14 @@ const YourBillCard = ({
   const isEmbed = useIsEmbed();
   const councilTax = selectedCouncil.council_tax;
   const detailed = selectedCouncil.detailed;
-  // True total bill across all precepting authorities. We compute it here
-  // rather than reading detailed.total_band_d directly because several data
-  // entries (particularly county councils) have total_band_d wrongly set to
-  // just this council's own share.
+  // The bill split (MHCLG Table 10): rows that add up to the area Band D, to
+  // the penny. Everything in this card is in the split's year. A county has
+  // no total — each district's share and any parish precept sit on top.
+  const splitYear = getBillSplitYear(selectedCouncil);
+  const splitProvenance = getProvenance(`bill_split.${splitYear}`, selectedCouncil);
   const totalBill = getTotalBandD(selectedCouncil);
+  const ownPrecept = getOwnPrecept(selectedCouncil);
+  const isCounty = selectedCouncil.type === 'SC';
 
   return (
     <section id="your-bill" className="card-elevated p-5 sm:p-6">
@@ -72,7 +94,7 @@ const YourBillCard = ({
       <div className="mb-6">
         <div className="flex items-center gap-1.5 mb-1">
           <span className="type-caption text-muted-foreground">
-            Typical Band D share for this council · 2025-26
+            Typical Band D share for this council · {splitYear}
           </span>
           <Popover>
             <PopoverTrigger asChild>
@@ -101,7 +123,7 @@ const YourBillCard = ({
         </div>
         <div className="flex items-baseline gap-2">
           <SourceAnnotation
-            provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+            provenance={splitProvenance}
             reportContext={{
               council: selectedCouncil.name,
               field: 'Council tax (your share)',
@@ -140,60 +162,58 @@ const YourBillCard = ({
           per-precept breakdown card immediately below this one. */}
 
       {/* Full bill breakdown with visual bar */}
-      {detailed?.precepts && detailed.precepts.length > 0 && totalBill && (
+      {detailed?.precepts && detailed.precepts.length > 0 && (
         <div className="pt-5 border-t border-border/50">
-          <p className="type-body-sm font-semibold mb-1">Typical Band D bill · 2025-26</p>
-          <p className="type-caption text-muted-foreground mb-4">How the 2025-26 bill was split. Average across {selectedCouncil.name} — actual bills vary by band, parish and discounts. The 2026-27 split publishes once each authority&apos;s precept is verified.</p>
+          <p className="type-body-sm font-semibold mb-1">
+            {isCounty ? `Band D charges · ${splitYear}` : `Typical Band D bill · ${splitYear}`}
+          </p>
+          <p className="type-caption text-muted-foreground mb-4">
+            {isCounty
+              ? `What each authority charged a Band D home in ${splitYear}. Your district council and any parish council add their own charge, so the full bill depends on where you live.`
+              : `How the ${splitYear} bill is split. Average across ${selectedCouncil.name} — actual bills vary by band, parish and discounts.`}
+          </p>
 
-          {/* Visual stacked bar with legend */}
-          <div className="mb-4">
-            <div className="h-2 rounded-full overflow-hidden flex bg-muted">
-              {detailed.precepts.map((precept, index) => {
-                const percentage = (precept.band_d / totalBill) * 100;
-                const isThisCouncil = precept.authority.toLowerCase().includes(selectedCouncil.name.toLowerCase().split(' ')[0]);
-                return (
+          {/* Visual stacked bar with legend — only where the rows make up a
+              whole bill. A county's rows are only part of one. */}
+          {totalBill && (
+            <div className="mb-4">
+              <div className="h-2 rounded-full overflow-hidden flex bg-muted">
+                {detailed.precepts.map((precept, index) => (
                   <div
                     key={index}
-                    className={`h-full ${isThisCouncil ? 'bg-foreground' : 'bg-muted-foreground/40'}`}
-                    style={{ width: `${percentage}%` }}
+                    className={`h-full ${precept === ownPrecept ? 'bg-foreground' : 'bg-muted-foreground/40'}`}
+                    style={{ width: `${(precept.band_d / totalBill) * 100}%` }}
                   />
-                );
-              })}
-            </div>
-            {/* Legend */}
-            <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-foreground" />
-                <span className="type-caption text-muted-foreground">{selectedCouncil.name}</span>
+                ))}
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-muted-foreground/40" />
-                <span className="type-caption text-muted-foreground">Other authorities</span>
+              {/* Legend */}
+              <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-foreground" />
+                  <span className="type-caption text-muted-foreground">{selectedCouncil.name}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-muted-foreground/40" />
+                  <span className="type-caption text-muted-foreground">Other authorities</span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Breakdown list - consistent row heights with icons */}
           <div className="space-y-0">
             {detailed.precepts.map((precept, index) => {
-              const isThisCouncil = precept.authority.toLowerCase().includes(selectedCouncil.name.toLowerCase().split(' ')[0]);
+              const isThisCouncil = precept === ownPrecept;
               const linkedCouncil = !isThisCouncil ? findLinkedCouncil(precept.authority) : null;
-              const isLinkable = linkedCouncil && !precept.authority.toLowerCase().includes('police') && !precept.authority.toLowerCase().includes('fire');
+              const isLinkable = linkedCouncil && (precept.kind
+                ? precept.kind === 'county'
+                : !precept.authority.toLowerCase().includes('police') && !precept.authority.toLowerCase().includes('fire'));
 
-              // Keep "Council" in the name for clarity
-              const displayName = precept.authority
-                .replace(' District Council', '')
-                .replace(' County Council', ' County Council')
-                .replace(/^(.+) Council$/, '$1 Council');
-
-              // Default descriptions for common authority types
-              const getDefaultDescription = () => {
-                if (precept.authority.toLowerCase().includes('police')) return 'Local policing and crime prevention';
-                if (precept.authority.toLowerCase().includes('fire')) return 'Fire and rescue services';
-                if (precept.authority.toLowerCase().includes('county')) return 'Education, social care, highways';
-                return null;
-              };
-              const description = precept.description || getDefaultDescription();
+              // The full name, as Table 10 and the council's own bill print it.
+              // (Stripping " District Council" turned "City of Bradford
+              // Metropolitan District Council" into "City of Bradford Metropolitan".)
+              const displayName = precept.authority;
+              const description = precept.description || describePrecept(precept);
 
               const rowContent = (
                 <div className="flex items-center justify-between">
@@ -202,7 +222,7 @@ const YourBillCard = ({
                       {displayName}
                     </span>
                     {description && (
-                      <p className="type-caption text-muted-foreground truncate">{description}</p>
+                      <p className="type-caption text-muted-foreground">{description}</p>
                     )}
                   </div>
                   {isLinkable && (
@@ -210,7 +230,7 @@ const YourBillCard = ({
                   )}
                   <span className={`type-body-sm font-semibold tabular-nums shrink-0 ml-3 ${isThisCouncil ? '' : 'text-muted-foreground'}`}>
                     <SourceAnnotation
-                      provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
+                      provenance={splitProvenance}
                       reportContext={{
                         council: selectedCouncil.name,
                         field: `Precept share: ${precept.authority}`,
@@ -235,35 +255,44 @@ const YourBillCard = ({
             })}
           </div>
 
-          {/* Total */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
-            <div>
-              <span className="type-body font-semibold">Typical Band D total · 2025-26</span>
-              {totalDailyCost && (
-                <p className="type-caption text-muted-foreground">
-                  <SourceAnnotation
-                    provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
-                    reportContext={{
-                      council: selectedCouncil.name,
-                      field: 'Band D daily cost',
-                      value: `${formatCurrency(totalDailyCost, { decimals: 2 })} per day`,
-                    }}
-                  >{formatCurrency(totalDailyCost, { decimals: 2 })}</SourceAnnotation>
-                  {' per day'}
-                </p>
-              )}
+          {/* Total — or, for a county, what sits on top */}
+          {totalBill ? (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
+              <div>
+                <span className="type-body font-semibold">Typical Band D total · {splitYear}</span>
+                {totalDailyCost && (
+                  <p className="type-caption text-muted-foreground">
+                    <SourceAnnotation
+                      provenance={splitProvenance}
+                      reportContext={{
+                        council: selectedCouncil.name,
+                        field: 'Band D daily cost',
+                        value: `${formatCurrency(totalDailyCost, { decimals: 2 })} per day`,
+                      }}
+                    >{formatCurrency(totalDailyCost, { decimals: 2 })}</SourceAnnotation>
+                    {' per day'}
+                  </p>
+                )}
+              </div>
+              <span className="type-metric tabular-nums whitespace-nowrap">
+                <SourceAnnotation
+                  provenance={splitProvenance}
+                  reportContext={{
+                    council: selectedCouncil.name,
+                    field: 'Band D total bill',
+                    value: formatCurrency(totalBill, { decimals: 2 }),
+                  }}
+                >{formatCurrency(totalBill, { decimals: 2 })}</SourceAnnotation>
+              </span>
             </div>
-            <span className="type-metric tabular-nums whitespace-nowrap">
-              <SourceAnnotation
-                provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}
-                reportContext={{
-                  council: selectedCouncil.name,
-                  field: 'Band D total bill',
-                  value: formatCurrency(totalBill, { decimals: 2 }),
-                }}
-              >{formatCurrency(totalBill, { decimals: 2 })}</SourceAnnotation>
-            </span>
-          </div>
+          ) : (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <p className="type-body-sm font-semibold">Plus your district council</p>
+              <p className="type-caption text-muted-foreground">
+                And your parish or town council, if you have one. Find your district council to see your full bill.
+              </p>
+            </div>
+          )}
 
           {/* Check your exact bill CTA — links out to council's own calculator */}
           {detailed?.council_tax_url && (

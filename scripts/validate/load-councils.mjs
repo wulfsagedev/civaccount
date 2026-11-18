@@ -114,6 +114,11 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
   d.savings_target = extractField(section, 'savings_target');
   d.council_tax_requirement = extractField(section, 'council_tax_requirement');
 
+  // Bill split. total_band_d was never extracted before 2026-10-29, so every
+  // check that read it (source-truth, random-audit) silently skipped.
+  d.total_band_d = extractField(section, 'total_band_d');
+  d.precepts_year = extractField(section, 'precepts_year');
+
   // Leadership
   d.chief_executive = extractField(section, 'chief_executive');
   d.council_leader = extractField(section, 'council_leader');
@@ -207,9 +212,9 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
   }
 
   // Extract precepts as a real array so cross-field validators can use them.
-  // Each entry: { authority: string, band_d: number }
   if (d._has.precepts) {
-    const pStartIdx = section.indexOf('precepts: [');
+    // Anchor on the field itself so `parish_precepts: [` can never match.
+    const pStartIdx = section.search(/(?<![a-z_])precepts: \[/);
     if (pStartIdx !== -1) {
       let depth = 0;
       let pEndIdx = section.length;
@@ -219,11 +224,17 @@ function parseCouncilSection(section, onsCode, name, type, typeName) {
       }
       const pSection = section.substring(pStartIdx, pEndIdx);
       const precepts = [];
-      // Match: { authority: "...", band_d: NUMBER }  (order-flexible)
-      const entryRe = /\{\s*authority:\s*"([^"]+)"\s*,\s*band_d:\s*([\d.]+)/g;
-      let pm;
-      while ((pm = entryRe.exec(pSection)) !== null) {
-        precepts.push({ authority: pm[1], band_d: parseFloat(pm[2]) });
+      // Each entry: { authority: "...", band_d: N, kind: "...",
+      //   includes_parish_average?: true, band_d_excluding_parish?: N }
+      for (const pm of pSection.matchAll(/\{\s*authority:\s*"([^"]+)"\s*,\s*band_d:\s*([\d.]+)([^}]*)\}/g)) {
+        const rest = pm[3];
+        const entry = { authority: pm[1], band_d: parseFloat(pm[2]) };
+        const kind = rest.match(/\bkind:\s*"([^"]+)"/)?.[1];
+        if (kind) entry.kind = kind;
+        if (/\bincludes_parish_average:\s*true/.test(rest)) entry.includes_parish_average = true;
+        const exc = rest.match(/\bband_d_excluding_parish:\s*([\d.]+)/)?.[1];
+        if (exc) entry.band_d_excluding_parish = parseFloat(exc);
+        precepts.push(entry);
       }
       d.precepts = precepts;
     }

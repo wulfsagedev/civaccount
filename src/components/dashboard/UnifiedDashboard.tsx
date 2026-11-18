@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronUp } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, getAreaBandD, PREVIOUS_TAX_YEAR, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, getAreaBandD, getOwnBandD, getBillSplitYear, PREVIOUS_TAX_YEAR, type ServiceSpendingDetail } from '@/data/councils';
 import ContributeBanner from '@/components/ContributeBanner';
 import YourBillCard from '@/components/dashboard/YourBillCard';
 import TaxBandsCard from '@/components/dashboard/TaxBandsCard';
@@ -38,23 +38,13 @@ const UnifiedDashboard = () => {
   const totalBudget = budget?.total_service ? budget.total_service * 1000 : null;
   const population = selectedCouncil ? getCouncilPopulation(selectedCouncil.name) : null;
 
-  // Get the council's own portion from precepts (more precise) or fall back to band_d_2025
-  const thisCouncilBandD = useMemo(() => {
-    if (!selectedCouncil || !councilTax) return null;
-
-    if (detailed?.precepts && detailed.precepts.length > 0) {
-      const councilNameLower = selectedCouncil.name.toLowerCase();
-      const matchingPrecept = detailed.precepts.find(p => {
-        const authLower = p.authority.toLowerCase();
-        return authLower.includes(councilNameLower) ||
-               councilNameLower.split(' ').some(word => word.length > 3 && authLower.includes(word));
-      });
-      if (matchingPrecept) {
-        return matchingPrecept.band_d;
-      }
-    }
-    return councilTax.band_d_2025;
-  }, [selectedCouncil, councilTax, detailed]);
+  // This council's own share, excluding parish precepts, in the bill split's
+  // year (2026-27 for billing authorities, 2025-26 for county councils).
+  const thisCouncilBandD = useMemo(
+    () => (councilTax ? getOwnBandD(selectedCouncil) : null),
+    [selectedCouncil, councilTax],
+  );
+  const splitYear = getBillSplitYear(selectedCouncil);
 
   // Most recent verified AREA Band D (2026-27 for billing authorities;
   // county councils fall back to 2025-26 — `areaBandD.year` says which).
@@ -69,8 +59,8 @@ const UnifiedDashboard = () => {
   // getAreaBandD returns for that type, so compare against areaBandD.value.
   const vsAverage = typeAverage && areaBandD ? areaBandD.value - typeAverage : null;
 
-  // 2025-26 total across all precepting authorities — stays in the precepts'
-  // year so the YourBillCard breakdown always sums to its own total.
+  // Area total the bill split adds up to (null for county councils, which
+  // have no single area total).
   const totalBandDBill = getTotalBandD(selectedCouncil);
   const totalDailyCost = totalBandDBill ? totalBandDBill / 365 : null;
 
@@ -88,17 +78,17 @@ const UnifiedDashboard = () => {
     return weeks > 0 ? weeks : null;
   }, [detailed?.reserves, detailed?.revenue_budget, totalBudget]);
 
-  // This council's own share per band (2025-26 — from the verified precept
-  // split). Bands scale by the statutory ninths, so calculateBands() on the
-  // own-share Band D gives the own share for every band.
+  // This council's own share per band, in the bill split's year. Bands scale
+  // by the statutory ninths, so calculateBands() on the own-share Band D
+  // gives the own share for every band.
   const allBands = useMemo(() => {
     if (!councilTax) return null;
     return calculateBands(thisCouncilBandD ?? councilTax.band_d_2025);
   }, [councilTax, thisCouncilBandD]);
 
-  // Full-bill amount per band, in the most recent year we have a verified
-  // AREA total for: 2026-27 (MHCLG live table) for billing authorities,
-  // 2025-26 (precept-stack sum) for county councils.
+  // Full-bill amount per band: the 2026-27 area Band D for billing
+  // authorities (the same figure the bill split adds up to). County councils
+  // have no area total, so the bands card shows their own share instead.
   const currentAreaTotal = areaBandD?.year === '2026-27' ? areaBandD.value : totalBandDBill;
   const totalBandsYear = areaBandD?.year === '2026-27' ? areaBandD.year : PREVIOUS_TAX_YEAR;
   const totalBandAmounts = useMemo(() => {
@@ -303,6 +293,8 @@ const UnifiedDashboard = () => {
             {totalBandDBill && thisCouncilBandD && (
               <div className="p-3 rounded-lg bg-muted/30">
                 <p className="type-body-sm font-semibold mb-1">What percentage of my bill goes to {selectedCouncil.name}?</p>
+                {/* Only where the bill split adds up to its total (bill-split.mjs
+                    guarantees it): a county has no total, so no percentage. */}
                 <p className="type-caption text-muted-foreground">
                   {(() => {
                     const pctRaw = (thisCouncilBandD / totalBandDBill) * 100;
@@ -310,9 +302,9 @@ const UnifiedDashboard = () => {
                     // If this council is the only authority on the bill, say so plainly.
                     if (pct >= 100 || (detailed?.precepts?.length ?? 0) < 2) {
                       return (
-                        <>All of your council tax goes to {selectedCouncil.name} (
+                        <>In {splitYear}, all of your council tax goes to {selectedCouncil.name} (
                         <span className="font-semibold text-foreground whitespace-nowrap">
-                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                          <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
                             {formatCurrency(thisCouncilBandD, { decimals: 2 })}
                           </SourceAnnotation>
                         </span>)</>
@@ -320,20 +312,21 @@ const UnifiedDashboard = () => {
                     }
                     return (
                       <>
+                        {`In ${splitYear}, `}
                         <span className="font-semibold text-foreground">
-                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                          <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
                             {pct}%
                           </SourceAnnotation>
                         </span>
                         {' of your total bill ('}
                         <span className="whitespace-nowrap">
-                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                          <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
                             {formatCurrency(thisCouncilBandD, { decimals: 2 })}
                           </SourceAnnotation>
                         </span>
                         {' out of '}
                         <span className="whitespace-nowrap">
-                          <SourceAnnotation provenance={getProvenance('council_tax.band_d_2025', selectedCouncil)}>
+                          <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
                             {formatCurrency(totalBandDBill, { decimals: 2 })}
                           </SourceAnnotation>
                         </span>

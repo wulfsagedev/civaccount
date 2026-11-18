@@ -94,20 +94,9 @@ function updateTsFile(filepath, authorities) {
       }
     }
 
-    // Update total_band_d to match band_d_2025
-    if (data.years.band_d_2025 != null) {
-      const tdRe = /total_band_d:\s*[\d]+(?:\.[\d]+)?/;
-      const tdMatch = tdRe.exec(section);
-      if (tdMatch) {
-        const oldTd = parseFloat(tdMatch[0].split(':')[1].trim());
-        const newTd = data.years.band_d_2025;
-        const newTdStr = Number.isInteger(newTd) ? String(newTd) : newTd.toFixed(2);
-        if (Math.abs(oldTd - newTd) > 0.001) {
-          section = section.replace(tdRe, `total_band_d: ${newTdStr}`);
-          changes++;
-        }
-      }
-    }
+    // total_band_d is not touched here. It is the area Band D of the year the
+    // bill split belongs to (detailed.precepts_year), written with the split by
+    // scripts/sync-bill-split.mjs so the rows always add up to it.
 
     content = content.substring(0, pos) + section + content.substring(endPos);
   }

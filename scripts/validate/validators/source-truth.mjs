@@ -174,16 +174,9 @@ export function validate(councils, population, report) {
       }
     }
 
-    // Check total_band_d matches band_d_2025
-    report.tick();
-    const d = c.detailed || {};
-    const totalBandD = d.total_band_d != null ? parseFloat(d.total_band_d) : null;
-    const bandD2025 = ct.band_d_2025 != null ? parseFloat(ct.band_d_2025) : null;
-    if (totalBandD != null && bandD2025 != null && Math.abs(totalBandD - bandD2025) > 0.01) {
-      report.finding(c, 'source-truth', 'total_band_d_drift', 'error',
-        `total_band_d (${totalBandD}) does not match band_d_2025 (${bandD2025})`,
-        'detailed.total_band_d', totalBandD, bandD2025);
-    }
+    // total_band_d is checked by bill-split.mjs: it is the area Band D of the
+    // bill split's year (2026-27 for billing authorities) and must equal both
+    // MHCLG Table 10 line 17 and the sum of the split's rows.
   }
 
   // ─────────────────────────────────────────────────────────────────────

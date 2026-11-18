@@ -4,7 +4,7 @@
   "sources": [
     {
       "id": "area-council-tax",
-      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields. Refreshed 2026-04-21 to the 2026-27 release published by MHCLG on 25 March 2026. Upstream note: MHCLG silently re-published this asset at the same URL (workbook re-saved 2026-04-22; upstream sha256 140bcae84f4d8dbb7ffc58a4b0b7cc931a5610933b4038e7f07c13f65fdaa322 as of 2026-06-10). The revision touches only the exc_PP / exc_PP_(%) tables (Boston and North Kesteven special-expenses corrections), cover and notes; the Area_CT sheet we parse is cell-identical, so parsed values are unaffected and the archived raw file remains the original 25 March release (raw_file_sha256 below). parsed-area-band-d.csv is source-exact as of 2026-06-10: North Kesteven 2022-26 carries pence per the source's own cell text (previously hand-rounded to integers).",
+      "description": "Total area Band D council tax including all precepts (police, fire, parish) for 296 billing authorities. This is what residents actually pay. Source of truth for band_d_* fields. Refreshed 2026-04-21 to the 2026-27 release published by MHCLG on 25 March 2026. Upstream note: MHCLG silently re-published this asset at the same URL (workbook re-saved 2026-04-22; upstream sha256 140bcae84f4d8dbb7ffc58a4b0b7cc931a5610933b4038e7f07c13f65fdaa322 as of 2026-06-10). The revision touches only the exc_PP / exc_PP_(%) tables (Boston and North Kesteven special-expenses corrections), cover and notes; the Area_CT sheet we parse is cell-identical, so parsed values are unaffected and the archived raw file remains the original 25 March release (raw_file_sha256 below). parsed-area-band-d.csv is source-exact as of 2026-06-10: North Kesteven 2022-26 carries pence per the source's own cell text (previously hand-rounded to integers). Re-parsed 2026-10-29 from each cell's stored value instead of its display text: Area_CT stores pence but displays whole pounds (Bradford 2026-27 displays 2,361, holds 2360.73 \u2014 the figure MHCLG prints in Table 9 and Table 10 line 17). 1,742 values moved by at most 50p, each consistent with the old display rounding.",
       "raw_file": "Band_D_2026-27.ods",
       "raw_file_sha256": "22cbe7df6c344eaa6dae9ef6fecc949ba6dd5707c9cba4bdd1fe786db71d67a7",
       "raw_file_url": "https://assets.publishing.service.gov.uk/media/69de2101961ff0ba6bff8e07/Band_D_2026-27.ods",
@@ -25,7 +25,7 @@
       ],
       "spot_check_tolerance": "0",
       "sync_command": "python3 scripts/parse-area-band-d.py && node scripts/sync-band-d.mjs",
-      "parsed_csv_sha256": "c01c66b1fb8c95686349daac4837d81b3004455ec90c42563e548f7a51b39f5a"
+      "parsed_csv_sha256": "800be8ef0dcf65d216ffb00ab0f86816ce4685226989964400f98cef5af290f4"
     },
     {
       "id": "council-tax-2025",
@@ -66,6 +66,64 @@
         "council_tax_base"
       ],
       "spot_check_tolerance": "0.05"
+    },
+    {
+      "id": "band-d-components",
+      "description": "MHCLG Table 10 Local Authority Level Data \u2014 the council tax bill split. Data_Billing gives each of the 296 billing authorities' own Band D with and without parish precepts (lines 8, 9), each major preceptor's Band D in its area (line 16: county or GLA, police, fire, combined authority) and the area Band D (line 17 = 8 + 16). Data_Precepting gives each county, police, fire and combined authority's own Band D. Parsed from cell values. Source of truth for detailed.precepts, detailed.total_band_d and county council_tax.band_d_2025; enforced by validators/bill-split.mjs. 2025-26 workbook is the 22 April 2026 revision (Medway and North Kesteven corrections).",
+      "raw_file": "Table_10_2026-27.ods",
+      "raw_file_sha256": "b5b8345743fb722e48699243d1654a3e35b96c89a14c6eb26888035c3e38feb0",
+      "raw_file_url": "https://assets.publishing.service.gov.uk/media/6a02eeeccd2e0e8b5b20b449/Table_10_2026-27.ods",
+      "raw_files": [
+        {
+          "file": "Table_10_2026-27.ods",
+          "sha256": "b5b8345743fb722e48699243d1654a3e35b96c89a14c6eb26888035c3e38feb0",
+          "url": "https://assets.publishing.service.gov.uk/media/6a02eeeccd2e0e8b5b20b449/Table_10_2026-27.ods",
+          "gov_uk_page": "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027",
+          "published": "2026-03-25"
+        },
+        {
+          "file": "Table_10_2025-26.ods",
+          "sha256": "79766eb7b591a4f49e1e9f95cb6b0a232c7a9165945de9acb076769c002e6e5c",
+          "url": "https://assets.publishing.service.gov.uk/media/6a02f143e71c4cdf4026ba48/Table_10_2025-26.ods",
+          "gov_uk_page": "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
+          "published": "2025-03-20, revised 2026-04-22"
+        }
+      ],
+      "parsed_csv": "parsed-band-d-components.csv",
+      "parsed_csv_sha256": "4c9e00d1690254f4ce087ac70c58bb9aa22e4640a8eb2af54a75cf466cdcd0fe",
+      "gov_uk_page": "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2026-to-2027",
+      "publisher": "MHCLG",
+      "data_year": "2026-27",
+      "update_frequency": "annual_march",
+      "last_downloaded": "2026-10-29",
+      "next_expected_update": "2027-03-25",
+      "fields_validated": [
+        "detailed.precepts",
+        "detailed.total_band_d",
+        "council_tax.band_d_2025 (county councils)"
+      ],
+      "spot_check_tolerance": "0",
+      "sync_command": "python3 scripts/parse-band-d-components.py && node scripts/sync-bill-split.mjs"
+    },
+    {
+      "id": "precepting-band-d",
+      "description": "MHCLG Table 10 Data_Precepting, 2025-26 (revised 22 April 2026) and 2026-27: each major precepting authority's own Band D. Parsed alongside band-d-components; used for county councils' bill split.",
+      "raw_file": "Table_10_2025-26.ods",
+      "raw_file_sha256": "79766eb7b591a4f49e1e9f95cb6b0a232c7a9165945de9acb076769c002e6e5c",
+      "raw_file_url": "https://assets.publishing.service.gov.uk/media/6a02f143e71c4cdf4026ba48/Table_10_2025-26.ods",
+      "parsed_csv": "parsed-precepting-band-d.csv",
+      "parsed_csv_sha256": "1dc16d5161131bd9bc96b5033413c3f8be58f28cadea6be706ea5f75379d816e",
+      "gov_uk_page": "https://www.gov.uk/government/statistics/council-tax-levels-set-by-local-authorities-in-england-2025-to-2026",
+      "publisher": "MHCLG",
+      "data_year": "2025-26",
+      "update_frequency": "annual_march",
+      "last_downloaded": "2026-10-29",
+      "next_expected_update": "2027-03-25",
+      "fields_validated": [
+        "detailed.precepts (county councils)"
+      ],
+      "spot_check_tolerance": "0",
+      "sync_command": "python3 scripts/parse-band-d-components.py && node scripts/sync-bill-split.mjs"
     },
     {
       "id": "revenue-expenditure-part1",

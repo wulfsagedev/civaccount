@@ -36,10 +36,22 @@ export interface CouncilTax {
 }
 
 // Enhanced detailed data from individual council sources
+/** Who a bill row's money goes to. `council` is the council the page is about. */
+export type PreceptKind = 'council' | 'county' | 'gla' | 'police' | 'fire' | 'combined_authority';
+
+/** One row of the council tax bill split, from MHCLG Table 10. */
 export interface PreceptBreakdown {
   authority: string;
   band_d: number;
   description?: string;
+  kind?: PreceptKind;
+  /** On the `council` row of an area with parish (or other local) councils:
+   *  `band_d` includes their average precept (Table 10 line 8), because MHCLG
+   *  publishes no separate parish figure to show as its own row. */
+  includes_parish_average?: boolean;
+  /** This council's own share, excluding parish precepts (Table 10 line 9).
+   *  Set only when `includes_parish_average` is. */
+  band_d_excluding_parish?: number;
 }
 
 export interface ServiceDetail {
@@ -348,9 +360,16 @@ export interface FieldSource {
 }
 
 export interface DetailedCouncilData {
-  // Council tax breakdown by precepting authority
+  // Council tax breakdown by precepting authority (MHCLG Table 10). The rows
+  // sum to total_band_d to the penny — scripts/validate/validators/bill-split.mjs.
   precepts?: PreceptBreakdown[];
-  total_band_d?: number; // Total Band D including all precepts
+  /** Financial year of `precepts` and `total_band_d`: 2026-27 for billing
+   *  authorities, 2025-26 for county councils. */
+  precepts_year?: string;
+  /** Area Band D for `precepts_year` (Table 10 line 17). Absent for county
+   *  councils: each district's share and any parish precept sit on top, so a
+   *  county has no single area total. */
+  total_band_d?: number;
 
   // Budget details from council website
   operating_budget?: number; // In pounds
@@ -719,43 +738,43 @@ export function getCouncilSlug(council: Council): string {
 }
 
 /**
- * Return the correct TOTAL Band D bill for a council (sum of all precepting
- * authorities). Falls back sensibly when data is partial.
- *
- * Why this exists: several data entries (especially county councils) have
- * `detailed.total_band_d` set to just the council's own share, not the real
- * total that includes police + fire + combined-authority precepts. Computing
- * from `precepts[]` is the source of truth when available.
- *
- * YEAR: this is the 2025-26 total — it must stay in the same year as the
- * `detailed.precepts[]` rows it reconciles against, so cards that show a
- * precept breakdown always sum correctly. For the council's most recent
- * area figure (2026-27 for billing authorities), use `getAreaBandD()`.
+ * The area Band D the bill split adds up to (MHCLG Table 10 line 17), in the
+ * split's year — see `getBillSplitYear`. Null for county councils: their
+ * residents' bills also include a district share and any parish precept,
+ * which differ by district, so there is no single total to show.
  */
 export function getTotalBandD(council: Council | null | undefined): number | null {
-  if (!council) return null;
-  const detailed = council.detailed;
-  const ownShare = council.council_tax?.band_d_2025 ?? null;
-  const preceptSum = detailed?.precepts && detailed.precepts.length > 0
-    ? detailed.precepts.reduce((s, p) => s + (p.band_d || 0), 0)
-    : 0;
-  const declaredTotal = detailed?.total_band_d ?? 0;
+  return council?.detailed?.total_band_d ?? null;
+}
 
-  // Pick whichever value is the largest honest total, with these rules:
-  //  - If `declaredTotal` is larger than the sum of listed precepts AND larger
-  //    than the council's own share, the precepts array is just incomplete
-  //    (e.g. Birmingham omits police/fire precepts but total_band_d is correct).
-  //  - If `preceptSum` > `declaredTotal`, the declared total is stale/wrong
-  //    (Kent's bug: total == own share, precepts sum higher).
-  //  - Guard against the "declaredTotal == ownShare" bug: only trust declared
-  //    total when it's strictly greater than own share.
-  const candidates = [
-    preceptSum > 0 ? preceptSum : 0,
-    declaredTotal > (ownShare ?? 0) ? declaredTotal : 0,
-    ownShare ?? 0,
-  ];
-  const total = Math.max(...candidates);
-  return total > 0 ? total : ownShare;
+/** The financial year of the council's bill split (`detailed.precepts`). */
+export function getBillSplitYear(council: Council | null | undefined): string {
+  return council?.detailed?.precepts_year ?? PREVIOUS_TAX_YEAR;
+}
+
+/** This council's own row in the bill split. Rows carry `kind`; the name
+ * match is a fallback for data without it (the build fixtures). */
+export function getOwnPrecept(council: Council | null | undefined): PreceptBreakdown | null {
+  const precepts = council?.detailed?.precepts;
+  if (!council || !precepts?.length) return null;
+  const byKind = precepts.find(p => p.kind === 'council');
+  if (byKind) return byKind;
+  const nameLower = council.name.toLowerCase();
+  return precepts.find(p => {
+    const authLower = p.authority.toLowerCase();
+    return authLower.includes(nameLower) ||
+      nameLower.split(' ').some(word => word.length > 3 && authLower.includes(word));
+  }) ?? null;
+}
+
+/**
+ * This council's own Band D share, excluding parish precepts, in the bill
+ * split's year. Falls back to `band_d_2025` only when there is no split.
+ */
+export function getOwnBandD(council: Council | null | undefined): number | null {
+  const own = getOwnPrecept(council);
+  if (own) return own.band_d_excluding_parish ?? own.band_d;
+  return council?.council_tax?.band_d_2025 ?? null;
 }
 
 /** The financial year the site headlines. Billing authorities all carry a

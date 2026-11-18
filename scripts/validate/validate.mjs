@@ -11,6 +11,7 @@
  *   6. checksum     — SHA-256 integrity of parsed CSV files
  *   7. random-audit — Deep spot-check on 10 random councils
  *   8. source-truth — Exact-match band_d values against GOV.UK Area CT source
+ *      bill-split   — "Your bill" rows add up and match MHCLG Table 10 to the penny
  *   9. freshness    — Flag sources overdue for update based on manifest cadence
  *
  * Usage:
@@ -44,6 +45,7 @@ import { validate as validateForbiddenSourceScan } from './validators/forbidden-
 import { validate as validateLastVerifiedFreshness } from './validators/last-verified-freshness.mjs';
 import { validate as validateCtrCrossCheck } from './validators/ctr-cross-check.mjs';
 import { validate as validateCitationRequired } from './validators/citation-required.mjs';
+import { validate as validateBillSplit } from './validators/bill-split.mjs';
 
 // Link-check is async and opt-in (requires network)
 let validateLinkCheck;
@@ -103,6 +105,7 @@ async function main() {
     ['checksum', validateChecksum],
     ['random-audit', validateRandomAudit],
     ['source-truth', validateSourceTruth],
+    ['bill-split', validateBillSplit],
     ['freshness', validateFreshness],
     ['field-staleness', validateFieldStaleness],
     ['last-verified-freshness', validateLastVerifiedFreshness],
