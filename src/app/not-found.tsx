@@ -63,7 +63,8 @@ export default function NotFound() {
                 className="w-full h-12 pl-10 pr-4 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/50 type-body"
               />
             </div>
-            <p className="type-caption text-muted-foreground mt-2">
+            {/* keys only mean something with a keyboard: hidden on phones */}
+            <p className="hidden sm:block type-caption text-muted-foreground mt-2">
               Press Enter to search or <kbd className="px-1.5 py-0.5 rounded bg-muted type-body-sm">F</kbd> to open search
             </p>
           </div>

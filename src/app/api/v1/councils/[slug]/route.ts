@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, formatBudget } from '@/data/councils';
+import { getCouncilBySlug, getCouncilDisplayName, getCouncilSlug, getCouncilPopulation, formatBudget } from '@/data/councils';
 import { BUDGET_CATEGORIES } from '@/lib/proposals';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
@@ -37,7 +37,8 @@ export async function GET(
     ons_code: council.ons_code,
     type: council.type,
     type_name: council.type_name,
-    population: council.population ?? null,
+    // Council records carry no population field; it lives in population.ts (ONS mid-2024).
+    population: getCouncilPopulation(council.name) ?? null,
     council_tax: council.council_tax ?? null,
     budget: {
       total_service: budget?.total_service ?? null,

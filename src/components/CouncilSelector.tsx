@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect, useCallback, memo } from 'react';
-import { councils as allCouncilsList } from '@/data/councils';
+import { councils as allCouncilsList, formatListBandD } from '@/data/councils';
 import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,9 @@ interface CouncilSelectorProps {
   onSelect?: (council: Council) => void;
   variant?: 'homepage' | 'dashboard' | 'townhall';
   navigateTo?: (slug: string) => string;
+  /** The page's own council, known on the server. Without it the dashboard
+   * variant rendered the full council list until the dataset loaded. */
+  council?: Council | null;
 }
 
 // Memoized result item for homepage variant
@@ -29,8 +32,6 @@ const HomepageResultItem = memo(function HomepageResultItem({
 }) {
   const areaBandD = getAreaBandD(council);
   const bandD = areaBandD?.value;
-  const prevBandD = areaBandD?.previous;
-  const yoyChange = bandD && prevBandD ? ((bandD - prevBandD) / prevBandD) * 100 : null;
 
   return (
     <button
@@ -43,16 +44,11 @@ const HomepageResultItem = memo(function HomepageResultItem({
     >
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-semibold type-body-sm truncate text-foreground">{council.name}</p>
+          <p className="font-semibold type-body-sm text-foreground">{council.name}</p>
           <p className="type-body-sm text-muted-foreground">{council.type_name}</p>
         </div>
         <div className="text-right shrink-0">
-          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">£{Math.round(bandD).toLocaleString('en-GB')}/yr{areaBandD?.year === '2025-26' ? ' (2025-26)' : ''}</p>}
-          {yoyChange !== null && (
-            <p className={`type-body-sm tabular-nums ${yoyChange > 0 ? 'text-negative' : yoyChange < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
-              {yoyChange > 0 ? '+' : ''}{yoyChange.toFixed(1)}% from last year
-            </p>
-          )}
+          {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">{formatListBandD(council)}</p>}
         </div>
       </div>
     </button>
@@ -83,7 +79,7 @@ const DashboardResultItem = memo(function DashboardResultItem({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className={`font-medium type-body-sm truncate ${isHighlighted ? 'text-primary' : ''}`}>
+          <p className={`font-medium type-body-sm ${isHighlighted ? 'text-primary' : ''}`}>
             {displayName}
           </p>
           <div className="flex items-center gap-2 mt-2">
@@ -95,7 +91,7 @@ const DashboardResultItem = memo(function DashboardResultItem({
         <div className="text-right shrink-0">
           {areaBandD && (
             <p className="type-body-sm text-muted-foreground tabular-nums">
-              £{areaBandD.value.toFixed(2)}/year{areaBandD.year === '2025-26' ? ' (2025-26)' : ''}
+              {formatListBandD(council)}
             </p>
           )}
         </div>
@@ -114,8 +110,9 @@ function isPostcode(query: string): boolean {
   return POSTCODE_REGEX.test(query.trim());
 }
 
-export default function CouncilSelector({ onSelect, variant = 'homepage', navigateTo }: CouncilSelectorProps) {
-  const { selectedCouncil, setSelectedCouncil } = useCouncil();
+export default function CouncilSelector({ onSelect, variant = 'homepage', navigateTo, council }: CouncilSelectorProps) {
+  const { selectedCouncil: contextCouncil, setSelectedCouncil } = useCouncil();
+  const selectedCouncil = (variant === 'dashboard' ? council : null) ?? contextCouncil;
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [postcodeResults, setPostcodeResults] = useState<Council[]>([]);
@@ -142,7 +139,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
       .then(res => res.json())
       .then(data => {
         if (data.status === 200 && data.result) {
-          const { admin_district, admin_county } = data.result;
+          const { admin_district, admin_county, country } = data.result;
           const matched: Council[] = [];
 
           // Normalize for matching: "Folkestone and Hythe" vs "Folkestone & Hythe"
@@ -174,7 +171,12 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
           setPostcodeResults(matched);
           if (matched.length === 0) {
-            setPostcodeError(`We found ${admin_district || 'your area'} but it is not in our database yet.`);
+            // Outside England it never will be: say so, not "yet" (launch QA, 29 Oct 2026)
+            setPostcodeError(
+              country && country !== 'England'
+                ? `${admin_district || 'That postcode'} is in ${country}. CivAccount covers councils in England only.`
+                : `We found ${admin_district || 'your area'} but it is not in our database yet.`,
+            );
           }
         } else {
           setPostcodeResults([]);
@@ -304,7 +306,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
                 </p>
               ) : filteredCouncils.length === 0 ? (
                 <p className="text-center type-body-sm text-muted-foreground py-4">
-                  {postcodeError || 'No councils found. Try a different spelling or postcode.'}
+                  {postcodeError || 'No councils found. Try a different spelling or postcode. CivAccount covers councils in England only.'}
                 </p>
               ) : (
                 filteredCouncils.map((council, index) => (
@@ -362,7 +364,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               </p>
             ) : filteredCouncils.length === 0 ? (
               <p className="text-center type-body-sm text-muted-foreground py-4">
-                {postcodeError || 'No councils found. Try a different spelling or postcode.'}
+                {postcodeError || 'No councils found. Try a different spelling or postcode. CivAccount covers councils in England only.'}
               </p>
             ) : (
               filteredCouncils.map((council, index) => (
@@ -378,7 +380,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
           <p className="type-body-sm text-center text-muted-foreground">
             {searchQuery
-              ? `${filteredCouncils.length} councils found`
+              ? `${filteredCouncils.length} ${filteredCouncils.length === 1 ? 'council' : 'councils'} found`
               : `${totalCouncilCount} councils in England`
             }
           </p>
@@ -420,7 +422,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
             <div ref={listRef} role="listbox" aria-label="English councils" className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
               {filteredCouncils.length === 0 ? (
                 <p className="text-center type-body-sm text-muted-foreground py-6">
-                  No councils found. Try a different spelling.
+                  No councils found. Try a different spelling. CivAccount covers councils in England only.
                 </p>
               ) : (
                 filteredCouncils.map((council, index) => (
@@ -436,7 +438,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
             <p className="type-body-sm text-center text-muted-foreground">
               {searchQuery
-                ? `${filteredCouncils.length} councils found · Press Enter to select`
+                ? `${filteredCouncils.length} ${filteredCouncils.length === 1 ? 'council' : 'councils'} found · Press Enter to select`
                 : `${totalCouncilCount} councils in England`
               }
             </p>

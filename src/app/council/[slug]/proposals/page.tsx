@@ -215,12 +215,13 @@ export default function ProposalsPage() {
               Town Hall
             </Badge>
           </div>
-          <div className="flex items-center justify-between gap-3 mb-1">
+          {/* Wraps on small phones: "Add an idea" ran off a 375 px screen beside a two-line name. */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
             <h1 className="type-title-1 font-bold text-foreground leading-tight">{displayName}</h1>
             <Link href={`/council/${slug}/proposals/new`}>
               <Button size="sm" className="shrink-0 cursor-pointer gap-1.5">
                 <Plus className="h-4 w-4" aria-hidden="true" />
-                New
+                Add an idea
               </Button>
             </Link>
           </div>
@@ -273,7 +274,7 @@ export default function ProposalsPage() {
                 sort === 'new' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              New
+              Newest
             </button>
           </div>
           <select

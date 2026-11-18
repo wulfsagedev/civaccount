@@ -41,14 +41,6 @@ export function renderYourBillStory(council: Council, councilName: string): Reac
         <span style={{ fontSize: '44px', fontWeight: 500, color: OG.secondary }}>/year</span>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '40px' }}>
-          {change != null && changePct != null && (
-            <span style={{ fontSize: '44px', fontWeight: 700, color: change > 0 ? OG.negative : OG.positive }}>
-              {change > 0 ? '\u2197' : '\u2198'} {change > 0 ? '+' : ''}{changePct}% from last year
-            </span>
-          )}
-          <span style={{ fontSize: '40px', fontWeight: 500, color: OG.secondary }}>
-            {`\u00A3${dailyCost}/day`}
-          </span>
         </div>
       </div>
 

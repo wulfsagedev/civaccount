@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
-import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, getAverageBandDByType, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD, getOwnBandD, getBillSplitYear, getAreaBandD, getAreaBandDChange, PREVIOUS_TAX_YEAR } from '@/data/councils';
+import { getCouncilBySlug, getAllCouncilSlugs, getCouncilDisplayName, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getTotalBandD, getOwnBandD, getBillSplitYear, getAreaBandD, PREVIOUS_TAX_YEAR } from '@/data/councils';
 import { buildFAQPageSchema, buildDatasetSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
+import { DATA_YEARS } from '@/lib/data-years';
 
 
 interface Props {
@@ -101,15 +102,9 @@ export default async function CouncilLayout({ params, children }: Props) {
   // Most recent verified AREA Band D (2026-27 for billing authorities;
   // county councils fall back to 2025-26 — `area.year` says which).
   const area = getAreaBandD(council);
-  const typeAverage = getAverageBandDByType(council.type);
-  // Same-year comparison: getAverageBandDByType averages the year
-  // getAreaBandD returns for that type.
-  const vsAverage = area && typeAverage ? area.value - typeAverage : null;
-  // Year-on-year change computed from the two most recent published years.
-  const areaChange = getAreaBandDChange(council);
 
   // Build spending categories sorted by percentage
-  const spendingCategories: Array<{ name: string; percentage: number }> = [];
+  const spendingCategories: Array<{ name: string; amount: number; percentage: number }> = [];
   if (budget?.total_service) {
     const total = budget.total_service;
     for (const service of SERVICE_MAP) {
@@ -117,6 +112,7 @@ export default async function CouncilLayout({ params, children }: Props) {
       if (amount && amount > 0) {
         spendingCategories.push({
           name: service.name,
+          amount,
           percentage: (amount / total) * 100,
         });
       }
@@ -131,45 +127,30 @@ export default async function CouncilLayout({ params, children }: Props) {
   // County councils have no area total, so they get no percentage.
   const totalBill = getTotalBandD(council);
   if (totalBill && bandD) {
-    const pct = Math.round((bandD / totalBill) * 100);
-    const isSoleAuthority = pct >= 100 || (detailed?.precepts?.length ?? 0) < 2;
+    // Both figures are printed in MHCLG Table 10; no share is worked out (NORTH-STAR §2 #3).
+    const isSoleAuthority = bandD >= totalBill || (detailed?.precepts?.length ?? 0) < 2;
     faqs.push({
-      question: `What percentage of my bill goes to ${council.name}?`,
+      question: `How much of my bill goes to ${council.name}?`,
       answer: isSoleAuthority
         ? `In ${splitYear}, all of your council tax (${formatCurrency(bandD, { decimals: 2 })}) goes to ${council.name}.`
-        : `In ${splitYear}, ${pct}% of your total bill (${formatCurrency(bandD, { decimals: 2 })} out of ${formatCurrency(totalBill, { decimals: 2 })}).`,
+        : `In ${splitYear}, ${formatCurrency(bandD, { decimals: 2 })} of a ${formatCurrency(totalBill, { decimals: 2 })} Band D bill goes to ${council.name}.`,
     });
   }
 
   if (spendingCategories.length > 0) {
     faqs.push({
       question: 'What does most of my money go towards?',
-      answer: `${spendingCategories[0].name} takes the biggest share at ${spendingCategories[0].percentage.toFixed(0)}% of the budget.`,
+      answer: `${spendingCategories[0].name} has the biggest budget: ${formatBudget(spendingCategories[0].amount)} in ${DATA_YEARS.budget}.`,
     });
   }
 
-  if (vsAverage !== null && area) {
-    const diff = formatCurrency(Math.abs(vsAverage), { decimals: 2 });
-    const comparison = vsAverage > 0
-      ? `In ${area.year}, this council charges ${diff} more than the average ${typeName.toLowerCase()}.`
-      : vsAverage < 0
-        ? `In ${area.year}, this council charges ${diff} less than the average ${typeName.toLowerCase()}.`
-        : `In ${area.year}, this council charges about the same as the average ${typeName.toLowerCase()}.`;
-    faqs.push({
-      question: 'Is this council expensive compared to others?',
-      answer: comparison,
-    });
-  }
 
-  if (areaChange !== null) {
-    const changeDesc = areaChange.amount > 0
-      ? `Your Band D bill went up by ${formatCurrency(areaChange.amount, { decimals: 2 })} (${areaChange.percent.toFixed(1)}%) from ${areaChange.fromYear} to ${areaChange.toYear}.`
-      : areaChange.amount < 0
-        ? `Your Band D bill went down by ${formatCurrency(Math.abs(areaChange.amount), { decimals: 2 })} (${Math.abs(areaChange.percent).toFixed(1)}%) from ${areaChange.fromYear} to ${areaChange.toYear}.`
-        : `Your Band D bill stayed the same from ${areaChange.fromYear} to ${areaChange.toYear}.`;
+  // Two published years side by side; the difference is not worked out (NORTH-STAR §2 #3).
+  if (area && area.previous) {
+    const fromYear = area.year === '2026-27' ? PREVIOUS_TAX_YEAR : '2024-25';
     faqs.push({
       question: 'How much has my bill gone up this year?',
-      answer: changeDesc,
+      answer: `Band D council tax was ${formatCurrency(area.previous, { decimals: 2 })} in ${fromYear} and is ${formatCurrency(area.value, { decimals: 2 })} in ${area.year}.`,
     });
   }
 
@@ -185,20 +166,16 @@ export default async function CouncilLayout({ params, children }: Props) {
 
   if (area) {
     let taxSentence = `In ${area.year}, Band D council tax is ${formatCurrency(area.value, { decimals: 2 })}`;
-    if (areaChange !== null) {
-      const direction = areaChange.percent > 0 ? 'more' : 'less';
-      taxSentence += ` — ${Math.abs(areaChange.percent).toFixed(1)}% ${direction} than in ${areaChange.fromYear}`;
-    }
     taxSentence += '.';
     narrativeParts.push(taxSentence);
   }
 
   if (totalBudget && biggestCategory) {
     narrativeParts.push(
-      `The council manages a total service budget of ${totalBudget}, with ${biggestCategory.name.toLowerCase()} being the largest spending area at ${biggestCategory.percentage.toFixed(0)}% of the total.`
+      `In ${DATA_YEARS.budget}, the council planned to spend ${totalBudget} on services, the most on ${biggestCategory.name.toLowerCase()} (${formatBudget(biggestCategory.amount)}).`
     );
   } else if (totalBudget) {
-    narrativeParts.push(`The council manages a total service budget of ${totalBudget}.`);
+    narrativeParts.push(`In ${DATA_YEARS.budget}, the council planned to spend ${totalBudget} on services.`);
   }
 
   const narrativeText = narrativeParts.join(' ');
@@ -253,16 +230,14 @@ export default async function CouncilLayout({ params, children }: Props) {
             unitCode: 'GBP',
           },
         }),
+        // This council's own record from the public API. The /api/v1/download
+        // address listed here before never existed (404), and bulk download is
+        // ruled out by the data access policy.
         distribution: [
           {
             '@type': 'DataDownload',
-            encodingFormat: 'text/csv',
-            contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=csv',
-          },
-          {
-            '@type': 'DataDownload',
             encodingFormat: 'application/json',
-            contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=json',
+            contentUrl: `https://www.civaccount.co.uk/api/v1/councils/${slug}`,
           },
         ],
       }),

@@ -4,13 +4,13 @@ import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
   title: 'Town Hall — Vote on Your Council\'s Spending',
-  description: 'Vote on resident-submitted budget ideas across 317 English councils. Add your own proposal, see top-ranked changes, and spot official responses from your council.',
+  description: 'Vote on budget ideas for 317 English councils, add your own, and see which ideas people back most.',
   alternates: {
     canonical: '/townhall',
   },
   openGraph: {
     title: 'Town Hall — Vote on Your Council\'s Spending',
-    description: 'Vote on resident-submitted budget ideas across 317 English councils. Add your own, see top-ranked changes, spot council responses.',
+    description: 'Vote on budget ideas for 317 English councils, add your own, and see which ideas people back most.',
     type: 'website',
     siteName: 'CivAccount',
   },

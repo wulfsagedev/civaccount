@@ -37,7 +37,7 @@ import {
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
-  title: "How English councils spend your money · CivAccount",
+  title: "How English councils spend your money",
   description:
     "Where English council spending goes each year, who gets it, and which councils are under the most financial pressure. Data on all 317 English councils, from GOV.UK.",
   alternates: { canonical: '/insights' },

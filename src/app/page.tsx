@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCouncil } from '@/context/CouncilContext';
 import CouncilSelector from '@/components/CouncilSelector';
@@ -19,7 +19,11 @@ const HomepageContent = memo(function HomepageContent() {
       <main id="main-content" className="flex-1 flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
         <div className="w-full max-w-xl space-y-8">
           <div className="text-center space-y-6">
-            <DataFlowAnimation />
+            <div>
+              <DataFlowAnimation />
+              {/* The cards read like a real bill, so they say they're examples (launch QA, 29 Oct 2026) */}
+              <p className="type-caption text-muted-foreground mt-2">Example bills. Search below for yours.</p>
+            </div>
             <div className="space-y-3">
               {/* £2,441 = median 2026-27 area Band D across all 296 English
                   billing authorities, computed from the verified MHCLG live-
@@ -141,23 +145,61 @@ function LoadingSkeleton() {
   );
 }
 
-export default function HomePage() {
-  const { selectedCouncil, isLoading } = useCouncil();
-  const router = useRouter();
+// Set once a visit has been sent on to its saved council (sessionStorage).
+const HOME_SEEN = 'civaccount-home-seen';
+const noSubscribe = () => () => {};
+// Stay on the homepage when this visit has already been sent on once, began
+// on another page (CouncilContext records it), or the address asks for
+// something (/?q=kent).
+function stayHome(): boolean {
+  try {
+    const landed = sessionStorage.getItem('civaccount-landed');
+    return sessionStorage.getItem(HOME_SEEN) === '1' || (!!landed && landed !== '/') || window.location.search !== '';
+  } catch {
+    return false;
+  }
+}
 
+export default function HomePage() {
+  const { selectedCouncil, isLoading, restored } = useCouncil();
+  const router = useRouter();
+  const stay = useSyncExternalStore(noSubscribe, stayHome, () => false);
   // Returning visitors with a saved council get redirected to the canonical
-  // /council/[slug] URL. Keeps `/` as the shareable homepage for everyone,
-  // and ensures every council has a single, unique, crawlable URL.
+  // /council/[slug] URL, once a visit. Every time, it meant Home, the
+  // breadcrumb and a typed address all sent a returning visitor back to the
+  // same council, and on a phone they could not get to another (launch QA,
+  // 29 Oct 2026).
+  // Only a council remembered from before: one picked on this page navigates
+  // itself, and redirecting too replaced the homepage in the history, so Back
+  // skipped it.
+  const redirect = !isLoading && !!selectedCouncil && restored && !stay;
+
+  // Keeps `/` as the shareable homepage for everyone, and ensures every
+  // council has a single, unique, crawlable URL.
   useEffect(() => {
-    if (!isLoading && selectedCouncil) {
+    // Seen the homepage itself this visit: a reload or a typed address stays here
+    if (!isLoading && !redirect) {
+      try {
+        sessionStorage.setItem(HOME_SEEN, '1');
+      } catch {
+        // Nothing to remember it in.
+      }
+      return;
+    }
+    if (redirect && selectedCouncil) {
+      try {
+        sessionStorage.setItem(HOME_SEEN, '1');
+      } catch {
+        // Without storage it redirects as it always did.
+      }
       router.replace(`/council/${getCouncilSlug(selectedCouncil)}`);
     }
-  }, [isLoading, selectedCouncil, router]);
+  }, [isLoading, redirect, selectedCouncil, router]);
 
   // SSR renders HomepageContent unconditionally so crawlers (Googlebot,
   // OAI-SearchBot, Claude-SearchBot, PerplexityBot) see the H1, internal
   // links, and body copy. Client-side, redirect runs in the effect above.
-  if (selectedCouncil && !isLoading) {
+  if (redirect) {
     return <LoadingSkeleton />;
   }
 

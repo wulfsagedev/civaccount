@@ -98,7 +98,6 @@ export default function EmbedClient({
 
   // Area total the bill split adds up to (null for county councils).
   const totalBandDBill = getTotalBandD(council);
-  const totalDailyCost = totalBandDBill ? totalBandDBill / 365 : null;
 
   const taxChangeAmount = councilTax && councilTax.band_d_2024
     ? councilTax.band_d_2025 - councilTax.band_d_2024
@@ -157,15 +156,6 @@ export default function EmbedClient({
     return map;
   }, [detailed]);
 
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- React Compiler can't statically analyze optional chains in deps; manual memoization is still correct
-  const reservesInWeeks = useMemo(() => {
-    if (!detailed?.reserves) return null;
-    const annualBudget = detailed.revenue_budget || totalBudget;
-    if (!annualBudget || annualBudget === 0) return null;
-    const weeklyBudget = annualBudget / 52;
-    const weeks = Math.round(detailed.reserves / weeklyBudget);
-    return weeks > 0 ? weeks : null;
-  }, [detailed?.reserves, detailed?.revenue_budget, totalBudget]);
 
   let card: React.ReactNode = null;
 
@@ -179,7 +169,6 @@ export default function EmbedClient({
           taxChange={taxChange}
           taxChangeAmount={taxChangeAmount}
           vsAverage={vsAverage}
-          totalDailyCost={totalDailyCost}
         />
       );
       break;
@@ -216,7 +205,7 @@ export default function EmbedClient({
       card = <SuppliersGrantsCard selectedCouncil={council} />;
       break;
     case 'financial-health':
-      card = <FinancialHealthCard selectedCouncil={council} reservesInWeeks={reservesInWeeks} />;
+      card = <FinancialHealthCard selectedCouncil={council} />;
       break;
     case 'leadership':
       card = <LeadershipCard selectedCouncil={council} />;

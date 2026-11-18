@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import { DATA_YEARS } from '@/lib/data-years';
 import { getCouncilDisplayName, getCouncilPopulation, getAverageBandDByType, getAreaBandD, formatCurrency, formatBudget, toSentenceTypeName, type Council } from '@/data/councils';
 
 interface CouncilDashboardProps {
@@ -57,9 +58,6 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
   const budget = selectedCouncil.budget;
   const totalBudget = budget?.total_service ? formatBudget(budget.total_service) : null;
 
-  const taxChange = areaBandD && areaBandD.previous
-    ? ((areaBandD.value - areaBandD.previous) / areaBandD.previous) * 100
-    : null;
 
   // Compute top 3 spending categories (with £ amounts) for the answer-first
   // narrative. Lists the actual £ figure per service so AI engines can extract
@@ -112,7 +110,7 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
               treat the H1 as the page's canonical topic signal. */}
           <div className="mb-6">
             <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: displayName }]} />
-            <CouncilSelector variant="dashboard" />
+            <CouncilSelector variant="dashboard" council={selectedCouncil} />
             <h1 className="type-title-1 font-bold text-foreground leading-tight mt-2">
               {displayName}
             </h1>
@@ -153,15 +151,12 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                       value: formatCurrency(areaBandD.value, { decimals: 2 }),
                     }}
                   >{formatCurrency(areaBandD.value, { decimals: 2 })}</SourceAnnotation>
-                  {taxChange !== null && (
-                    <> — {Math.abs(taxChange).toFixed(1)}% {taxChange > 0 ? 'more' : 'less'} than last year</>
-                  )}
                   .
                 </>
               )}
               {totalBudget && topServices.length >= 3 ? (
                 <>
-                  {' '}The council manages a total service budget of{' '}
+                  {' '}In {DATA_YEARS.budget}, the council planned to spend{' '}
                   <SourceAnnotation
                     provenance={getProvenance('budget.total_service', selectedCouncil)}
                     reportContext={{
@@ -169,8 +164,8 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                       field: 'Total service budget',
                       value: totalBudget,
                     }}
-                  >{totalBudget}</SourceAnnotation>.
-                  {' '}Here&apos;s where your council tax goes: {topServices[0].name} takes the biggest share at{' '}
+                  >{totalBudget}</SourceAnnotation>{' '}on services.
+                  {' '}It planned to spend the most on {topServices[0].name} (
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${topServices[0].key}`, selectedCouncil)}
                     reportContext={{
@@ -178,8 +173,8 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                       field: `Spending — ${topServices[0].name}`,
                       value: formatBudget(topServices[0].amount),
                     }}
-                  >{formatBudget(topServices[0].amount)}</SourceAnnotation>{' '}({topServices[0].pct.toFixed(0)}%),
-                  {' '}followed by {topServices[1].name} at{' '}
+                  >{formatBudget(topServices[0].amount)}</SourceAnnotation>),
+                  {' '}{topServices[1].name} (
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${topServices[1].key}`, selectedCouncil)}
                     reportContext={{
@@ -187,8 +182,8 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                       field: `Spending — ${topServices[1].name}`,
                       value: formatBudget(topServices[1].amount),
                     }}
-                  >{formatBudget(topServices[1].amount)}</SourceAnnotation>{' '}({topServices[1].pct.toFixed(0)}%)
-                  {' '}and {topServices[2].name} at{' '}
+                  >{formatBudget(topServices[1].amount)}</SourceAnnotation>)
+                  {' '}and {topServices[2].name} (
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${topServices[2].key}`, selectedCouncil)}
                     reportContext={{
@@ -196,7 +191,7 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
                       field: `Spending — ${topServices[2].name}`,
                       value: formatBudget(topServices[2].amount),
                     }}
-                  >{formatBudget(topServices[2].amount)}</SourceAnnotation>{' '}({topServices[2].pct.toFixed(0)}%).
+                  >{formatBudget(topServices[2].amount)}</SourceAnnotation>).
                 </>
               ) : totalBudget && biggestCategory ? (
                 <>
@@ -231,7 +226,7 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
           </div>
 
           {/* Single scrolling dashboard */}
-          <UnifiedDashboard />
+          <UnifiedDashboard council={selectedCouncil} />
 
           {/* Related councils for internal linking */}
           <div className="mt-5">

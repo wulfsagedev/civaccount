@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Council, getCouncilSlug, getAreaBandD, councils as allCouncilsList } from '@/data/councils';
+import { Council, getCouncilSlug, getAreaBandD, councils as allCouncilsList, formatListBandD } from '@/data/councils';
 import { useCouncil } from '@/context/CouncilContext';
 import { SEARCH_RESULT_LIMIT } from '@/lib/utils';
 import { searchCouncilsFast, getDefaultCouncils } from '@/lib/search-index';
@@ -57,7 +57,7 @@ const SearchResultItem = memo(function SearchResultItem({
       </div>
       {bandD && (
         <span className="type-body-sm text-muted-foreground shrink-0 ml-2 tabular-nums">
-          £{Math.round(bandD).toLocaleString('en-GB')}/yr{areaBandD?.year === '2025-26' ? ' (2025-26)' : ''}
+          {formatListBandD(council)}
         </span>
       )}
     </button>
@@ -192,7 +192,8 @@ export default function SearchCommand({ forceDesktopStyle = false, renderOverlay
       const target = e.target as HTMLElement;
       const isInputFocused = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 
-      if (e.key === 'f' && !isInputFocused) {
+      // A plain F only: Cmd/Ctrl/Alt+F is the browser's find, which this took over (launch QA, 29 Oct 2026)
+      if (e.key === 'f' && !isInputFocused && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         triggerRef.current = document.activeElement;
         setIsOpen(true);
@@ -405,7 +406,7 @@ export default function SearchCommand({ forceDesktopStyle = false, renderOverlay
                   <div className="py-8 text-center text-muted-foreground type-body-sm">
                     {postcodeLoading && isPostcodeQuery
                       ? 'Looking up postcode...'
-                      : `No councils found for "${searchQuery}"`}
+                      : `No councils found for "${searchQuery}". CivAccount covers councils in England only.`}
                   </div>
                 )}
               </div>

@@ -691,6 +691,16 @@ export function formatCurrency(amount: number | null, options?: { decimals?: num
   }).format(amount);
 }
 
+/** A council's area Band D as every list shows it: whole pounds, "a year",
+ * and the year only when it is not the current one. One format everywhere
+ * (CLAUDE.md: list numbers carry 0 decimals). */
+export function formatListBandD(council: Council): string | null {
+  const area = getAreaBandD(council);
+  if (!area) return null;
+  const amount = formatCurrency(Math.round(area.value), { decimals: 0 });
+  return area.year === CURRENT_TAX_YEAR ? `${amount} a year` : `${amount} a year (${area.year})`;
+}
+
 export const councils: Council[] = allCouncils;
 
 

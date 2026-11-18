@@ -88,7 +88,8 @@ export async function POST(request: NextRequest) {
       ],
       mode: 'payment',
       success_url: `${origin}/donate/thank-you`,
-      cancel_url: `${origin}`,
+      // A page that says no payment was taken (CA-B13), not the homepage.
+      cancel_url: `${origin}/donate/cancelled`,
     });
 
     return NextResponse.json({ url: session.url });
@@ -100,8 +101,9 @@ export async function POST(request: NextRequest) {
     console.error('[checkout] stripe error:', summary);
 
     if (error instanceof Stripe.errors.StripeError) {
+      // Stripe's own wording is for developers; the person gets plain words.
       return NextResponse.json(
-        { error: error.message },
+        { error: 'The payment page did not open. No payment was taken. Please try again.' },
         { status: error.statusCode || 500 }
       );
     }

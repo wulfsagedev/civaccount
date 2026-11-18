@@ -7,19 +7,13 @@ export function renderFinancialHealth(council: Council, councilName: string): Re
   if (!d) return <div style={{ display: 'flex' }}>No data</div>;
 
   const reserves = d.reserves;
-  const revenueBudget = d.revenue_budget;
-  const reserveWeeks = reserves && revenueBudget ? Math.round((reserves / revenueBudget) * 52) : null;
   const budgetGap = d.budget_gap;
   const savingsTarget = d.savings_target;
 
   const metrics: Array<{ label: string; value: string; color: string }> = [];
 
-  if (reserveWeeks != null && reserves) {
-    metrics.push({
-      label: 'Reserves',
-      value: `${reserveWeeks} weeks`,
-      color: reserveWeeks < 8 ? '#ef4444' : reserveWeeks < 13 ? OG.negative : OG.positive,
-    });
+  if (reserves) {
+    metrics.push({ label: 'Reserves', value: formatCurrencyOG(reserves, 0), color: OG.text });
   }
   if (budgetGap) {
     metrics.push({ label: 'Budget gap', value: formatCurrencyOG(budgetGap, 0), color: OG.negative });

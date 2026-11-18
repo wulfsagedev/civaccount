@@ -2,27 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { createClient } from '@/lib/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { User, LogOut, Check } from 'lucide-react';
+import DisplayNameField from '@/components/DisplayNameField';
+import { User, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function AccountModal() {
   const { user, displayName, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState(displayName ?? '');
-  const [isSaving, setIsSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
-
-  // Sync name when displayName loads
-  useEffect(() => {
-    if (displayName) setName(displayName);
-  }, [displayName]);
 
   // Close on outside click
   useEffect(() => {
@@ -82,21 +71,6 @@ export default function AccountModal() {
 
   if (!user) return null;
 
-  const handleSaveName = async () => {
-    if (!name.trim() || name.trim() === displayName) return;
-    setIsSaving(true);
-    const supabase = createClient();
-    await supabase
-      .from('users')
-      .update({ display_name: name.trim() })
-      .eq('id', user.id);
-    setIsSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    // Reload to pick up new name everywhere
-    window.location.reload();
-  };
-
   const handleSignOut = async () => {
     setIsOpen(false);
     await signOut();
@@ -127,31 +101,9 @@ export default function AccountModal() {
             <p className="type-caption text-muted-foreground">{user.email}</p>
           </div>
 
-          {/* Display name */}
-          <div className="p-4 space-y-2">
-            <Label htmlFor="display-name" className="type-caption font-medium">
-              Display name
-            </Label>
-            <div className="flex gap-2">
-              <Input
-                id="display-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name or nickname"
-                maxLength={50}
-                className="h-9 flex-1"
-              />
-              <Button
-                type="button"
-                size="sm"
-                variant={saved ? 'outline' : 'default'}
-                disabled={isSaving || !name.trim() || name.trim() === displayName}
-                onClick={handleSaveName}
-                className="h-9 cursor-pointer"
-              >
-                {saved ? <Check className="h-4 w-4 text-positive" /> : isSaving ? '...' : 'Save'}
-              </Button>
-            </div>
+          {/* Display name: shared with the phone menus */}
+          <div className="p-4">
+            <DisplayNameField />
           </div>
 
           {/* Sign out */}

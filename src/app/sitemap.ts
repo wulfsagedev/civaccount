@@ -1,8 +1,13 @@
 import { MetadataRoute } from 'next'
 import { councils, getCouncilSlug } from '@/data/councils'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
+import { isExamplePost } from '@/lib/proposals'
 import { getPopularComparisons } from '@/lib/comparisons'
 import { getDataLastVerified } from '@/lib/data-freshness'
+
+// Cached and rebuilt at most once an hour, instead of on every request with a
+// database read (1.0 to 1.24 s per fetch on 17 Nov 2026, CA-O5).
+export const revalidate = 3600
 
 /**
  * sitemap.xml — 2026 best-practice configuration.
@@ -125,16 +130,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // lastModified uses the proposal's actual created_at — a real timestamp.
   let proposalPages: MetadataRoute.Sitemap = [];
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data: proposals } = await supabase
       .from('proposals')
-      .select('id, council_slug, created_at')
+      .select('id, council_slug, created_at, author_id')
       .in('status', ['open', 'acknowledged', 'in_progress', 'resolved'])
       .order('score', { ascending: false })
       .limit(500);
 
     if (proposals) {
-      proposalPages = proposals.map((p) => ({
+      // Only residents' own posts under a real council: the example posts
+      // repeat across councils and are not for search engines (CA-D3).
+      const realSlugs = new Set(councils.map((c) => getCouncilSlug(c)));
+      proposalPages = proposals
+        .filter((p) => realSlugs.has(p.council_slug) && !isExamplePost(p.author_id))
+        .map((p) => ({
         url: `${baseUrl}/council/${p.council_slug}/proposals/${p.id}`,
         lastModified: p.created_at,
       }));

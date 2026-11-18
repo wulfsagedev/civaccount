@@ -4,6 +4,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 // Countries allowed to participate (vote, propose, comment)
 const ALLOWED_COUNTRIES = new Set(['GB']);
 
+// The longest a page waits for the sign-in session refresh.
+const SESSION_REFRESH_LIMIT_MS = 1500;
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -21,9 +24,17 @@ export async function middleware(request: NextRequest) {
 
   let supabaseResponse = NextResponse.next({ request });
 
+  // Refresh the sign-in session only for people who have one, never for
+  // longer than SESSION_REFRESH_LIMIT_MS, and skip it if Supabase is not
+  // configured (CA-O7). Before, a slow Supabase slowed every page for
+  // signed-in residents, and missing settings turned every page into a 500.
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const hasSession = request.cookies.getAll().some((c) => c.name.startsWith('sb-'));
+  if (supabaseUrl && supabaseKey && hasSession) {
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
@@ -43,7 +54,11 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refresh the auth session so it doesn't expire
-  await supabase.auth.getUser();
+  await Promise.race([
+    supabase.auth.getUser().catch(() => null),
+    new Promise((resolve) => setTimeout(resolve, SESSION_REFRESH_LIMIT_MS)),
+  ]);
+  }
 
   // Geo check — Vercel provides x-vercel-ip-country on every request
   // In development, default to GB (localhost has no geo header)

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatBudget, getCouncilSlug, getCouncilPopulation, toSentenceTypeName, type Council, type ServiceSpendingDetail } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import { DATA_YEARS } from '@/lib/data-years';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
@@ -91,8 +92,8 @@ const SpendingCard = ({
       <section id="spending" className="card-elevated p-5 sm:p-6">
         <CardShareHeader
           cardType="spending"
-          title="What your council tax pays for"
-          subtitle="This shows how the budget is structured"
+          title="What the council plans to spend"
+          subtitle={`Each service's budget for ${DATA_YEARS.budget}. Council tax pays for part of it; grants and fees pay for the rest.`}
           councilName={selectedCouncil.name}
         />
 
@@ -104,10 +105,9 @@ const SpendingCard = ({
             const isExpanded = expandedCategory === category.key;
             const hasDrillDown = !!spending;
             const categoryId = `spending-${category.key}`;
-            const shareValue = category.yourShare
-              ? formatCurrency(category.yourShare, { decimals: 0 })
-              : '';
-            const pctText = `${category.percentage.toFixed(0)}%`;
+            // The council's own budget line (RA return), not a slice of a Band D
+            // bill worked out by CivAccount (NORTH-STAR §2 #3).
+            const amountText = formatBudget(category.amount / 1000);
 
             const row = hasDrillDown ? (
               <RankedBarRow
@@ -121,56 +121,32 @@ const SpendingCard = ({
                   </span>
                 }
                 value={
-                  category.yourShare ? (
-                    <SourceAnnotation
-                      provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
-                      reportContext={{
-                        council: selectedCouncil.name,
-                        field: `${category.name} budget (your share)`,
-                        value: shareValue,
-                      }}
-                    >{shareValue}</SourceAnnotation>
-                  ) : shareValue
-                }
-                subLeft={details?.description || ''}
-                subRight={
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
                     reportContext={{
                       council: selectedCouncil.name,
-                      field: `${category.name} budget share (%)`,
-                      value: pctText,
+                      field: `${category.name} budget`,
+                      value: amountText,
                     }}
-                  >{pctText}</SourceAnnotation>
+                  >{amountText}</SourceAnnotation>
                 }
+                subLeft={details?.description || ''}
                 fillPct={category.percentage}
               />
             ) : (
               <RankedBarRow
                 title={category.name}
                 value={
-                  category.yourShare ? (
-                    <SourceAnnotation
-                      provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
-                      reportContext={{
-                        council: selectedCouncil.name,
-                        field: `${category.name} budget (your share)`,
-                        value: shareValue,
-                      }}
-                    >{shareValue}</SourceAnnotation>
-                  ) : ''
-                }
-                subLeft={details?.description || ''}
-                subRight={
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
                     reportContext={{
                       council: selectedCouncil.name,
-                      field: `${category.name} budget share (%)`,
-                      value: pctText,
+                      field: `${category.name} budget`,
+                      value: amountText,
                     }}
-                  >{pctText}</SourceAnnotation>
+                  >{amountText}</SourceAnnotation>
                 }
+                subLeft={details?.description || ''}
                 fillPct={category.percentage}
               />
             );

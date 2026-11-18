@@ -66,5 +66,17 @@ export function resolveMatchup(matchup: string) {
   const councilA = getCouncilBySlug(parts[0]);
   const councilB = getCouncilBySlug(parts[1]);
   if (!councilA || !councilB) return null;
+  // A council against itself is not a comparison (CA-B15).
+  if (parts[0] === parts[1]) return null;
   return { councilA, councilB };
+}
+
+/** The one address for a pair, in the alphabetical order the sitemap and
+ * getPopularComparisons() use, so A-vs-B and B-vs-A are not two pages to a
+ * search engine (CA-B15). */
+export function canonicalMatchup(matchup: string): string {
+  const parts = matchup.split('-vs-');
+  if (parts.length !== 2) return matchup;
+  const [first, second] = [...parts].sort();
+  return `${first}-vs-${second}`;
 }

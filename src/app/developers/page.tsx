@@ -57,37 +57,38 @@ export default function DevelopersPage() {
 
   const apiCouncilExample = `curl https://www.civaccount.co.uk/api/v1/councils/kent`;
 
+  // The response exactly as /api/v1/councils/[slug] returns it (checked 18 Nov 2026).
   const apiCouncilJson = `{
-  "slug": "kent",
-  "name": "Kent",
-  "ons_code": "E10000016",
-  "type": "SC",
-  "type_name": "County Council",
-  "council_tax": {
-    "band_d_2025": 1842.66,
-    "band_d_2024": 1765.44,
-    ...
-  },
-  "budget": {
-    "total_service": 1234567,
-    "education": 456789,
-    ...
-  },
-  "detailed": {
-    "council_leader": "...",
-    "chief_executive": "...",
-    "top_suppliers": [ ... ],
-    "grant_payments": [ ... ]
-  },
-  "field_sources": {
-    "chief_executive_salary": {
-      "url": "https://...gov.uk/...",
-      "accessed": "2026-04-13"
-    }
+  "data": {
+    "slug": "kent",
+    "name": "Kent County Council",
+    "ons_code": "E10000016",
+    "type": "SC",
+    "type_name": "County Council",
+    "population": 1639029,
+    "council_tax": {
+      "band_d_2025": 1691.19,
+      "band_d_2024": 1611,
+      ...
+    },
+    "budget": {
+      "total_service": 2809468,
+      "net_current": 2800724,
+      "breakdown": [
+        { "category": "education", "label": "Education", "amount_thousands": 1283952 },
+        ...
+      ]
+    },
+    "leadership": {
+      "council_leader": "...",
+      "chief_executive": "...",
+      "total_councillors": 81
+    },
+    "website": "https://..."
   }
 }`;
 
-  const apiDiffsExample = `curl https://www.civaccount.co.uk/api/v1/diffs?since=2026-04-01`;
+  const apiDiffsExample = `curl "https://www.civaccount.co.uk/api/v1/diffs?council=kent"`;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -203,8 +204,9 @@ export default function DevelopersPage() {
           <h3 className="type-title-3 mt-6 mb-2">Data change feed</h3>
           <p className="type-caption text-muted-foreground mb-2">
             <code className="px-1.5 py-0.5 rounded bg-muted">GET /api/v1/diffs</code>
-            {' '}— returns commits that modified council data, with affected councils listed.
-            Query param <code className="px-1.5 py-0.5 rounded bg-muted">since</code> (ISO date).
+            {' '}— returns the latest changes in each council&apos;s Band D and budget between published years.
+            Query params <code className="px-1.5 py-0.5 rounded bg-muted">council</code> (a council&apos;s slug) or{' '}
+            <code className="px-1.5 py-0.5 rounded bg-muted">limit</code> (1 to 50, default 20).
           </p>
           <CodeBlock code={apiDiffsExample} language="bash" />
 

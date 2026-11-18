@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getCouncilDisplayName, getCouncilSlug, formatCurrency, formatBudget, getCouncilPopulation, toSentenceTypeName, getAreaBandD, getAreaBandDChange } from '@/data/councils';
 import { buildFAQPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data';
 import { serializeJsonLd } from '@/lib/safe-json-ld';
-import { getPopularComparisons, resolveMatchup } from '@/lib/comparisons';
+import { getPopularComparisons, resolveMatchup, canonicalMatchup } from '@/lib/comparisons';
 import Breadcrumb from '@/components/proposals/Breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? `Compare ${nameA} and ${nameB} council tax rates, spending, and budgets for ${yearA}. Side-by-side comparison of Band D rates, service budgets, and CEO salaries.`
       : `Compare ${nameA} (${yearA} rates) and ${nameB} (${yearB} rates) council tax, spending, and budgets. Side-by-side comparison of Band D rates, service budgets, and CEO salaries.`,
     alternates: {
-      canonical: `/compare/${matchup}`,
+      canonical: `/compare/${canonicalMatchup(matchup)}`,
     },
     openGraph: {
       title: `${nameA} vs ${nameB} — Council Tax Comparison`,

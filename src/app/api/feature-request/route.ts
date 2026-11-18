@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: `Too many submissions. Please try again in ${Math.ceil(rateLimitResult.resetIn / 60)} minutes.` },
+        { error: `Too many messages from here. Please try again in ${Math.ceil(rateLimitResult.resetIn / 60)} ${Math.ceil(rateLimitResult.resetIn / 60) === 1 ? 'minute' : 'minutes'}.` },
         { status: 429 }
       );
     }

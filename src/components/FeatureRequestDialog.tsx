@@ -25,14 +25,16 @@ export default function FeedbackModal() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: '',
   });
-  const [dialogTitle, setDialogTitle] = useState('Send Feedback');
-  const [dialogSubtitle, setDialogSubtitle] = useState('Feature request or bug report');
+  const [dialogTitle, setDialogTitle] = useState('Send feedback');
+  const [dialogSubtitle, setDialogSubtitle] = useState('Tell us about a mistake, a problem or an idea.');
   const triggerRef = useRef<Element | null>(null);
+  const lastTemplate = useRef<string | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
   const handleClose = useCallback(() => {
@@ -41,8 +43,8 @@ export default function FeedbackModal() {
       setIsSuccess(false);
     }
     // Reset to defaults for the next open
-    setDialogTitle('Send Feedback');
-    setDialogSubtitle('Feature request or bug report');
+    setDialogTitle('Send feedback');
+    setDialogSubtitle('Tell us about a mistake, a problem or an idea.');
     // Restore focus to the element that triggered the dialog
     if (triggerRef.current && triggerRef.current instanceof HTMLElement) {
       triggerRef.current.focus();
@@ -54,9 +56,14 @@ export default function FeedbackModal() {
     const handleOpenFeedback = (e: Event) => {
       triggerRef.current = document.activeElement;
       const detail = (e as CustomEvent<FeedbackEventDetail | undefined>).detail;
-      if (detail?.prefillMessage) {
-        setFormData((prev) => ({ ...prev, message: detail.prefillMessage! }));
-      }
+      // A form opened with a template (the report form) leaves it behind for
+      // the next plain open only if someone wrote into it (launch QA, 29 Oct 2026)
+      const template = detail?.prefillMessage;
+      setFormData((prev) => ({
+        ...prev,
+        message: template ?? (prev.message === lastTemplate.current ? '' : prev.message),
+      }));
+      lastTemplate.current = template ?? null;
       if (detail?.title) setDialogTitle(detail.title);
       if (detail?.subtitle) setDialogSubtitle(detail.subtitle);
       setOpen(true);
@@ -112,6 +119,7 @@ export default function FeedbackModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg('');
 
     try {
       const response = await fetch('/api/feature-request', {
@@ -129,9 +137,20 @@ export default function FeedbackModal() {
           setOpen(false);
           setIsSuccess(false);
         }, 2000);
+      } else {
+        // Say why, or at least that it did not go (CA-B5): before, a refused
+        // or failed send left the form exactly as it was, with no words.
+        const body = await response.json().catch(() => null);
+        const known = response.status === 400 || response.status === 429;
+        setErrorMsg(
+          known && typeof body?.error === 'string'
+            ? body.error
+            : 'Your message was not sent. Please try again in a minute.',
+        );
       }
     } catch (error) {
       console.error('Error submitting feature request:', error);
+      setErrorMsg('Your message was not sent. Check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -175,9 +194,10 @@ export default function FeedbackModal() {
                   variant="ghost"
                   size="icon"
                   onClick={handleClose}
-                  className="h-8 w-8 shrink-0"
+                  className="h-11 w-11 shrink-0"
+                  aria-label="Close"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
 
@@ -211,7 +231,7 @@ export default function FeedbackModal() {
                     <Label htmlFor="message" className="type-body-sm">Message</Label>
                     <Textarea
                       id="message"
-                      placeholder="Tell us about your feature request or feedback..."
+                      placeholder="Tell us what you noticed, or what would help..."
                       className="min-h-[100px] resize-none"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -219,6 +239,12 @@ export default function FeedbackModal() {
                     />
                   </div>
                 </div>
+
+                {errorMsg && (
+                  <p role="alert" className="px-4 pb-3 type-body-sm text-destructive">
+                    {errorMsg}
+                  </p>
+                )}
 
                 {/* Footer */}
                 <div className="border-t px-4 py-3 flex justify-end">
@@ -231,7 +257,7 @@ export default function FeedbackModal() {
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Send Feedback
+                        Send
                       </>
                     )}
                   </Button>
