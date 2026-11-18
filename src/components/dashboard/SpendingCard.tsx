@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatBudget, getCouncilSlug, getCouncilPopulation, toSentenceTypeName, type Council, type ServiceSpendingDetail } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
+import { DATA_YEARS } from '@/lib/data-years';
 import { getTypeAverages } from '@/lib/council-averages';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
@@ -91,8 +92,8 @@ const SpendingCard = ({
       <section id="spending" className="card-elevated p-5 sm:p-6">
         <CardShareHeader
           cardType="spending"
-          title="What your council tax pays for"
-          subtitle="This shows how the budget is structured"
+          title="What the council plans to spend"
+          subtitle={`Each service's budget for ${DATA_YEARS.budget}. Council tax pays for part of it; grants and fees pay for the rest.`}
           councilName={selectedCouncil.name}
         />
 

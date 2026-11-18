@@ -284,7 +284,7 @@ const UnifiedDashboard = ({ council }: { council?: Council | null } = {}) => {
           <div className="space-y-3">
             {totalBandDBill && thisCouncilBandD && (
               <div className="p-3 rounded-lg bg-muted/30">
-                <p className="type-body-sm font-semibold mb-1">What percentage of my bill goes to {selectedCouncil.name}?</p>
+                <p className="type-body-sm font-semibold mb-1">How much of my bill goes to {selectedCouncil.name}?</p>
                 {/* Only where the bill split adds up to its total (bill-split.mjs
                     guarantees it): a county has no total, so no percentage. */}
                 <p className="type-caption text-muted-foreground">
