@@ -37,6 +37,13 @@ function getUpstashRatelimiter(config: RateLimitConfig): Ratelimit {
   return rl;
 }
 
+const warned = new Set<string>();
+function warnOnce(message: string, detail?: string) {
+  if (warned.has(message)) return;
+  warned.add(message);
+  console.warn(detail ? `${message} ${detail}` : message);
+}
+
 // ── In-memory fallback (development) ─────────────────────────────────────────
 
 interface RateLimitEntry {
@@ -106,6 +113,9 @@ export async function checkRateLimit(
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
   const redisClient = getRedis();
+  if (!redisClient && process.env.VERCEL_ENV === 'production') {
+    warnOnce('[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN not set in production; using in-memory limits.');
+  }
 
   if (redisClient) {
     try {
@@ -116,8 +126,10 @@ export async function checkRateLimit(
         remaining: result.remaining,
         resetIn: Math.ceil((result.reset - Date.now()) / 1000),
       };
-    } catch {
-      // Redis failed — fall back to in-memory
+    } catch (error) {
+      // Redis failed — fall back to in-memory, and say so once (CA-O12):
+      // per-instance memory limits are much weaker, and nothing showed it.
+      warnOnce('[rate-limit] Upstash failed; using in-memory limits:', error instanceof Error ? error.message : 'unknown error');
       return checkRateLimitMemory(identifier, config);
     }
   }
