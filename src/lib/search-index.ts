@@ -46,17 +46,22 @@ export function searchCouncilsFast(query: string, limit: number = 10): Council[]
     return sortedByName.slice(0, limit).map(s => s.council);
   }
 
-  const normalizedQuery = query.toLowerCase().trim();
+  // Full stops dropped and "and" read as "&" either way, so "St. Helens" finds
+  // St Helens and "Brighton and Hove" finds Brighton & Hove (launch QA, 29 Oct
+  // 2026), while "Bath and North East Somerset" still finds itself.
+  const normalizedQuery = query.toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ').trim();
+  const variants = [...new Set([normalizedQuery, normalizedQuery.replace(/\band\b/g, '&'), normalizedQuery.replace(/&/g, 'and')])];
 
   // Two-pass search: exact prefix matches first, then contains matches
   const prefixMatches: SearchableCouncil[] = [];
   const containsMatches: SearchableCouncil[] = [];
 
   for (const item of searchIndex) {
+    const name = item.council.name.toLowerCase().replace(/\./g, '');
     // Check if name starts with query (highest priority)
-    if (item.council.name.toLowerCase().startsWith(normalizedQuery)) {
+    if (variants.some((v) => name.startsWith(v))) {
       prefixMatches.push(item);
-    } else if (item.searchTerms.includes(normalizedQuery)) {
+    } else if (variants.some((v) => item.searchTerms.includes(v))) {
       containsMatches.push(item);
     }
 
@@ -66,6 +71,11 @@ export function searchCouncilsFast(query: string, limit: number = 10): Council[]
 
   // Sort prefix matches by name length (shorter = more relevant)
   prefixMatches.sort((a, b) => a.nameLength - b.nameLength);
+  // A whole word before a match inside one: "Hull" is Kingston upon Hull before
+  // Solihull, which it opened on Enter (launch QA, 29 Oct 2026)
+  const wordStart = (item: SearchableCouncil) =>
+    variants.some((v) => new RegExp(`(^|[\\s(-])${v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(item.council.name.toLowerCase())) ? 1 : 0;
+  containsMatches.sort((a, b) => wordStart(b) - wordStart(a));
 
   // Combine results, prefix matches first
   const results = [...prefixMatches, ...containsMatches].slice(0, limit);

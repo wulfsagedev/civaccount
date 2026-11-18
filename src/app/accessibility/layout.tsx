@@ -3,21 +3,21 @@ import { buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/structured-data
 import { serializeJsonLd } from '@/lib/safe-json-ld';
 
 export const metadata: Metadata = {
-  title: 'Accessibility — WCAG 2.2 AA and Plain English',
-  description: 'CivAccount conformance with WCAG 2.2 AA: high contrast, 44px tap targets, keyboard navigation, screen readers, and plain-English copy aimed at 70+ users on mobile.',
+  title: 'Accessibility — WCAG 2.1 AA and Plain English',
+  description: 'CivAccount conformance with WCAG 2.1 AA: high contrast, 44px tap targets, keyboard navigation, screen readers, and plain-English copy aimed at 70+ users on mobile.',
   alternates: {
     canonical: '/accessibility',
   },
   openGraph: {
-    title: 'Accessibility — WCAG 2.2 AA and Plain English',
-    description: 'CivAccount conformance with WCAG 2.2 AA: high contrast, 44px tap targets, keyboard navigation, screen readers, plain-English copy.',
+    title: 'Accessibility — WCAG 2.1 AA and Plain English',
+    description: 'CivAccount conformance with WCAG 2.1 AA: high contrast, 44px tap targets, keyboard navigation, screen readers, plain-English copy.',
     type: 'website',
     siteName: 'CivAccount',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Accessibility — WCAG 2.2 AA and Plain English',
-    description: 'CivAccount conformance with WCAG 2.2 AA: high contrast, tap targets, keyboard, screen readers, plain English.',
+    title: 'Accessibility — WCAG 2.1 AA and Plain English',
+    description: 'CivAccount conformance with WCAG 2.1 AA: high contrast, tap targets, keyboard, screen readers, plain English.',
   },
 };
 
@@ -26,7 +26,7 @@ const jsonLd = {
   '@graph': [
     buildWebPageSchema(
       'CivAccount Accessibility Statement',
-      'CivAccount conformance with WCAG 2.2 AA: high contrast, keyboard navigation, screen reader support, and large tap targets for older users on mobile.',
+      'CivAccount conformance with WCAG 2.1 AA: high contrast, keyboard navigation, screen reader support, and large tap targets for older users on mobile.',
       '/accessibility',
     ),
     buildBreadcrumbSchema(

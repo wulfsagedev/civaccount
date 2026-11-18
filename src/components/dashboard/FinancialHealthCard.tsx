@@ -54,7 +54,7 @@ const FinancialHealthCard = ({
               </SourceAnnotation>
               {reservesInWeeks && (
                 <p className="type-body-sm text-muted-foreground mt-1">
-                  Enough to cover {reservesInWeeks} weeks of running costs
+                  Enough to cover {reservesInWeeks} {reservesInWeeks === 1 ? 'week' : 'weeks'} of running costs
                 </p>
               )}
             </div>

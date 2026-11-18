@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { PulsingDot } from '@/components/ui/pulsing-dot';
 import { useCouncil } from '@/context/CouncilContext';
+import { getLatestUpdate } from '@/data/updates';
 
 export default function Footer() {
   const { setSelectedCouncil } = useCouncil();
@@ -33,7 +34,7 @@ export default function Footer() {
             </Link>
             <Link href="/updates" className="inline-flex items-center gap-1.5 cursor-pointer">
               <PulsingDot />
-              <Badge variant="outline" className="cursor-pointer hover:bg-muted">v3.0</Badge>
+              <Badge variant="outline" className="cursor-pointer hover:bg-muted">v{getLatestUpdate().version}</Badge>
             </Link>
           </div>
 

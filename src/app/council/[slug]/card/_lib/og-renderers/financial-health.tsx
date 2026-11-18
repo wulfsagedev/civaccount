@@ -17,7 +17,7 @@ export function renderFinancialHealth(council: Council, councilName: string): Re
   if (reserveWeeks != null && reserves) {
     metrics.push({
       label: 'Reserves',
-      value: `${reserveWeeks} weeks`,
+      value: `${reserveWeeks} ${reserveWeeks === 1 ? 'week' : 'weeks'}`,
       color: reserveWeeks < 8 ? '#ef4444' : reserveWeeks < 13 ? OG.negative : OG.positive,
     });
   }

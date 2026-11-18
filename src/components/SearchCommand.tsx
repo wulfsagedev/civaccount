@@ -192,7 +192,8 @@ export default function SearchCommand({ forceDesktopStyle = false, renderOverlay
       const target = e.target as HTMLElement;
       const isInputFocused = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 
-      if (e.key === 'f' && !isInputFocused) {
+      // A plain F only: Cmd/Ctrl/Alt+F is the browser's find, which this took over (launch QA, 29 Oct 2026)
+      if (e.key === 'f' && !isInputFocused && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         triggerRef.current = document.activeElement;
         setIsOpen(true);
@@ -405,7 +406,7 @@ export default function SearchCommand({ forceDesktopStyle = false, renderOverlay
                   <div className="py-8 text-center text-muted-foreground type-body-sm">
                     {postcodeLoading && isPostcodeQuery
                       ? 'Looking up postcode...'
-                      : `No councils found for "${searchQuery}"`}
+                      : `No councils found for "${searchQuery}". CivAccount covers councils in England only.`}
                   </div>
                 )}
               </div>

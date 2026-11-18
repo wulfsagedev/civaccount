@@ -94,7 +94,8 @@ export default function CompareClient() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for a council to add..."
-                className="w-full h-12 px-4 rounded-xl border border-border bg-background type-body-sm focus:outline-none focus:border-foreground/50"
+                // type-body, 16px: under it, an iPhone zooms the page on tap
+                className="w-full h-12 px-4 rounded-xl border border-border bg-background type-body focus:outline-none focus:border-foreground/50"
               />
               {searchResults.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border/40 rounded-xl shadow-lg z-10 overflow-hidden">

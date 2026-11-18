@@ -142,7 +142,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
       .then(res => res.json())
       .then(data => {
         if (data.status === 200 && data.result) {
-          const { admin_district, admin_county } = data.result;
+          const { admin_district, admin_county, country } = data.result;
           const matched: Council[] = [];
 
           // Normalize for matching: "Folkestone and Hythe" vs "Folkestone & Hythe"
@@ -174,7 +174,12 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
           setPostcodeResults(matched);
           if (matched.length === 0) {
-            setPostcodeError(`We found ${admin_district || 'your area'} but it is not in our database yet.`);
+            // Outside England it never will be: say so, not "yet" (launch QA, 29 Oct 2026)
+            setPostcodeError(
+              country && country !== 'England'
+                ? `${admin_district || 'That postcode'} is in ${country}. CivAccount covers councils in England only.`
+                : `We found ${admin_district || 'your area'} but it is not in our database yet.`,
+            );
           }
         } else {
           setPostcodeResults([]);
@@ -304,7 +309,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
                 </p>
               ) : filteredCouncils.length === 0 ? (
                 <p className="text-center type-body-sm text-muted-foreground py-4">
-                  {postcodeError || 'No councils found. Try a different spelling or postcode.'}
+                  {postcodeError || 'No councils found. Try a different spelling or postcode. CivAccount covers councils in England only.'}
                 </p>
               ) : (
                 filteredCouncils.map((council, index) => (
@@ -362,7 +367,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
               </p>
             ) : filteredCouncils.length === 0 ? (
               <p className="text-center type-body-sm text-muted-foreground py-4">
-                {postcodeError || 'No councils found. Try a different spelling or postcode.'}
+                {postcodeError || 'No councils found. Try a different spelling or postcode. CivAccount covers councils in England only.'}
               </p>
             ) : (
               filteredCouncils.map((council, index) => (
@@ -378,7 +383,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
           <p className="type-body-sm text-center text-muted-foreground">
             {searchQuery
-              ? `${filteredCouncils.length} councils found`
+              ? `${filteredCouncils.length} ${filteredCouncils.length === 1 ? 'council' : 'councils'} found`
               : `${totalCouncilCount} councils in England`
             }
           </p>
@@ -420,7 +425,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
             <div ref={listRef} role="listbox" aria-label="English councils" className="max-h-[192px] overflow-y-auto space-y-2 border rounded-xl p-3">
               {filteredCouncils.length === 0 ? (
                 <p className="text-center type-body-sm text-muted-foreground py-6">
-                  No councils found. Try a different spelling.
+                  No councils found. Try a different spelling. CivAccount covers councils in England only.
                 </p>
               ) : (
                 filteredCouncils.map((council, index) => (
@@ -436,7 +441,7 @@ export default function CouncilSelector({ onSelect, variant = 'homepage', naviga
 
             <p className="type-body-sm text-center text-muted-foreground">
               {searchQuery
-                ? `${filteredCouncils.length} councils found · Press Enter to select`
+                ? `${filteredCouncils.length} ${filteredCouncils.length === 1 ? 'council' : 'councils'} found · Press Enter to select`
                 : `${totalCouncilCount} councils in England`
               }
             </p>
