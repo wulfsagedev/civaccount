@@ -14,10 +14,10 @@ export const BUDGET_CATEGORIES: Record<string, string> = {
 };
 
 export const PROPOSAL_LABELS = [
-  { value: 'overspend', label: 'Overspend' },
-  { value: 'underfunded', label: 'Underfunded' },
-  { value: 'transparency', label: 'Transparency' },
-  { value: 'efficiency', label: 'Efficiency' },
+  { value: 'overspend', label: 'Too much spent' },
+  { value: 'underfunded', label: 'Not enough spent' },
+  { value: 'transparency', label: 'Hard to find out' },
+  { value: 'efficiency', label: 'Money wasted' },
 ] as const;
 
 export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
@@ -31,9 +31,11 @@ export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
 
 export const PROPOSAL_STATUS_DESCRIPTIONS: Record<string, string> = {
   open: 'Accepting votes and comments',
-  acknowledged: 'The council is aware of this proposal',
-  in_progress: 'The council is considering this',
-  resolved: 'The council has taken action',
+  // No council is connected to Town Hall, so these never claim the council
+  // did anything (CA-D4, 18 Nov 2026).
+  acknowledged: 'Marked as seen',
+  in_progress: 'Being looked into',
+  resolved: 'Marked as done',
   closed: 'No longer accepting votes',
 };
 
@@ -90,16 +92,18 @@ export function timeAgo(dateString: string): string {
   const date = new Date(dateString);
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
+  // Whole words, not "6mo" or "3h" (CA-D7: readers are mostly 70+).
+  const ago = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'} ago`;
   if (seconds < 60) return 'just now';
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return ago(minutes, 'minute');
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return ago(hours, 'hour');
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d ago`;
+  if (days < 30) return ago(days, 'day');
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo ago`;
-  return `${Math.floor(months / 12)}y ago`;
+  if (months < 12) return ago(months, 'month');
+  return ago(Math.floor(months / 12), 'year');
 }
 
 // Anonymous draft storage
@@ -147,4 +151,9 @@ export const EXAMPLE_AUTHOR_ID_PREFIX = '00000000-0000-4000-a000-';
 
 export function isExamplePost(authorId: string | null | undefined): boolean {
   return typeof authorId === 'string' && authorId.startsWith(EXAMPLE_AUTHOR_ID_PREFIX);
+}
+
+/** A label's plain name, whatever case it was stored in ("Overspend" or "overspend"). */
+export function getLabelName(value: string): string {
+  return PROPOSAL_LABELS.find((l) => l.value === value.toLowerCase())?.label ?? value;
 }

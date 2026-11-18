@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare } from 'lucide-react';
-import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS, PROPOSAL_STATUS_STYLES, PROPOSAL_STATUS_DESCRIPTIONS, isExamplePost } from '@/lib/proposals';
+import { getCategoryLabel, timeAgo, PROPOSAL_STATUS_LABELS, PROPOSAL_STATUS_STYLES, PROPOSAL_STATUS_DESCRIPTIONS, isExamplePost, getLabelName } from '@/lib/proposals';
 import VoteButton from './VoteButton';
 import ShareButton from './ShareButton';
 import MilestoneBar from './MilestoneBar';
@@ -86,7 +86,7 @@ export default function ProposalCard({ proposal, userVote, isHighlighted }: Prop
             )}
             {proposal.labels.map((label) => (
               <Badge key={label} variant="outline" className="type-caption">
-                {label}
+                {getLabelName(label)}
               </Badge>
             ))}
             <span className="type-caption text-muted-foreground flex items-center gap-1">

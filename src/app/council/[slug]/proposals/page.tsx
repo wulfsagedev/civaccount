@@ -220,7 +220,7 @@ export default function ProposalsPage() {
             <Link href={`/council/${slug}/proposals/new`}>
               <Button size="sm" className="shrink-0 cursor-pointer gap-1.5">
                 <Plus className="h-4 w-4" aria-hidden="true" />
-                New
+                Add an idea
               </Button>
             </Link>
           </div>
@@ -273,7 +273,7 @@ export default function ProposalsPage() {
                 sort === 'new' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              New
+              Newest
             </button>
           </div>
           <select

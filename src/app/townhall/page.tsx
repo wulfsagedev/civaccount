@@ -52,7 +52,7 @@ export default function TownHallPage() {
             Tell your council what matters to you
           </h1>
           <p className="type-body-lg text-muted-foreground max-w-lg mx-auto">
-            Suggest how your council could spend money better. Vote on other people&apos;s ideas. It takes 10 seconds.
+            Suggest how your council could spend money better. Vote on other people&apos;s ideas.
           </p>
         </div>
 
@@ -174,7 +174,7 @@ export default function TownHallPage() {
         {/* Reassurance — address fear of engaging */}
         <div className="mt-8 text-center space-y-2">
           <p className="type-body-sm text-muted-foreground">
-            Your votes are private. You can post ideas without using your real name.
+            You choose the name other people see.
           </p>
           <p className="type-body-sm text-muted-foreground">
             This is a place to share ideas, not complaints. Keep it friendly.
