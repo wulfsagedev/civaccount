@@ -13,6 +13,10 @@ export async function generateMetadata({ params }: Omit<Props, 'children'>): Pro
   return { robots: { index: false, follow: false } };
 }
 
-export default function EmbedCardLayout({ children }: Props) {
+// Checked here too: generateMetadata is streamed to browsers (not to bots),
+// so a notFound() there alone still answered browsers with a 200.
+export default async function EmbedCardLayout({ params, children }: Props) {
+  const { slug, type } = await params;
+  if (!getCouncilBySlug(slug) || !VALID_CARD_TYPES.includes(type)) notFound();
   return children;
 }
