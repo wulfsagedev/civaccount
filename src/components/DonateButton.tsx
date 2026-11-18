@@ -28,6 +28,16 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
   const triggerRef = useRef<Element | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  // Coming back from Stripe with the browser's Back button restores this page
+  // from its cache with the button still on "Redirecting..." (CA-B13).
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) setIsLoading(false);
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, []);
+
   // Ensure we only render portal after component mounts (for SSR compatibility)
   useEffect(() => {
     setMounted(true);
@@ -105,11 +115,11 @@ export function DonateButton({ variant = 'default' }: DonateButtonProps) {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error || 'Something went wrong');
+        setError(data.error || 'The payment page did not open. No payment was taken. Please try again.');
         setIsLoading(false);
       }
     } catch {
-      setError('Failed to connect to payment service');
+      setError('The payment page did not open. Check your connection and try again.');
       setIsLoading(false);
     }
   };
