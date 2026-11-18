@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
 import { formatCurrency, getBillSplitYear, type Council } from '@/data/councils';
 import CardShareHeader from '@/components/dashboard/CardShareHeader';
 import SourceAnnotation from '@/components/ui/source-annotation';
@@ -34,16 +33,27 @@ const TaxBandsCard = ({
   totalBandAmounts,
   taxYear,
 }: TaxBandsCardProps) => {
-  const searchParams = useSearchParams();
-  const bandFromUrl = searchParams.get('band')?.toUpperCase();
-  const validBands = Object.keys(allBands);
-  const initialBand = bandFromUrl && validBands.includes(bandFromUrl) ? bandFromUrl : 'D';
-  const [selectedBand, setSelectedBand] = useState(initialBand);
+  // ?band= is read after the page loads, not with useSearchParams(): in a
+  // prebuilt page that hook makes Next drop the server HTML up to the nearest
+  // Suspense boundary, which blanked the whole council page once the
+  // dashboard rendered on the server (18 Nov 2026).
+  const [selectedBand, setSelectedBand] = useState('D');
   const detailed = selectedCouncil.detailed;
   const splitYear = getBillSplitYear(selectedCouncil);
 
-  // Sync band selection to URL (without adding history entries)
   useEffect(() => {
+    const fromUrl = new URL(window.location.href).searchParams.get('band')?.toUpperCase();
+    if (fromUrl && fromUrl !== 'D' && Object.keys(allBands).includes(fromUrl)) setSelectedBand(fromUrl);
+  }, [allBands]);
+
+  // Sync band selection to URL (without adding history entries). Not on the
+  // first run, which would wipe a ?band= before it has been read.
+  const firstSync = useRef(true);
+  useEffect(() => {
+    if (firstSync.current) {
+      firstSync.current = false;
+      return;
+    }
     const url = new URL(window.location.href);
     if (selectedBand === 'D') {
       url.searchParams.delete('band');
