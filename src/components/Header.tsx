@@ -15,6 +15,7 @@ import { getLatestUpdate } from '@/data/updates';
 import FeedbackModal from '@/components/FeatureRequestDialog';
 import SearchCommand from '@/components/SearchCommand';
 import AccountModal from '@/components/AccountModal';
+import DisplayNameField from '@/components/DisplayNameField';
 import { DonateButton } from '@/components/DonateButton';
 import { cn } from '@/lib/utils';
 
@@ -214,10 +215,15 @@ export default function Header() {
                     Feedback
                   </button>
                   {user ? (
+                    <>
+                    <div className="px-4 py-3">
+                      <DisplayNameField id="display-name-tablet" />
+                    </div>
                     <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={MOBILE_NAV_LINK_CLASS}>
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       Sign out
                     </button>
+                    </>
                   ) : (
                     <Link href="/auth/login" onClick={closeMobileMenu} className={MOBILE_NAV_LINK_CLASS}>
                       <User className="h-4 w-4" aria-hidden="true" />
@@ -383,10 +389,15 @@ export default function Header() {
                     Feedback
                   </button>
                   {user ? (
+                    <>
+                    <div className="px-4 py-3">
+                      <DisplayNameField id="display-name-phone" />
+                    </div>
                     <button type="button" onClick={() => { signOut(); closeMobileMenu(); }} className={MOBILE_NAV_LINK_CLASS}>
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       Sign out
                     </button>
+                    </>
                   ) : (
                     <Link href="/auth/login" onClick={closeMobileMenu} className={MOBILE_NAV_LINK_CLASS}>
                       <User className="h-4 w-4" aria-hidden="true" />
