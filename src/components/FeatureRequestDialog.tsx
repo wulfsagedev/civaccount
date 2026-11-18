@@ -25,6 +25,7 @@ export default function FeedbackModal() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -118,6 +119,7 @@ export default function FeedbackModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg('');
 
     try {
       const response = await fetch('/api/feature-request', {
@@ -135,9 +137,20 @@ export default function FeedbackModal() {
           setOpen(false);
           setIsSuccess(false);
         }, 2000);
+      } else {
+        // Say why, or at least that it did not go (CA-B5): before, a refused
+        // or failed send left the form exactly as it was, with no words.
+        const body = await response.json().catch(() => null);
+        const known = response.status === 400 || response.status === 429;
+        setErrorMsg(
+          known && typeof body?.error === 'string'
+            ? body.error
+            : 'Your message was not sent. Please try again in a minute.',
+        );
       }
     } catch (error) {
       console.error('Error submitting feature request:', error);
+      setErrorMsg('Your message was not sent. Check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -226,6 +239,12 @@ export default function FeedbackModal() {
                     />
                   </div>
                 </div>
+
+                {errorMsg && (
+                  <p role="alert" className="px-4 pb-3 type-body-sm text-destructive">
+                    {errorMsg}
+                  </p>
+                )}
 
                 {/* Footer */}
                 <div className="border-t px-4 py-3 flex justify-end">
