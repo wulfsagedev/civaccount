@@ -12,12 +12,10 @@ import { getProvenance, isProven } from '@/data/provenance';
 
 interface FinancialHealthCardProps {
   selectedCouncil: Council;
-  reservesInWeeks: number | null;
 }
 
 const FinancialHealthCard = ({
   selectedCouncil,
-  reservesInWeeks,
 }: FinancialHealthCardProps) => {
   const detailed = selectedCouncil.detailed!;
 
@@ -52,11 +50,6 @@ const FinancialHealthCard = ({
                   {formatCurrency(detailed.reserves, { decimals: 0 })}
                 </p>
               </SourceAnnotation>
-              {reservesInWeeks && (
-                <p className="type-body-sm text-muted-foreground mt-1">
-                  Enough to cover {reservesInWeeks} {reservesInWeeks === 1 ? 'week' : 'weeks'} of running costs
-                </p>
-              )}
             </div>
           )}
 

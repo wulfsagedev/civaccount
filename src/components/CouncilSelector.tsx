@@ -29,8 +29,6 @@ const HomepageResultItem = memo(function HomepageResultItem({
 }) {
   const areaBandD = getAreaBandD(council);
   const bandD = areaBandD?.value;
-  const prevBandD = areaBandD?.previous;
-  const yoyChange = bandD && prevBandD ? ((bandD - prevBandD) / prevBandD) * 100 : null;
 
   return (
     <button
@@ -48,11 +46,6 @@ const HomepageResultItem = memo(function HomepageResultItem({
         </div>
         <div className="text-right shrink-0">
           {bandD && <p className="type-body-sm text-muted-foreground tabular-nums">{formatListBandD(council)}</p>}
-          {yoyChange !== null && (
-            <p className={`type-body-sm tabular-nums ${yoyChange > 0 ? 'text-negative' : yoyChange < 0 ? 'text-positive' : 'text-muted-foreground'}`}>
-              {yoyChange > 0 ? '+' : ''}{yoyChange.toFixed(1)}% from last year
-            </p>
-          )}
         </div>
       </div>
     </button>

@@ -141,11 +141,6 @@ export default async function EmbedCouncilPage({ params }: Props) {
                 {formatCurrency(bandD, { decimals: 2 })}
                 <span> /year</span>
               </div>
-              {taxChange !== null && (
-                <div className={`change ${taxChange > 0 ? 'up' : 'down'}`}>
-                  {taxChange > 0 ? '+' : ''}{taxChange.toFixed(1)}% from last year
-                </div>
-              )}
             </>
           )}
 

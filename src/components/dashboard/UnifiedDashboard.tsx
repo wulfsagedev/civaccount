@@ -18,6 +18,7 @@ import ServiceOutcomesCard from '@/components/dashboard/ServiceOutcomesCard';
 import DataGapNotice from '@/components/ui/data-gap-notice';
 import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
+import { DATA_YEARS } from '@/lib/data-years';
 
 const UnifiedDashboard = () => {
   const { selectedCouncil } = useCouncil();
@@ -62,21 +63,11 @@ const UnifiedDashboard = () => {
   // Area total the bill split adds up to (null for county councils, which
   // have no single area total).
   const totalBandDBill = getTotalBandD(selectedCouncil);
-  const totalDailyCost = totalBandDBill ? totalBandDBill / 365 : null;
 
   const taxChangeAmount = councilTax && councilTax.band_d_2024
     ? councilTax.band_d_2025 - councilTax.band_d_2024
     : null;
 
-  // Calculate reserves in weeks of operation
-  const reservesInWeeks = useMemo(() => {
-    if (!detailed?.reserves) return null;
-    const annualBudget = detailed.revenue_budget || totalBudget;
-    if (!annualBudget || annualBudget === 0) return null;
-    const weeklyBudget = annualBudget / 52;
-    const weeks = Math.round(detailed.reserves / weeklyBudget);
-    return weeks > 0 ? weeks : null;
-  }, [detailed?.reserves, detailed?.revenue_budget, totalBudget]);
 
   // This council's own share per band, in the bill split's year. Bands scale
   // by the statutory ninths, so calculateBands() on the own-share Band D
@@ -182,7 +173,6 @@ const UnifiedDashboard = () => {
         taxChange={taxChange}
         taxChangeAmount={taxChangeAmount}
         vsAverage={vsAverage}
-        totalDailyCost={totalDailyCost}
       />
 
       {/* SECTION 2: Tax Bands */}
@@ -232,7 +222,6 @@ const UnifiedDashboard = () => {
       {hasFinancialData ? (
         <FinancialHealthCard
           selectedCouncil={selectedCouncil}
-          reservesInWeeks={reservesInWeeks}
         />
       ) : (
         <DataGapNotice
@@ -310,27 +299,22 @@ const UnifiedDashboard = () => {
                         </span>)</>
                       );
                     }
+                    // Both figures are printed by MHCLG Table 10; no share is worked out (NORTH-STAR §2 #3).
                     return (
                       <>
                         {`In ${splitYear}, `}
-                        <span className="font-semibold text-foreground">
-                          <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
-                            {pct}%
-                          </SourceAnnotation>
-                        </span>
-                        {' of your total bill ('}
-                        <span className="whitespace-nowrap">
+                        <span className="font-semibold text-foreground whitespace-nowrap">
                           <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
                             {formatCurrency(thisCouncilBandD, { decimals: 2 })}
                           </SourceAnnotation>
                         </span>
-                        {' out of '}
+                        {' of your '}
                         <span className="whitespace-nowrap">
                           <SourceAnnotation provenance={getProvenance(`bill_split.${splitYear}`, selectedCouncil)}>
                             {formatCurrency(totalBandDBill, { decimals: 2 })}
                           </SourceAnnotation>
                         </span>
-                        {')'}
+                        {` Band D bill goes to ${selectedCouncil.name}.`}
                       </>
                     );
                   })()}
@@ -342,18 +326,11 @@ const UnifiedDashboard = () => {
               <div className="p-3 rounded-lg bg-muted/30">
                 <p className="type-body-sm font-semibold mb-1">What does most of my money go towards?</p>
                 <p className="type-caption text-muted-foreground">
-                  <span className="font-semibold text-foreground">{spendingCategories[0].name}</span> takes the biggest share at{' '}
+                  <span className="font-semibold text-foreground">{spendingCategories[0].name}</span> has the biggest budget:{' '}
                   <SourceAnnotation provenance={getProvenance(`budget.${spendingCategories[0].key}`, selectedCouncil)}>
-                    {spendingCategories[0].percentage.toFixed(0)}%
+                    {formatBudget(spendingCategories[0].amount / 1000)}
                   </SourceAnnotation>
-                  {spendingCategories[0].yourShare && (
-                    <> (
-                    <SourceAnnotation provenance={getProvenance(`budget.${spendingCategories[0].key}`, selectedCouncil)}>
-                      {formatCurrency(spendingCategories[0].yourShare, { decimals: 0 })}
-                    </SourceAnnotation>
-                    {' of your bill)'}
-                    </>
-                  )}
+                  {` in ${DATA_YEARS.budget}.`}
                 </p>
               </div>
             )}

@@ -65,7 +65,6 @@ interface YourBillCardProps {
   taxChange: number | null;
   taxChangeAmount: number | null;
   vsAverage: number | null;
-  totalDailyCost: number | null;
 }
 
 const YourBillCard = ({
@@ -74,7 +73,6 @@ const YourBillCard = ({
   taxChange,
   taxChangeAmount,
   vsAverage,
-  totalDailyCost,
 }: YourBillCardProps) => {
   const isEmbed = useIsEmbed();
   const councilTax = selectedCouncil.council_tax;
@@ -260,19 +258,6 @@ const YourBillCard = ({
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
               <div>
                 <span className="type-body font-semibold">Typical Band D total · {splitYear}</span>
-                {totalDailyCost && (
-                  <p className="type-caption text-muted-foreground">
-                    <SourceAnnotation
-                      provenance={splitProvenance}
-                      reportContext={{
-                        council: selectedCouncil.name,
-                        field: 'Band D daily cost',
-                        value: `${formatCurrency(totalDailyCost, { decimals: 2 })} per day`,
-                      }}
-                    >{formatCurrency(totalDailyCost, { decimals: 2 })}</SourceAnnotation>
-                    {' per day'}
-                  </p>
-                )}
               </div>
               <span className="type-metric tabular-nums whitespace-nowrap">
                 <SourceAnnotation

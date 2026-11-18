@@ -104,10 +104,9 @@ const SpendingCard = ({
             const isExpanded = expandedCategory === category.key;
             const hasDrillDown = !!spending;
             const categoryId = `spending-${category.key}`;
-            const shareValue = category.yourShare
-              ? formatCurrency(category.yourShare, { decimals: 0 })
-              : '';
-            const pctText = `${category.percentage.toFixed(0)}%`;
+            // The council's own budget line (RA return), not a slice of a Band D
+            // bill worked out by CivAccount (NORTH-STAR §2 #3).
+            const amountText = formatBudget(category.amount / 1000);
 
             const row = hasDrillDown ? (
               <RankedBarRow
@@ -121,56 +120,32 @@ const SpendingCard = ({
                   </span>
                 }
                 value={
-                  category.yourShare ? (
-                    <SourceAnnotation
-                      provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
-                      reportContext={{
-                        council: selectedCouncil.name,
-                        field: `${category.name} budget (your share)`,
-                        value: shareValue,
-                      }}
-                    >{shareValue}</SourceAnnotation>
-                  ) : shareValue
-                }
-                subLeft={details?.description || ''}
-                subRight={
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
                     reportContext={{
                       council: selectedCouncil.name,
-                      field: `${category.name} budget share (%)`,
-                      value: pctText,
+                      field: `${category.name} budget`,
+                      value: amountText,
                     }}
-                  >{pctText}</SourceAnnotation>
+                  >{amountText}</SourceAnnotation>
                 }
+                subLeft={details?.description || ''}
                 fillPct={category.percentage}
               />
             ) : (
               <RankedBarRow
                 title={category.name}
                 value={
-                  category.yourShare ? (
-                    <SourceAnnotation
-                      provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
-                      reportContext={{
-                        council: selectedCouncil.name,
-                        field: `${category.name} budget (your share)`,
-                        value: shareValue,
-                      }}
-                    >{shareValue}</SourceAnnotation>
-                  ) : ''
-                }
-                subLeft={details?.description || ''}
-                subRight={
                   <SourceAnnotation
                     provenance={getProvenance(`budget.${category.key}`, selectedCouncil)}
                     reportContext={{
                       council: selectedCouncil.name,
-                      field: `${category.name} budget share (%)`,
-                      value: pctText,
+                      field: `${category.name} budget`,
+                      value: amountText,
                     }}
-                  >{pctText}</SourceAnnotation>
+                  >{amountText}</SourceAnnotation>
                 }
+                subLeft={details?.description || ''}
                 fillPct={category.percentage}
               />
             );
