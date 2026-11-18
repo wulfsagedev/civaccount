@@ -6,6 +6,11 @@
 // 2. Deploy: supabase functions deploy email-digest
 // 3. Schedule: Run weekly via pg_cron or invoke manually
 //
+// Sends only to people with digest_opt_in set (migration 004), which nothing sets yet, so as written it emails
+// nobody. Before scheduling it: ask people at sign-up or in their account (unticked by default), and give every
+// email a one-click unsubscribe (a List-Unsubscribe header and a link) that clears digest_opt_in. See
+// LEGAL-AUDIT-2026-09.md CA-11.
+//
 // This is a reference implementation. To use it:
 // - Sign up at resend.com and get an API key
 // - Verify your sending domain
@@ -58,10 +63,11 @@ Deno.serve(async () => {
     return new Response(JSON.stringify({ message: 'No proposals this week, skipping digest' }));
   }
 
-  // Get all users with a council_slug set (they follow a council)
+  // Users who asked for the digest and follow a council
   const { data: users, error: usersError } = await supabase
     .from('users')
     .select('id, email, display_name, council_slug')
+    .eq('digest_opt_in', true)
     .not('council_slug', 'is', null)
     .limit(BATCH_SIZE);
 
@@ -111,7 +117,7 @@ Deno.serve(async () => {
             </a>
           </div>
           <p style="font-size: 12px; color: #9ca3af; margin-top: 32px;">
-            You're getting this because you follow a council on CivAccount.
+            You're getting this because you asked for the weekly email from CivAccount.
           </p>
         </div>
       </div>

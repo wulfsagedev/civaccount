@@ -33,7 +33,7 @@ export default function TermsPage() {
                 <Badge variant="outline" className="mb-2">Legal</Badge>
                 <h1 className="type-title-1 font-semibold">Terms of Use</h1>
                 <p className="text-muted-foreground">
-                  Last updated: January 2025
+                  Last updated: 17 November 2026
                 </p>
               </div>
 
@@ -120,6 +120,52 @@ export default function TermsPage() {
                       You may use CivAccount for personal, educational, journalistic, or research
                       purposes. You may not use automated systems to scrape data at high volume
                       or in ways that degrade the service for others.
+                    </p>
+                  </section>
+
+                  <section className="space-y-3">
+                    <h3 className="font-semibold type-body">Accounts and Town Hall</h3>
+                    <p className="text-muted-foreground">
+                      You need to be 18 or over to make an account. You only need one to post an idea,
+                      comment or vote in Town Hall. Reading CivAccount needs no account.
+                    </p>
+                    <p className="text-muted-foreground">
+                      What you post must be your own words, or words you have the right to share. Do
+                      not post anything unlawful, anything that targets a named person, or anyone
+                      else&apos;s personal details. We may remove a post that breaks these rules, and
+                      close the account of anyone who keeps breaking them.
+                    </p>
+                  </section>
+
+                  <section id="reporting" className="space-y-3 scroll-mt-24">
+                    <h3 className="font-semibold type-body">Reporting a post, or your work used without permission</h3>
+                    <p className="text-muted-foreground">
+                      Use the report form, with a link to the post or page and what is wrong with it.
+                      It reaches the person who runs CivAccount.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        document.dispatchEvent(
+                          new CustomEvent('open-feedback', {
+                            detail: {
+                              title: 'Report a post or page',
+                              subtitle: 'Say where it is and what is wrong with it.',
+                              prefillMessage: 'Link to the post or page:\n\nWhat is wrong with it:\n\nIf it uses your copyright work, also say: what the work is; your postal address and phone number; that you believe in good faith the use is not allowed; and that you own the work or may act for the person who does.\n',
+                            },
+                          }),
+                        )
+                      }
+                    >
+                      Open the report form
+                    </Button>
+                    <p className="text-muted-foreground">
+                      If it uses your copyright work, also say what the work is, give your name, postal
+                      address and phone number, and confirm in good faith that the use is not allowed and,
+                      under penalty of perjury, that you own the work or may act for the person who does.
+                      We take it down while we look, tell the person who posted it, and close the accounts
+                      of anyone who does it again and again.
                     </p>
                   </section>
 

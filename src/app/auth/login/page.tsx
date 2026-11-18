@@ -118,6 +118,13 @@ function LoginContent() {
               <p className="type-caption text-muted-foreground text-center mt-6">
                 No password needed. We send you a magic link.
               </p>
+              <p className="type-body-sm text-muted-foreground text-center mt-2">
+                Accounts are for people aged 18 or over. Signing in means you accept the{' '}
+                <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
+                  Terms
+                </Link>
+                .
+              </p>
             </>
           )}
 
