@@ -21,7 +21,9 @@ export const runtime = 'nodejs';
 export const alt = 'CivAccount Card';
 export const size = { width: 2400, height: 1260 };
 export const contentType = 'image/png';
-export const dynamic = 'force-dynamic';
+// No longer force-dynamic (CA-O6): each image is rendered once, then served
+// from the cache until the next deploy, instead of 0.7 to 0.8 s every time a
+// link preview asks for it.
 
 const renderers: Record<string, (council: Council, councilName: string) => ReactElement> = {
   'bill-history': renderBillHistory,
