@@ -230,16 +230,14 @@ export default async function CouncilLayout({ params, children }: Props) {
             unitCode: 'GBP',
           },
         }),
+        // This council's own record from the public API. The /api/v1/download
+        // address listed here before never existed (404), and bulk download is
+        // ruled out by the data access policy.
         distribution: [
           {
             '@type': 'DataDownload',
-            encodingFormat: 'text/csv',
-            contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=csv',
-          },
-          {
-            '@type': 'DataDownload',
             encodingFormat: 'application/json',
-            contentUrl: 'https://www.civaccount.co.uk/api/v1/download?format=json',
+            contentUrl: `https://www.civaccount.co.uk/api/v1/councils/${slug}`,
           },
         ],
       }),
