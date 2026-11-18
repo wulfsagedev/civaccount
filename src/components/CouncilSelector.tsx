@@ -15,6 +15,9 @@ interface CouncilSelectorProps {
   onSelect?: (council: Council) => void;
   variant?: 'homepage' | 'dashboard' | 'townhall';
   navigateTo?: (slug: string) => string;
+  /** The page's own council, known on the server. Without it the dashboard
+   * variant rendered the full council list until the dataset loaded. */
+  council?: Council | null;
 }
 
 // Memoized result item for homepage variant
@@ -107,8 +110,9 @@ function isPostcode(query: string): boolean {
   return POSTCODE_REGEX.test(query.trim());
 }
 
-export default function CouncilSelector({ onSelect, variant = 'homepage', navigateTo }: CouncilSelectorProps) {
-  const { selectedCouncil, setSelectedCouncil } = useCouncil();
+export default function CouncilSelector({ onSelect, variant = 'homepage', navigateTo, council }: CouncilSelectorProps) {
+  const { selectedCouncil: contextCouncil, setSelectedCouncil } = useCouncil();
+  const selectedCouncil = (variant === 'dashboard' ? council : null) ?? contextCouncil;
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [postcodeResults, setPostcodeResults] = useState<Council[]>([]);

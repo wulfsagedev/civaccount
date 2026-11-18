@@ -110,7 +110,7 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
               treat the H1 as the page's canonical topic signal. */}
           <div className="mb-6">
             <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: displayName }]} />
-            <CouncilSelector variant="dashboard" />
+            <CouncilSelector variant="dashboard" council={selectedCouncil} />
             <h1 className="type-title-1 font-bold text-foreground leading-tight mt-2">
               {displayName}
             </h1>
@@ -226,7 +226,7 @@ export default function CouncilDashboard({ initialCouncil }: CouncilDashboardPro
           </div>
 
           {/* Single scrolling dashboard */}
-          <UnifiedDashboard />
+          <UnifiedDashboard council={selectedCouncil} />
 
           {/* Related councils for internal linking */}
           <div className="mt-5">

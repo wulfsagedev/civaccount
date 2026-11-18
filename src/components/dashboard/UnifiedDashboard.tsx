@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronUp } from "lucide-react";
 import { useCouncil } from '@/context/CouncilContext';
-import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, getAreaBandD, getOwnBandD, getBillSplitYear, PREVIOUS_TAX_YEAR, type ServiceSpendingDetail } from '@/data/councils';
+import { formatCurrency, formatBudget, getCouncilPopulation, getAverageBandDByType, calculateBands, toSentenceTypeName, getTotalBandD, getAreaBandD, getOwnBandD, getBillSplitYear, PREVIOUS_TAX_YEAR, type ServiceSpendingDetail, type Council } from '@/data/councils';
 import ContributeBanner from '@/components/ContributeBanner';
 import YourBillCard from '@/components/dashboard/YourBillCard';
 import TaxBandsCard from '@/components/dashboard/TaxBandsCard';
@@ -20,8 +20,11 @@ import SourceAnnotation from '@/components/ui/source-annotation';
 import { getProvenance } from '@/data/provenance';
 import { DATA_YEARS } from '@/lib/data-years';
 
-const UnifiedDashboard = () => {
-  const { selectedCouncil } = useCouncil();
+// `council` comes from the page, so the figures are in the server HTML;
+// the shared context is empty on the server (CA-B2).
+const UnifiedDashboard = ({ council }: { council?: Council | null } = {}) => {
+  const { selectedCouncil: contextCouncil } = useCouncil();
+  const selectedCouncil = council ?? contextCouncil;
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   // Back-to-top visibility
