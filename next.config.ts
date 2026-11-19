@@ -178,6 +178,13 @@ const nextConfig: NextConfig = {
           { key: 'Content-Security-Policy', value: siteCsp },
         ],
       },
+      // ─── Sitemap: data for crawlers, nothing in it needs to load or run ─
+      // Listed last so it replaces the site CSP set by the rule above. Inline
+      // styles are only there for the browser's own view of an XML file.
+      {
+        source: '/sitemap.xml',
+        headers: [{ key: 'Content-Security-Policy', value: "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'" }],
+      },
     ];
   },
   // Strip the `X-Powered-By: Next.js` header — free framework fingerprint
