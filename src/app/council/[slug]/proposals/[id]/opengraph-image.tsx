@@ -19,6 +19,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     .from('proposals')
     .select('title, body, score, budget_category, status')
     .eq('id', id)
+    .neq('status', 'deleted')
     .single();
 
   const council = getCouncilBySlug(slug);

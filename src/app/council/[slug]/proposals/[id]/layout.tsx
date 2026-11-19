@@ -18,6 +18,7 @@ export async function generateMetadata({
     .from('proposals')
     .select('title, body, budget_category, score')
     .eq('id', id)
+    .neq('status', 'deleted')
     .single();
 
   if (!proposal) {

@@ -89,16 +89,36 @@ function isAllowedOrigin(origin: string): boolean {
  */
 export function clamp(input: string | null | undefined, maxLen: number): string {
   if (!input) return '';
-  // Strip ASCII control characters (0x00–0x1F, 0x7F) except tab/newline
+  // Strip control characters (C0, DEL and C1) except tab and line breaks,
   // which we flatten to spaces.  This is the same treatment Satori applies
   // internally, but doing it here keeps our own log lines clean too.
   const cleaned = input
-    .replace(/[\t\n\r]+/g, ' ')
-    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/[\t\n\r\u0085\u2028\u2029]+/g, ' ')
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
     .trim();
 
   if (cleaned.length <= maxLen) return cleaned;
   // Preserve a visible truncation marker so the output is never silently
   // wrong — readers know the value was clipped.
   return cleaned.slice(0, maxLen - 1).trimEnd() + '…';
+}
+
+/**
+ * Reduce a caller-supplied return target to a path on this site, or '/'.
+ *
+ * Resolving against a placeholder origin applies the browser's own URL rules,
+ * so tabs, line breaks and backslashes are read the same way here as they are
+ * when the link is followed.  The `//` check catches paths that only become
+ * protocol-relative after normalising.
+ */
+export function safeLocalPath(raw: string | null | undefined): string {
+  if (!raw) return '/';
+  const base = 'https://civaccount.invalid';
+  try {
+    const url = new URL(raw, base);
+    const path = `${url.pathname}${url.search}${url.hash}`;
+    return url.origin === base && !path.startsWith('//') ? path : '/';
+  } catch {
+    return '/';
+  }
 }

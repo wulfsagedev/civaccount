@@ -83,6 +83,16 @@ export function editWindowRemaining(createdAt: string): string {
   return `${mins} min${mins !== 1 ? 's' : ''} left to edit`;
 }
 
+/**
+ * What to tell someone when saving an edit fails. The database refuses edits
+ * after the window closes, which can happen while the form is still open.
+ */
+export function editErrorMessage(error: { message?: string }): string {
+  return error.message?.includes('Edit window')
+    ? 'The 15 minutes for editing have passed, so your changes were not saved.'
+    : 'Could not save your changes. Try again.';
+}
+
 export function getCategoryLabel(key: string): string {
   return BUDGET_CATEGORIES[key] ?? key;
 }

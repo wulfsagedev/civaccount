@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import type { Database } from '@/lib/supabase/types';
+import { safeLocalPath } from '@/lib/security';
+
+/** The starting name for a new resident: their email prefix, if it fits the display name rules. */
+function defaultDisplayName(email: string): string | null {
+  const prefix = email.split('@')[0];
+  return prefix.length >= 2 && prefix.length <= 50 ? prefix : null;
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  const rawNext = searchParams.get('next') ?? '/';
-  // Validate redirect path — must start with / and not contain // (prevents open redirect)
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
+  const next = safeLocalPath(searchParams.get('next'));
 
   if (code) {
     const response = NextResponse.redirect(`${origin}${next}`);
@@ -32,14 +37,21 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // Upsert user record
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from('users').upsert({
+        // The first sign-in creates the record. Later sign-ins leave it alone,
+        // so a name the resident chose stays theirs.
+        const { error: profileError } = await supabase.from('users').upsert({
           id: user.id,
           email: user.email!,
-          display_name: user.email!.split('@')[0],
-        }, { onConflict: 'id' });
+          display_name: defaultDisplayName(user.email!),
+        }, { onConflict: 'id', ignoreDuplicates: true });
+
+        // Without this record, posts, votes and comments all fail later.
+        if (profileError) {
+          console.error('[auth/callback] could not create user record:', profileError.code);
+          return NextResponse.redirect(`${origin}/auth/login?error=auth`);
+        }
       }
       return response;
     }

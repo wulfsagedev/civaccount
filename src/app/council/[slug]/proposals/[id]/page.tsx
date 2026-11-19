@@ -82,7 +82,8 @@ export default function ProposalDetailPage() {
       .eq('id', proposalId)
       .single();
 
-    if (!proposalData) {
+    // A deleted proposal reads as gone, even to the author who can still see the row.
+    if (!proposalData || proposalData.status === 'deleted') {
       setIsLoading(false);
       return;
     }
@@ -423,7 +424,7 @@ export default function ProposalDetailPage() {
           </div>
 
           {/* Comment thread */}
-          <CommentThread comments={comments} proposalId={proposal.id} />
+          <CommentThread comments={comments} proposalId={proposal.id} onChanged={fetchData} />
         </div>
 
         {/* Delete confirmation */}
@@ -431,7 +432,7 @@ export default function ProposalDetailPage() {
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
           title="Delete this proposal?"
-          description="This removes the proposal and all its votes and comments permanently."
+          description="This takes the proposal and its comments off the site. Other people will no longer see them. You cannot undo this."
           confirmLabel="Delete proposal"
           variant="destructive"
           onConfirm={handleDelete}

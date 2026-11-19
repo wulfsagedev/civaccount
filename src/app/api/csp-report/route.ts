@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { clamp } from '@/lib/security';
 
 /**
  * CSP violation reporting endpoint.
@@ -103,7 +104,8 @@ export async function POST(request: NextRequest) {
   for (const summary of summaries) {
     // One line per violation, easy to grep in Vercel function logs.
     // Deliberately at info level — CSP violations are signal, not errors.
-    console.info(`[csp-report] ${summary}`);
+    // Every field comes from the request, so the whole line is cleaned here.
+    console.info(`[csp-report] ${clamp(summary, 600)}`);
   }
 
   return new NextResponse(null, { status: 204 });

@@ -61,19 +61,23 @@ export default function VoteButton({
     }
 
     try {
+      // Supabase returns errors rather than throwing them, so each call is
+      // checked here. Without this a refused vote still says it was recorded.
       if (isRemoving) {
         // Remove vote
-        await supabase
+        const { error } = await supabase
           .from('votes')
           .delete()
           .eq('proposal_id', proposalId)
           .eq('user_id', user.id);
+        if (error) throw error;
         toast('Vote removed.');
       } else if (prevVote === null) {
         // New vote
-        await supabase
+        const { error } = await supabase
           .from('votes')
           .insert({ proposal_id: proposalId, user_id: user.id, direction });
+        if (error) throw error;
 
         // First-time voter context (one-time)
         const explained = localStorage.getItem('civaccount_vote_explained');
@@ -85,11 +89,12 @@ export default function VoteButton({
         }
       } else {
         // Change vote direction
-        await supabase
+        const { error } = await supabase
           .from('votes')
           .update({ direction })
           .eq('proposal_id', proposalId)
           .eq('user_id', user.id);
+        if (error) throw error;
         toast.success('Vote changed.');
       }
     } catch {

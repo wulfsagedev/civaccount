@@ -33,6 +33,7 @@ export default function TownHallPage() {
         .from('proposals')
         .select('id, council_slug, budget_category, title, score, comment_count, created_at, author_id')
         .neq('status', 'flagged')
+        .neq('status', 'deleted')
         .order('created_at', { ascending: false })
         .limit(10);
 

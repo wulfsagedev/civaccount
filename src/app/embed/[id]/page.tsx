@@ -29,6 +29,7 @@ export default function EmbedPage() {
       .from('proposals')
       .select('id, council_slug, title, body, budget_category, score, comment_count, created_at')
       .eq('id', proposalId)
+      .neq('status', 'deleted')
       .single();
     setProposal(data);
     setIsLoading(false);

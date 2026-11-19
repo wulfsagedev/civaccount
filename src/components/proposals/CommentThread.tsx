@@ -29,6 +29,8 @@ interface Comment {
 interface CommentThreadProps {
   comments: Comment[];
   proposalId: string;
+  /** Called after a comment is edited, deleted or replied to, so the page can load the new state. */
+  onChanged?: () => void;
 }
 
 function buildTree(comments: Comment[]): Comment[] {
@@ -300,10 +302,8 @@ function CommentNode({
   );
 }
 
-export default function CommentThread({ comments, proposalId }: CommentThreadProps) {
+export default function CommentThread({ comments, proposalId, onChanged }: CommentThreadProps) {
   const tree = buildTree(comments);
-  const [, forceUpdate] = useState(0);
-  const handleRefresh = () => forceUpdate(n => n + 1);
 
   return (
     <div className="space-y-0 divide-y divide-border/40">
@@ -318,7 +318,7 @@ export default function CommentThread({ comments, proposalId }: CommentThreadPro
             comment={comment}
             proposalId={proposalId}
             depth={0}
-            onRefresh={handleRefresh}
+            onRefresh={onChanged}
           />
         ))
       )}

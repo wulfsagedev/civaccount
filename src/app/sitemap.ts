@@ -139,15 +139,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(500);
 
     if (proposals) {
-      // Only residents' own posts under a real council: the example posts
-      // repeat across councils and are not for search engines (CA-D3).
-      const realSlugs = new Set(councils.map((c) => getCouncilSlug(c)));
+      // A proposal's page only exists under a real council, and example posts
+      // repeat across councils so are not for search engines (CA-D3). The
+      // stored values are encoded because this file's output is not escaped
+      // further down.
+      const knownCouncils = new Set(councils.map(getCouncilSlug));
       proposalPages = proposals
-        .filter((p) => realSlugs.has(p.council_slug) && !isExamplePost(p.author_id))
+        .filter((p) => knownCouncils.has(p.council_slug) && !isExamplePost(p.author_id))
         .map((p) => ({
-        url: `${baseUrl}/council/${p.council_slug}/proposals/${p.id}`,
-        lastModified: p.created_at,
-      }));
+          url: `${baseUrl}/council/${encodeURIComponent(p.council_slug)}/proposals/${encodeURIComponent(p.id)}`,
+          lastModified: p.created_at,
+        }));
     }
   } catch {
     // Supabase unavailable at build time — skip proposals.
