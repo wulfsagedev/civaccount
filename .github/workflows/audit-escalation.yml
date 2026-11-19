@@ -14,9 +14,14 @@ name: Nightly Advisory Escalation
 # extra state file is needed:
 #
 #   advisories, no open issue    → open one (the clock starts)
-#   advisories, issue < 14 days  → comment if the finding set changed, pass
-#   advisories, issue >= 14 days → FAIL the job
+#   advisories, issue < 14 days  → update + comment if the finding set changed, pass
+#   advisories, issue >= 14 days → FAIL the job (comment once on escalation,
+#                                  then only when the finding set changes)
 #   no advisories, open issue    → close it (the clock resets)
+#   npm audit itself errored     → FAIL the job, leave the issue alone
+#
+# The last finding set is kept in a hidden marker in the issue body, so the
+# issue gets one comment per change instead of one every night.
 #
 # Scope is production dependencies only (--omit=dev), matching ci.yml. Dev-only
 # advisories are deliberately out of scope: they never reach a user. The
@@ -73,6 +78,16 @@ jobs:
               return;
             }
 
+            // When the audit itself fails (registry down, bad lockfile) npm still
+            // writes valid JSON, but it is an {"error": …} object with no report in
+            // it. Reading that as "no vulnerabilities" would close the issue and
+            // reset the clock, so stop here and leave the issue as it is.
+            if (report.error || !report.metadata || !report.metadata.vulnerabilities) {
+              const detail = report.message || (report.error && (report.error.summary || report.error.code)) || 'no metadata.vulnerabilities in the JSON';
+              core.setFailed(`npm audit did not return a report: ${String(detail).slice(0, 500)}`);
+              return;
+            }
+
             // npm audit v2 JSON: vulnerabilities is a map keyed by package name.
             const findings = Object.values(report.vulnerabilities || {})
               .filter(v => v.severity === 'high' || v.severity === 'critical')
@@ -104,41 +119,63 @@ jobs:
               .map(f => `- \`${f.name}\` — **${f.severity}**${f.fixAvailable ? ' (fix available)' : ' — _no fix available upstream_'}`)
               .join('\n');
 
+            // What the issue last reported, kept in a hidden marker in its body.
+            const signature = findings.map(f => `${f.name}:${f.severity}`).join(',');
+            const STATE_RE = /<!-- audit-state: (\{.*?\}) -->/;
+            const readState = (body) => {
+              const m = (body || '').match(STATE_RE);
+              try { return m ? JSON.parse(m[1]) : {}; } catch { return {}; }
+            };
+            const titleFor = () => `Security advisories on production dependencies (${findings.length})`;
+            const bodyFor = (state) => [
+              `\`npm audit --omit=dev --audit-level=high\` is reporting ${findings.length} advisor${findings.length === 1 ? 'y' : 'ies'} on dependencies that ship to users.`,
+              '',
+              list,
+              '',
+              `**This issue is the clock.** If it is still open ${GRACE_DAYS} days after it was opened, the nightly job starts failing. Fix the advisories or, if one genuinely cannot be fixed, record why here and narrow the audit scope deliberately — do not just close the issue.`,
+              '',
+              'Reproduce with `npm audit --omit=dev --audit-level=high`.',
+              '',
+              `<!-- audit-state: ${JSON.stringify(state)} -->`,
+            ].join('\n');
+
             // ─── First sighting: start the clock ─────────────────────────
             if (!tracking) {
               const issue = await github.rest.issues.create({
                 owner, repo,
-                title: `Security advisories on production dependencies (${findings.length})`,
+                title: titleFor(),
                 labels: [LABEL],
-                body: [
-                  `\`npm audit --omit=dev --audit-level=high\` is reporting ${findings.length} advisor${findings.length === 1 ? 'y' : 'ies'} on dependencies that ship to users.`,
-                  '',
-                  list,
-                  '',
-                  `**This issue is the clock.** If it is still open in ${GRACE_DAYS} days, the nightly job starts failing. Fix the advisories or, if one genuinely cannot be fixed, record why here and narrow the audit scope deliberately — do not just close the issue.`,
-                  '',
-                  'Reproduce with `npm audit --omit=dev --audit-level=high`.',
-                ].join('\n'),
+                body: bodyFor({ findings: signature, escalated: false }),
               });
               core.notice(`Opened tracking issue #${issue.data.number} — ${GRACE_DAYS}-day clock started.`);
               return;
             }
 
-            // ─── Already tracking: escalate on age ───────────────────────
+            // ─── Already tracking: keep the issue current, escalate on age ──
             const ageDays = Math.floor((Date.now() - new Date(tracking.created_at)) / 86400000);
             core.notice(`Tracking issue #${tracking.number} is ${ageDays} days old (grace ${GRACE_DAYS}).`);
 
-            if (ageDays >= GRACE_DAYS) {
+            const prev = readState(tracking.body);
+            const changed = prev.findings !== signature;
+            const overdue = ageDays >= GRACE_DAYS;
+            const newlyEscalated = overdue && !prev.escalated;
+
+            if (changed || newlyEscalated) {
+              await github.rest.issues.update({
+                owner, repo, issue_number: tracking.number,
+                title: titleFor(),
+                body: bodyFor({ findings: signature, escalated: overdue }),
+              });
+              const lead = overdue
+                ? `**Escalated.** These advisories have been outstanding for ${ageDays} days, past the ${GRACE_DAYS}-day grace period. The nightly audit job now fails and will keep failing until they are resolved.`
+                : `The advisories changed. ${GRACE_DAYS - ageDays} day(s) left before the nightly job starts failing.`;
               await github.rest.issues.createComment({
                 owner, repo, issue_number: tracking.number,
-                body: [
-                  `**Escalated.** These advisories have been outstanding for ${ageDays} days, past the ${GRACE_DAYS}-day grace period. The nightly audit job now fails and will keep failing until they are resolved.`,
-                  '',
-                  'Currently outstanding:',
-                  '',
-                  list,
-                ].join('\n'),
+                body: [lead, '', 'Currently outstanding:', '', list].join('\n'),
               });
+            }
+
+            if (overdue) {
               core.setFailed(
                 `${findings.length} production advisor${findings.length === 1 ? 'y has' : 'ies have'} been outstanding for ${ageDays} days ` +
                 `(grace period ${GRACE_DAYS}). See issue #${tracking.number}.`,

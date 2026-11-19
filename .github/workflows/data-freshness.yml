@@ -30,6 +30,25 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
 
+      # The council dataset lives in the private civaccount-data repo. Without
+      # it, validation skips and coverage stats fall back to an empty table, so
+      # the auto-PR below would propose wiping the real stats. Fetch it when the
+      # token is configured, and only open the PR when it is present.
+      - name: Fetch private council data (if token configured)
+        env:
+          CIVACCOUNT_DATA_TOKEN: ${{ secrets.CIVACCOUNT_DATA_TOKEN }}
+        run: node scripts/fetch-private-data.mjs
+
+      - name: Check for private data
+        id: data
+        run: |
+          if [ -f src/data/councils/index.ts ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Private dataset not present — CIVACCOUNT_DATA_TOKEN missing or expired (see ROTATION-RUNBOOK.md). Validation and the coverage-stats PR are skipped; the source staleness check still runs."
+          fi
+
       # ─── Step 0: Auto-sync GOV.UK Band D live table ───
       # The Band_D ODS at the well-known live-tables URL is the canonical source
       # of truth for council tax. We fetch it monthly and re-sync any drift.
@@ -111,10 +130,13 @@ jobs:
         run: npm run generate:coverage
 
       # ─── Step 5: Check if coverage stats changed ───
+      # Only the two files this repo can commit count. Everything under
+      # src/data/councils/ is gitignored here — it belongs to civaccount-data.
       - name: Check for changes
         id: changes
+        if: steps.data.outputs.present == 'true'
         run: |
-          git diff --name-only > changed-files.txt
+          git diff --name-only -- src/data/coverage-stats.ts src/data/wayback-fallbacks.json > changed-files.txt
           if [ -s changed-files.txt ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "Changed files:"
@@ -132,15 +154,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add src/data/coverage-stats.ts \
-                  src/data/wayback-fallbacks.json \
-                  src/data/councils/pdfs/gov-uk-bulk-data/Band_D_2026-27.ods \
-                  src/data/councils/pdfs/gov-uk-bulk-data/parsed-area-band-d.csv \
-                  src/data/councils/county-councils.ts \
-                  src/data/councils/metropolitan.ts \
-                  src/data/councils/london-boroughs.ts \
-                  src/data/councils/unitary.ts \
-                  src/data/councils/districts.ts 2>/dev/null || true
+          # One missing pathspec makes `git add` stage nothing at all, so list
+          # only files tracked here (this is why every run since July failed
+          # with "no changes added to commit").
+          git add src/data/coverage-stats.ts src/data/wayback-fallbacks.json
           git commit -m "chore: regenerate coverage stats (automated monthly)
 
           Updated by data-freshness.yml workflow.
